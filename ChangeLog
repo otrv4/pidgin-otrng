@@ -1,0 +1,33 @@
+2005-05-03
+
+	* README:
+	* packaging/fedora/gaim-otr.spec:
+	* packaging/windows/gaim-otr.nsi:
+	* configure.ac: Change version to 2.0.2
+
+	* packaging/debian: Remove this directory, as Thibaut VARENE
+	<varenet@debian.org> is now responsible for the debian packages.
+
+2005-03-23
+
+	* otr-plugin.c (process_receiving_im): If libotr tells us to
+	ignore this received message (because it's an internal protocol
+	message), it's not enough just to return 1 from this function,
+	since other plugins that catch receiving-im-msg may later return
+	0, and gaim only checks the return value from the last such
+	plugin.  So we additionally set the message to NULL.
+
+2005-03-21
+
+	* gtk-ui.c (otrg_gtk_ui_config_buddy):
+	* otr-plugin.c (supply_extended_menu): For consistency, use "OTR
+	Settings" instead of "OTR Options" everywhere.
+
+2005-03-08
+
+	* gtk-dialog.c (otrg_gtk_dialog_private_key_wait_start): Move a
+	variable declaration to the right place.
+
+2005-03-01
+
+	Initial autoconfiscation, thanks to Greg Troxel <gdt@ir.bbn.com>.

@@ -1,0 +1,45 @@
+REQUIREMENTS
+
+To compile the OTR plugin for gaim, you'll need at least:
+ - libgpg-error 1.0  [ftp://ftp.gnupg.org/gcrypt/libgpg-error/]
+ - libgcrypt 1.2.0   [ftp://ftp.gnupg.org/gcrypt/libgcrypt/]
+ - libotr 1.99.0     [http://www.cypherpunks.ca/otr/]
+ - glib 2.4          [http://www.gtk.org/download/]
+ - gtk+ 2.4          [http://www.gtk.org/download/]
+ - gaim 1.x          [http://gaim.sourceforge.net/downloads.php]
+
+If you install these with a package manager, you'll probably need the
+-dev or -devel versions of the packages.
+
+COMPILING (non-Win32)
+
+If you're got a CVS copy, you will need to regenerate the configure
+script using:
+
+    autoreconf -s -i
+
+Once you have the configure script (which comes with the source
+deistribution), run it with any options that may be necessary for your
+system.  Some examples:
+
+Linux:
+    ./configure --prefix=/usr --mandir=/usr/share/man
+
+NETBSD:
+    CPPFLAGS="-I/usr/pkg/include" LDFLAGS="-R/usr/pkg/lib -L/usr/pkg/lib" \
+	./configure --prefix=/usr/pkg
+
+Once the configure script writes a Makefile, you should be able to just
+run "make".
+
+COMPILING (Win32)
+
+Use the provided Makefile.mingw:
+
+    make -f Makefile.mingw
+
+INSTALLATION
+
+You should be able to simply do "make install".  If you want to install
+somewhere other than / (this is useful for package creators), use
+something like "make DESTDIR=/path/to/install/to install".

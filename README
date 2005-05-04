@@ -1,0 +1,210 @@
+		Off-the-Record Messaging plugin for GAIM
+			  v2.0.2,  3 May 2005
+
+This is a gaim plugin which implements Off-the-Record (OTR) Messaging.
+It is known to work (at least) under the Linux and Windows versions of
+gaim (1.x).
+
+OTR allows you to have private conversations over IM by providing:
+ - Encryption
+   - No one else can read your instant messages.
+ - Authentication
+   - You are assured the correspondent is who you think it is.
+ - Deniability
+   - The messages you send do _not_ have digital signatures that are
+     checkable by a third party.  Anyone can forge messages after a
+     conversation to make them look like they came from you.  However,
+     _during_ a conversation, your correspondent is assured the messages
+     he sees are authentic and unmodified.
+ - Perfect forward secrecy
+   - If you lose control of your private keys, no previous conversation
+     is compromised.
+
+For more information on Off-the-Record Messaging, see
+http://www.cypherpunks.ca/otr/
+
+USAGE
+
+Run gaim, and open the Preferences panel.  (If you had a copy of gaim
+running before you installed gaim-otr, you will need to restart it.)
+Choose "Plugins".  Find the Off-the-Record Messaging plugin, and enable
+it by selecting the "Load" box next to it.  This will cause
+"Off-the-Record Messaging" to appear under "Plugins" in the list at the
+left.  Click "Off-the-Record Messaging" to bring up the OTR UI.  The UI
+has two "pages": "Known fingerprints" and "Config".
+
+The "Config" page allows you generate private keys, and to set OTR
+options.
+
+    Private keys are used to authenticate you to your buddies.  Choose
+    one of your accounts from the menu, click "Generate" and wait until
+    it's finished.  You'll see a sequence of letters and number appear
+    above the "Generate" button.  This is the "fingerprint" for that
+    account; it is unique to that account.  If you have multiple IM
+    accounts, you can generate private keys for each one separately.
+    Note that if you don't generate keys in this way, they will be
+    generated automatically, when they are needed.
+
+    The OTR options determine when private messaging is enabled.  The
+    checkboxes on this page control the default settings; you can edit
+    the per-buddy settings by right-clicking on your buddy in the buddy
+    list, and choosing "OTR Options" from the menu.
+
+    The options are:
+    [X] Enable private messaging
+      [X] Automatically initiate private messaging
+        [ ] Require private messaging
+
+    If the "enable private messaging" box is unchecked, private messages
+    will be disabled completely (and the other two boxes will be greyed
+    out, as they're irrelevant).
+
+    If the first box is checked, but "automatically initiate private
+    messaging" is unchecked, private messaging will be enabled, but only
+    if either you or your buddy explicitly requests to start a private
+    conversation (and the third box will be greyed out, as it's
+    irrelevant).
+
+    If the first two boxes are checked, but "require private messaging"
+    is unchecked, OTR will attempt to detect whether your buddy can
+    understand OTR private messages, and if so, automatically start a
+    private conversation.
+
+    If all three boxes are checked, messages will not be sent to your
+    buddy unless you are in a private conversation.
+
+The "Known fingerprints" page allows you to see the fingerprints of any
+buddies you have previously communicated with privately.
+
+You can close the Preferences panel (but make sure not to disable
+(un-"Load") the OTR plugin).
+
+IM as normal with your buddies.  If you want to start a private
+conversation with one of them, click the "OTR: Not Private" button in
+the conversation window.
+
+If your buddy does not have the OTR plugin, a private conversation will
+(of course) not be started.  [But he'll get some information about OTR
+instead.]
+
+If your buddy does have the OTR plugin (and it's enabled), a private
+conversation will be initiated.
+
+If both you and your buddy have OTR software, and your OTR options set
+to automatically initiate private messaging, your clients may recognize
+each other and automatically start a private conversation.
+
+The first time you have a private conversation with one of your buddies,
+his fingerprint will appear, and you will be asked to verify that it is
+valid.  It's usually a good idea to make sure it's correct, perhaps via
+the phone, or some other authenticated communication.
+
+If it's wrong, it means someone's intercepting your communication.
+While unlikely, this is one of the things this plugin detects.
+
+Once you've verified your buddy's fingerprint, it will be stored, and
+future private conversations with him won't bother you with this dialog.
+[Unless, of course, he uses a different fingerprint, perhaps from a
+different IM account, or on a different computer.  It's OK to have
+multiple fingerprints for the same IM account, on different machines.]
+
+When private communication has been established, you each will see an
+information popup containing:
+ - Your buddy's screen name  (he'll see yours, of course)
+ - His fingerprint  (similarly, he'll see yours)
+ - A "secure id" for the session.  Half of this id will be in bold.
+   Your buddy sees the same id, but the other half is in bold for him.
+
+The "secure id" is another way to verify that you're actually chatting
+with your buddy, and not some eavesdropper ("man-in-the-middle" is the
+technical term).  Phone him up, and ask him to read his bold part, and
+read yours back to him.  If they're both correct, you're assured that
+there's no one intercepting your private conversation.  This is secure,
+even if you know that one or both of your private keys have been
+compromised.
+
+Then just use IM with him normally; all your instant messages will be
+encrypted and authenticated.  You should see an "OTR: Private" label in
+the conversation window.
+
+If you open the Preferences panel back up, and go to the OTR UI, you'll
+see your buddy, and his fingerprint, listed there.  The "Status" should
+currently be "Private", which means you're having a private
+conversation.  Other possibilities are "Not private", which means you're
+just chatting in IM the usual (non-OTR) way, and "Setting up", which
+means the private conversation is in the process of being set up.
+
+By selecting one of your buddies from the list, you'll be able to do one
+or more of the following things by clicking the buttons below the list:
+ - "Start private conversation": if the status is "Not private", this
+   will attempt to start a private conversation.  It's the same as
+   typing "?OTR?" to your buddy.
+ - "End private conversation": if the status is "Private" (or "Setting
+   up"), you can force an end to your private conversation by clicking
+   this button.  There's not usually a good reason to do this, though.
+   Note that your buddy will have to click the button at his end, as
+   well.  [This is so he doesn't inadvertently type a message he thinks
+   is private, when suddenly the privacy is removed from him.]  When you
+   end a private conversation, you'll see a warning box to that effect.
+ - "Forget fingerprint": this will remove your buddy's fingerprint from
+   the list.  You'll have to re-verify it the next time you start a
+   private conversation with him.  Note that you can't forget a
+   fingerprint that's currently in use in a private conversation.
+
+NOTES
+
+Please send your bug reports, comments, suggestions, patches, etc. to us
+at the contact address below.
+
+This plugin only attempts to protect instant messages, not multi-party
+chats, file transfers, etc.
+
+MAILING LISTS
+
+There are three mailing lists pertaining to Off-the-Record Messaging:
+
+otr-announce:
+    http://lists.cypherpunks.ca/mailman/listinfo/otr-announce/
+    *** All users of OTR software should join this. ***  It is used to
+    announce new versions of OTR software, and other important information.
+
+otr-users:
+    http://lists.cypherpunks.ca/mailman/listinfo/otr-users/
+    Discussion of usage issues related to OTR Messaging software.
+
+otr-dev:
+    http://lists.cypherpunks.ca/mailman/listinfo/otr-dev/
+    Discussion of OTR Messaging software development.
+
+LICENSE
+
+The Off-the-Record Messaging plugin for gaim is covered by the following
+(GPL) license:
+
+    Off-the-Record Messaging plugin for gaim
+    Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+		             <otr@cypherpunks.ca>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of version 2 of the GNU General Public License as
+    published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    There is a copy of the GNU General Public License in the COPYING file
+    packaged with this plugin; if you cannot find it, write to the Free
+    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+    02111-1307  USA
+
+CONTACT
+
+To report problems, comments, suggestions, patches, etc., you can email
+the authors:
+
+Nikita Borisov and Ian Goldberg <otr@cypherpunks.ca>
+
+For more information on Off-the-Record Messaging, visit
+http://www.cypherpunks.ca/otr/

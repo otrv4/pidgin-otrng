@@ -1,0 +1,59 @@
+WIN32=1
+
+# The version number to put in the plugin info
+GAIM_OTR_VERSION = 2.0.2
+
+# Replace this with the path to the GAIM headers
+GAIM_SOURCE ?= /usr/include/gaim
+
+# If you don't have pkg-config, put the appropriate -I entry on the next line
+GTK_HDRS ?= `pkg-config --cflags glib-2.0 gtk+-2.0`
+
+# The location of the libotr include files.  Note that if, for example,
+# the full path of message.h is /usr/include/libotr/message.h, you
+# should put /usr/include on the next line, not /usr/include/libotr
+LIBOTRINCDIR = /usr/include
+
+# The locataion of libotr.a.
+LIBOTRLIBDIR = /usr/lib
+
+# The target
+TARGET = gaim-otr.so
+
+ifdef WIN32
+CC = i586-mingw32msvc-gcc
+LIBOTRINCDIR = /usr/i586-mingw32msvc/include
+LIBOTRLIBDIR = /usr/i586-mingw32msvc/lib
+TARGET = gaim-otr.dll
+LDFLAGS = -Wl,--enable-auto-image-base
+LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0-0 -latk-1.0-0 -lpango-1.0-0 \
+         -lglib-2.0-0 -lgdk-win32-2.0-0 -lgobject-2.0-0 -lgaim \
+         -lgcrypt -lgpg-error
+else
+FPIC = -fPIC
+LDFLAGS = -module -avoid-version
+LDLIBS = -lotr -lgcrypt
+endif
+
+# Install directory
+GAIMDIR = /usr/lib/gaim
+INSTALLDIR = $(DESTDIR)$(GAIMDIR)
+
+CC ?= gcc
+override CFLAGS += -g -Wall -I$(GAIM_SOURCE) $(GTK_HDRS) \
+	-I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DGAIM_PLUGINS \
+	-DGAIM_OTR_VERSION=\"$(GAIM_OTR_VERSION)\"
+ 
+all: $(TARGET)
+
+$(TARGET): otr-plugin.o ui.o dialogs.o gtk-ui.o gtk-dialog.o
+	$(CC) -g -shared $(LDFLAGS) $^ -o $@ $(LDLIBS)
+
+install: all
+	install -d $(INSTALLDIR)
+	install -m 0755 $(TARGET) $(INSTALLDIR)
+clean:
+	rm -f *.o
+	rm -f $(TARGET)
+
+distclean: clean
