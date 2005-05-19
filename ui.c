@@ -132,6 +132,12 @@ void otrg_ui_config_buddy(GaimBuddy *buddy)
 /* Calculate the policy for a particular account / username */
 OtrlPolicy otrg_ui_find_policy(GaimAccount *account, const char *name)
 {
+    /* Check to see if the protocol for this account supports OTR at all. */
+    const char *proto = gaim_account_get_protocol_id(account);
+    if (!otrg_plugin_proto_supports_otr(proto)) {
+	return OTRL_POLICY_NEVER;
+    }
+
     if (ui_ops != NULL) {
 	return ui_ops->find_policy(account, name);
     }

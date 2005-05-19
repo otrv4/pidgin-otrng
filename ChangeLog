@@ -1,3 +1,17 @@
+2005-05-19
+
+	* otr-plugin.h:
+	* otr-plugin.c (otrg_plugin_proto_supports_otr): New function to
+	check whether a given protocol supports OTR.  Right now,
+	everything except IRC is assumed to support it.
+
+	* otr-plugin.c (supply_extended_menu): Don't add the "OTR
+	Settings" menu option to the per-buddy menu if this buddy's
+	protocol doesn't support OTR.
+
+	* ui.c (otrg_ui_find_policy): If the protocol doesn't support
+	OTR, always return a policy of OTRL_POLICY_NEVER.
+
 2005-05-03
 
 	* README:

@@ -58,4 +58,7 @@ void otrg_plugin_send_default_query_conv(GaimConversation *conv);
  * appropriate. */
 void otrg_plugin_disconnect(ConnContext *context);
 
+/* Return 1 if the given protocol supports OTR, 0 otherwise. */
+int otrg_plugin_proto_supports_otr(const char *proto);
+
 #endif

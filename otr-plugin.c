@@ -423,11 +423,21 @@ static void otr_options_cb(GaimBlistNode *node, gpointer user_data)
 static void supply_extended_menu(GaimBlistNode *node, GList **menu)
 {
     GaimBlistNodeAction *act;
+    GaimBuddy *buddy;
+    GaimAccount *acct;
+    const char *proto;
 
     if (!GAIM_BLIST_NODE_IS_BUDDY(node)) return;
 
-     act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL);
-     *menu = g_list_append(*menu, act);
+    /* Extract the account, and then the protocol, for this buddy */
+    buddy = (GaimBuddy *)node;
+    acct = buddy->account;
+    if (acct == NULL) return;
+    proto = gaim_account_get_protocol_id(acct);
+    if (!otrg_plugin_proto_supports_otr(proto)) return;
+
+    act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL);
+    *menu = g_list_append(*menu, act);
 }
 
 /* Disconnect a context, sending a notice to the other side, if
@@ -508,6 +518,17 @@ static gboolean otr_plugin_unload(GaimPlugin *handle)
 
     gaim_conversation_foreach(otrg_dialog_remove_conv);
 
+    return 1;
+}
+
+/* Return 1 if the given protocol supports OTR, 0 otherwise. */
+int otrg_plugin_proto_supports_otr(const char *proto)
+{
+    /* IRC is the only protocol we know of that OTR doesn't work on (its
+     * maximum message size is too small to fit a Key Exchange Message). */
+    if (proto && !strcmp(proto, "prpl-irc")) {
+	return 0;
+    }
     return 1;
 }
 

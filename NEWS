@@ -1,3 +1,9 @@
+19 May 2005:
+- OTR doesn't work over IRC (since IRC's maximum message size is too
+  small for a Key Exchange Message to fit), so don't even provide the
+  OTR Settings buddy-menu option or the OTR conversation window button
+  for IRC.
+
 3 May 2005:
 - Released 2.0.2
 - Fix to co-exist more nicely with other encrypting gaim plugins.
