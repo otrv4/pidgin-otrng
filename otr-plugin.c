@@ -178,7 +178,7 @@ static void notify_cb(void *opdata, OtrlNotifyLevel level,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary)
 {
-    GaimNotifyMsgType gaimlevel;
+    GaimNotifyMsgType gaimlevel = GAIM_NOTIFY_MSG_ERROR;
 
     switch (level) {
 	case OTRL_NOTIFY_ERROR:
@@ -411,6 +411,16 @@ static void process_connection_change(GaimConnection *conn, void *data)
     otrg_dialog_resensitize_all();
 }
 
+static void process_button_type_change(const char *name, GaimPrefType type,
+	gpointer value, gpointer data)
+{
+    /* If the user changes the style of the buttons at the bottom of the
+     * conversation window, gaim annoyingly removes all the buttons from
+     * the bbox, and reinserts its own.  So we need to reinsert our
+     * buttons as well. */
+    otrg_dialog_resensitize_all();
+}
+
 static void otr_options_cb(GaimBlistNode *node, gpointer user_data)
 {
     /* We've already checked GAIM_BLIST_NODE_IS_BUDDY(node) */
@@ -447,6 +457,8 @@ void otrg_plugin_disconnect(ConnContext *context)
     otrl_message_disconnect(otrg_plugin_userstate, &ui_ops, NULL,
 	    context->accountname, context->protocol, context->username);
 }
+
+static guint button_type_cbid;
 
 static gboolean otr_plugin_load(GaimPlugin *handle)
 {
@@ -487,6 +499,9 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
 	    GAIM_CALLBACK(process_connection_change), NULL);
     gaim_signal_connect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu), NULL);
+    button_type_cbid = gaim_prefs_connect_callback(
+	    "/gaim/gtk/conversations/button_type",
+	    process_button_type_change, NULL);
 
     gaim_conversation_foreach(otrg_dialog_new_conv);
 
@@ -515,6 +530,7 @@ static gboolean otr_plugin_unload(GaimPlugin *handle)
 	    GAIM_CALLBACK(process_connection_change));
     gaim_signal_disconnect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu));
+    gaim_prefs_disconnect_callback(button_type_cbid);
 
     gaim_conversation_foreach(otrg_dialog_remove_conv);
 

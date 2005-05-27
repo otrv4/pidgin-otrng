@@ -1,3 +1,23 @@
+2005-05-27
+
+	* otr-plugin.c:
+	* gtk-dialog.c: Replace the OTR button in the button box if the
+	user changes the button style (which causes gaim to remove all
+	the buttons, and only replace its own).
+
+	* gtk-dialog.c: Add a right-button context menu to the OTR
+	button.  Currently, it only has one entry, which has the same
+	effect as clicking the button; eventually, you'll be able to do
+	other things here, like getting the info currently in the
+	"Private Connection Established" dialog.  This also opens the
+	door to making the button functionality available if the user
+	hides his buttons completely (if we can find a place to make
+	this context menu appear; say, on some F-key?).
+
+	* otr-plugin.c (notify_cb): Initialize gaimlevel so that -Wall
+	stops complaining, even though there's no situation in which it
+	can actually get used while unset.
+
 2005-05-19
 
 	* otr-plugin.h:

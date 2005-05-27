@@ -324,18 +324,39 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
     gtk_widget_show_all(dialog);
 }
 
+static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data);
+
 static void dialog_update_label_conv(GaimConversation *conv, int is_private)
 {
     GtkWidget *label;
     GtkWidget *button;
+    GtkWidget *menu;
+    GtkWidget *menuitem;
     GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
     label = gaim_conversation_get_data(conv, "otr-label");
     button = gaim_conversation_get_data(conv, "otr-button");
+    menu = gaim_conversation_get_data(conv, "otr-menu");
+    menuitem = gaim_conversation_get_data(conv, "otr-menuitem");
     gtk_label_set_text(GTK_LABEL(label),
 	    is_private ? "OTR:\nPrivate" : "OTR:\nNot private");
     gtk_tooltips_set_tip(gtkconv->tooltips, button,
 	    is_private ? "Refresh the private conversation"
 		       : "Start a private conversation", NULL);
+
+    /* Create the appropriate menu item, first destroying any old one
+     * that may still be around. */
+    if (menuitem != NULL) {
+	gtk_object_destroy(GTK_OBJECT(menuitem));
+    }
+    menuitem = gtk_menu_item_new_with_mnemonic(
+	    is_private ? "Refresh _private conversation"
+	               : "Start _private conversation");
+    gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
+    gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+    gtk_widget_show(menuitem);
+    gaim_conversation_set_data(conv, "otr-menuitem", menuitem);
+
     /* Use any non-NULL value for "private", NULL for "not private" */
     gaim_conversation_set_data(conv, "otr-private",
 	    is_private ? conv : NULL);
@@ -417,7 +438,8 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
     dialog_update_label(context, 1);
 }
 
-/* This is called when the OTR button in the button box is clicked. */
+/* This is called when the OTR button in the button box is clicked, or
+ * when the appropriate context menu item is selected. */
 static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 {
     const char *format;
@@ -438,6 +460,36 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 
 static void dialog_resensitize(GaimConversation *conv);
 
+/* If the OTR button is right-clicked, show the context menu. */
+static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
+	gpointer data)
+{
+    GaimConversation *conv = data;
+
+    if ((event->button == 3) && (event->type == GDK_BUTTON_PRESS)) {
+	GtkWidget *menu = gaim_conversation_get_data(conv, "otr-menu");
+	if (menu) {
+	    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+		    3, event->time);
+	    return TRUE;
+	}
+    }
+    return FALSE;
+}
+
+/* If the OTR button gets destroyed on us, clean up the data we stored
+ * pointing to it. */
+static void button_destroyed(GtkWidget *w, GaimConversation *conv)
+{
+    GtkWidget *menu = gaim_conversation_get_data(conv, "otr-menu");
+    if (menu) gtk_object_destroy(GTK_OBJECT(menu));
+    g_hash_table_remove(conv->data, "otr-label");
+    g_hash_table_remove(conv->data, "otr-button");
+    g_hash_table_remove(conv->data, "otr-private");
+    g_hash_table_remove(conv->data, "otr-menu");
+    g_hash_table_remove(conv->data, "otr-menuitem");
+}
+
 /* Set up the per-conversation information display */
 static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
 {
@@ -450,12 +502,27 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     GtkWidget *bbox;
     GtkWidget *button;
     GtkWidget *label;
+    GtkWidget *menu;
+    GtkWidget *menuitem;
 
     /* Do nothing if this isn't an IM conversation */
     if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
 
-    /* Do nothing if we're already set up */
-    if (gaim_conversation_get_data(conv, "otr-button")) return;
+    bbox = gtkconv->bbox;
+
+    /* See if we're already set up */
+    button = gaim_conversation_get_data(conv, "otr-button");
+    if (button) {
+	/* Check if we've been removed from the bbox; gaim does this
+	 * when the user changes her prefs for the style of buttons to
+	 * display. */
+	GList *children = gtk_container_get_children(GTK_CONTAINER(bbox));
+	if (!g_list_find(children, button)) {
+	    gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+	}
+	g_list_free(children);
+	return;
+    }
 
     account = gaim_conversation_get_account(conv);
     accountname = gaim_account_get_username(account);
@@ -468,16 +535,25 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     state = context ? context->state : CONN_UNCONNECTED;
     g_free(username);
 
-    bbox = gtkconv->bbox;
     button = gtk_button_new();
     label = gtk_label_new(NULL);
     gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
     gtk_container_add(GTK_CONTAINER(button), label);
     gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+
+    menu = gtk_menu_new();
+    menuitem = NULL;
+
     gaim_conversation_set_data(conv, "otr-label", label);
     gaim_conversation_set_data(conv, "otr-button", button);
+    gaim_conversation_set_data(conv, "otr-menu", menu);
+    gaim_conversation_set_data(conv, "otr-menuitem", menuitem);
     gtk_signal_connect(GTK_OBJECT(button), "clicked",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
+    g_signal_connect(G_OBJECT(button), "destroy",
+	    G_CALLBACK(button_destroyed), conv);
+    g_signal_connect(G_OBJECT(button), "button-press-event",
+	    G_CALLBACK(button_pressed), conv);
 
     dialog_update_label_conv(conv, state == CONN_CONNECTED);
     dialog_resensitize(conv);
@@ -494,9 +570,6 @@ static void otrg_gtk_dialog_remove_conv(GaimConversation *conv)
 
     button = gaim_conversation_get_data(conv, "otr-button");
     if (button) gtk_object_destroy(GTK_OBJECT(button));
-    g_hash_table_remove(conv->data, "otr-label");
-    g_hash_table_remove(conv->data, "otr-button");
-    g_hash_table_remove(conv->data, "otr-private");
 }
 
 /* Set the OTR button to "sensitive" or "insensitive" as appropriate. */
