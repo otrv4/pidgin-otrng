@@ -330,32 +330,25 @@ static void dialog_update_label_conv(GaimConversation *conv, int is_private)
 {
     GtkWidget *label;
     GtkWidget *button;
-    GtkWidget *menu;
     GtkWidget *menuitem;
+    GtkWidget *menuitemlabel;
     GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
     label = gaim_conversation_get_data(conv, "otr-label");
     button = gaim_conversation_get_data(conv, "otr-button");
-    menu = gaim_conversation_get_data(conv, "otr-menu");
     menuitem = gaim_conversation_get_data(conv, "otr-menuitem");
+    menuitemlabel = gtk_bin_get_child(GTK_BIN(menuitem));
+
+    /* Set the button's label and tooltip. */
     gtk_label_set_text(GTK_LABEL(label),
 	    is_private ? "OTR:\nPrivate" : "OTR:\nNot private");
     gtk_tooltips_set_tip(gtkconv->tooltips, button,
 	    is_private ? "Refresh the private conversation"
 		       : "Start a private conversation", NULL);
 
-    /* Create the appropriate menu item, first destroying any old one
-     * that may still be around. */
-    if (menuitem != NULL) {
-	gtk_object_destroy(GTK_OBJECT(menuitem));
-    }
-    menuitem = gtk_menu_item_new_with_mnemonic(
+    /* Set the menu item label. */
+    gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuitemlabel),
 	    is_private ? "Refresh _private conversation"
-	               : "Start _private conversation");
-    gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
-    gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
-    gtk_widget_show(menuitem);
-    gaim_conversation_set_data(conv, "otr-menuitem", menuitem);
+		       : "Start _private conversation");
 
     /* Use any non-NULL value for "private", NULL for "not private" */
     gaim_conversation_set_data(conv, "otr-private",
@@ -541,13 +534,20 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     gtk_container_add(GTK_CONTAINER(button), label);
     gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
 
+    /* Make the context menu */
     menu = gtk_menu_new();
-    menuitem = NULL;
+    gtk_menu_set_title(GTK_MENU(menu), "OTR Messaging");
+
+    menuitem = gtk_menu_item_new_with_mnemonic("");
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+    gtk_widget_show(menuitem);
 
     gaim_conversation_set_data(conv, "otr-label", label);
     gaim_conversation_set_data(conv, "otr-button", button);
     gaim_conversation_set_data(conv, "otr-menu", menu);
     gaim_conversation_set_data(conv, "otr-menuitem", menuitem);
+    gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
     gtk_signal_connect(GTK_OBJECT(button), "clicked",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
     g_signal_connect(G_OBJECT(button), "destroy",
