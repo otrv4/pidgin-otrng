@@ -1,23 +1,15 @@
 Summary: Off-The-Record Messaging plugin for GAIM
 Name: gaim-otr
-%define majver 2
-%define minver 0.2
-Version: %{majver}.%{minver}
-%define debug_package %{nil}
-%define ourrelease 1
-Release: %{ourrelease}
-Source: http://www.cypherpunks.ca/otr/gaim-otr-%{majver}.%{minver}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-buildroot
+Version: 2.0.2
+Release: 2%{?dist}
+Source: http://www.cypherpunks.ca/otr/%{name}-%{version}.tar.gz
 Url: http://www.cypherpunks.ca/otr/
-Vendor: Nikita Borisov and Ian Goldberg <otr@cypherpunks.ca>
-Packager: Paul Wouters <paul@cypherpunks.ca>
 License: GPL
 Group: Applications/Internet
-Provides: gaim-otr
+Provides: otr-plugin = %{version}
 Obsoletes: otr-plugin
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, gaim >= 1.0.0, libotr-devel >= 2.0.2
-Requires: gaim >= 1.0.0, libgcrypt >= 1.2.0, gtk2 >= 2.4, libotr >= 2.0.2
-%define __spec_install_post /usr/lib/rpm/brp-compress || :
 
 %description 
 
@@ -25,50 +17,31 @@ This is a gaim plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
 gaim (1.x).
 
-OTR allows you to have private conversations over IM by providing:
- - Encryption
-   - No one else can read your instant messages.
- - Authentication
-   - You are assured the correspondent is who you think it is.
- - Deniability
-   - The messages you send do _not_ have digital signatures that are
-     checkable by a third party.  Anyone can forge messages after a
-     conversation to make them look like they came from you.  However,
-     _during_ a conversation, your correspondent is assured the messages
-     he sees are authentic and unmodified.
- - Perfect forward secrecy
-   - If you lose control of your private keys, no previous conversation
-     is compromised.
-
-For more information on Off-the-Record Messaging, see
-http://www.cypherpunks.ca/otr/
-
 %prep
-%setup -q -n gaim-otr-%{majver}.%{minver}
+%setup -q
 
 %build
-%configure --prefix=%{_prefix} --libdir=%{_libdir} --mandir=%{_mandir}
-%{__make} \
-	CFLAGS="${RPM_OPT_FLAGS}" \
-	all
+%configure 
+make %{?_smp_mflags} all
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
-%{__make} \
-	DESTDIR=${RPM_BUILD_ROOT} \
-	install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
 # libtool insists on creating this
-rm ${RPM_BUILD_ROOT}/%{_libdir}/gaim/gaim-otr.la
+rm $RPM_BUILD_ROOT/%{_libdir}/gaim/gaim-otr.la
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%attr(0755,root,root) %{_libdir}/gaim/gaim-otr.so
-%doc README COPYING 
+%defattr(-, root, root, 0755)
+%doc README COPYING
+%{_libdir}/gaim/gaim-otr.so
 
 %changelog
+* Fri Jun 17 2005 Tom "spot" Callaway <tcallawa@redhat.com>
+- reworked for Fedora Extras
+
 * Tue May  3 2005 Ian Goldberg <otr@cypherpunks.ca>
 - Bumped to version 2.0.2.
 * Wed Feb 23 2005 Ian Goldberg <otr@cypherpunks.ca>
