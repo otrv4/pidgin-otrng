@@ -112,20 +112,17 @@ void otrg_dialog_private_key_wait_done(OtrgDialogWaitHandle handle)
 }
 
 /* Show a dialog informing the user that a correspondent (who) has sent
- * us a Key Exchange Message (kem) that contains an unknown fingerprint.
- * Ask the user whether to accept the fingerprint or not.  If yes, call
- * response_cb(us, ops, opdata, response_data, resp) with resp = 1.  If no,
- * set resp = 0.  If the user destroys the dialog without answering, set
- * resp = -1. */
+ * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-	const char *protocol, const char *who, OTRKeyExchangeMsg kem,
-	void (*response_cb)(OtrlUserState us, OtrlMessageAppOps *ops,
-	    void *opdata, OTRConfirmResponse *response_data, int resp),
-	OtrlMessageAppOps *ops, void *opdata,
-	OTRConfirmResponse *response_data)
+	const char *protocol, const char *who, OTRKeyExchangeMsg kem)
 {
-    ui_ops->unknown_fingerprint(us, accountname, protocol, who, kem,
-	    response_cb, ops, opdata, response_data);
+    ui_ops->unknown_fingerprint(us, accountname, protocol, who, kem);
+}
+
+/* Show a dialog asking the user to verify the given fingerprint. */
+void otrg_dialog_verify_fingerprint(Fingerprint *fprint)
+{
+    ui_ops->verify_fingerprint(fprint);
 }
 
 /* Call this when a context transitions from (a state other than

@@ -1,3 +1,24 @@
+24 Jun 2005:
+- There are now three states a conversation can be in:
+    * Not Private (not using OTR)
+    * Unverified (using OTR, but to a fingerprint that hasn't
+		  been verified, so you are subject to a straightforward
+		  active attack)
+    * Private (using OTR with a verified fingerprint)
+- There are new icons for these states that appear in the OTR button.
+- Right-clicking the OTR button now produces an OTR menu, with options
+  to start or end the private conversation, verify the fingerprint, view
+  the secure session id, or get help.
+- The OTR button obeys the user's requested style (text only, pictures
+  only, pictures and text, none).  Note that if the user chooses "none",
+  there's currently no way to reach the aforementioned menu.
+- The "private connection established", "private connection refreshed",
+  and "private connection ended" messages no longer pop up dialog boxes.
+  Instead, they appear inline in the conversation window.  The session
+  id and fingerprint which used to appear in the "private connection
+  established" dialog are now viewable via the OTR button right-click
+  menu.
+
 27 May 2005:
 - The OTR button no longer disappears if you change your button style in
   the gaim preferences.

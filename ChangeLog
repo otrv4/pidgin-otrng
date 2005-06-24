@@ -1,3 +1,81 @@
+2005-06-24
+
+	* README:
+	* Makefile.mingw:
+	* packaging/fedora/gaim-otr.spec:
+	* packaging/windows/gaim-otr.nsi:
+	* configure.ac: Change version to 3.0.0
+
+	* Makefile.mingw: add -lgtk_pixbuf-2.0-0 for the OTR button
+	pixmaps.
+
+	* configure.ac: Require libotr 3.x.
+
+	* dialogs.h:
+	* dialogs.c (otrg_dialog_unknown_fingerprint): This function now
+	merely informs the user that a new fingerprint has been
+	received, and doesn't require the user to confirm it before it
+	can be used.
+
+	* dialogs.h:
+	* dialogs.c (otrg_dialog_verify_fingerprint): New function to
+	allow the user to confirm the authenticity of a fingerprint.
+
+	* dialogs.h: Add #defines for the online help URLs.
+
+	* gtk-dialog.c: There are now three states a conversation can be
+	in: Not Private (not using OTR), Unverified (using OTR, but to a
+	fingerprint that hasn't been verified, so you are subject to a
+	straightforward active attack), and Private (using OTR with a
+	verified fingerprint).  There are new icons for these states
+	that appear in the OTR button.
+
+	* gtk-dialog.c: Callers of create_dialog can now specify
+	additional widgets to appear in the dialog boxes.  We use this
+	primarily for the "What's this?" help widgets.
+
+	* gtk-dialog.c (otrg_gtk_dialog_unknown_fingerprint): This
+	function no longer has to deal with callbacks to get the user's
+	response to the new fingerprint.
+
+	* gtk-dialog.c: Right-clicking the OTR button now produces an
+	OTR menu, with options to start or end the private conversation,
+	verify the fingerprint, view the secure session id, or get help.
+
+	* gtk-dialog.c (dialog_update_label_conv): Have the OTR button
+	obey the user's requested style (text only, pictures only,
+	pictures and text, none).  Note that if the user chooses "none",
+	there's currently no way to reach the aforementioned menu.
+
+	* gtk-dialog.c: The "private connection established", "private
+	connection refreshed", and "private connection ended" messages
+	no longer pop up dialog boxes.  Instead, they appear inline in
+	the conversation window.  The session id and fingerprint which
+	used to appear in the "private connection established" dialog
+	are now viewable via the OTR button right-click menu.
+
+	* gtk-dialog.c: New dialog to view and verify fingerprints.
+
+	* gtk-dialog.c: New dialog to view secure session id.
+
+	* gtk-ui.c: New "Verify fingerprint" button in the plugin UI,
+	and rearrangement of the (now four) buttons into a 2x2 table.
+
+	* gtk-ui.c: New "Verified" column in the Known Fingerprints
+	table.
+
+	* otr-plugin.c (confirm_fingerprint_cb): This function no longer
+	has to deal with callbacks due to the change in the libotr API.
+
+	* otr-plugin.h:
+	* otr-plugin.c (otrg_plugin_write_fingerprints): Refactored this
+	function so that other parts of the code can call it.
+
+	* otr-plugin.h:
+	* otr-plugin.c (otrg_plugin_conv_to_context)
+	(otrg_plugin_context_to_conv, otrg_plugin_context_to_trust): New
+	functions.
+
 2005-05-27
 
 	* otr-plugin.c:

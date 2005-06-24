@@ -208,19 +208,16 @@ static void update_context_list_cb(void *opdata)
     otrg_ui_update_keylist();
 }
 
-/* Forward declaration because we need to use &ui_ops in this function */
 static void confirm_fingerprint_cb(OtrlUserState us, void *opdata,
 	const char *accountname, const char *protocol, const char *username,
-	OTRKeyExchangeMsg kem,
-	void (*response_cb)(OtrlUserState us, OtrlMessageAppOps *ops,
-	    void *opdata, OTRConfirmResponse *response_data, int resp),
-	OTRConfirmResponse *response_data);
+	OTRKeyExchangeMsg kem)
+{
+    otrg_dialog_unknown_fingerprint(us, accountname, protocol, username, kem);
+}
 
 static void write_fingerprints_cb(void *opdata)
 {
-    gchar *storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
-    otrl_privkey_write_fingerprints(otrg_plugin_userstate, storefile);
-    g_free(storefile);
+    otrg_plugin_write_fingerprints();
 }
 
 static void gone_secure_cb(void *opdata, ConnContext *context)
@@ -262,17 +259,6 @@ static OtrlMessageAppOps ui_ops = {
     still_secure_cb,
     log_message_cb
 };
-
-static void confirm_fingerprint_cb(OtrlUserState us, void *opdata,
-	const char *accountname, const char *protocol, const char *username,
-	OTRKeyExchangeMsg kem,
-	void (*response_cb)(OtrlUserState us, OtrlMessageAppOps *ops,
-	    void *opdata, OTRConfirmResponse *response_data, int resp),
-	OTRConfirmResponse *response_data)
-{
-    otrg_dialog_unknown_fingerprint(us, accountname, protocol, username, kem,
-	    response_cb, &ui_ops, opdata, response_data);
-}
 
 static void process_sending_im(GaimAccount *account, char *who, char **message,
 	void *m)
@@ -456,6 +442,71 @@ void otrg_plugin_disconnect(ConnContext *context)
 {
     otrl_message_disconnect(otrg_plugin_userstate, &ui_ops, NULL,
 	    context->accountname, context->protocol, context->username);
+}
+
+/* Write the fingerprints to disk. */
+void otrg_plugin_write_fingerprints(void)
+{
+    gchar *storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
+    otrl_privkey_write_fingerprints(otrg_plugin_userstate, storefile);
+    g_free(storefile);
+}
+
+/* Find the ConnContext appropriate to a given GaimConversation. */
+ConnContext *otrg_plugin_conv_to_context(GaimConversation *conv)
+{
+    GaimAccount *account;
+    char *username;
+    const char *accountname, *proto;
+    ConnContext *context;
+
+    account = gaim_conversation_get_account(conv);
+    accountname = gaim_account_get_username(account);
+    proto = gaim_account_get_protocol_id(account);
+    username = g_strdup(
+	    gaim_normalize(account, gaim_conversation_get_name(conv)));
+
+    context = otrl_context_find(otrg_plugin_userstate, username, accountname,
+	    proto, 0, NULL, NULL, NULL);
+    g_free(username);
+
+    return context;
+}
+
+/* Find the GaimConversation appropriate to the given ConnContext.  If
+ * one doesn't yet exist, create it if force_create is true. */
+GaimConversation *otrg_plugin_context_to_conv(ConnContext *context,
+	int force_create)
+{
+    GaimAccount *account;
+    GaimConversation *conv;
+
+    account = gaim_accounts_find(context->accountname, context->protocol);
+    if (account == NULL) return NULL;
+
+    conv = gaim_find_conversation_with_account(context->username, account);
+    if (conv == NULL && force_create) {
+	conv = gaim_conversation_new(GAIM_CONV_IM, account, context->username);
+    }
+
+    return conv;
+}
+
+/* What level of trust do we have in the privacy of this ConnContext? */
+TrustLevel otrg_plugin_context_to_trust(ConnContext *context)
+{
+    TrustLevel level = TRUST_NOT_PRIVATE;
+
+    if (context && context->state == CONN_CONNECTED) {
+	if (context->active_fingerprint->trust &&
+		context->active_fingerprint->trust[0] != '\0') {
+	    level = TRUST_PRIVATE;
+	} else {
+	    level = TRUST_UNVERIFIED;
+	}
+    }
+
+    return level;
 }
 
 static guint button_type_cbid;

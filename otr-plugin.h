@@ -58,6 +58,26 @@ void otrg_plugin_send_default_query_conv(GaimConversation *conv);
  * appropriate. */
 void otrg_plugin_disconnect(ConnContext *context);
 
+/* Write the fingerprints to disk. */
+void otrg_plugin_write_fingerprints(void);
+
+/* Find the ConnContext appropriate to a given GaimConversation. */
+ConnContext *otrg_plugin_conv_to_context(GaimConversation *conv);
+
+/* Find the GaimConversation appropriate to the given ConnContext.  If
+ * one doesn't yet exist, create it if force_create is true. */
+GaimConversation *otrg_plugin_context_to_conv(ConnContext *context,
+	int force_create);
+
+typedef enum {
+    TRUST_NOT_PRIVATE,
+    TRUST_UNVERIFIED,
+    TRUST_PRIVATE
+} TrustLevel;
+
+/* What level of trust do we have in the privacy of this ConnContext? */
+TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
+
 /* Return 1 if the given protocol supports OTR, 0 otherwise. */
 int otrg_plugin_proto_supports_otr(const char *proto);
 

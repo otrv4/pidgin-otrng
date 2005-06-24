@@ -103,7 +103,6 @@ void otrg_ui_disconnect_connection(ConnContext *context)
 void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
 {
     ConnContext *context;
-    gchar *storefile;
 	
     if (fingerprint == NULL) return;
 
@@ -114,9 +113,7 @@ void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
 	    context->active_fingerprint == fingerprint) return;
 	
     otrl_context_forget_fingerprint(fingerprint, 1);
-    storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
-    otrl_privkey_write_fingerprints(otrg_plugin_userstate, storefile);
-    g_free(storefile);
+    otrg_plugin_write_fingerprints();
 	
     otrg_ui_update_keylist();
 }

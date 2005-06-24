@@ -1,7 +1,7 @@
 Summary: Off-The-Record Messaging plugin for GAIM
 Name: gaim-otr
-Version: 2.0.2
-Release: 2%{?dist}
+Version: 3.0.0
+Release: 1%{?dist}
 Source: http://www.cypherpunks.ca/otr/%{name}-%{version}.tar.gz
 Url: http://www.cypherpunks.ca/otr/
 License: GPL

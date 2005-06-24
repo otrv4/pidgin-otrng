@@ -3,6 +3,7 @@
 ;
 ; known issue. installer induced uninstaller abortion causes overwrite by installer without
 ; uninstall.
+; v3.0.0   - Bump version number.
 ; v2.0.2   - Bump version number.
 ; v2.0.1   - Bump version number.
 ; v2.0.0-2 - linking to libotr-2.0.1
@@ -21,7 +22,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "gaim-otr"
-!define PRODUCT_VERSION "2.0.2"
+!define PRODUCT_VERSION "3.0.0"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://www.cypherpunks.ca/otr/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

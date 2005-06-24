@@ -54,6 +54,7 @@ static struct {
     GtkWidget *connect_button;
     GtkWidget *disconnect_button;
     GtkWidget *forget_button;
+    GtkWidget *verify_button;
     struct otroptionsdata oo;
 } ui_layout;
 
@@ -97,6 +98,8 @@ static GtkWidget *accountmenu_get_selected_item(void)
 {
     GtkWidget *menu;
 
+    if (ui_layout.accountmenu == NULL) return NULL;
+
     menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(ui_layout.accountmenu));
     return gtk_menu_get_active(GTK_MENU(menu));
 }
@@ -117,6 +120,8 @@ static void otrg_gtk_ui_update_fingerprint(void)
 
     item = accountmenu_get_selected_item();
 
+    if (!item) return;
+
     account   = item_get_account(item);
     user_data = g_object_get_data(G_OBJECT(ui_layout.accountmenu),
 	    "user_data");
@@ -134,13 +139,14 @@ static void clist_all_unselected(void)
     gtk_widget_set_sensitive(ui_layout.connect_button, 0);
     gtk_widget_set_sensitive(ui_layout.disconnect_button, 0);
     gtk_widget_set_sensitive(ui_layout.forget_button, 0);
+    gtk_widget_set_sensitive(ui_layout.verify_button, 0);
     ui_layout.selected_fprint = NULL;
 }
 
 /* Update the keylist, if it's visible */
 static void otrg_gtk_ui_update_keylist(void)
 {
-    gchar *titles[4];
+    gchar *titles[5];
     char hash[45];
     ConnContext * context;
     Fingerprint * fingerprint;
@@ -171,14 +177,16 @@ static void otrg_gtk_ui_update_keylist(void)
 		titles[1] =
 		    (gchar *) otrl_context_statestr[context->state];
 	    }
+	    titles[2] = (fingerprint->trust && fingerprint->trust[0]) ?
+		"Yes" : "No";
 	    otrl_privkey_hash_to_human(hash, fingerprint->fingerprint);
-	    titles[2] = hash;
+	    titles[3] = hash;
 	    p = gaim_find_prpl(context->protocol);
 	    proto_name = (p && p->info->name) ? p->info->name : "Unknown";
-	    titles[3] = g_strdup_printf("%s (%s)", context->accountname,
+	    titles[4] = g_strdup_printf("%s (%s)", context->accountname,
 		proto_name);
 	    i = gtk_clist_append(GTK_CLIST(keylist), titles);
-	    g_free(titles[3]);
+	    g_free(titles[4]);
 	    gtk_clist_set_row_data(GTK_CLIST(keylist), i, fingerprint);
 	    if (ui_layout.selected_fprint == fingerprint) {
 		selected_row = i;
@@ -223,6 +231,7 @@ static void ui_destroyed(GtkObject *object)
     ui_layout.connect_button = NULL;
     ui_layout.disconnect_button = NULL;
     ui_layout.forget_button = NULL;
+    ui_layout.verify_button = NULL;
     ui_layout.oo.enablebox = NULL;
     ui_layout.oo.automaticbox = NULL;
     ui_layout.oo.onlyprivatebox = NULL;
@@ -234,6 +243,7 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
     int connect_sensitive = 0;
     int disconnect_sensitive = 0;
     int forget_sensitive = 0;
+    int verify_sensitive = 0;
     Fingerprint *f = gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist),
 	    row);
     if (f && f->context->state == CONN_CONNECTED &&
@@ -253,11 +263,15 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
     if (f && f->context->state == CONN_UNCONNECTED) {
 	connect_sensitive = 1;
     }
+    if (f) {
+	verify_sensitive = 1;
+    }
     gtk_widget_set_sensitive(ui_layout.connect_button,
 	    connect_sensitive);
     gtk_widget_set_sensitive(ui_layout.disconnect_button,
 	    disconnect_sensitive);
     gtk_widget_set_sensitive(ui_layout.forget_button, forget_sensitive);
+    gtk_widget_set_sensitive(ui_layout.verify_button, verify_sensitive);
     ui_layout.selected_fprint = f;
 }
 
@@ -348,6 +362,13 @@ static void forget_fingerprint(GtkWidget *widget, gpointer data)
     Fingerprint *fingerprint = ui_layout.selected_fprint;
 
     otrg_ui_forget_fingerprint(fingerprint);
+}
+
+static void verify_fingerprint(GtkWidget *widget, gpointer data)
+{
+    Fingerprint *fingerprint = ui_layout.selected_fprint;
+
+    otrg_dialog_verify_fingerprint(fingerprint);
 }
 
 static void otroptions_clicked_cb(GtkButton *button, struct otroptionsdata *oo)
@@ -576,18 +597,21 @@ static void make_options_ui(GtkWidget *vbox)
 static void make_fingerprints_ui(GtkWidget *vbox)
 {
     GtkWidget *hbox;
+    GtkWidget *table;
     GtkWidget *label;
-    char *titles[4] = { "Screenname", "Status", "Fingerprint", "Account" };
+    char *titles[5] = { "Screenname", "Status", "Verified",
+	"Fingerprint", "Account" };
 
     ui_layout.scrollwin = gtk_scrolled_window_new(0, 0);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ui_layout.scrollwin), 
             GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
-    ui_layout.keylist = gtk_clist_new_with_titles(4, titles);
+    ui_layout.keylist = gtk_clist_new_with_titles(5, titles);
     gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 0, 90);
     gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 1, 90);
-    gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 2, 400);
-    gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 200);
+    gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 2, 60);
+    gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 400);
+    gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 4, 200);
     gtk_clist_set_selection_mode(GTK_CLIST(ui_layout.keylist),
 	    GTK_SELECTION_SINGLE);
     gtk_clist_column_titles_active(GTK_CLIST(ui_layout.keylist));
@@ -601,6 +625,12 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     hbox = gtk_hbox_new(FALSE, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
 
+    table = gtk_table_new(2, 2, TRUE);
+    gtk_table_set_row_spacings(GTK_TABLE(table), 5);
+    gtk_table_set_col_spacings(GTK_TABLE(table), 20);
+
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), table, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 
     ui_layout.connect_button = gtk_button_new();
@@ -608,30 +638,32 @@ static void make_fingerprints_ui(GtkWidget *vbox)
 	    GTK_SIGNAL_FUNC(connect_connection), NULL);
     label = gtk_label_new("Start private connection");
     gtk_container_add(GTK_CONTAINER(ui_layout.connect_button), label);
-    gtk_box_pack_start(GTK_BOX(hbox), ui_layout.connect_button,
-	    FALSE, FALSE, 0);
-
-    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+    gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.connect_button,
+	    0, 1, 0, 1);
 
     ui_layout.disconnect_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.disconnect_button), "clicked",
 	    GTK_SIGNAL_FUNC(disconnect_connection), NULL);
     label = gtk_label_new("End private connection");
     gtk_container_add(GTK_CONTAINER(ui_layout.disconnect_button), label);
-    gtk_box_pack_start(GTK_BOX(hbox), ui_layout.disconnect_button,
-	    FALSE, FALSE, 0);
+    gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.disconnect_button,
+	    0, 1, 1, 2);
 
-    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+    ui_layout.verify_button = gtk_button_new();
+    gtk_signal_connect(GTK_OBJECT(ui_layout.verify_button), "clicked",
+	    GTK_SIGNAL_FUNC(verify_fingerprint), NULL);
+    label = gtk_label_new("Verify fingerprint");
+    gtk_container_add(GTK_CONTAINER(ui_layout.verify_button), label);
+    gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.verify_button,
+	    1, 2, 0, 1);
 
     ui_layout.forget_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.forget_button), "clicked",
 	    GTK_SIGNAL_FUNC(forget_fingerprint), NULL);
     label = gtk_label_new("Forget fingerprint");
     gtk_container_add(GTK_CONTAINER(ui_layout.forget_button), label);
-    gtk_box_pack_start(GTK_BOX(hbox), ui_layout.forget_button,
-	    FALSE, FALSE, 0);
-
-    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
+    gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.forget_button,
+	    1, 2, 1, 2);
 
     gtk_signal_connect(GTK_OBJECT(vbox), "destroy",
 	    GTK_SIGNAL_FUNC(ui_destroyed), NULL);
@@ -648,10 +680,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     ui_layout.sortcol = 0;
     ui_layout.sortdir = 1;
 
-    gtk_widget_set_sensitive(ui_layout.connect_button, 0);
-    gtk_widget_set_sensitive(ui_layout.disconnect_button, 0);
-    gtk_widget_set_sensitive(ui_layout.forget_button, 0);
-    ui_layout.selected_fprint = NULL;
+    clist_all_unselected();
 }
 
 /* Construct the OTR UI widget */
