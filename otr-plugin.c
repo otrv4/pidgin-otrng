@@ -208,7 +208,7 @@ static void update_context_list_cb(void *opdata)
     otrg_ui_update_keylist();
 }
 
-static void confirm_fingerprint_cb(OtrlUserState us, void *opdata,
+static void confirm_fingerprint_cb(void *opdata, OtrlUserState us,
 	const char *accountname, const char *protocol, const char *username,
 	OTRKeyExchangeMsg kem)
 {

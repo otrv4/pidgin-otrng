@@ -1,10 +1,15 @@
+2005-07-29
+
+	* otr-plugin.c (confirm_fingerprint_cb): Match the changing
+	libotr API.
+
 2005-06-24
 
 	* README:
 	* Makefile.mingw:
 	* packaging/fedora/gaim-otr.spec:
 	* packaging/windows/gaim-otr.nsi:
-	* configure.ac: Change version to 3.0.0
+	* configure.ac: Change version to 3.0.0 (but don't yet release)
 
 	* Makefile.mingw: add -lgtk_pixbuf-2.0-0 for the OTR button
 	pixmaps.
