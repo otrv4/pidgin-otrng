@@ -1,3 +1,8 @@
+2005-08-04
+
+	* otr-plugin.c: Disconnect all contexts when gaim is about to
+	quit.
+
 2005-07-29
 
 	* otr-plugin.c (confirm_fingerprint_cb): Match the changing

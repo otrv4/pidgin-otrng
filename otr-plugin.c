@@ -32,6 +32,7 @@
 
 /* gaim headers */
 #include "gaim.h"
+#include "core.h"
 #include "notify.h"
 #include "version.h"
 #include "util.h"
@@ -509,6 +510,17 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context)
     return level;
 }
 
+/* Send the OTRL_TLV_DISCONNECTED packets when we're about to quit. */
+static void process_quitting(void)
+{
+    ConnContext *context = otrg_plugin_userstate->context_root;
+    while(context) {
+	ConnContext *next = context->next;
+	otrg_plugin_disconnect(context);
+	context = next;
+    }
+}
+
 static guint button_type_cbid;
 
 static gboolean otr_plugin_load(GaimPlugin *handle)
@@ -518,6 +530,7 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
     void *conv_handle = gaim_conversations_get_handle();
     void *conn_handle = gaim_connections_get_handle();
     void *blist_handle = gaim_blist_get_handle();
+    void *core_handle = gaim_get_core();
 
     if (!privkeyfile || !storefile) {
 	g_free(privkeyfile);
@@ -538,6 +551,8 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
 
     otrg_ui_update_fingerprint();
 
+    gaim_signal_connect(core_handle, "quitting", otrg_plugin_handle,
+	    GAIM_CALLBACK(process_quitting), NULL);
     gaim_signal_connect(conv_handle, "sending-im-msg", otrg_plugin_handle,
             GAIM_CALLBACK(process_sending_im), NULL);
     gaim_signal_connect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
@@ -564,11 +579,14 @@ static gboolean otr_plugin_unload(GaimPlugin *handle)
     void *conv_handle = gaim_conversations_get_handle();
     void *conn_handle = gaim_connections_get_handle();
     void *blist_handle = gaim_blist_get_handle();
+    void *core_handle = gaim_get_core();
 
     /* Clean up all of our state. */
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
+    gaim_signal_disconnect(core_handle, "quitting", otrg_plugin_handle,
+	    GAIM_CALLBACK(process_quitting));
     gaim_signal_disconnect(conv_handle, "sending-im-msg", otrg_plugin_handle,
             GAIM_CALLBACK(process_sending_im));
     gaim_signal_disconnect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
