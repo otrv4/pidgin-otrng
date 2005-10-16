@@ -72,8 +72,9 @@ void otrg_ui_connect_connection(ConnContext *context)
     GaimAccount *account;
     char *msg;
 	
-    /* Only do anything for UNCONNECTED fingerprints */
-    if (context == NULL || context->state != CONN_UNCONNECTED) return;
+    /* Don't do this if we're already ENCRYPTED */
+    if (context == NULL || context->msgstate == OTRL_MSGSTATE_ENCRYPTED)
+	return;
 	
     account = gaim_accounts_find(context->accountname, context->protocol);
     if (!account) {
@@ -89,11 +90,12 @@ void otrg_ui_connect_connection(ConnContext *context)
     otrg_plugin_send_default_query(context, account);	
 }
 
-/* Drop a context to UNCONNECTED state */
+/* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(ConnContext *context)
 {
-    /* Don't do anything with UNCONNECTED fingerprints */
-    if (context == NULL || context->state == CONN_UNCONNECTED) return;
+    /* Don't do anything with PLAINTEXT fingerprints */
+    if (context == NULL || context->msgstate == OTRL_MSGSTATE_PLAINTEXT)
+	return;
 		
     otrg_plugin_disconnect(context);
     otrg_dialog_disconnected(context);	
@@ -107,9 +109,9 @@ void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
     if (fingerprint == NULL) return;
 
     /* Don't do anything with the active fingerprint if we're in the
-     * CONNECTED state. */
+     * ENCRYPTED state. */
     context = fingerprint->context;
-    if (context->state == CONN_CONNECTED &&
+    if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 	    context->active_fingerprint == fingerprint) return;
 	
     otrl_context_forget_fingerprint(fingerprint, 1);

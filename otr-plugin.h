@@ -72,7 +72,8 @@ GaimConversation *otrg_plugin_context_to_conv(ConnContext *context,
 typedef enum {
     TRUST_NOT_PRIVATE,
     TRUST_UNVERIFIED,
-    TRUST_PRIVATE
+    TRUST_PRIVATE,
+    TRUST_FINISHED
 } TrustLevel;
 
 /* What level of trust do we have in the privacy of this ConnContext? */

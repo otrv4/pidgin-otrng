@@ -58,6 +58,13 @@ static struct {
     struct otroptionsdata oo;
 } ui_layout;
 
+static const gchar *trust_states[] = {
+    "Not private",
+    "Unverified",
+    "Private",
+    "Finished"
+};
+
 static void account_menu_changed_cb(GtkWidget *item, GaimAccount *account,
 	void *data)
 {
@@ -170,12 +177,12 @@ static void otrg_gtk_ui_update_keylist(void)
 	 * fingerprints list */
 	while(fingerprint) {
 	    titles[0] = context->username;
-	    if (context->state == CONN_CONNECTED &&
+	    if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 		    context->active_fingerprint != fingerprint) {
 		titles[1] = "Unused";
 	    } else {
-		titles[1] =
-		    (gchar *) otrl_context_statestr[context->state];
+		titles[1] = (gchar *)
+		    trust_states[otrg_plugin_context_to_trust(context)];
 	    }
 	    titles[2] = (fingerprint->trust && fingerprint->trust[0]) ?
 		"Yes" : "No";
@@ -246,21 +253,21 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
     int verify_sensitive = 0;
     Fingerprint *f = gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist),
 	    row);
-    if (f && f->context->state == CONN_CONNECTED &&
+    if (f && f->context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 	    f->context->active_fingerprint == f) {
 	disconnect_sensitive = 1;
     }
-    if (f && f->context->state == CONN_SETUP) {
+    if (f && f->context->msgstate == OTRL_MSGSTATE_FINISHED) {
 	disconnect_sensitive = 1;
     }
-    if (f && f->context->state == CONN_CONNECTED &&
-	    f->context->active_fingerprint != f) {
+    if (f && (f->context->msgstate != OTRL_MSGSTATE_ENCRYPTED ||
+	    f->context->active_fingerprint != f)) {
 	forget_sensitive = 1;
     }
-    if (f && f->context->state == CONN_UNCONNECTED) {
-	forget_sensitive = 1;
+    if (f && f->context->msgstate == OTRL_MSGSTATE_PLAINTEXT) {
+	connect_sensitive = 1;
     }
-    if (f && f->context->state == CONN_UNCONNECTED) {
+    if (f && f->context->msgstate == OTRL_MSGSTATE_FINISHED) {
 	connect_sensitive = 1;
     }
     if (f) {
@@ -283,16 +290,23 @@ static void clist_unselected(GtkWidget *widget, gint row, gint column,
 
 static int fngsortval(Fingerprint *f)
 {
-    if (f->context->state == CONN_CONNECTED &&
-	    f->context->active_fingerprint == f) {
-	return 0;
-    } else if (f->context->state == CONN_SETUP) {
-	return 1;
-    } else if (f->context->state == CONN_UNCONNECTED) {
-	return 2;
-    } else {
-	return 3;
+    int is_active = (f->context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
+	    f->context->active_fingerprint == f);
+    TrustLevel level = otrg_plugin_context_to_trust(f->context);
+
+    switch(level) {
+	case TRUST_PRIVATE:
+	    return is_active ? 0 : 100;
+	case TRUST_UNVERIFIED:
+	    return is_active ? 1 : 100;
+	case TRUST_FINISHED:
+	    return 2;
+	case TRUST_NOT_PRIVATE:
+	    return 3;
     }
+
+    /* Shouldn't get here, but anyway. */
+    return 200;
 }
 
 static gint statuscmp(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
@@ -348,8 +362,8 @@ static void disconnect_connection(GtkWidget *widget, gpointer data)
     if (context == NULL) return;
 	
     /* Don't do anything with fingerprints other than the active one
-     * if we're in the CONNECTED state */
-    if (context->state == CONN_CONNECTED &&
+     * if we're in the ENCRYPTED state */
+    if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 	    context->active_fingerprint != ui_layout.selected_fprint) {
 	return;
     }

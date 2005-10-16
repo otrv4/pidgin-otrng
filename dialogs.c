@@ -114,9 +114,9 @@ void otrg_dialog_private_key_wait_done(OtrgDialogWaitHandle handle)
 /* Show a dialog informing the user that a correspondent (who) has sent
  * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-	const char *protocol, const char *who, OTRKeyExchangeMsg kem)
+	const char *protocol, const char *who, unsigned char fingerprint[20])
 {
-    ui_ops->unknown_fingerprint(us, accountname, protocol, who, kem);
+    ui_ops->unknown_fingerprint(us, accountname, protocol, who, fingerprint);
 }
 
 /* Show a dialog asking the user to verify the given fingerprint. */
@@ -125,15 +125,13 @@ void otrg_dialog_verify_fingerprint(Fingerprint *fprint)
     ui_ops->verify_fingerprint(fprint);
 }
 
-/* Call this when a context transitions from (a state other than
- * CONN_CONNECTED) to CONN_CONNECTED. */
-void otrg_dialog_connected(ConnContext *context)
+/* Call this when a context transitions to ENCRYPTED. */
+void otrg_dialog_connected(ConnContext *context, int protocol_version)
 {
-    ui_ops->connected(context);
+    ui_ops->connected(context, protocol_version);
 }
 
-/* Call this when a context transitions from CONN_CONNECTED to
- * (a state other than CONN_CONNECTED). */
+/* Call this when a context transitions to PLAINTEXT. */
 void otrg_dialog_disconnected(ConnContext *context)
 {
     ui_ops->disconnected(context);
@@ -141,9 +139,17 @@ void otrg_dialog_disconnected(ConnContext *context)
 
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-void otrg_dialog_stillconnected(ConnContext *context)
+void otrg_dialog_stillconnected(ConnContext *context, int protocol_version)
 {
-    ui_ops->stillconnected(context);
+    ui_ops->stillconnected(context, protocol_version);
+}
+
+/* Call this if the remote user terminates his end of an ENCRYPTED
+ * connection, and lets us know. */
+void otrg_dialog_finished(const char *accountname, const char *protocol,
+	const char *username)
+{
+    ui_ops->finished(accountname, protocol, username);
 }
 
 /* Set all OTR buttons to "sensitive" or "insensitive" as appropriate.

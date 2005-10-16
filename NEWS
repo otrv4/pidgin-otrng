@@ -1,11 +1,17 @@
-24 Jun 2005:
-- There are now three states a conversation can be in:
+16 Oct 2005:
+- There are now four states a conversation can be in:
     * Not Private (not using OTR)
     * Unverified (using OTR, but to a fingerprint that hasn't
 		  been verified, so you are subject to a straightforward
 		  active attack)
     * Private (using OTR with a verified fingerprint)
+    * Finished (the other person has ended his side of the OTR
+		conversation, so we won't send any more messages at all
+		until we either end our side, or start a new OTR
+		conversatrion)
 - There are new icons for these states that appear in the OTR button.
+
+24 Jun 2005:
 - Right-clicking the OTR button now produces an OTR menu, with options
   to start or end the private conversation, verify the fingerprint, view
   the secure session id, or get help.

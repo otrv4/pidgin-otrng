@@ -48,7 +48,7 @@ void otrg_ui_update_keylist(void);
 /* Send an OTR Query Message to attempt to start a connection */
 void otrg_ui_connect_connection(ConnContext *context);
 
-/* Drop a context to UNCONNECTED state */
+/* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(ConnContext *context);
 
 /* Forget a fingerprint */

@@ -211,9 +211,10 @@ static void update_context_list_cb(void *opdata)
 
 static void confirm_fingerprint_cb(void *opdata, OtrlUserState us,
 	const char *accountname, const char *protocol, const char *username,
-	OTRKeyExchangeMsg kem)
+	unsigned char fingerprint[20])
 {
-    otrg_dialog_unknown_fingerprint(us, accountname, protocol, username, kem);
+    otrg_dialog_unknown_fingerprint(us, accountname, protocol, username,
+	    fingerprint);
 }
 
 static void write_fingerprints_cb(void *opdata)
@@ -221,9 +222,10 @@ static void write_fingerprints_cb(void *opdata)
     otrg_plugin_write_fingerprints();
 }
 
-static void gone_secure_cb(void *opdata, ConnContext *context)
+static void gone_secure_cb(void *opdata, ConnContext *context,
+	int protocol_version)
 {
-    otrg_dialog_connected(context);
+    otrg_dialog_connected(context, protocol_version);
 }
 
 static void gone_insecure_cb(void *opdata, ConnContext *context)
@@ -231,10 +233,11 @@ static void gone_insecure_cb(void *opdata, ConnContext *context)
     otrg_dialog_disconnected(context);
 }
 
-static void still_secure_cb(void *opdata, ConnContext *context, int is_reply)
+static void still_secure_cb(void *opdata, ConnContext *context, int is_reply,
+	int protocol_version)
 {
     if (is_reply == 0) {
-	otrg_dialog_stillconnected(context);
+	otrg_dialog_stillconnected(context, protocol_version);
     }
 }
 
@@ -300,11 +303,13 @@ static void process_sending_im(GaimAccount *account, char *who, char **message,
  * context, from the given account.  [account is actually a
  * GaimAccount*, but it's declared here as void* so this can be passed
  * as a callback.] */
-void otrg_plugin_send_default_query(ConnContext *context, void *account)
+void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
 {
-    char *msg = otrl_proto_default_query_msg(context->accountname);
-    otrg_plugin_inject_message((GaimAccount *)account, context->username,
-	    msg ? msg : "?OTR?");
+    GaimAccount *account = vaccount;
+    char *msg = otrl_proto_default_query_msg(context->accountname,
+	    otrg_ui_find_policy(account, context->username));
+    otrg_plugin_inject_message(account, context->username,
+	    msg ? msg : "?OTRv2?");
     free(msg);
 }
 
@@ -320,8 +325,9 @@ void otrg_plugin_send_default_query_conv(GaimConversation *conv)
     accountname = gaim_account_get_username(account);
     username = gaim_conversation_get_name(conv);
     
-    msg = otrl_proto_default_query_msg(accountname);
-    otrg_plugin_inject_message(account, username, msg ? msg : "?OTR?");
+    msg = otrl_proto_default_query_msg(accountname,
+	    otrg_ui_find_policy(account, username));
+    otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv2?");
     free(msg);
 }
 
@@ -360,15 +366,8 @@ static gboolean process_receiving_im(GaimAccount *account, char **who,
     tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
     if (tlv) {
 	/* Notify the user that the other side disconnected. */
-
-	char *msg = g_strdup_printf("OTR: %s has closed his private "
-		"connection to you; you should do the same.", username);
-
-	if (msg) {
-	    otrg_dialog_display_otr_message(accountname, protocol,
-		    username, msg);
-	    g_free(msg);
-	}
+	otrg_dialog_finished(accountname, protocol, username);
+	otrg_ui_update_keylist();
     }
     
     otrl_tlv_free(tlvs);
@@ -498,13 +497,15 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context)
 {
     TrustLevel level = TRUST_NOT_PRIVATE;
 
-    if (context && context->state == CONN_CONNECTED) {
+    if (context && context->msgstate == OTRL_MSGSTATE_ENCRYPTED) {
 	if (context->active_fingerprint->trust &&
 		context->active_fingerprint->trust[0] != '\0') {
 	    level = TRUST_PRIVATE;
 	} else {
 	    level = TRUST_UNVERIFIED;
 	}
+    } else if (context && context->msgstate == OTRL_MSGSTATE_FINISHED) {
+	level = TRUST_FINISHED;
     }
 
     return level;

@@ -138,6 +138,37 @@ static const char * private_xpm[] = {
 " .++++.               ",
 "  ....                "};
 
+static const char * finished_xpm[] = {
+"24 24 4 1",
+" 	c None",
+".	c #000000",
+"+	c #FF0000",
+"@	c #FFFFFF",
+"         ......         ",
+"      ...++++++...      ",
+"     .++++++++++++.     ",
+"    .++++++++++++++.    ",
+"   .++++++++++++++++.   ",
+"  .++++++++++++++++++.  ",
+" .++++++++++++++++++++. ",
+" .++++++++++++++++++++. ",
+" .++++++++++++++++++++. ",
+".++++++++++++++++++++++.",
+".++@@@@@@@@@@@@@@@@@@++.",
+".++@@@@@@@@@@@@@@@@@@++.",
+".++@@@@@@@@@@@@@@@@@@++.",
+".++@@@@@@@@@@@@@@@@@@++.",
+".++++++++++++++++++++++.",
+" .++++++++++++++++++++. ",
+" .++++++++++++++++++++. ",
+" .++++++++++++++++++++. ",
+"  .++++++++++++++++++.  ",
+"   .++++++++++++++++.   ",
+"    .++++++++++++++.    ",
+"     .++++++++++++.     ",
+"      ...++++++...      ",
+"         ......         "};
+
 static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level)
 {
     GdkPixbuf *pixbuf = NULL;
@@ -152,6 +183,9 @@ static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level)
 	    break;
 	case TRUST_PRIVATE:
 	    data = private_xpm;
+	    break;
+	case TRUST_FINISHED:
+	    data = finished_xpm;
 	    break;
     }
 
@@ -418,13 +452,13 @@ static void add_unk_fingerprint_expander(GtkWidget *vbox, void *data)
  * resp = -1. */
 static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 	const char *accountname, const char *protocol, const char *who,
-	OTRKeyExchangeMsg kem)
+	unsigned char fingerprint[20])
 {
     char hash[45];
     char *primary, *secondary;
     GaimPlugin *p = gaim_find_prpl(protocol);
     
-    otrl_privkey_hash_to_human(hash, kem->key_fingerprint);
+    otrl_privkey_hash_to_human(hash, fingerprint);
     primary = g_strdup_printf("%s (%s) has received an unknown fingerprint "
 	    "from %s:", accountname, 
 	    (p && p->info->name) ? p->info->name : "Unknown", who);
@@ -466,6 +500,7 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
     /* Set the button's icon, label and tooltip. */
     otr_icon(icon, level);
     gtk_label_set_text(GTK_LABEL(label),
+	    level == TRUST_FINISHED ? "Finished" :
 	    level == TRUST_PRIVATE ? "Private" :
 	    level == TRUST_UNVERIFIED ? "Unverified" :
 	    "Not private");
@@ -546,19 +581,21 @@ static GtkWidget* otrg_gtk_dialog_view_sessionid(ConnContext *context)
 	    "established.", context->username);
     char *secondary;
     int i;
-    SessionDirection dir = context->sessiondir;
+    OtrlSessionIdHalf whichhalf = context->sessionid_half;
+    size_t idhalflen = (context->sessionid_len) / 2;
 
     /* Make a human-readable version of the sessionid (in two parts) */
     sessionid = context->sessionid;
-    for(i=0;i<10;++i) sprintf(sess1+(2*i), "%02x", sessionid[i]);
-    sess1[20] = '\0';
-    for(i=0;i<10;++i) sprintf(sess2+(2*i), "%02x", sessionid[i+10]);
-    sess2[20] = '\0';
+    for(i=0;i<idhalflen;++i) sprintf(sess1+(2*i), "%02x", sessionid[i]);
+    for(i=0;i<idhalflen;++i) sprintf(sess2+(2*i), "%02x",
+	    sessionid[i+idhalflen]);
     
     secondary = g_strdup_printf("Secure session id:\n"
 	    "<span %s>%s</span> <span %s>%s</span>\n",
-	    dir == SESS_DIR_LOW ? "weight=\"bold\"" : "", sess1,
-	    dir == SESS_DIR_HIGH ? "weight=\"bold\"" : "", sess2);
+	    whichhalf == OTRL_SESSIONID_FIRST_HALF_BOLD ?
+		    "weight=\"bold\"" : "", sess1,
+	    whichhalf == OTRL_SESSIONID_SECOND_HALF_BOLD ?
+		    "weight=\"bold\"" : "", sess2);
 
     dialog = create_dialog(GAIM_NOTIFY_MSG_INFO, "Private connection "
 	    "established", primary, secondary, 1, NULL,
@@ -735,9 +772,9 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
     g_free(secondary);
 }
 
-/* Call this when a context transitions from (a state other than
- * CONN_CONNECTED) to CONN_CONNECTED. */
-static void otrg_gtk_dialog_connected(ConnContext *context)
+/* Call this when a context transitions to ENCRYPTED. */
+static void otrg_gtk_dialog_connected(ConnContext *context,
+	int protocol_version)
 {
     GaimConversation *conv;
     char *buf;
@@ -746,14 +783,16 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     conv = otrg_plugin_context_to_conv(context, 1);
     level = otrg_plugin_context_to_trust(context);
 
-    buf = g_strdup_printf("%s conversation with %s started.",
+    buf = g_strdup_printf("%s conversation with %s started.%s",
 		level == TRUST_PRIVATE ? "Private" :
 		level == TRUST_UNVERIFIED ? "<a href=\"" UNVERIFIED_HELPURL
 			"\">Unverified</a>" :
 		    /* This last case should never happen, since we know
-		     * we're in CONN_CONNECTED. */
+		     * we're in ENCRYPTED. */
 		    "Not private",
-		gaim_conversation_get_name(conv));
+		gaim_conversation_get_name(conv),
+		protocol_version == 1 ? "  Warning: using old protocol "
+		    "version 1." : "");
 
     gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
@@ -761,8 +800,7 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     dialog_update_label(context);
 }
 
-/* Call this when a context transitions from CONN_CONNECTED to
- * (a state other than CONN_CONNECTED). */
+/* Call this when a context transitions to PLAINTEXT. */
 static void otrg_gtk_dialog_disconnected(ConnContext *context)
 {
     GaimConversation *conv;
@@ -778,9 +816,34 @@ static void otrg_gtk_dialog_disconnected(ConnContext *context)
     dialog_update_label(context);
 }
 
+/* Call this if the remote user terminates his end of an ENCRYPTED
+ * connection, and lets us know. */
+static void otrg_gtk_dialog_finished(const char *accountname,
+	const char *protocol, const char *username)
+{
+    /* See if there's a conversation window we can put this in. */
+    GaimAccount *account;
+    GaimConversation *conv;
+    char *buf;
+
+    account = gaim_accounts_find(accountname, protocol);
+    if (!account) return;
+
+    conv = gaim_find_conversation_with_account(username, account);
+    if (!conv) return;
+
+    buf = g_strdup_printf("%s has ended his private conversation with you; "
+	    "you should do the same.", gaim_conversation_get_name(conv));
+    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+    g_free(buf);
+
+    dialog_update_label_conv(conv, TRUST_FINISHED);
+}
+
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-static void otrg_gtk_dialog_stillconnected(ConnContext *context)
+static void otrg_gtk_dialog_stillconnected(ConnContext *context,
+	int protocol_version)
 {
     GaimConversation *conv;
     char *buf;
@@ -790,14 +853,16 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
     level = otrg_plugin_context_to_trust(context);
 
     buf = g_strdup_printf("Successfully refreshed the %s conversation "
-		"with %s.",
+		"with %s.%s",
 		level == TRUST_PRIVATE ? "private" :
 		level == TRUST_UNVERIFIED ? "<a href=\"" UNVERIFIED_HELPURL
 			"\">unverified</a>" :
 		    /* This last case should never happen, since we know
-		     * we're in CONN_CONNECTED. */
+		     * we're in ENCRYPTED. */
 		    "not private",
-		gaim_conversation_get_name(conv));
+		gaim_conversation_get_name(conv),
+		protocol_version == 1 ? "  Warning: using old protocol "
+		    "version 1." : "");
 
     gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
@@ -830,7 +895,8 @@ static void view_sessionid(GtkWidget *widget, gpointer data)
     GaimConversation *conv = data;
     ConnContext *context = otrg_plugin_conv_to_context(conv);
 
-    if (context == NULL || context->state != CONN_CONNECTED) return;
+    if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
+	return;
 
     otrg_gtk_dialog_view_sessionid(context);
 }
@@ -840,7 +906,8 @@ static void verify_fingerprint(GtkWidget *widget, gpointer data)
     GaimConversation *conv = data;
     ConnContext *context = otrg_plugin_conv_to_context(conv);
 
-    if (context == NULL || context->state != CONN_CONNECTED) return;
+    if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
+	return;
 
     otrg_gtk_dialog_verify_fingerprint(context->active_fingerprint);
 }
@@ -1084,6 +1151,7 @@ static const OtrgDialogUiOps gtk_dialog_ui_ops = {
     otrg_gtk_dialog_connected,
     otrg_gtk_dialog_disconnected,
     otrg_gtk_dialog_stillconnected,
+    otrg_gtk_dialog_finished,
     otrg_gtk_dialog_resensitize_all,
     otrg_gtk_dialog_new_conv,
     otrg_gtk_dialog_remove_conv
