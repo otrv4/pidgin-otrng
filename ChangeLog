@@ -1,5 +1,10 @@
 2005-10-19
 
+	* otr-plugin.c: Removed automatic sending of
+	OTRL_TLV_DISCONNECTED at quitting time, since it causes
+	unreadable messages to be sent to people with clients who don't
+	send those messages.
+
 	* packaging/fedora/gaim-otr.spec: Patches from Paul
 
 2005-10-16
