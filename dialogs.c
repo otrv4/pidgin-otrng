@@ -126,9 +126,9 @@ void otrg_dialog_verify_fingerprint(Fingerprint *fprint)
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
-void otrg_dialog_connected(ConnContext *context, int protocol_version)
+void otrg_dialog_connected(ConnContext *context)
 {
-    ui_ops->connected(context, protocol_version);
+    ui_ops->connected(context);
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
@@ -139,9 +139,9 @@ void otrg_dialog_disconnected(ConnContext *context)
 
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-void otrg_dialog_stillconnected(ConnContext *context, int protocol_version)
+void otrg_dialog_stillconnected(ConnContext *context)
 {
-    ui_ops->stillconnected(context, protocol_version);
+    ui_ops->stillconnected(context);
 }
 
 /* Call this if the remote user terminates his end of an ENCRYPTED

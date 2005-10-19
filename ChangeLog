@@ -1,5 +1,12 @@
 2005-10-19
 
+	* dialogs.h:
+	* dialogs.c:
+	* gtk-dialog.c:
+	* otr-plugin.c: Track libotr API change: protocol_version is now
+	part of the ConnContext, and not passed separately to the
+	gone_secure() and still_secure() plugins.
+
 	* otr-plugin.c: Removed automatic sending of
 	OTRL_TLV_DISCONNECTED at quitting time, since it causes
 	unreadable messages to be sent to people with clients who don't

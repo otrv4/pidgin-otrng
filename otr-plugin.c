@@ -222,10 +222,9 @@ static void write_fingerprints_cb(void *opdata)
     otrg_plugin_write_fingerprints();
 }
 
-static void gone_secure_cb(void *opdata, ConnContext *context,
-	int protocol_version)
+static void gone_secure_cb(void *opdata, ConnContext *context)
 {
-    otrg_dialog_connected(context, protocol_version);
+    otrg_dialog_connected(context);
 }
 
 static void gone_insecure_cb(void *opdata, ConnContext *context)
@@ -233,11 +232,10 @@ static void gone_insecure_cb(void *opdata, ConnContext *context)
     otrg_dialog_disconnected(context);
 }
 
-static void still_secure_cb(void *opdata, ConnContext *context, int is_reply,
-	int protocol_version)
+static void still_secure_cb(void *opdata, ConnContext *context, int is_reply)
 {
     if (is_reply == 0) {
-	otrg_dialog_stillconnected(context, protocol_version);
+	otrg_dialog_stillconnected(context);
     }
 }
 
@@ -520,7 +518,6 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
     void *conv_handle = gaim_conversations_get_handle();
     void *conn_handle = gaim_connections_get_handle();
     void *blist_handle = gaim_blist_get_handle();
-    void *core_handle = gaim_get_core();
 
     if (!privkeyfile || !storefile) {
 	g_free(privkeyfile);
@@ -567,7 +564,6 @@ static gboolean otr_plugin_unload(GaimPlugin *handle)
     void *conv_handle = gaim_conversations_get_handle();
     void *conn_handle = gaim_connections_get_handle();
     void *blist_handle = gaim_blist_get_handle();
-    void *core_handle = gaim_get_core();
 
     /* Clean up all of our state. */
     otrl_userstate_free(otrg_plugin_userstate);

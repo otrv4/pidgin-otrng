@@ -54,11 +54,11 @@ typedef struct {
 
     void (*verify_fingerprint)(Fingerprint *fprint);
 
-    void (*connected)(ConnContext *context, int protocol_version);
+    void (*connected)(ConnContext *context);
 
     void (*disconnected)(ConnContext *context);
 
-    void (*stillconnected)(ConnContext *context, int protocol_version);
+    void (*stillconnected)(ConnContext *context);
 
     void (*finished)(const char *accountname, const char *protocol,
 	    const char *username);
@@ -122,14 +122,14 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 void otrg_dialog_verify_fingerprint(Fingerprint *fprint);
 
 /* Call this when a context transitions to ENCRYPTED. */
-void otrg_dialog_connected(ConnContext *context, int protocol_version);
+void otrg_dialog_connected(ConnContext *context);
 
 /* Call this when a context transitions to PLAINTEXT. */
 void otrg_dialog_disconnected(ConnContext *context);
 
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-void otrg_dialog_stillconnected(ConnContext *context, int protocol_version);
+void otrg_dialog_stillconnected(ConnContext *context);
 
 /* Call this if the remote user terminates his end of an ENCRYPTED
  * connection, and lets us know. */

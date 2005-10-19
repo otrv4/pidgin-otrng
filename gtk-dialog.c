@@ -773,8 +773,7 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
-static void otrg_gtk_dialog_connected(ConnContext *context,
-	int protocol_version)
+static void otrg_gtk_dialog_connected(ConnContext *context)
 {
     GaimConversation *conv;
     char *buf;
@@ -791,8 +790,8 @@ static void otrg_gtk_dialog_connected(ConnContext *context,
 		     * we're in ENCRYPTED. */
 		    "Not private",
 		gaim_conversation_get_name(conv),
-		protocol_version == 1 ? "  Warning: using old protocol "
-		    "version 1." : "");
+		context->protocol_version == 1 ? "  Warning: using old "
+		    "protocol version 1." : "");
 
     gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
@@ -842,8 +841,7 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-static void otrg_gtk_dialog_stillconnected(ConnContext *context,
-	int protocol_version)
+static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 {
     GaimConversation *conv;
     char *buf;
@@ -861,8 +859,8 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context,
 		     * we're in ENCRYPTED. */
 		    "not private",
 		gaim_conversation_get_name(conv),
-		protocol_version == 1 ? "  Warning: using old protocol "
-		    "version 1." : "");
+		context->protocol_version == 1 ? "  Warning: using old "
+		    "protocol version 1." : "");
 
     gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
