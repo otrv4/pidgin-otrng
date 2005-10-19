@@ -1,3 +1,7 @@
+2005-10-19
+
+	* packaging/fedora/gaim-otr.spec: Patches from Paul
+
 2005-10-16
 
 	* Conform to the new libotr API.

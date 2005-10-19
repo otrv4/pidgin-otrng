@@ -9,7 +9,8 @@ Group: Applications/Internet
 Provides: otr-plugin = %{version}
 Obsoletes: otr-plugin
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, gaim >= 1.0.0, libotr-devel >= 2.0.2
+Requires: gaim >= 1.0.0, libotr >= 3.0.0
+BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, gaim >= 1.0.0, libotr-devel >= 3.0.0
 
 %description 
 
@@ -21,6 +22,7 @@ gaim (1.x).
 %setup -q
 
 %build
+
 %configure 
 make %{?_smp_mflags} all
 
@@ -39,6 +41,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gaim/gaim-otr.so
 
 %changelog
+* Mon Oct 17 2005 Paul Wouters <paul@cypherpunks.ca> 3.0.0
+- Minor change to allow for new documentation files. Ensure
+  dependancy on at least libotr version 3.0.0
+
 * Fri Jun 17 2005 Tom "spot" Callaway <tcallawa@redhat.com>
 - reworked for Fedora Extras
 
