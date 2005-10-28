@@ -699,6 +699,7 @@ static GtkWidget *create_dialog(GaimNotifyMsgType type, const char *title,
     label = gtk_label_new(NULL);
 
     gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), 1);
     g_free(label_text);
     gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);

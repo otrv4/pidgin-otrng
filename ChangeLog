@@ -2,6 +2,8 @@
 
 	* gtk-dialog.c: Better icons
 
+	* gtk-dialog.c: Make the text of dialog boxes selectable
+
 2005-10-19
 
 	* dialogs.h:
