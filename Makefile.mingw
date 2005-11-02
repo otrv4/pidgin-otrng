@@ -1,7 +1,7 @@
 WIN32=1
 
 # The version number to put in the plugin info
-GAIM_OTR_VERSION = 3.0.0b1
+GAIM_OTR_VERSION = 3.0.0
 
 # Replace this with the path to the GAIM headers
 GAIM_SOURCE ?= /usr/include/gaim

@@ -1,5 +1,5 @@
 		Off-the-Record Messaging plugin for GAIM
-			  v2.0.2,  3 May 2005
+			  v3.0.0,  2 Nov 2005
 
 This is a gaim plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
@@ -95,57 +95,99 @@ to automatically initiate private messaging, your clients may recognize
 each other and automatically start a private conversation.
 
 The first time you have a private conversation with one of your buddies,
-his fingerprint will appear, and you will be asked to verify that it is
-valid.  It's usually a good idea to make sure it's correct, perhaps via
-the phone, or some other authenticated communication.
+his fingerprint will appear.  It's usually a good idea to make sure it's
+correct, perhaps via the phone, or some other authenticated
+communication.
 
 If it's wrong, it means someone's intercepting your communication.
 While unlikely, this is one of the things this plugin detects.
 
-Once you've verified your buddy's fingerprint, it will be stored, and
+Once you've seen your buddy's fingerprint, it will be stored, and
 future private conversations with him won't bother you with this dialog.
 [Unless, of course, he uses a different fingerprint, perhaps from a
 different IM account, or on a different computer.  It's OK to have
 multiple fingerprints for the same IM account, on different machines.]
 
-When private communication has been established, you each will see an
-information popup containing:
- - Your buddy's screen name  (he'll see yours, of course)
- - His fingerprint  (similarly, he'll see yours)
- - A "secure id" for the session.  Half of this id will be in bold.
-   Your buddy sees the same id, but the other half is in bold for him.
+At this point, the label on the OTR button in the conversation window
+will change to "OTR: Unverified".  This means that, although you are
+sending encrypted messages, you have not yet verified your buddy's
+fingerprint, and so it is not certain that the person who can decrypt
+these messages is actually your buddy (it may be an attacker).
 
-The "secure id" is another way to verify that you're actually chatting
-with your buddy, and not some eavesdropper ("man-in-the-middle" is the
-technical term).  Phone him up, and ask him to read his bold part, and
-read yours back to him.  If they're both correct, you're assured that
-there's no one intercepting your private conversation.  This is secure,
-even if you know that one or both of your private keys have been
-compromised.
+If you right-click on the OTR button, you will get a menu with the
+following options:
 
-Then just use IM with him normally; all your instant messages will be
-encrypted and authenticated.  You should see an "OTR: Private" label in
-the conversation window.
+Start / Refresh private conversation
+
+    Choosing this menu option is the same as clicking the OTR button: it
+    will attempt to start (or refresh, if you're already in one) a
+    private conversation with this buddy.
+
+End private conversation
+
+    If you wish to end the private conversation, and go back to
+    communicating without privacy protection, you can select this
+    option.  Note that if you have "Automatically initiate private
+    messaging" set, it is likely that a new private conversation will
+    automatically begin immediately.
+
+Verify fingerprint
+
+    Choose this menu option once you have your buddy on the phone, or
+    some other authenticated communication channel (such as a gpg-signed
+    message).  Have your buddy read you his fingerprint.  If it matches
+    what is displayed in the dialog box, pull down the selection that
+    says "I have not" (verified that this is in fact the correct
+    fingerprint), and change it to "I have".
+
+    Once you do this, the label on the OTR button will change to "OTR:
+    Private".  Note that you only need to do this once per buddy (or
+    once per fingerprint, if your buddy has more than one fingerprint).
+    gaim-otr will remember which fingerprints you have marked as
+    verified.
+
+View secure session id
+
+    The "secure session id" is another way to verify that you're actually
+    chatting with your buddy, and not some eavesdropper
+    ("man-in-the-middle" is the technical term).  Phone him up, and ask
+    him to read his bold part, and read yours back to him.  If they're
+    both correct, you're assured that there's no one intercepting your
+    private conversation.  This is secure, even if you know that one or
+    both of your private keys have been compromised.
+
+    You should almost never need to use this; it is only useful in the
+    event that you know your private keys have been compromised, and you
+    wish to have a private conversation anyway.
+
+What's this?
+
+    This will open a web browser to get online help.
+
 
 If you open the Preferences panel back up, and go to the OTR UI, you'll
 see your buddy, and his fingerprint, listed there.  The "Status" should
 currently be "Private", which means you're having a private
-conversation.  Other possibilities are "Not private", which means you're
-just chatting in IM the usual (non-OTR) way, and "Setting up", which
-means the private conversation is in the process of being set up.
+conversation.  Other possibilities are "Unverified", which means you
+have not yet verified your buddy's fingerprint, "Not private", which
+means you're just chatting in IM the usual (non-OTR) way, and
+"Finished", which means your buddy has selected "End private
+conversation"; at this point, you will be unable to send messages to him
+at all, until you either also choose "End private conversation" (in
+which case further messages will be sent unencrypted), or else choose
+"Refresh private conversation" (in which case further messages will be
+sent privately).
 
 By selecting one of your buddies from the list, you'll be able to do one
 or more of the following things by clicking the buttons below the list:
- - "Start private conversation": if the status is "Not private", this
-   will attempt to start a private conversation.  It's the same as
-   typing "?OTR?" to your buddy.
- - "End private conversation": if the status is "Private" (or "Setting
-   up"), you can force an end to your private conversation by clicking
-   this button.  There's not usually a good reason to do this, though.
-   Note that your buddy will have to click the button at his end, as
-   well.  [This is so he doesn't inadvertently type a message he thinks
-   is private, when suddenly the privacy is removed from him.]  When you
-   end a private conversation, you'll see a warning box to that effect.
+ - "Start private conversation": if the status is "Not private" or
+   "Finished", this will attempt to start a private conversation.
+ - "End private conversation": if the status is "Unverified", "Private",
+   or "Finished", you can force an end to your private conversation by
+   clicking this button.  There's not usually a good reason to do this,
+   though.
+ - "Verify fingerprint": this will open the fingerprint verification
+   dialog discussed above.
  - "Forget fingerprint": this will remove your buddy's fingerprint from
    the list.  You'll have to re-verify it the next time you start a
    private conversation with him.  Note that you can't forget a

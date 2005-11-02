@@ -18,6 +18,10 @@ script using:
 
     autoreconf -s -i
 
+[If you installed libotr.m4 somewhere that autoreconf can't find it,
+you can try putting "ACLOCAL_FLAGS= -I /path/to/share/aclocal" at the
+top of Makefile.am.]
+
 Once you have the configure script (which comes with the source
 deistribution), run it with any options that may be necessary for your
 system.  Some examples:

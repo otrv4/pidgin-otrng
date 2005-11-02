@@ -7,7 +7,7 @@ AC_INIT(otr-plugin.c)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(gaim-otr, 3.0.0b1)
+AM_INIT_AUTOMAKE(gaim-otr, 3.0.0)
 
 AC_PROG_CC
 

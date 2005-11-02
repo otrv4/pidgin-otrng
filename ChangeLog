@@ -1,3 +1,14 @@
+2005-11-02
+
+	* INSTALL: Add instruction for doing autoreconf from CVS
+	version, if your libotr.m4 is in a nonstandard place.
+
+	* Makefile.mingw:
+	* README:
+	* configure.ac: Release version 3.0.0
+
+	* README: Update UI instructions for version 3.0.0
+
 2005-10-27
 
 	* gtk-dialog.c: Better icons
