@@ -32,11 +32,11 @@
 
 /* gaim headers */
 #include "gaim.h"
-#include "core.h"
 #include "notify.h"
 #include "version.h"
 #include "util.h"
 #include "debug.h"
+#include "core.h"
 
 #ifdef USING_GTK
 /* gaim GTK headers */
@@ -156,7 +156,11 @@ static int is_logged_in_cb(void *opdata, const char *accountname,
     buddy = gaim_find_buddy(account, recipient);
     if (!buddy) return -1;
 
+#if GAIM_MAJOR_VERSION < 2
     return (buddy->present == GAIM_BUDDY_ONLINE);
+#else
+    return (GAIM_BUDDY_IS_ONLINE(buddy));
+#endif
 }
 
 static void inject_message_cb(void *opdata, const char *accountname,
@@ -395,6 +399,8 @@ static void process_connection_change(GaimConnection *conn, void *data)
     otrg_dialog_resensitize_all();
 }
 
+#if GAIM_MAJOR_VERSION < 2
+/* gaim-2.0.0 no longer has the row of buttons in question */
 static void process_button_type_change(const char *name, GaimPrefType type,
 	gpointer value, gpointer data)
 {
@@ -404,6 +410,7 @@ static void process_button_type_change(const char *name, GaimPrefType type,
      * buttons as well. */
     otrg_dialog_resensitize_all();
 }
+#endif
 
 static void otr_options_cb(GaimBlistNode *node, gpointer user_data)
 {
@@ -430,7 +437,11 @@ static void supply_extended_menu(GaimBlistNode *node, GList **menu)
     proto = gaim_account_get_protocol_id(acct);
     if (!otrg_plugin_proto_supports_otr(proto)) return;
 
+#if GAIM_MAJOR_VERSION < 2
     act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL);
+#else
+    act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL, NULL);
+#endif
     *menu = g_list_append(*menu, act);
 }
 
@@ -482,9 +493,17 @@ GaimConversation *otrg_plugin_context_to_conv(ConnContext *context,
     account = gaim_accounts_find(context->accountname, context->protocol);
     if (account == NULL) return NULL;
 
+#if GAIM_MAJOR_VERSION < 2
     conv = gaim_find_conversation_with_account(context->username, account);
+#else
+    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, context->username, account);
+#endif
     if (conv == NULL && force_create) {
+#if GAIM_MAJOR_VERSION < 2
 	conv = gaim_conversation_new(GAIM_CONV_IM, account, context->username);
+#else
+	conv = gaim_conversation_new(GAIM_CONV_TYPE_IM, account, context->username);
+#endif
     }
 
     return conv;
@@ -523,7 +542,10 @@ static void process_quitting(void)
     }
 }
 
+#if GAIM_MAJOR_VERSION < 2
+/* gaim-2.0.0 no longer has the row of buttons in question */
 static guint button_type_cbid;
+#endif
 
 static gboolean otr_plugin_load(GaimPlugin *handle)
 {
@@ -567,9 +589,11 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
 	    GAIM_CALLBACK(process_connection_change), NULL);
     gaim_signal_connect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu), NULL);
+#if GAIM_MAJOR_VERSION < 2
     button_type_cbid = gaim_prefs_connect_callback(
 	    "/gaim/gtk/conversations/button_type",
 	    process_button_type_change, NULL);
+#endif
 
     gaim_conversation_foreach(otrg_dialog_new_conv);
 
@@ -601,7 +625,9 @@ static gboolean otr_plugin_unload(GaimPlugin *handle)
 	    GAIM_CALLBACK(process_connection_change));
     gaim_signal_disconnect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu));
+#if GAIM_MAJOR_VERSION < 2
     gaim_prefs_disconnect_callback(button_type_cbid);
+#endif
 
     gaim_conversation_foreach(otrg_dialog_remove_conv);
 
@@ -640,10 +666,16 @@ static GaimPluginInfo info =
 {
 	GAIM_PLUGIN_MAGIC,
 
+#if GAIM_MAJOR_VERSION < 2
 	/* We stick with the functions in the gaim 1.0.x API for
 	 * compatibility. */
-	1,                                                /* major version  */
+        1,                                                /* major version  */
 	0,                                                /* minor version  */
+#else
+        /* Use the 2.0.x API */
+        2,                                                /* major version  */
+	0,                                                /* minor version  */
+#endif
 
 	GAIM_PLUGIN_STANDARD,                             /* type           */
 	PLUGIN_TYPE,                                      /* ui_requirement */

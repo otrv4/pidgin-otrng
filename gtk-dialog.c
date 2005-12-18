@@ -26,7 +26,12 @@
 #include <gcrypt.h>
 
 /* gaim headers */
+#include "version.h"
+#if GAIM_MAJOR_VERSION < 2
 #include "stock.h"
+#else
+#include "gtkstock.h"
+#endif
 #include "plugin.h"
 #include "notify.h"
 #include "gtkconv.h"
@@ -779,7 +784,11 @@ static int otrg_gtk_dialog_display_otr_message(const char *accountname,
     account = gaim_accounts_find(accountname, protocol);
     if (!account) return -1;
 
+#if GAIM_MAJOR_VERSION < 2
     conv = gaim_find_conversation_with_account(username, account);
+#else
+    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, username, account);
+#endif
     if (!conv) return -1;
 
     gaim_conversation_write(conv, NULL, msg, GAIM_MESSAGE_SYSTEM, time(NULL));
@@ -908,7 +917,11 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
     GtkWidget *menuquerylabel;
     GtkWidget *menuview;
     GtkWidget *menuverf;
+#if GAIM_MAJOR_VERSION < 2
+    /* gaim-2.0.0 no longer has the row of buttons, so it doesn't have
+     * the button_type pref */
     GaimButtonStyle buttonstyle;
+#endif
     GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
     label = gaim_conversation_get_data(conv, "otr-label");
     icon = gaim_conversation_get_data(conv, "otr-icon");
@@ -919,7 +932,9 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
     menuend = gaim_conversation_get_data(conv, "otr-menuend");
     menuview = gaim_conversation_get_data(conv, "otr-menuview");
     menuverf = gaim_conversation_get_data(conv, "otr-menuverf");
+#if GAIM_MAJOR_VERSION < 2
     buttonstyle = gaim_prefs_get_int("/gaim/gtk/conversations/button_type");
+#endif
 
     /* Set the button's icon, label and tooltip. */
     otr_icon(icon, level);
@@ -948,6 +963,7 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
 
     /* Set the appropriate visibility */
     gtk_widget_show_all(button);
+#if GAIM_MAJOR_VERSION < 2
     if (buttonstyle == GAIM_BUTTON_IMAGE) {
 	/* Hide the text */
 	gtk_widget_hide(icontext);
@@ -958,6 +974,7 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
 	gtk_widget_hide(icontext);
 	gtk_widget_hide(icon);
     }
+#endif
 }
 
 static void dialog_update_label(ConnContext *context)
@@ -968,7 +985,11 @@ static void dialog_update_label(ConnContext *context)
 
     account = gaim_accounts_find(context->accountname, context->protocol);
     if (!account) return;
+#if GAIM_MAJOR_VERSION < 2
     conv = gaim_find_conversation_with_account(context->username, account);
+#else
+    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, context->username, account);
+#endif
     if (!conv) return;
     dialog_update_label_conv(conv, level);
 }
@@ -1252,7 +1273,11 @@ static void otrg_gtk_dialog_finished(const char *accountname,
     account = gaim_accounts_find(accountname, protocol);
     if (!account) return;
 
+#if GAIM_MAJOR_VERSION < 2
     conv = gaim_find_conversation_with_account(username, account);
+#else
+    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, username, account);
+#endif
     if (!conv) return;
 
     buf = g_strdup_printf("%s has ended his private conversation with you; "
@@ -1406,9 +1431,13 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     GtkWidget *whatsthis;
 
     /* Do nothing if this isn't an IM conversation */
+#if GAIM_MAJOR_VERSION < 2
     if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
-
     bbox = gtkconv->bbox;
+#else
+    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
+    bbox = gtkconv->lower_hbox;
+#endif
 
     context = otrg_plugin_conv_to_context(conv);
 
@@ -1515,7 +1544,11 @@ static void otrg_gtk_dialog_remove_conv(GaimConversation *conv)
     GtkWidget *button;
 
     /* Do nothing if this isn't an IM conversation */
+#if GAIM_MAJOR_VERSION < 2
     if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
+#else
+    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
+#endif
 
     button = gaim_conversation_get_data(conv, "otr-button");
     if (button) gtk_object_destroy(GTK_OBJECT(button));
@@ -1531,7 +1564,11 @@ static void dialog_resensitize(GaimConversation *conv)
     OtrlPolicy policy;
 
     /* Do nothing if this isn't an IM conversation */
+#if GAIM_MAJOR_VERSION < 2
     if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
+#else
+    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
+#endif
 
     account = gaim_conversation_get_account(conv);
     name = gaim_conversation_get_name(conv);

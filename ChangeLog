@@ -1,3 +1,9 @@
+2005-12-18
+
+	* gtk-dialog.c:
+	* otr-plugin.c: Compile against either gaim-1.x or gaim-2.x,
+	based on a patch from Dustin Howett <alaricx@gmail.com>.
+
 2005-11-02
 
 	* INSTALL: Add instruction for doing autoreconf from CVS
