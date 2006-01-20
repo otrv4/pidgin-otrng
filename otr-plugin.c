@@ -423,7 +423,11 @@ static void otr_options_cb(GaimBlistNode *node, gpointer user_data)
 
 static void supply_extended_menu(GaimBlistNode *node, GList **menu)
 {
+#if GAIM_MAJOR_VERSION < 2
     GaimBlistNodeAction *act;
+#else
+    GaimMenuAction *act;
+#endif
     GaimBuddy *buddy;
     GaimAccount *acct;
     const char *proto;
@@ -440,7 +444,8 @@ static void supply_extended_menu(GaimBlistNode *node, GList **menu)
 #if GAIM_MAJOR_VERSION < 2
     act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL);
 #else
-    act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL, NULL);
+    act = gaim_menu_action_new("OTR Settings", (GaimCallback)otr_options_cb,
+	    NULL, NULL);
 #endif
     *menu = g_list_append(*menu, act);
 }

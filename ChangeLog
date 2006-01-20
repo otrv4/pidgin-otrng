@@ -1,3 +1,7 @@
+2006-01-20
+
+	* otr-plugin.c: Track the gaim-2 API changes.
+
 2005-12-18
 
 	* gtk-dialog.c:
