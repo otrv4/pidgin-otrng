@@ -60,6 +60,15 @@
 #include "gtk-dialog.h"
 #endif
 
+/* If we're using glib on Windows, we need to use g_fopen to open files.
+ * On other platforms, it's also safe to use it.  If we're not using
+ * glib, just use fopen. */
+#ifdef USING_GTK
+#include <glib/gstdio.h>
+#else
+#define g_fopen fopen
+#endif
+
 GaimPlugin *otrg_plugin_handle;
 
 /* We'll only use the one OtrlUserState. */
@@ -119,19 +128,26 @@ void otrg_plugin_create_privkey(const char *accountname,
 	const char *protocol)
 {
     OtrgDialogWaitHandle waithandle;
+    FILE *privf;
 
     gchar *privkeyfile = g_build_filename(gaim_user_dir(), PRIVKEYFNAME, NULL);
     if (!privkeyfile) {
 	fprintf(stderr, "Out of memory building filenames!\n");
 	return;
     }
+    privf = g_fopen(privkeyfile, "w+b");
+    g_free(privkeyfile);
+    if (!privf) {
+	fprintf(stderr, "Could not write private key file\n");
+	return;
+    }
 
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
     /* Generate the key */
-    otrl_privkey_generate(otrg_plugin_userstate, privkeyfile,
+    otrl_privkey_generate_FILEp(otrg_plugin_userstate, privf,
 	    accountname, protocol);
-    g_free(privkeyfile);
+    fclose(privf);
     otrg_ui_update_fingerprint();
 
     /* Mark the dialog as done. */
@@ -461,9 +477,13 @@ void otrg_plugin_disconnect(ConnContext *context)
 /* Write the fingerprints to disk. */
 void otrg_plugin_write_fingerprints(void)
 {
+    FILE *storef;
     gchar *storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
-    otrl_privkey_write_fingerprints(otrg_plugin_userstate, storefile);
+    storef = g_fopen(storefile, "wb");
     g_free(storefile);
+    if (!storef) return;
+    otrl_privkey_write_fingerprints_FILEp(otrg_plugin_userstate, storef);
+    fclose(storef);
 }
 
 /* Find the ConnContext appropriate to a given GaimConversation. */
@@ -560,6 +580,8 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
     void *conn_handle = gaim_connections_get_handle();
     void *blist_handle = gaim_blist_get_handle();
     void *core_handle = gaim_get_core();
+    FILE *privf;
+    FILE *storef;
 
     if (!privkeyfile || !storefile) {
 	g_free(privkeyfile);
@@ -567,16 +589,21 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
 	return 0;
     }
 
+    privf = g_fopen(privkeyfile, "rb");
+    storef = g_fopen(storefile, "rb");
+    g_free(privkeyfile);
+    g_free(storefile);
+
     otrg_plugin_handle = handle;
 
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-    otrl_privkey_read(otrg_plugin_userstate, privkeyfile);
-    g_free(privkeyfile);
-    otrl_privkey_read_fingerprints(otrg_plugin_userstate, storefile,
+    otrl_privkey_read_FILEp(otrg_plugin_userstate, privf);
+    otrl_privkey_read_fingerprints_FILEp(otrg_plugin_userstate, storef,
 	    NULL, NULL);
-    g_free(storefile);
+    if (privf) fclose(privf);
+    if (storef) fclose(storef);
 
     otrg_ui_update_fingerprint();
 

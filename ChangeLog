@@ -1,3 +1,8 @@
+2006-07-24
+
+	* otr-plugin.c: Use g_fopen() to open the otr files, so that on
+	Windows, the UTF8 filename encoding is respected.
+
 2006-01-20
 
 	* otr-plugin.c: Track the gaim-2 API changes.
