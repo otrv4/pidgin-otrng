@@ -64,6 +64,11 @@
  * On other platforms, it's also safe to use it.  If we're not using
  * glib, just use fopen. */
 #ifdef USING_GTK
+/* If we're cross-compiling, this might be wrong, so fix it. */
+#ifdef WIN32
+#undef G_OS_UNIX
+#define G_OS_WIN32
+#endif
 #include <glib/gstdio.h>
 #else
 #define g_fopen fopen
