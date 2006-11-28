@@ -4,7 +4,7 @@ WIN32=1
 GAIM_OTR_VERSION = 3.0.0
 
 # Replace this with the path to the GAIM headers
-GAIM_SOURCE ?= /usr/include/gaim
+GAIM_SOURCE ?= /usr/i586-mingw32msvc/include/gaim
 
 # If you don't have pkg-config, put the appropriate -I entry on the next line
 GTK_HDRS ?= `pkg-config --cflags glib-2.0 gtk+-2.0`
@@ -26,9 +26,8 @@ LIBOTRINCDIR = /usr/i586-mingw32msvc/include
 LIBOTRLIBDIR = /usr/i586-mingw32msvc/lib
 TARGET = gaim-otr.dll
 LDFLAGS = -Wl,--enable-auto-image-base
-LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0-0 -latk-1.0-0 -lpango-1.0-0 \
-         -lglib-2.0-0 -lgdk_pixbuf-2.0-0 -lgdk-win32-2.0-0 -lgobject-2.0-0 \
-	 -lgaim -lgcrypt -lgpg-error
+LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0 -lglib-2.0 -lgdk_pixbuf-2.0 \
+	 -lgobject-2.0 -lgaim -lgtkgaim -lgcrypt -lgpg-error
 else
 FPIC = -fPIC
 LDFLAGS = -module -avoid-version

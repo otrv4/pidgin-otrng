@@ -1,3 +1,13 @@
+2006-11-28
+
+	* Makefile.mingw: Build under newer mingw cross-compilation
+	environment.
+
+	* gtk-dialog.c: Change "gtkstock.h" to "gaimstock.h" to match
+	gaim-2.0.0beta5.
+
+	* packaging/windows/gaim-otr.nsi: New version from Paul.
+
 2006-07-24
 
 	* otr-plugin.c: Use g_fopen() to open the otr files, so that on

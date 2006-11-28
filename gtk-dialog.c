@@ -30,7 +30,7 @@
 #if GAIM_MAJOR_VERSION < 2
 #include "stock.h"
 #else
-#include "gtkstock.h"
+#include "gaimstock.h"
 #endif
 #include "plugin.h"
 #include "notify.h"
