@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -20,7 +20,7 @@
 /* system headers */
 #include <stdlib.h>
 
-/* gaim headers */
+/* purple headers */
 #include "util.h"
 #include "account.h"
 
@@ -29,7 +29,7 @@
 #include <libotr/proto.h>
 #include <libotr/message.h>
 
-/* gaim-otr headers */
+/* purple-otr headers */
 #include "ui.h"
 #include "dialogs.h"
 #include "otr-plugin.h"
@@ -69,16 +69,16 @@ void otrg_ui_update_keylist(void)
 void otrg_ui_connect_connection(ConnContext *context)
 {
     /* Send an OTR Query to the other side. */
-    GaimAccount *account;
+    PurpleAccount *account;
     char *msg;
 	
     /* Don't do this if we're already ENCRYPTED */
     if (context == NULL || context->msgstate == OTRL_MSGSTATE_ENCRYPTED)
 	return;
 	
-    account = gaim_accounts_find(context->accountname, context->protocol);
+    account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) {
-	GaimPlugin *p = gaim_find_prpl(context->protocol);
+	PurplePlugin *p = purple_find_prpl(context->protocol);
 	msg = g_strdup_printf("Account %s (%s) could not be found",
 		  context->accountname,
 		  (p && p->info->name) ? p->info->name : "Unknown");
@@ -121,7 +121,7 @@ void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
 }
 
 /* Configure OTR for a particular buddy */
-void otrg_ui_config_buddy(GaimBuddy *buddy)
+void otrg_ui_config_buddy(PurpleBuddy *buddy)
 {
     if (ui_ops != NULL) {
 	ui_ops->config_buddy(buddy);
@@ -129,10 +129,10 @@ void otrg_ui_config_buddy(GaimBuddy *buddy)
 }
 
 /* Calculate the policy for a particular account / username */
-OtrlPolicy otrg_ui_find_policy(GaimAccount *account, const char *name)
+OtrlPolicy otrg_ui_find_policy(PurpleAccount *account, const char *name)
 {
     /* Check to see if the protocol for this account supports OTR at all. */
-    const char *proto = gaim_account_get_protocol_id(account);
+    const char *proto = purple_account_get_protocol_id(account);
     if (!otrg_plugin_proto_supports_otr(proto)) {
 	return OTRL_POLICY_NEVER;
     }

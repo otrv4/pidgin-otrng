@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -21,7 +21,7 @@
 #define __OTRG_GTK_UI_H__
 
 /* Construct the GTK OTR UI widget */
-GtkWidget* otrg_gtk_ui_make_widget(GaimPlugin *plugin);
+GtkWidget* otrg_gtk_ui_make_widget(PurplePlugin *plugin);
 
 /* Get the GTK UI ops */
 const OtrgUiUiOps *otrg_gtk_ui_get_ui_ops(void);

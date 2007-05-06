@@ -1,10 +1,11 @@
 WIN32=1
 
 # The version number to put in the plugin info
-GAIM_OTR_VERSION = 3.0.0
+PIDGIN_OTR_VERSION = 3.0.0
 
-# Replace this with the path to the GAIM headers
-GAIM_SOURCE ?= /usr/i586-mingw32msvc/include/gaim
+# Replace this with the path to the pidgin and purple headers
+PIDGIN_HEADERS ?= /usr/i586-mingw32msvc/include/pidgin
+PURPLE_HEADERS ?= /usr/i586-mingw32msvc/include/libpurple
 
 # If you don't have pkg-config, put the appropriate -I entry on the next line
 GTK_HDRS ?= `pkg-config --cflags glib-2.0 gtk+-2.0`
@@ -18,16 +19,16 @@ LIBOTRINCDIR = /usr/include
 LIBOTRLIBDIR = /usr/lib
 
 # The target
-TARGET = gaim-otr.so
+TARGET = pidgin-otr.so
 
 ifdef WIN32
 CC = i586-mingw32msvc-gcc
 LIBOTRINCDIR = /usr/i586-mingw32msvc/include
 LIBOTRLIBDIR = /usr/i586-mingw32msvc/lib
-TARGET = gaim-otr.dll
+TARGET = pidgin-otr.dll
 LDFLAGS = -Wl,--enable-auto-image-base
 LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0 -lglib-2.0 -lgdk_pixbuf-2.0 \
-	 -lgobject-2.0 -lgaim -lgtkgaim -lgcrypt -lgpg-error
+	 -lgobject-2.0 -lpidgin -llibpurple -lgcrypt -lgpg-error
 else
 FPIC = -fPIC
 LDFLAGS = -module -avoid-version
@@ -35,13 +36,13 @@ LDLIBS = -lotr -lgcrypt
 endif
 
 # Install directory
-GAIMDIR = /usr/lib/gaim
-INSTALLDIR = $(DESTDIR)$(GAIMDIR)
+PIDGINDIR = /usr/lib/pidgin
+INSTALLDIR = $(DESTDIR)$(PIDGINDIR)
 
 CC ?= gcc
-override CFLAGS += -g -Wall -I$(GAIM_SOURCE) $(GTK_HDRS) \
-	-I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DGAIM_PLUGINS \
-	-DGAIM_OTR_VERSION=\"$(GAIM_OTR_VERSION)\"
+override CFLAGS += -g -Wall -I$(PIDGIN_HEADERS) -I$(PURPLE_HEADERS) \
+	$(GTK_HDRS) -I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DPURPLE_PLUGINS \
+	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" -DPIDGIN_NAME=\"Pidgin\"
  
 all: $(TARGET)
 

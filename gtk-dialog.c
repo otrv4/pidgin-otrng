@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -25,13 +25,9 @@
 /* gcrypt headers */
 #include <gcrypt.h>
 
-/* gaim headers */
+/* purple headers */
 #include "version.h"
-#if GAIM_MAJOR_VERSION < 2
-#include "stock.h"
-#else
-#include "gaimstock.h"
-#endif
+#include "pidginstock.h"
 #include "plugin.h"
 #include "notify.h"
 #include "gtkconv.h"
@@ -46,7 +42,7 @@
 #include <libotr/message.h>
 #include <libotr/userstate.h>
 
-/* gaim-otr headers */
+/* purple-otr headers */
 #include "otr-plugin.h"
 #include "dialogs.h"
 #include "ui.h"
@@ -633,7 +629,7 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget)
     gtk_widget_destroy(GTK_WIDGET(widget));
 }
 
-static GtkWidget *create_dialog(GaimNotifyMsgType type, const char *title,
+static GtkWidget *create_dialog(PurpleNotifyMsgType type, const char *title,
 	const char *primary, const char *secondary, int sensitive,
 	GtkWidget **labelp, void (*add_custom)(GtkWidget *vbox, void *data),
 	void *add_custom_data)
@@ -647,16 +643,16 @@ static GtkWidget *create_dialog(GaimNotifyMsgType type, const char *title,
     const char *icon_name = NULL;
 
     switch (type) {
-	case GAIM_NOTIFY_MSG_ERROR:
-	    icon_name = GAIM_STOCK_DIALOG_ERROR;
+	case PURPLE_NOTIFY_MSG_ERROR:
+	    icon_name = PIDGIN_STOCK_DIALOG_ERROR;
 	    break;
 
-	case GAIM_NOTIFY_MSG_WARNING:
-	    icon_name = GAIM_STOCK_DIALOG_WARNING;
+	case PURPLE_NOTIFY_MSG_WARNING:
+	    icon_name = PIDGIN_STOCK_DIALOG_WARNING;
 	    break;
 
-	case GAIM_NOTIFY_MSG_INFO:
-	    icon_name = GAIM_STOCK_DIALOG_INFO;
+	case PURPLE_NOTIFY_MSG_INFO:
+	    icon_name = PIDGIN_STOCK_DIALOG_INFO;
 	    break;
 
 	default:
@@ -669,7 +665,7 @@ static GtkWidget *create_dialog(GaimNotifyMsgType type, const char *title,
 	gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
     }
 
-    dialog = gtk_dialog_new_with_buttons(title ? title : GAIM_ALERT_TITLE,
+    dialog = gtk_dialog_new_with_buttons(title ? title : PIDGIN_ALERT_TITLE,
 					 NULL, 0, GTK_STOCK_OK,
 					 GTK_RESPONSE_ACCEPT, NULL);
     gtk_dialog_set_response_sensitive(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT,
@@ -720,10 +716,10 @@ static GtkWidget *create_dialog(GaimNotifyMsgType type, const char *title,
     return dialog;
 }
 
-/* This is just like gaim_notify_message, except: (a) it doesn't grab
+/* This is just like purple_notify_message, except: (a) it doesn't grab
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
-static void otrg_gtk_dialog_notify_message(GaimNotifyMsgType type,
+static void otrg_gtk_dialog_notify_message(PurpleNotifyMsgType type,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary)
 {
@@ -741,7 +737,7 @@ struct s_OtrgDialogWait {
 static OtrgDialogWaitHandle otrg_gtk_dialog_private_key_wait_start(
 	const char *account, const char *protocol)
 {
-    GaimPlugin *p;
+    PurplePlugin *p;
     const char *title = "Generating private key";
     const char *primary = "Please wait";
     char *secondary;
@@ -750,14 +746,14 @@ static OtrgDialogWaitHandle otrg_gtk_dialog_private_key_wait_start(
     GtkWidget *dialog;
     OtrgDialogWaitHandle handle;
 
-    p = gaim_find_prpl(protocol);
+    p = purple_find_prpl(protocol);
     protocol_print = (p ? p->info->name : "Unknown");
 	
     /* Create the Please Wait... dialog */
     secondary = g_strdup_printf("Generating private key for %s (%s)...",
 	    account, protocol_print);
 	
-    dialog = create_dialog(GAIM_NOTIFY_MSG_INFO, title, primary, secondary,
+    dialog = create_dialog(PURPLE_NOTIFY_MSG_INFO, title, primary, secondary,
 	    0, &label, NULL, NULL);
     handle = malloc(sizeof(struct s_OtrgDialogWait));
     handle->dialog = dialog;
@@ -778,20 +774,16 @@ static int otrg_gtk_dialog_display_otr_message(const char *accountname,
 	const char *protocol, const char *username, const char *msg)
 {
     /* See if there's a conversation window we can put this in. */
-    GaimAccount *account;
-    GaimConversation *conv;
+    PurpleAccount *account;
+    PurpleConversation *conv;
 
-    account = gaim_accounts_find(accountname, protocol);
+    account = purple_accounts_find(accountname, protocol);
     if (!account) return -1;
 
-#if GAIM_MAJOR_VERSION < 2
-    conv = gaim_find_conversation_with_account(username, account);
-#else
-    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, username, account);
-#endif
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username, account);
     if (!conv) return -1;
 
-    gaim_conversation_write(conv, NULL, msg, GAIM_MESSAGE_SYSTEM, time(NULL));
+    purple_conversation_write(conv, NULL, msg, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
     return 0;
 }
@@ -846,7 +838,7 @@ static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
     gtk_container_add(GTK_CONTAINER(more), scrl);
 
     imh = gtk_imhtml_new(NULL, NULL);
-    gaim_setup_imhtml(imh);
+    pidgin_setup_imhtml(imh);
     gtk_imhtml_append_text(GTK_IMHTML(imh), moremarkup, GTK_IMHTML_NO_SCROLL);
 
     gtk_container_add(GTK_CONTAINER(scrl), imh);
@@ -889,7 +881,7 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 {
     char hash[45];
     char *primary, *secondary;
-    GaimPlugin *p = gaim_find_prpl(protocol);
+    PurplePlugin *p = purple_find_prpl(protocol);
     
     otrl_privkey_hash_to_human(hash, fingerprint);
     primary = g_strdup_printf("%s (%s) has received an unknown fingerprint "
@@ -897,7 +889,7 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 	    (p && p->info->name) ? p->info->name : "Unknown", who);
     secondary = g_strdup_printf("%s\n", hash);
 
-    create_dialog(GAIM_NOTIFY_MSG_WARNING, "Unknown fingerprint",
+    create_dialog(PURPLE_NOTIFY_MSG_WARNING, "Unknown fingerprint",
 	    primary, secondary, 1, NULL, add_unk_fingerprint_expander, NULL);
 
     g_free(primary);
@@ -906,7 +898,7 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 
 static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data);
 
-static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
+static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
     GtkWidget *label;
     GtkWidget *icon;
@@ -917,24 +909,16 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
     GtkWidget *menuquerylabel;
     GtkWidget *menuview;
     GtkWidget *menuverf;
-#if GAIM_MAJOR_VERSION < 2
-    /* gaim-2.0.0 no longer has the row of buttons, so it doesn't have
-     * the button_type pref */
-    GaimButtonStyle buttonstyle;
-#endif
-    GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
-    label = gaim_conversation_get_data(conv, "otr-label");
-    icon = gaim_conversation_get_data(conv, "otr-icon");
-    icontext = gaim_conversation_get_data(conv, "otr-icontext");
-    button = gaim_conversation_get_data(conv, "otr-button");
-    menuquery = gaim_conversation_get_data(conv, "otr-menuquery");
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+    label = purple_conversation_get_data(conv, "otr-label");
+    icon = purple_conversation_get_data(conv, "otr-icon");
+    icontext = purple_conversation_get_data(conv, "otr-icontext");
+    button = purple_conversation_get_data(conv, "otr-button");
+    menuquery = purple_conversation_get_data(conv, "otr-menuquery");
     menuquerylabel = gtk_bin_get_child(GTK_BIN(menuquery));
-    menuend = gaim_conversation_get_data(conv, "otr-menuend");
-    menuview = gaim_conversation_get_data(conv, "otr-menuview");
-    menuverf = gaim_conversation_get_data(conv, "otr-menuverf");
-#if GAIM_MAJOR_VERSION < 2
-    buttonstyle = gaim_prefs_get_int("/gaim/gtk/conversations/button_type");
-#endif
+    menuend = purple_conversation_get_data(conv, "otr-menuend");
+    menuview = purple_conversation_get_data(conv, "otr-menuview");
+    menuverf = purple_conversation_get_data(conv, "otr-menuverf");
 
     /* Set the button's icon, label and tooltip. */
     otr_icon(icon, level);
@@ -958,38 +942,22 @@ static void dialog_update_label_conv(GaimConversation *conv, TrustLevel level)
     gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
 
     /* Use any non-NULL value for "private", NULL for "not private" */
-    gaim_conversation_set_data(conv, "otr-private",
+    purple_conversation_set_data(conv, "otr-private",
 	    level == TRUST_NOT_PRIVATE ? NULL : conv);
 
     /* Set the appropriate visibility */
     gtk_widget_show_all(button);
-#if GAIM_MAJOR_VERSION < 2
-    if (buttonstyle == GAIM_BUTTON_IMAGE) {
-	/* Hide the text */
-	gtk_widget_hide(icontext);
-	gtk_widget_hide(label);
-    }
-    if (buttonstyle == GAIM_BUTTON_TEXT) {
-	/* Hide the icon */
-	gtk_widget_hide(icontext);
-	gtk_widget_hide(icon);
-    }
-#endif
 }
 
 static void dialog_update_label(ConnContext *context)
 {
-    GaimAccount *account;
-    GaimConversation *conv;
+    PurpleAccount *account;
+    PurpleConversation *conv;
     TrustLevel level = otrg_plugin_context_to_trust(context);
 
-    account = gaim_accounts_find(context->accountname, context->protocol);
+    account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) return;
-#if GAIM_MAJOR_VERSION < 2
-    conv = gaim_find_conversation_with_account(context->username, account);
-#else
-    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, context->username, account);
-#endif
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, context->username, account);
     if (!conv) return;
     dialog_update_label_conv(conv, level);
 }
@@ -1042,7 +1010,7 @@ static GtkWidget* otrg_gtk_dialog_view_sessionid(ConnContext *context)
 	    whichhalf == OTRL_SESSIONID_SECOND_HALF_BOLD ?
 		    "weight=\"bold\"" : "", sess2);
 
-    dialog = create_dialog(GAIM_NOTIFY_MSG_INFO, "Private connection "
+    dialog = create_dialog(PURPLE_NOTIFY_MSG_INFO, "Private connection "
 	    "established", primary, secondary, 1, NULL,
 	    add_sessid_expander, NULL);
 
@@ -1185,7 +1153,7 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
     char *secondary;
     struct vrfy_fingerprint_data *vfd;
     ConnContext *context;
-    GaimPlugin *p;
+    PurplePlugin *p;
     char *proto_name;
 
     if (fprint == NULL) return;
@@ -1202,13 +1170,13 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
 
     otrl_privkey_hash_to_human(their_hash, fprint->fingerprint);
 
-    p = gaim_find_prpl(context->protocol);
+    p = purple_find_prpl(context->protocol);
     proto_name = (p && p->info->name) ? p->info->name : "Unknown";
     secondary = g_strdup_printf("Fingerprint for you, %s (%s):\n%s\n\n"
 	    "Purported fingerprint for %s:\n%s\n", context->accountname,
 	    proto_name, our_hash, context->username, their_hash);
 
-    dialog = create_dialog(GAIM_NOTIFY_MSG_INFO, "Verify fingerprint",
+    dialog = create_dialog(PURPLE_NOTIFY_MSG_INFO, "Verify fingerprint",
 	    primary, secondary, 1, NULL, add_vrfy_fingerprint, vfd);
     g_signal_connect(G_OBJECT(dialog), "destroy",
 	    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
@@ -1220,7 +1188,7 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
 /* Call this when a context transitions to ENCRYPTED. */
 static void otrg_gtk_dialog_connected(ConnContext *context)
 {
-    GaimConversation *conv;
+    PurpleConversation *conv;
     char *buf;
     TrustLevel level;
 
@@ -1234,11 +1202,11 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 		    /* This last case should never happen, since we know
 		     * we're in ENCRYPTED. */
 		    "Not private",
-		gaim_conversation_get_name(conv),
+		purple_conversation_get_name(conv),
 		context->protocol_version == 1 ? "  Warning: using old "
 		    "protocol version 1." : "");
 
-    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
 
     dialog_update_label(context);
@@ -1247,14 +1215,14 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 /* Call this when a context transitions to PLAINTEXT. */
 static void otrg_gtk_dialog_disconnected(ConnContext *context)
 {
-    GaimConversation *conv;
+    PurpleConversation *conv;
     char *buf;
 
     conv = otrg_plugin_context_to_conv(context, 1);
 
     buf = g_strdup_printf("Private conversation with %s lost.",
-	    gaim_conversation_get_name(conv));
-    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+	    purple_conversation_get_name(conv));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
 
     dialog_update_label(context);
@@ -1266,23 +1234,19 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 	const char *protocol, const char *username)
 {
     /* See if there's a conversation window we can put this in. */
-    GaimAccount *account;
-    GaimConversation *conv;
+    PurpleAccount *account;
+    PurpleConversation *conv;
     char *buf;
 
-    account = gaim_accounts_find(accountname, protocol);
+    account = purple_accounts_find(accountname, protocol);
     if (!account) return;
 
-#if GAIM_MAJOR_VERSION < 2
-    conv = gaim_find_conversation_with_account(username, account);
-#else
-    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, username, account);
-#endif
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username, account);
     if (!conv) return;
 
     buf = g_strdup_printf("%s has ended his private conversation with you; "
-	    "you should do the same.", gaim_conversation_get_name(conv));
-    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+	    "you should do the same.", purple_conversation_get_name(conv));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
 
     dialog_update_label_conv(conv, TRUST_FINISHED);
@@ -1292,7 +1256,7 @@ static void otrg_gtk_dialog_finished(const char *accountname,
  * our state to change (because it was just the keys we knew already). */
 static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 {
-    GaimConversation *conv;
+    PurpleConversation *conv;
     char *buf;
     TrustLevel level;
 
@@ -1307,11 +1271,11 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 		    /* This last case should never happen, since we know
 		     * we're in ENCRYPTED. */
 		    "not private",
-		gaim_conversation_get_name(conv),
+		purple_conversation_get_name(conv),
 		context->protocol_version == 1 ? "  Warning: using old "
 		    "protocol version 1." : "");
 
-    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
 
     dialog_update_label(context);
@@ -1323,15 +1287,15 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 {
     const char *format;
     char *buf;
-    GaimConversation *conv = data;
+    PurpleConversation *conv = data;
 
-    if (gaim_conversation_get_data(conv, "otr-private")) {
+    if (purple_conversation_get_data(conv, "otr-private")) {
 	format = "Attempting to refresh the private conversation with %s...";
     } else {
 	format = "Attempting to start a private conversation with %s...";
     }
-    buf = g_strdup_printf(format, gaim_conversation_get_name(conv));
-    gaim_conversation_write(conv, NULL, buf, GAIM_MESSAGE_SYSTEM, time(NULL));
+    buf = g_strdup_printf(format, purple_conversation_get_name(conv));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
     g_free(buf);
 	
     otrg_plugin_send_default_query_conv(conv);
@@ -1339,7 +1303,7 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 
 static void view_sessionid(GtkWidget *widget, gpointer data)
 {
-    GaimConversation *conv = data;
+    PurpleConversation *conv = data;
     ConnContext *context = otrg_plugin_conv_to_context(conv);
 
     if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
@@ -1350,7 +1314,7 @@ static void view_sessionid(GtkWidget *widget, gpointer data)
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data)
 {
-    GaimConversation *conv = data;
+    PurpleConversation *conv = data;
     ConnContext *context = otrg_plugin_conv_to_context(conv);
 
     if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
@@ -1361,27 +1325,27 @@ static void verify_fingerprint(GtkWidget *widget, gpointer data)
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data)
 {
-    gaim_notify_uri(otrg_plugin_handle, BUTTON_HELPURL);
+    purple_notify_uri(otrg_plugin_handle, BUTTON_HELPURL);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
 {
-    GaimConversation *conv = data;
+    PurpleConversation *conv = data;
     ConnContext *context = otrg_plugin_conv_to_context(conv);
 
     otrg_ui_disconnect_connection(context);
 }
 
-static void dialog_resensitize(GaimConversation *conv);
+static void dialog_resensitize(PurpleConversation *conv);
 
 /* If the OTR button is right-clicked, show the context menu. */
 static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 	gpointer data)
 {
-    GaimConversation *conv = data;
+    PurpleConversation *conv = data;
 
     if ((event->button == 3) && (event->type == GDK_BUTTON_PRESS)) {
-	GtkWidget *menu = gaim_conversation_get_data(conv, "otr-menu");
+	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
 	if (menu) {
 	    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
 		    3, event->time);
@@ -1393,9 +1357,9 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 
 /* If the OTR button gets destroyed on us, clean up the data we stored
  * pointing to it. */
-static void button_destroyed(GtkWidget *w, GaimConversation *conv)
+static void button_destroyed(GtkWidget *w, PurpleConversation *conv)
 {
-    GtkWidget *menu = gaim_conversation_get_data(conv, "otr-menu");
+    GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
     if (menu) gtk_object_destroy(GTK_OBJECT(menu));
     g_hash_table_remove(conv->data, "otr-label");
     g_hash_table_remove(conv->data, "otr-button");
@@ -1410,9 +1374,9 @@ static void button_destroyed(GtkWidget *w, GaimConversation *conv)
 }
 
 /* Set up the per-conversation information display */
-static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
+static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
 {
-    GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     ConnContext *context;
     GtkWidget *bbox;
     GtkWidget *button;
@@ -1431,20 +1395,15 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     GtkWidget *whatsthis;
 
     /* Do nothing if this isn't an IM conversation */
-#if GAIM_MAJOR_VERSION < 2
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
-    bbox = gtkconv->bbox;
-#else
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
+    if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
     bbox = gtkconv->lower_hbox;
-#endif
 
     context = otrg_plugin_conv_to_context(conv);
 
     /* See if we're already set up */
-    button = gaim_conversation_get_data(conv, "otr-button");
+    button = purple_conversation_get_data(conv, "otr-button");
     if (button) {
-	/* Check if we've been removed from the bbox; gaim does this
+	/* Check if we've been removed from the bbox; purple does this
 	 * when the user changes her prefs for the style of buttons to
 	 * display. */
 	GList *children = gtk_container_get_children(GTK_CONTAINER(bbox));
@@ -1508,15 +1467,15 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
     gtk_widget_show(whatsthis);
 
-    gaim_conversation_set_data(conv, "otr-label", label);
-    gaim_conversation_set_data(conv, "otr-button", button);
-    gaim_conversation_set_data(conv, "otr-icon", icon);
-    gaim_conversation_set_data(conv, "otr-icontext", icontext);
-    gaim_conversation_set_data(conv, "otr-menu", menu);
-    gaim_conversation_set_data(conv, "otr-menuquery", menuquery);
-    gaim_conversation_set_data(conv, "otr-menuend", menuend);
-    gaim_conversation_set_data(conv, "otr-menuview", menuview);
-    gaim_conversation_set_data(conv, "otr-menuverf", menuverf);
+    purple_conversation_set_data(conv, "otr-label", label);
+    purple_conversation_set_data(conv, "otr-button", button);
+    purple_conversation_set_data(conv, "otr-icon", icon);
+    purple_conversation_set_data(conv, "otr-icontext", icontext);
+    purple_conversation_set_data(conv, "otr-menu", menu);
+    purple_conversation_set_data(conv, "otr-menuquery", menuquery);
+    purple_conversation_set_data(conv, "otr-menuend", menuend);
+    purple_conversation_set_data(conv, "otr-menuview", menuview);
+    purple_conversation_set_data(conv, "otr-menuverf", menuverf);
     gtk_signal_connect(GTK_OBJECT(menuquery), "activate",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
     gtk_signal_connect(GTK_OBJECT(menuend), "activate",
@@ -1539,39 +1498,31 @@ static void otrg_gtk_dialog_new_conv(GaimConversation *conv)
 }
 
 /* Remove the per-conversation information display */
-static void otrg_gtk_dialog_remove_conv(GaimConversation *conv)
+static void otrg_gtk_dialog_remove_conv(PurpleConversation *conv)
 {
     GtkWidget *button;
 
     /* Do nothing if this isn't an IM conversation */
-#if GAIM_MAJOR_VERSION < 2
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
-#else
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
-#endif
+    if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
 
-    button = gaim_conversation_get_data(conv, "otr-button");
+    button = purple_conversation_get_data(conv, "otr-button");
     if (button) gtk_object_destroy(GTK_OBJECT(button));
 }
 
 /* Set the OTR button to "sensitive" or "insensitive" as appropriate. */
-static void dialog_resensitize(GaimConversation *conv)
+static void dialog_resensitize(PurpleConversation *conv)
 {
-    GaimAccount *account;
-    GaimConnection *connection;
+    PurpleAccount *account;
+    PurpleConnection *connection;
     GtkWidget *button;
     const char *name;
     OtrlPolicy policy;
 
     /* Do nothing if this isn't an IM conversation */
-#if GAIM_MAJOR_VERSION < 2
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_IM) return;
-#else
-    if (gaim_conversation_get_type(conv) != GAIM_CONV_TYPE_IM) return;
-#endif
+    if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
 
-    account = gaim_conversation_get_account(conv);
-    name = gaim_conversation_get_name(conv);
+    account = purple_conversation_get_account(conv);
+    name = purple_conversation_get_name(conv);
     policy = otrg_ui_find_policy(account, name);
 
     if (policy == OTRL_POLICY_NEVER) {
@@ -1579,10 +1530,10 @@ static void dialog_resensitize(GaimConversation *conv)
     } else {
 	otrg_gtk_dialog_new_conv(conv);
     }
-    button = gaim_conversation_get_data(conv, "otr-button");
+    button = purple_conversation_get_data(conv, "otr-button");
     if (!button) return;
     if (account) {
-	connection = gaim_account_get_connection(account);
+	connection = purple_account_get_connection(account);
 	if (connection) {
 	    /* Set the button to "sensitive" */
 	    gtk_widget_set_sensitive(button, 1);
@@ -1597,7 +1548,7 @@ static void dialog_resensitize(GaimConversation *conv)
  * Call this when accounts are logged in or out. */
 static void otrg_gtk_dialog_resensitize_all(void)
 {
-    gaim_conversation_foreach(dialog_resensitize);
+    purple_conversation_foreach(dialog_resensitize);
 }
 
 static const OtrgDialogUiOps gtk_dialog_ui_ops = {

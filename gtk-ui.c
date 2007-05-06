@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -26,13 +26,13 @@
 /* libotr headers */
 #include <libotr/privkey.h>
 
-/* gaim headers */
+/* purple headers */
 #include "util.h"
 #include "account.h"
 #include "notify.h"
 #include "gtkutils.h"
 
-/* gaim-otr headers */
+/* purple-otr headers */
 #include "dialogs.h"
 #include "ui.h"
 #include "otr-plugin.h"
@@ -65,7 +65,7 @@ static const gchar *trust_states[] = {
     "Finished"
 };
 
-static void account_menu_changed_cb(GtkWidget *item, GaimAccount *account,
+static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 	void *data)
 {
     const char *accountname;
@@ -76,8 +76,8 @@ static void account_menu_changed_cb(GtkWidget *item, GaimAccount *account,
     
     if (account) {
 	char fingerprint_buf[45];
-	accountname = gaim_account_get_username(account);
-	protocol = gaim_account_get_protocol_id(account);
+	accountname = purple_account_get_username(account);
+	protocol = purple_account_get_protocol_id(account);
 	fingerprint = otrl_privkey_fingerprint(otrg_plugin_userstate,
 		fingerprint_buf, accountname, protocol);
 
@@ -111,7 +111,7 @@ static GtkWidget *accountmenu_get_selected_item(void)
     return gtk_menu_get_active(GTK_MENU(menu));
 }
 
-static GaimAccount *item_get_account(GtkWidget *item)
+static PurpleAccount *item_get_account(GtkWidget *item)
 {
     if (!item) return NULL;
     return g_object_get_data(G_OBJECT(item), "account");
@@ -122,7 +122,7 @@ static GaimAccount *item_get_account(GtkWidget *item)
 static void otrg_gtk_ui_update_fingerprint(void)
 {
     GtkWidget *item;
-    GaimAccount *account;
+    PurpleAccount *account;
     gpointer user_data;
 
     item = accountmenu_get_selected_item();
@@ -136,7 +136,7 @@ static void otrg_gtk_ui_update_fingerprint(void)
     account_menu_changed_cb(item, account, user_data);
 }
 
-static void account_menu_added_removed_cb(GaimAccount *account, void *data)
+static void account_menu_added_removed_cb(PurpleAccount *account, void *data)
 {
     otrg_gtk_ui_update_fingerprint();
 }
@@ -170,7 +170,7 @@ static void otrg_gtk_ui_update_keylist(void)
     for (context = otrg_plugin_userstate->context_root; context != NULL;
 	    context = context->next) {
 	int i;
-	GaimPlugin *p;
+	PurplePlugin *p;
 	char *proto_name;
 	fingerprint = context->fingerprint_root.next;
 	/* If there's no fingerprint, don't add it to the known
@@ -188,7 +188,7 @@ static void otrg_gtk_ui_update_keylist(void)
 		"Yes" : "No";
 	    otrl_privkey_hash_to_human(hash, fingerprint->fingerprint);
 	    titles[3] = hash;
-	    p = gaim_find_prpl(context->protocol);
+	    p = purple_find_prpl(context->protocol);
 	    proto_name = (p && p->info->name) ? p->info->name : "Unknown";
 	    titles[4] = g_strdup_printf("%s (%s)", context->accountname,
 		proto_name);
@@ -216,13 +216,13 @@ static void otrg_gtk_ui_update_keylist(void)
 
 static void generate(GtkWidget *widget, gpointer data)
 {
-    GaimAccount *account;
+    PurpleAccount *account;
     account = item_get_account(accountmenu_get_selected_item());
 	
     if (account == NULL) return;
 	
-    otrg_plugin_create_privkey(gaim_account_get_username(account),
-	    gaim_account_get_protocol_id(account));
+    otrg_plugin_create_privkey(purple_account_get_username(account),
+	    purple_account_get_protocol_id(account));
 }
 
 static void ui_destroyed(GtkObject *object)
@@ -445,10 +445,10 @@ static void create_otroption_buttons(struct otroptionsdata *oo,
 static void otrg_gtk_ui_global_prefs_load(gboolean *enabledp,
 	gboolean *automaticp, gboolean *onlyprivatep)
 {
-    if (gaim_prefs_exists("/OTR/enabled")) {
-	*enabledp = gaim_prefs_get_bool("/OTR/enabled");
-	*automaticp = gaim_prefs_get_bool("/OTR/automatic");
-	*onlyprivatep = gaim_prefs_get_bool("/OTR/onlyprivate");
+    if (purple_prefs_exists("/OTR/enabled")) {
+	*enabledp = purple_prefs_get_bool("/OTR/enabled");
+	*automaticp = purple_prefs_get_bool("/OTR/automatic");
+	*onlyprivatep = purple_prefs_get_bool("/OTR/onlyprivate");
     } else {
 	*enabledp = TRUE;
 	*automaticp = TRUE;
@@ -460,43 +460,43 @@ static void otrg_gtk_ui_global_prefs_load(gboolean *enabledp,
 static void otrg_gtk_ui_global_prefs_save(gboolean enabled,
 	gboolean automatic, gboolean onlyprivate)
 {
-    if (! gaim_prefs_exists("/OTR")) {
-	gaim_prefs_add_none("/OTR");
+    if (! purple_prefs_exists("/OTR")) {
+	purple_prefs_add_none("/OTR");
     }
-    gaim_prefs_set_bool("/OTR/enabled", enabled);
-    gaim_prefs_set_bool("/OTR/automatic", automatic);
-    gaim_prefs_set_bool("/OTR/onlyprivate", onlyprivate);
+    purple_prefs_set_bool("/OTR/enabled", enabled);
+    purple_prefs_set_bool("/OTR/automatic", automatic);
+    purple_prefs_set_bool("/OTR/onlyprivate", onlyprivate);
 }
 
 /* Load the OTR prefs for a particular buddy */
-static void otrg_gtk_ui_buddy_prefs_load(GaimBuddy *buddy,
+static void otrg_gtk_ui_buddy_prefs_load(PurpleBuddy *buddy,
 	gboolean *usedefaultp, gboolean *enabledp, gboolean *automaticp,
 	gboolean *onlyprivatep)
 {
-    GaimBlistNode *node = &(buddy->node);
+    PurpleBlistNode *node = &(buddy->node);
 
-    *usedefaultp = ! gaim_blist_node_get_bool(node, "OTR/overridedefault");
+    *usedefaultp = ! purple_blist_node_get_bool(node, "OTR/overridedefault");
 
     if (*usedefaultp) {
 	otrg_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep);
     } else {
-	*enabledp = gaim_blist_node_get_bool(node, "OTR/enabled");
-	*automaticp = gaim_blist_node_get_bool(node, "OTR/automatic");
-	*onlyprivatep = gaim_blist_node_get_bool(node, "OTR/onlyprivate");
+	*enabledp = purple_blist_node_get_bool(node, "OTR/enabled");
+	*automaticp = purple_blist_node_get_bool(node, "OTR/automatic");
+	*onlyprivatep = purple_blist_node_get_bool(node, "OTR/onlyprivate");
     }
 }
 
 /* Save the OTR prefs for a particular buddy */
-static void otrg_gtk_ui_buddy_prefs_save(GaimBuddy *buddy,
+static void otrg_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
 	gboolean usedefault, gboolean enabled, gboolean automatic,
 	gboolean onlyprivate)
 {
-    GaimBlistNode *node = &(buddy->node);
+    PurpleBlistNode *node = &(buddy->node);
 
-    gaim_blist_node_set_bool(node, "OTR/overridedefault", !usedefault);
-    gaim_blist_node_set_bool(node, "OTR/enabled", enabled);
-    gaim_blist_node_set_bool(node, "OTR/automatic", automatic);
-    gaim_blist_node_set_bool(node, "OTR/onlyprivate", onlyprivate);
+    purple_blist_node_set_bool(node, "OTR/overridedefault", !usedefault);
+    purple_blist_node_set_bool(node, "OTR/enabled", enabled);
+    purple_blist_node_set_bool(node, "OTR/automatic", automatic);
+    purple_blist_node_set_bool(node, "OTR/onlyprivate", onlyprivate);
 }
 
 static void load_otroptions(struct otroptionsdata *oo)
@@ -537,18 +537,18 @@ static void make_privkeys_ui(GtkWidget *vbox)
     label = gtk_label_new("Key for account:");
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-    ui_layout.accountmenu = gaim_gtk_account_option_menu_new(NULL, 1,
+    ui_layout.accountmenu = pidgin_account_option_menu_new(NULL, 1,
 	    G_CALLBACK(account_menu_changed_cb), NULL, NULL);
     gtk_box_pack_start(GTK_BOX(hbox), ui_layout.accountmenu, TRUE, TRUE, 0);
 
     /* Make sure we notice if the menu changes because an account has
      * been added or removed */
-    gaim_signal_connect(gaim_accounts_get_handle(), "account-added",
+    purple_signal_connect(purple_accounts_get_handle(), "account-added",
 	    ui_layout.accountmenu,
-	    GAIM_CALLBACK(account_menu_added_removed_cb), NULL);
-    gaim_signal_connect(gaim_accounts_get_handle(), "account-removed",
+	    PURPLE_CALLBACK(account_menu_added_removed_cb), NULL);
+    purple_signal_connect(purple_accounts_get_handle(), "account-removed",
 	    ui_layout.accountmenu,
-	    GAIM_CALLBACK(account_menu_added_removed_cb), NULL);
+	    PURPLE_CALLBACK(account_menu_added_removed_cb), NULL);
 
     ui_layout.fprint_label = gtk_label_new("");
     gtk_label_set_selectable(GTK_LABEL(ui_layout.fprint_label), 1);
@@ -698,7 +698,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
 }
 
 /* Construct the OTR UI widget */
-GtkWidget* otrg_gtk_ui_make_widget(GaimPlugin *plugin)
+GtkWidget* otrg_gtk_ui_make_widget(PurplePlugin *plugin)
 {
     GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
     GtkWidget *fingerprintbox = gtk_vbox_new(FALSE, 5);
@@ -734,7 +734,7 @@ GtkWidget* otrg_gtk_ui_make_widget(GaimPlugin *plugin)
 
 struct cbdata {
     GtkWidget *dialog;
-    GaimBuddy *buddy;
+    PurpleBuddy *buddy;
     GtkWidget *defaultbox;
     struct otroptionsdata oo;
 };
@@ -807,7 +807,7 @@ static void config_buddy_response_cb(GtkDialog *dialog, gint resp,
     gtk_widget_destroy(data->dialog);
 }
 
-static void otrg_gtk_ui_config_buddy(GaimBuddy *buddy)
+static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
 {
     GtkWidget *dialog;
     GtkWidget *label;
@@ -835,7 +835,7 @@ static void otrg_gtk_ui_config_buddy(GaimBuddy *buddy)
     /* Set the title */
 
     label_text = g_strdup_printf("<span weight=\"bold\" size=\"larger\">"
-	    "OTR Settings for %s</span>", gaim_buddy_get_contact_alias(buddy));
+	    "OTR Settings for %s</span>", purple_buddy_get_contact_alias(buddy));
 
     label = gtk_label_new(NULL);
 
@@ -882,10 +882,10 @@ static void otrg_gtk_ui_config_buddy(GaimBuddy *buddy)
 }
 
 /* Calculate the policy for a particular account / username */
-static OtrlPolicy otrg_gtk_ui_find_policy(GaimAccount *account,
+static OtrlPolicy otrg_gtk_ui_find_policy(PurpleAccount *account,
 	const char *name)
 {
-    GaimBuddy *buddy;
+    PurpleBuddy *buddy;
     gboolean otrenabled, otrautomatic, otronlyprivate;
     gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate;
     OtrlPolicy policy = OTRL_POLICY_DEFAULT;
@@ -907,7 +907,7 @@ static OtrlPolicy otrg_gtk_ui_find_policy(GaimAccount *account,
 	policy = OTRL_POLICY_NEVER;
     }
 
-    buddy = gaim_find_buddy(account, name);
+    buddy = purple_find_buddy(account, name);
     if (!buddy) return policy;
 
     /* Get the buddy-specific policy, if present */

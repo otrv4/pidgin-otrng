@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -20,7 +20,7 @@
 #ifndef __OTRG_DIALOGS_H__
 #define __OTRG_DIALOGS_H__
 
-/* gaim headers */
+/* pidgin headers */
 #include "notify.h"
 
 /* libotr headers */
@@ -37,7 +37,7 @@
 typedef struct s_OtrgDialogWait *OtrgDialogWaitHandle;
 
 typedef struct {
-    void (*notify_message)(GaimNotifyMsgType type,
+    void (*notify_message)(PurpleNotifyMsgType type,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary);
 
@@ -65,9 +65,9 @@ typedef struct {
 
     void (*resensitize_all)(void);
 
-    void (*new_conv)(GaimConversation *conv);
+    void (*new_conv)(PurpleConversation *conv);
 
-    void (*remove_conv)(GaimConversation *conv);
+    void (*remove_conv)(PurpleConversation *conv);
 } OtrgDialogUiOps;
 
 /* Set the UI ops */
@@ -76,10 +76,10 @@ void otrg_dialog_set_ui_ops(const OtrgDialogUiOps *ops);
 /* Get the UI ops */
 const OtrgDialogUiOps *otrg_dialog_get_ui_ops(void);
 
-/* This is just like gaim_notify_message, except: (a) it doesn't grab
+/* This is just like pidgin_notify_message, except: (a) it doesn't grab
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
-void otrg_dialog_notify_message(GaimNotifyMsgType type,
+void otrg_dialog_notify_message(PurpleNotifyMsgType type,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary);
 
@@ -141,9 +141,9 @@ void otrg_dialog_finished(const char *accountname, const char *protocol,
 void otrg_dialog_resensitize_all(void);
 
 /* Set up the per-conversation information display */
-void otrg_dialog_new_conv(GaimConversation *conv);
+void otrg_dialog_new_conv(PurpleConversation *conv);
 
 /* Remove the per-conversation information display */
-void otrg_dialog_remove_conv(GaimConversation *conv);
+void otrg_dialog_remove_conv(PurpleConversation *conv);
 
 #endif

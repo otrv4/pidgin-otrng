@@ -1,9 +1,9 @@
-		Off-the-Record Messaging plugin for GAIM
-			  v3.0.0,  2 Nov 2005
+	       Off-the-Record Messaging plugin for pidgin
+			  v3.0.0,  6 May 2007
 
-This is a gaim plugin which implements Off-the-Record (OTR) Messaging.
+This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
-gaim (1.x).
+pidgin (2.0).
 
 OTR allows you to have private conversations over IM by providing:
  - Encryption
@@ -25,13 +25,11 @@ http://www.cypherpunks.ca/otr/
 
 USAGE
 
-Run gaim, and open the Preferences panel.  (If you had a copy of gaim
-running before you installed gaim-otr, you will need to restart it.)
-Choose "Plugins".  Find the Off-the-Record Messaging plugin, and enable
-it by selecting the "Load" box next to it.  This will cause
-"Off-the-Record Messaging" to appear under "Plugins" in the list at the
-left.  Click "Off-the-Record Messaging" to bring up the OTR UI.  The UI
-has two "pages": "Known fingerprints" and "Config".
+Run pidgin, and open the Plugins panel.  (If you had a copy of pidgin
+running before you installed pidgin-otr, you will need to restart it.)
+Find the Off-the-Record Messaging plugin, and enable it by selecting the
+checkbox next to it.  Click "Configure Plugin" to bring up the OTR UI.
+The UI has two "pages": "Known fingerprints" and "Config".
 
 The "Config" page allows you generate private keys, and to set OTR
 options.
@@ -143,7 +141,7 @@ Verify fingerprint
     Once you do this, the label on the OTR button will change to "OTR:
     Private".  Note that you only need to do this once per buddy (or
     once per fingerprint, if your buddy has more than one fingerprint).
-    gaim-otr will remember which fingerprints you have marked as
+    pidgin-otr will remember which fingerprints you have marked as
     verified.
 
 View secure session id
@@ -220,10 +218,10 @@ otr-dev:
 
 LICENSE
 
-The Off-the-Record Messaging plugin for gaim is covered by the following
+The Off-the-Record Messaging plugin for pidgin is covered by the following
 (GPL) license:
 
-    Off-the-Record Messaging plugin for gaim
+    Off-the-Record Messaging plugin for pidgin
     Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
 		             <otr@cypherpunks.ca>
 

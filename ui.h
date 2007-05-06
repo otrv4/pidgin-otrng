@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -27,9 +27,9 @@ typedef struct {
 
     void (*update_keylist)(void);
 
-    void (*config_buddy)(GaimBuddy *buddy);
+    void (*config_buddy)(PurpleBuddy *buddy);
 
-    OtrlPolicy (*find_policy)(GaimAccount *account, const char *name);
+    OtrlPolicy (*find_policy)(PurpleAccount *account, const char *name);
 } OtrgUiUiOps;
 
 /* Set the UI ops */
@@ -55,9 +55,9 @@ void otrg_ui_disconnect_connection(ConnContext *context);
 void otrg_ui_forget_fingerprint(Fingerprint *fingerprint);
 
 /* Configure OTR for a particular buddy */
-void otrg_ui_config_buddy(GaimBuddy *buddy);
+void otrg_ui_config_buddy(PurpleBuddy *buddy);
 
 /* Calculate the policy for a particular account / username */
-OtrlPolicy otrg_ui_find_policy(GaimAccount *account, const char *name);
+OtrlPolicy otrg_ui_find_policy(PurpleAccount *account, const char *name);
 
 #endif

@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -30,8 +30,8 @@
 /* libgcrypt headers */
 #include <gcrypt.h>
 
-/* gaim headers */
-#include "gaim.h"
+/* purple headers */
+#include "pidgin.h"
 #include "notify.h"
 #include "version.h"
 #include "util.h"
@@ -39,7 +39,7 @@
 #include "core.h"
 
 #ifdef USING_GTK
-/* gaim GTK headers */
+/* purple GTK headers */
 #include "gtkplugin.h"
 #endif
 
@@ -49,13 +49,13 @@
 #include <libotr/message.h>
 #include <libotr/userstate.h>
 
-/* gaim-otr headers */
+/* purple-otr headers */
 #include "ui.h"
 #include "dialogs.h"
 #include "otr-plugin.h"
 
 #ifdef USING_GTK
-/* gaim-otr GTK headers */
+/* purple-otr GTK headers */
 #include "gtk-ui.h"
 #include "gtk-dialog.h"
 #endif
@@ -74,23 +74,23 @@
 #define g_fopen fopen
 #endif
 
-GaimPlugin *otrg_plugin_handle;
+PurplePlugin *otrg_plugin_handle;
 
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
 
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
-void otrg_plugin_inject_message(GaimAccount *account, const char *recipient,
+void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
 	const char *message)
 {
-    GaimConnection *connection;
+    PurpleConnection *connection;
 
-    connection = gaim_account_get_connection(account);
+    connection = purple_account_get_connection(account);
     if (!connection) {
-	const char *protocol = gaim_account_get_protocol_id(account);
-	const char *accountname = gaim_account_get_username(account);
-	GaimPlugin *p = gaim_find_prpl(protocol);
+	const char *protocol = purple_account_get_protocol_id(account);
+	const char *accountname = purple_account_get_username(account);
+	PurplePlugin *p = purple_find_prpl(protocol);
 	char *msg = g_strdup_printf("You are not currently connected to "
 		"account %s (%s).", accountname,
 		(p && p->info->name) ? p->info->name : "Unknown");
@@ -104,12 +104,12 @@ void otrg_plugin_inject_message(GaimAccount *account, const char *recipient,
 
 static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
 {
-    GaimAccount *account;
+    PurpleAccount *account;
     OtrlPolicy policy = OTRL_POLICY_DEFAULT;
 
     if (!context) return policy;
 
-    account = gaim_accounts_find(context->accountname, context->protocol);
+    account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) return policy;
 
     return otrg_ui_find_policy(account, context->username);
@@ -117,7 +117,7 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
 
 static const char *protocol_name_cb(void *opdata, const char *protocol)
 {
-    GaimPlugin *p = gaim_find_prpl(protocol);
+    PurplePlugin *p = purple_find_prpl(protocol);
     if (!p) return NULL;
     return p->info->name;
 }
@@ -135,7 +135,7 @@ void otrg_plugin_create_privkey(const char *accountname,
     OtrgDialogWaitHandle waithandle;
     FILE *privf;
 
-    gchar *privkeyfile = g_build_filename(gaim_user_dir(), PRIVKEYFNAME, NULL);
+    gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
     if (!privkeyfile) {
 	fprintf(stderr, "Out of memory building filenames!\n");
 	return;
@@ -168,28 +168,24 @@ static void create_privkey_cb(void *opdata, const char *accountname,
 static int is_logged_in_cb(void *opdata, const char *accountname,
 	const char *protocol, const char *recipient)
 {
-    GaimAccount *account;
-    GaimBuddy *buddy;
+    PurpleAccount *account;
+    PurpleBuddy *buddy;
 
-    account = gaim_accounts_find(accountname, protocol);
+    account = purple_accounts_find(accountname, protocol);
     if (!account) return -1;
 
-    buddy = gaim_find_buddy(account, recipient);
+    buddy = purple_find_buddy(account, recipient);
     if (!buddy) return -1;
 
-#if GAIM_MAJOR_VERSION < 2
-    return (buddy->present == GAIM_BUDDY_ONLINE);
-#else
-    return (GAIM_BUDDY_IS_ONLINE(buddy));
-#endif
+    return (PURPLE_BUDDY_IS_ONLINE(buddy));
 }
 
 static void inject_message_cb(void *opdata, const char *accountname,
 	const char *protocol, const char *recipient, const char *message)
 {
-    GaimAccount *account = gaim_accounts_find(accountname, protocol);
+    PurpleAccount *account = purple_accounts_find(accountname, protocol);
     if (!account) {
-	GaimPlugin *p = gaim_find_prpl(protocol);
+	PurplePlugin *p = purple_find_prpl(protocol);
 	char *msg = g_strdup_printf("Unknown account %s (%s).", accountname,
 		(p && p->info->name) ? p->info->name : "Unknown");
 	otrg_dialog_notify_error(accountname, protocol, recipient,
@@ -204,21 +200,21 @@ static void notify_cb(void *opdata, OtrlNotifyLevel level,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary)
 {
-    GaimNotifyMsgType gaimlevel = GAIM_NOTIFY_MSG_ERROR;
+    PurpleNotifyMsgType purplelevel = PURPLE_NOTIFY_MSG_ERROR;
 
     switch (level) {
 	case OTRL_NOTIFY_ERROR:
-	    gaimlevel = GAIM_NOTIFY_MSG_ERROR;
+	    purplelevel = PURPLE_NOTIFY_MSG_ERROR;
 	    break;
 	case OTRL_NOTIFY_WARNING:
-	    gaimlevel = GAIM_NOTIFY_MSG_WARNING;
+	    purplelevel = PURPLE_NOTIFY_MSG_WARNING;
 	    break;
 	case OTRL_NOTIFY_INFO:
-	    gaimlevel = GAIM_NOTIFY_MSG_INFO;
+	    purplelevel = PURPLE_NOTIFY_MSG_INFO;
 	    break;
     }
 
-    otrg_dialog_notify_message(gaimlevel, accountname, protocol,
+    otrg_dialog_notify_message(purplelevel, accountname, protocol,
 	    username, title, primary, secondary);
 }
 
@@ -266,7 +262,7 @@ static void still_secure_cb(void *opdata, ConnContext *context, int is_reply)
 
 static void log_message_cb(void *opdata, const char *message)
 {
-    gaim_debug_info("otr", message);
+    purple_debug_info("otr", message);
 }
 
 static OtrlMessageAppOps ui_ops = {
@@ -287,19 +283,19 @@ static OtrlMessageAppOps ui_ops = {
     log_message_cb
 };
 
-static void process_sending_im(GaimAccount *account, char *who, char **message,
+static void process_sending_im(PurpleAccount *account, char *who, char **message,
 	void *m)
 {
     char *newmessage = NULL;
-    const char *accountname = gaim_account_get_username(account);
-    const char *protocol = gaim_account_get_protocol_id(account);
+    const char *accountname = purple_account_get_username(account);
+    const char *protocol = purple_account_get_protocol_id(account);
     char *username;
     gcry_error_t err;
 
     if (!who || !message || !*message)
 	return;
 
-    username = strdup(gaim_normalize(account, who));
+    username = strdup(purple_normalize(account, who));
 
     err = otrl_message_sending(otrg_plugin_userstate, &ui_ops, NULL,
 	    accountname, protocol, username, *message, NULL, &newmessage,
@@ -324,11 +320,11 @@ static void process_sending_im(GaimAccount *account, char *who, char **message,
 
 /* Send the default OTR Query message to the correspondent of the given
  * context, from the given account.  [account is actually a
- * GaimAccount*, but it's declared here as void* so this can be passed
+ * PurpleAccount*, but it's declared here as void* so this can be passed
  * as a callback.] */
 void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
 {
-    GaimAccount *account = vaccount;
+    PurpleAccount *account = vaccount;
     char *msg = otrl_proto_default_query_msg(context->accountname,
 	    otrg_ui_find_policy(account, context->username));
     otrg_plugin_inject_message(account, context->username,
@@ -338,15 +334,15 @@ void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
 
 /* Send the default OTR Query message to the correspondent of the given
  * conversation. */
-void otrg_plugin_send_default_query_conv(GaimConversation *conv)
+void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 {
-    GaimAccount *account;
+    PurpleAccount *account;
     const char *username, *accountname;
     char *msg;
     
-    account = gaim_conversation_get_account(conv);
-    accountname = gaim_account_get_username(account);
-    username = gaim_conversation_get_name(conv);
+    account = purple_conversation_get_account(conv);
+    accountname = purple_account_get_username(account);
+    username = purple_conversation_get_name(conv);
     
     msg = otrl_proto_default_query_msg(accountname,
 	    otrg_ui_find_policy(account, username));
@@ -354,7 +350,7 @@ void otrg_plugin_send_default_query_conv(GaimConversation *conv)
     free(msg);
 }
 
-static gboolean process_receiving_im(GaimAccount *account, char **who, 
+static gboolean process_receiving_im(PurpleAccount *account, char **who, 
         char **message, int *flags, void *m)
 {
     char *newmessage = NULL;
@@ -368,9 +364,9 @@ static gboolean process_receiving_im(GaimAccount *account, char **who,
     if (!who || !*who || !message || !*message)
         return 0;
 
-    username = strdup(gaim_normalize(account, *who));
-    accountname = gaim_account_get_username(account);
-    protocol = gaim_account_get_protocol_id(account);
+    username = strdup(purple_normalize(account, *who));
+    accountname = purple_account_get_username(account);
+    protocol = purple_account_get_protocol_id(account);
 
     res = otrl_message_receiving(otrg_plugin_userstate, &ui_ops, NULL,
 	    accountname, protocol, username, *message,
@@ -408,66 +404,45 @@ static gboolean process_receiving_im(GaimAccount *account, char **who,
     return res;
 }
 
-static void process_conv_create(GaimConversation *conv, void *data)
+static void process_conv_create(PurpleConversation *conv, void *data)
 {
     if (conv) otrg_dialog_new_conv(conv);
 }
 
-static void process_connection_change(GaimConnection *conn, void *data)
+static void process_connection_change(PurpleConnection *conn, void *data)
 {
     /* If we log in or out of a connection, make sure all of the OTR
      * buttons are in the appropriate sensitive/insensitive state. */
     otrg_dialog_resensitize_all();
 }
 
-#if GAIM_MAJOR_VERSION < 2
-/* gaim-2.0.0 no longer has the row of buttons in question */
-static void process_button_type_change(const char *name, GaimPrefType type,
-	gpointer value, gpointer data)
+static void otr_options_cb(PurpleBlistNode *node, gpointer user_data)
 {
-    /* If the user changes the style of the buttons at the bottom of the
-     * conversation window, gaim annoyingly removes all the buttons from
-     * the bbox, and reinserts its own.  So we need to reinsert our
-     * buttons as well. */
-    otrg_dialog_resensitize_all();
-}
-#endif
-
-static void otr_options_cb(GaimBlistNode *node, gpointer user_data)
-{
-    /* We've already checked GAIM_BLIST_NODE_IS_BUDDY(node) */
-    GaimBuddy *buddy = (GaimBuddy *)node;
+    /* We've already checked PURPLE_BLIST_NODE_IS_BUDDY(node) */
+    PurpleBuddy *buddy = (PurpleBuddy *)node;
 
     /* Modify the settings for this buddy */
     otrg_ui_config_buddy(buddy);
 }
 
-static void supply_extended_menu(GaimBlistNode *node, GList **menu)
+static void supply_extended_menu(PurpleBlistNode *node, GList **menu)
 {
-#if GAIM_MAJOR_VERSION < 2
-    GaimBlistNodeAction *act;
-#else
-    GaimMenuAction *act;
-#endif
-    GaimBuddy *buddy;
-    GaimAccount *acct;
+    PurpleMenuAction *act;
+    PurpleBuddy *buddy;
+    PurpleAccount *acct;
     const char *proto;
 
-    if (!GAIM_BLIST_NODE_IS_BUDDY(node)) return;
+    if (!PURPLE_BLIST_NODE_IS_BUDDY(node)) return;
 
     /* Extract the account, and then the protocol, for this buddy */
-    buddy = (GaimBuddy *)node;
+    buddy = (PurpleBuddy *)node;
     acct = buddy->account;
     if (acct == NULL) return;
-    proto = gaim_account_get_protocol_id(acct);
+    proto = purple_account_get_protocol_id(acct);
     if (!otrg_plugin_proto_supports_otr(proto)) return;
 
-#if GAIM_MAJOR_VERSION < 2
-    act = gaim_blist_node_action_new("OTR Settings", otr_options_cb, NULL);
-#else
-    act = gaim_menu_action_new("OTR Settings", (GaimCallback)otr_options_cb,
+    act = purple_menu_action_new("OTR Settings", (PurpleCallback)otr_options_cb,
 	    NULL, NULL);
-#endif
     *menu = g_list_append(*menu, act);
 }
 
@@ -483,7 +458,7 @@ void otrg_plugin_disconnect(ConnContext *context)
 void otrg_plugin_write_fingerprints(void)
 {
     FILE *storef;
-    gchar *storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
+    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
     storef = g_fopen(storefile, "wb");
     g_free(storefile);
     if (!storef) return;
@@ -491,19 +466,19 @@ void otrg_plugin_write_fingerprints(void)
     fclose(storef);
 }
 
-/* Find the ConnContext appropriate to a given GaimConversation. */
-ConnContext *otrg_plugin_conv_to_context(GaimConversation *conv)
+/* Find the ConnContext appropriate to a given PurpleConversation. */
+ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv)
 {
-    GaimAccount *account;
+    PurpleAccount *account;
     char *username;
     const char *accountname, *proto;
     ConnContext *context;
 
-    account = gaim_conversation_get_account(conv);
-    accountname = gaim_account_get_username(account);
-    proto = gaim_account_get_protocol_id(account);
+    account = purple_conversation_get_account(conv);
+    accountname = purple_account_get_username(account);
+    proto = purple_account_get_protocol_id(account);
     username = g_strdup(
-	    gaim_normalize(account, gaim_conversation_get_name(conv)));
+	    purple_normalize(account, purple_conversation_get_name(conv)));
 
     context = otrl_context_find(otrg_plugin_userstate, username, accountname,
 	    proto, 0, NULL, NULL, NULL);
@@ -512,28 +487,20 @@ ConnContext *otrg_plugin_conv_to_context(GaimConversation *conv)
     return context;
 }
 
-/* Find the GaimConversation appropriate to the given ConnContext.  If
+/* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */
-GaimConversation *otrg_plugin_context_to_conv(ConnContext *context,
+PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
 	int force_create)
 {
-    GaimAccount *account;
-    GaimConversation *conv;
+    PurpleAccount *account;
+    PurpleConversation *conv;
 
-    account = gaim_accounts_find(context->accountname, context->protocol);
+    account = purple_accounts_find(context->accountname, context->protocol);
     if (account == NULL) return NULL;
 
-#if GAIM_MAJOR_VERSION < 2
-    conv = gaim_find_conversation_with_account(context->username, account);
-#else
-    conv = gaim_find_conversation_with_account(GAIM_CONV_TYPE_IM, context->username, account);
-#endif
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, context->username, account);
     if (conv == NULL && force_create) {
-#if GAIM_MAJOR_VERSION < 2
-	conv = gaim_conversation_new(GAIM_CONV_IM, account, context->username);
-#else
-	conv = gaim_conversation_new(GAIM_CONV_TYPE_IM, account, context->username);
-#endif
+	conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, context->username);
     }
 
     return conv;
@@ -572,19 +539,15 @@ static void process_quitting(void)
     }
 }
 
-#if GAIM_MAJOR_VERSION < 2
-/* gaim-2.0.0 no longer has the row of buttons in question */
-static guint button_type_cbid;
-#endif
-
-static gboolean otr_plugin_load(GaimPlugin *handle)
+static gboolean otr_plugin_load(PurplePlugin *handle)
 {
-    gchar *privkeyfile = g_build_filename(gaim_user_dir(), PRIVKEYFNAME, NULL);
-    gchar *storefile = g_build_filename(gaim_user_dir(), STOREFNAME, NULL);
-    void *conv_handle = gaim_conversations_get_handle();
-    void *conn_handle = gaim_connections_get_handle();
-    void *blist_handle = gaim_blist_get_handle();
-    void *core_handle = gaim_get_core();
+    gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME,
+	    NULL);
+    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
+    void *conv_handle = purple_conversations_get_handle();
+    void *conn_handle = purple_connections_get_handle();
+    void *blist_handle = purple_blist_get_handle();
+    void *core_handle = purple_get_core();
     FILE *privf;
     FILE *storef;
 
@@ -612,61 +575,53 @@ static gboolean otr_plugin_load(GaimPlugin *handle)
 
     otrg_ui_update_fingerprint();
 
-    gaim_signal_connect(core_handle, "quitting", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_quitting), NULL);
-    gaim_signal_connect(conv_handle, "sending-im-msg", otrg_plugin_handle,
-            GAIM_CALLBACK(process_sending_im), NULL);
-    gaim_signal_connect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
-            GAIM_CALLBACK(process_receiving_im), NULL);
-    gaim_signal_connect(conv_handle, "conversation-created",
-	    otrg_plugin_handle, GAIM_CALLBACK(process_conv_create), NULL);
-    gaim_signal_connect(conn_handle, "signed-on", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_connection_change), NULL);
-    gaim_signal_connect(conn_handle, "signed-off", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_connection_change), NULL);
-    gaim_signal_connect(blist_handle, "blist-node-extended-menu",
-	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu), NULL);
-#if GAIM_MAJOR_VERSION < 2
-    button_type_cbid = gaim_prefs_connect_callback(
-	    "/gaim/gtk/conversations/button_type",
-	    process_button_type_change, NULL);
-#endif
+    purple_signal_connect(core_handle, "quitting", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_quitting), NULL);
+    purple_signal_connect(conv_handle, "sending-im-msg", otrg_plugin_handle,
+            PURPLE_CALLBACK(process_sending_im), NULL);
+    purple_signal_connect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
+            PURPLE_CALLBACK(process_receiving_im), NULL);
+    purple_signal_connect(conv_handle, "conversation-created",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create), NULL);
+    purple_signal_connect(conn_handle, "signed-on", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_connection_change), NULL);
+    purple_signal_connect(conn_handle, "signed-off", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_connection_change), NULL);
+    purple_signal_connect(blist_handle, "blist-node-extended-menu",
+	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu), NULL);
 
-    gaim_conversation_foreach(otrg_dialog_new_conv);
+    purple_conversation_foreach(otrg_dialog_new_conv);
 
     return 1;
 }
 
-static gboolean otr_plugin_unload(GaimPlugin *handle)
+static gboolean otr_plugin_unload(PurplePlugin *handle)
 {
-    void *conv_handle = gaim_conversations_get_handle();
-    void *conn_handle = gaim_connections_get_handle();
-    void *blist_handle = gaim_blist_get_handle();
-    void *core_handle = gaim_get_core();
+    void *conv_handle = purple_conversations_get_handle();
+    void *conn_handle = purple_connections_get_handle();
+    void *blist_handle = purple_blist_get_handle();
+    void *core_handle = purple_get_core();
 
     /* Clean up all of our state. */
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
-    gaim_signal_disconnect(core_handle, "quitting", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_quitting));
-    gaim_signal_disconnect(conv_handle, "sending-im-msg", otrg_plugin_handle,
-            GAIM_CALLBACK(process_sending_im));
-    gaim_signal_disconnect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
-            GAIM_CALLBACK(process_receiving_im));
-    gaim_signal_disconnect(conv_handle, "conversation-created",
-	    otrg_plugin_handle, GAIM_CALLBACK(process_conv_create));
-    gaim_signal_disconnect(conn_handle, "signed-on", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_connection_change));
-    gaim_signal_disconnect(conn_handle, "signed-off", otrg_plugin_handle,
-	    GAIM_CALLBACK(process_connection_change));
-    gaim_signal_disconnect(blist_handle, "blist-node-extended-menu",
-	    otrg_plugin_handle, GAIM_CALLBACK(supply_extended_menu));
-#if GAIM_MAJOR_VERSION < 2
-    gaim_prefs_disconnect_callback(button_type_cbid);
-#endif
+    purple_signal_disconnect(core_handle, "quitting", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_quitting));
+    purple_signal_disconnect(conv_handle, "sending-im-msg", otrg_plugin_handle,
+            PURPLE_CALLBACK(process_sending_im));
+    purple_signal_disconnect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
+            PURPLE_CALLBACK(process_receiving_im));
+    purple_signal_disconnect(conv_handle, "conversation-created",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create));
+    purple_signal_disconnect(conn_handle, "signed-on", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_connection_change));
+    purple_signal_disconnect(conn_handle, "signed-off", otrg_plugin_handle,
+	    PURPLE_CALLBACK(process_connection_change));
+    purple_signal_disconnect(blist_handle, "blist-node-extended-menu",
+	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu));
 
-    gaim_conversation_foreach(otrg_dialog_remove_conv);
+    purple_conversation_foreach(otrg_dialog_remove_conv);
 
     return 1;
 }
@@ -684,13 +639,13 @@ int otrg_plugin_proto_supports_otr(const char *proto)
 
 #ifdef USING_GTK
 
-static GaimGtkPluginUiInfo ui_info =
+static PurplePluginUiInfo ui_info =
 {
 	otrg_gtk_ui_make_widget
 };
 
 #define UI_INFO &ui_info
-#define PLUGIN_TYPE GAIM_GTK_PLUGIN_TYPE
+#define PLUGIN_TYPE PIDGIN_PLUGIN_TYPE
 
 #else
 
@@ -699,29 +654,22 @@ static GaimGtkPluginUiInfo ui_info =
 
 #endif
 
-static GaimPluginInfo info =
+static PurplePluginInfo info =
 {
-	GAIM_PLUGIN_MAGIC,
+	PURPLE_PLUGIN_MAGIC,
 
-#if GAIM_MAJOR_VERSION < 2
-	/* We stick with the functions in the gaim 1.0.x API for
-	 * compatibility. */
-        1,                                                /* major version  */
-	0,                                                /* minor version  */
-#else
         /* Use the 2.0.x API */
         2,                                                /* major version  */
 	0,                                                /* minor version  */
-#endif
 
-	GAIM_PLUGIN_STANDARD,                             /* type           */
+	PURPLE_PLUGIN_STANDARD,                             /* type           */
 	PLUGIN_TYPE,                                      /* ui_requirement */
 	0,                                                /* flags          */
 	NULL,                                             /* dependencies   */
-	GAIM_PRIORITY_DEFAULT,                            /* priority       */
+	PURPLE_PRIORITY_DEFAULT,                            /* priority       */
 	"otr",                                            /* id             */
 	"Off-the-Record Messaging",                       /* name           */
-	GAIM_OTR_VERSION,                                 /* version        */
+	PIDGIN_OTR_VERSION,                                 /* version        */
 	                                                  /* summary        */
 	"Provides private and secure conversations",
 	                                                  /* description    */
@@ -743,7 +691,7 @@ static GaimPluginInfo info =
 };
 
 static void
-__init_plugin(GaimPlugin *plugin)
+__init_plugin(PurplePlugin *plugin)
 {
     /* Set up the UI ops */
 #ifdef USING_GTK
@@ -755,4 +703,4 @@ __init_plugin(GaimPlugin *plugin)
     OTRL_INIT;
 }
 
-GAIM_INIT_PLUGIN(otr, __init_plugin, info)
+PURPLE_INIT_PLUGIN(otr, __init_plugin, info)

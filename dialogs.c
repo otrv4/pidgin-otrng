@@ -1,5 +1,5 @@
 /*
- *  Off-the-Record Messaging plugin for gaim
+ *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
  *                           <otr@cypherpunks.ca>
  *
@@ -24,14 +24,14 @@
 /* system headers */
 #include <stdlib.h>
 
-/* gaim headers */
+/* pidgin headers */
 #include "notify.h"
 
 /* libotr headers */
 #include <libotr/proto.h>
 #include <libotr/message.h>
 
-/* gaim-otr headers */
+/* pidgin-otr headers */
 #include "dialogs.h"
 #include "otr-plugin.h"
 
@@ -49,10 +49,10 @@ const OtrgDialogUiOps *otrg_dialog_get_ui_ops(void)
     return ui_ops;
 }
 
-/* This is just like gaim_notify_message, except: (a) it doesn't grab
+/* This is just like pidgin_notify_message, except: (a) it doesn't grab
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
-void otrg_dialog_notify_message(GaimNotifyMsgType type,
+void otrg_dialog_notify_message(PurpleNotifyMsgType type,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary)
 {
@@ -65,7 +65,7 @@ void otrg_dialog_notify_error(const char *accountname, const char *protocol,
 	const char *username, const char *title, const char *primary,
 	const char *secondary)
 {
-    otrg_dialog_notify_message(GAIM_NOTIFY_MSG_ERROR, accountname,
+    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_ERROR, accountname,
 	    protocol, username, title, primary, secondary);
 }
 
@@ -74,7 +74,7 @@ void otrg_dialog_notify_warning(const char *accountname, const char *protocol,
 	const char *username, const char *title, const char *primary,
 	const char *secondary)
 {
-    otrg_dialog_notify_message(GAIM_NOTIFY_MSG_WARNING, accountname,
+    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_WARNING, accountname,
 	    protocol, username, title, primary, secondary);
 }
 
@@ -83,7 +83,7 @@ void otrg_dialog_notify_info(const char *accountname, const char *protocol,
 	const char *username, const char *title, const char *primary,
 	const char *secondary)
 {
-    otrg_dialog_notify_message(GAIM_NOTIFY_MSG_INFO, accountname,
+    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_INFO, accountname,
 	    protocol, username, title, primary, secondary);
 }
 
@@ -160,13 +160,13 @@ void otrg_dialog_resensitize_all(void)
 }
 
 /* Set up the per-conversation information display */
-void otrg_dialog_new_conv(GaimConversation *conv)
+void otrg_dialog_new_conv(PurpleConversation *conv)
 {
     ui_ops->new_conv(conv);
 }
 
 /* Remove the per-conversation information display */
-void otrg_dialog_remove_conv(GaimConversation *conv)
+void otrg_dialog_remove_conv(PurpleConversation *conv)
 {
     ui_ops->remove_conv(conv);
 }
