@@ -1,0 +1,12 @@
+# List of files that (could) contain strings for translation
+
+dialogs.c
+dialogs.h
+gtk-dialog.c
+gtk-dialog.h
+gtk-ui.c
+gtk-ui.h
+otr-plugin.c
+otr-plugin.h
+ui.c
+ui.h

@@ -2,6 +2,7 @@
 
 # Make the distribution tar.gz file from the CVS exported version
 
+intltoolize --force --copy
 autoreconf -s -i
 ./configure --mandir=/usr/share/man --prefix=/usr
 fakeroot make dist

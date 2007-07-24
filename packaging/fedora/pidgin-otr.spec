@@ -1,6 +1,6 @@
-Summary: Off-The-Record Messaging plugin for GAIM
-Name: gaim-otr
-Version: 3.0.0
+Summary: Off-The-Record Messaging plugin for pidgin
+Name: pidgin-otr
+Version: 3.1.0
 Release: 1%{?dist}
 Source: http://www.cypherpunks.ca/otr/%{name}-%{version}.tar.gz
 Url: http://www.cypherpunks.ca/otr/
@@ -9,14 +9,14 @@ Group: Applications/Internet
 Provides: otr-plugin = %{version}
 Obsoletes: otr-plugin
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires: gaim >= 1.0.0, libotr >= 3.0.0
-BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, gaim >= 1.0.0, libotr-devel >= 3.0.0
+Requires: pidgin >= 2.0.0, libotr >= 3.1.0
+BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, pidgin >= 2.0.0, libotr-devel >= 3.1.0
 
 %description 
 
-This is a gaim plugin which implements Off-the-Record (OTR) Messaging.
+This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
-gaim (1.x).
+pidgin (2.x).
 
 %prep
 %setup -q
@@ -30,7 +30,7 @@ make %{?_smp_mflags} all
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 # libtool insists on creating this
-rm $RPM_BUILD_ROOT/%{_libdir}/gaim/gaim-otr.la
+rm $RPM_BUILD_ROOT/%{_libdir}/pidgin/pidgin-otr.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -38,7 +38,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root, 0755)
 %doc README COPYING
-%{_libdir}/gaim/gaim-otr.so
+%{_libdir}/pidgin/pidgin-otr.so
 
 %changelog
 * Mon Oct 17 2005 Paul Wouters <paul@cypherpunks.ca> 3.0.0

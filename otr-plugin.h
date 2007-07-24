@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,7 @@
 
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"
+#define MAXMSGSIZEFNAME "otr.max_message_size"
 
 extern PurplePlugin *otrg_plugin_handle;
 
@@ -43,6 +44,17 @@ void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
 /* Generate a private key for the given accountname/protocol */
 void otrg_plugin_create_privkey(const char *accountname,
 	const char *protocol);
+
+/* Start or continue the Socialist Millionaires' Protocol over the current
+ * connection, using the given initial secret. */
+void otrg_plugin_start_smp(ConnContext *context,
+	const unsigned char *secret, size_t secretlen);
+void otrg_plugin_continue_smp(ConnContext *context,
+	const unsigned char *secret, size_t secretlen);
+
+/* Abort the SMP protocol.  Used when malformed or unexpected messages
+ * are received. */
+void otrg_plugin_abort_smp(ConnContext *context);
 
 /* Send the default OTR Query message to the correspondent of the given
  * context, from the given account.  [account is actually a
@@ -63,6 +75,11 @@ void otrg_plugin_write_fingerprints(void);
 
 /* Find the ConnContext appropriate to a given PurpleConversation. */
 ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv);
+
+/* Find the PurpleConversation appropriate to the given userinfo.  If
+ * one doesn't yet exist, create it if force_create is true. */
+PurpleConversation *otrg_plugin_userinfo_to_conv(const char *accountname,
+	const char *protocol, const char *username, int force_create);
 
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */

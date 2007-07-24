@@ -1,3 +1,84 @@
+2007-07-24
+
+	* INSTALL: Added information about i18n; added information about
+	linking libgcrypt statically
+
+	* otr-plugin.c: Added support for transparent fragmentation of
+	large messages
+
+	* Most files: Updated copyright information
+
+2007-07-22
+
+	* configure.ac: Check for libpurple and use a recent format for
+	AC_INIT/AM_INIT_AUTOMAKE, based on a patch from <synx13@sf.net>.
+
+2007-07-18
+
+	* gtk-ui.c: Simplify account list option menu in Config UI,
+	thanks to Gabriel Schulhof <nix@go-nix.ca>.
+
+	* gtk-ui.c: Reorder the tabs in the Config UI so that Config is
+	first.
+
+	* README: Updated to reflect new tab ordering, and new
+	"Don't log OTR conversations" option.
+
+	* gtk-dialog.c: Fixed a bug in the verify fingerprint dialog in
+	the unlikely event that a fingerprint exists in the fingerprints
+	file with no corresponding key for the local account in the
+	private keys file.
+
+2007-07-17
+
+	* dialogs.c:
+	* dialogs.h:
+	* gtk-dialog.c: Removed Verify fingerprint and View secure
+	session id menu options.  Added "Advanced..." button to
+	Authenticate buddy dialog, which brings up the old Verify
+	fingerprint dialog.  The Authenticate buddy dialog now allows
+	users to authenticate their buddies without ever seeing a
+	fingerprint.
+
+2007-07-10
+
+	* dialogs.c:
+	* dialogs.h:
+	* gtk-dialog.c:
+	* gtk-ui.c:
+	* otr-plugin.c:
+	* ui.c:
+	* ui.h: Added init() and cleanup() callbacks to the ui and
+	dialog subsystems that are called when the plugin is loaded and
+	unloaded respectively.
+
+	* gtk-dialog.c: Fixed bug where multiple OTR buttons in one
+	window would cause pidgin to crash when the window is closed.
+
+2007-07-08
+
+	* otr-plugin.c:
+	* gtk-dialog.c:
+	* gtk-ui.c: Added an option to not log OTR conversations.
+
+	* gtk-ui.c:
+	* ui.c:
+	* ui.h: Generalized find_policy to get_prefs, allowing for other
+	preferences to be available.
+
+2007-07-07
+
+	* INSTALL: Update dependency information
+
+	* Makefile.am:
+	* Makefile.mingw:
+	* configure.ac:
+	* gtk-dialog.c:
+	* gtk-ui.c:
+	* makedist:
+	* otr-plugin.c:
+	* ui.c: i18n, thanks to Thomas B. <Tommy.B@gmx.net>.
+
 2007-05-06
 
 	* Makefile.am:

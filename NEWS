@@ -1,3 +1,14 @@
+24 Jul 2007:
+- Added option to not log OTR conversations
+- Large messages are now fragmented transparently instead of failing
+- Removed "view secure session id" and "verify fingerprint" options from
+  OTR button menu.  Added "authenticate buddy" option in its place.  This
+  new option allows you to authenticate your buddies by entering some
+  secret that only the two of you know, rather than by using a long
+  user-unfriendly sequence of hex characters.  [The old "verify
+  fingerprint" dialog is still available via an "Advanced..." button
+  from the new "authenticate buddy" dialog.]
+
 06 May 2007:
 - Ported to Pidgin 2.0.0
 

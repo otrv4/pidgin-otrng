@@ -1,0 +1,7 @@
+To get the latest list of strings to translate:
+
+intltool-update --pot
+
+To merge the latest list into an existing translation file fr.po:
+
+intltool-update fr

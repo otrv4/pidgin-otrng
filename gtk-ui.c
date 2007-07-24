@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* config.h */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /* system headers */
 #include <gtk/gtk.h>
 
@@ -32,6 +37,11 @@
 #include "notify.h"
 #include "gtkutils.h"
 
+#ifdef ENABLE_NLS
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
+#endif
+
 /* purple-otr headers */
 #include "dialogs.h"
 #include "ui.h"
@@ -41,6 +51,7 @@ struct otroptionsdata {
     GtkWidget *enablebox;
     GtkWidget *automaticbox;
     GtkWidget *onlyprivatebox;
+    GtkWidget *avoidloggingotrbox;
 };
 
 static struct {
@@ -59,10 +70,10 @@ static struct {
 } ui_layout;
 
 static const gchar *trust_states[] = {
-    "Not private",
-    "Unverified",
-    "Private",
-    "Finished"
+    N_("Not private"),
+    N_("Unverified"),
+    N_("Private"),
+    N_("Finished")
 };
 
 static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
@@ -82,16 +93,16 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 		fingerprint_buf, accountname, protocol);
 
 	if (fingerprint) {
-	    sprintf(s, "Fingerprint: %.80s", fingerprint);
+	    sprintf(s, _("Fingerprint: %.80s"), fingerprint);
 	    if (ui_layout.generate_button)
 		gtk_widget_set_sensitive(ui_layout.generate_button, 0);
 	} else {
-	    sprintf(s, "No key present");
+	    sprintf(s, _("No key present"));
 	    if (ui_layout.generate_button)
 		gtk_widget_set_sensitive(ui_layout.generate_button, 1);
 	}
     } else {
-	sprintf(s, "No account available");
+	sprintf(s, _("No account available"));
 	if (ui_layout.generate_button)
 	    gtk_widget_set_sensitive(ui_layout.generate_button, 0);
     }
@@ -101,39 +112,11 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     }
 }
 
-static GtkWidget *accountmenu_get_selected_item(void)
-{
-    GtkWidget *menu;
-
-    if (ui_layout.accountmenu == NULL) return NULL;
-
-    menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(ui_layout.accountmenu));
-    return gtk_menu_get_active(GTK_MENU(menu));
-}
-
-static PurpleAccount *item_get_account(GtkWidget *item)
-{
-    if (!item) return NULL;
-    return g_object_get_data(G_OBJECT(item), "account");
-}
-
 /* Call this function when the DSA key is updated; it will redraw the
  * UI, if visible. */
 static void otrg_gtk_ui_update_fingerprint(void)
 {
-    GtkWidget *item;
-    PurpleAccount *account;
-    gpointer user_data;
-
-    item = accountmenu_get_selected_item();
-
-    if (!item) return;
-
-    account   = item_get_account(item);
-    user_data = g_object_get_data(G_OBJECT(ui_layout.accountmenu),
-	    "user_data");
-
-    account_menu_changed_cb(item, account, user_data);
+    g_signal_emit_by_name(G_OBJECT(ui_layout.accountmenu), "changed");
 }
 
 static void account_menu_added_removed_cb(PurpleAccount *account, void *data)
@@ -179,17 +162,17 @@ static void otrg_gtk_ui_update_keylist(void)
 	    titles[0] = context->username;
 	    if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 		    context->active_fingerprint != fingerprint) {
-		titles[1] = "Unused";
+		titles[1] = _("Unused");
 	    } else {
 		titles[1] = (gchar *)
-		    trust_states[otrg_plugin_context_to_trust(context)];
+		    _(trust_states[otrg_plugin_context_to_trust(context)]);
 	    }
 	    titles[2] = (fingerprint->trust && fingerprint->trust[0]) ?
-		"Yes" : "No";
+		_("Yes") : _("No");
 	    otrl_privkey_hash_to_human(hash, fingerprint->fingerprint);
 	    titles[3] = hash;
 	    p = purple_find_prpl(context->protocol);
-	    proto_name = (p && p->info->name) ? p->info->name : "Unknown";
+	    proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
 	    titles[4] = g_strdup_printf("%s (%s)", context->accountname,
 		proto_name);
 	    i = gtk_clist_append(GTK_CLIST(keylist), titles);
@@ -217,7 +200,7 @@ static void otrg_gtk_ui_update_keylist(void)
 static void generate(GtkWidget *widget, gpointer data)
 {
     PurpleAccount *account;
-    account = item_get_account(accountmenu_get_selected_item());
+    account = pidgin_account_option_menu_get_selected(ui_layout.accountmenu);
 	
     if (account == NULL) return;
 	
@@ -397,9 +380,11 @@ static void otroptions_clicked_cb(GtkButton *button, struct otroptionsdata *oo)
 	} else {
 	    gtk_widget_set_sensitive(oo->onlyprivatebox, FALSE);
 	}
+	gtk_widget_set_sensitive(oo->avoidloggingotrbox, TRUE);
     } else {
 	gtk_widget_set_sensitive(oo->automaticbox, FALSE);
 	gtk_widget_set_sensitive(oo->onlyprivatebox, FALSE);
+	gtk_widget_set_sensitive(oo->avoidloggingotrbox, FALSE);
     }
 }
 
@@ -408,12 +393,14 @@ static void create_otroption_buttons(struct otroptionsdata *oo,
 {
     GtkWidget *tempbox1, *tempbox2;
 
-    oo->enablebox = gtk_check_button_new_with_label("Enable private "
-	    "messaging");
-    oo->automaticbox = gtk_check_button_new_with_label("Automatically "
-	    "initiate private messaging");
-    oo->onlyprivatebox = gtk_check_button_new_with_label("Require private "
-	    "messaging");
+    oo->enablebox = gtk_check_button_new_with_label(_("Enable private "
+	    "messaging"));
+    oo->automaticbox = gtk_check_button_new_with_label(_("Automatically "
+	    "initiate private messaging"));
+    oo->onlyprivatebox = gtk_check_button_new_with_label(_("Require private "
+	    "messaging"));
+    oo->avoidloggingotrbox = gtk_check_button_new_with_label(
+	    _("Don't log OTR conversations"));
 
     gtk_box_pack_start(GTK_BOX(vbox), oo->enablebox,
 	    FALSE, FALSE, 0);
@@ -433,32 +420,39 @@ static void create_otroption_buttons(struct otroptionsdata *oo,
     gtk_box_pack_start(GTK_BOX(tempbox2), oo->onlyprivatebox,
 	    FALSE, FALSE, 0);
 
+    gtk_box_pack_start(GTK_BOX(vbox), oo->avoidloggingotrbox, FALSE, FALSE, 5);
+
     g_signal_connect(G_OBJECT(oo->enablebox), "clicked",
 		     G_CALLBACK(otroptions_clicked_cb), oo);
     g_signal_connect(G_OBJECT(oo->automaticbox), "clicked",
 		     G_CALLBACK(otroptions_clicked_cb), oo);
     g_signal_connect(G_OBJECT(oo->onlyprivatebox), "clicked",
 		     G_CALLBACK(otroptions_clicked_cb), oo);
+    g_signal_connect(G_OBJECT(oo->avoidloggingotrbox), "clicked",
+		     G_CALLBACK(otroptions_clicked_cb), oo);
 }
 
 /* Load the global OTR prefs */
 static void otrg_gtk_ui_global_prefs_load(gboolean *enabledp,
-	gboolean *automaticp, gboolean *onlyprivatep)
+	gboolean *automaticp, gboolean *onlyprivatep,
+	gboolean *avoidloggingotrp)
 {
     if (purple_prefs_exists("/OTR/enabled")) {
 	*enabledp = purple_prefs_get_bool("/OTR/enabled");
 	*automaticp = purple_prefs_get_bool("/OTR/automatic");
 	*onlyprivatep = purple_prefs_get_bool("/OTR/onlyprivate");
+	*avoidloggingotrp = purple_prefs_get_bool("/OTR/avoidloggingotr");
     } else {
 	*enabledp = TRUE;
 	*automaticp = TRUE;
 	*onlyprivatep = FALSE;
+	*avoidloggingotrp = FALSE;
     }
 }
 
 /* Save the global OTR prefs */
 static void otrg_gtk_ui_global_prefs_save(gboolean enabled,
-	gboolean automatic, gboolean onlyprivate)
+	gboolean automatic, gboolean onlyprivate, gboolean avoidloggingotr)
 {
     if (! purple_prefs_exists("/OTR")) {
 	purple_prefs_add_none("/OTR");
@@ -466,30 +460,34 @@ static void otrg_gtk_ui_global_prefs_save(gboolean enabled,
     purple_prefs_set_bool("/OTR/enabled", enabled);
     purple_prefs_set_bool("/OTR/automatic", automatic);
     purple_prefs_set_bool("/OTR/onlyprivate", onlyprivate);
+    purple_prefs_set_bool("/OTR/avoidloggingotr", avoidloggingotr);
 }
 
 /* Load the OTR prefs for a particular buddy */
 static void otrg_gtk_ui_buddy_prefs_load(PurpleBuddy *buddy,
 	gboolean *usedefaultp, gboolean *enabledp, gboolean *automaticp,
-	gboolean *onlyprivatep)
+	gboolean *onlyprivatep, gboolean *avoidloggingotrp)
 {
     PurpleBlistNode *node = &(buddy->node);
 
     *usedefaultp = ! purple_blist_node_get_bool(node, "OTR/overridedefault");
 
     if (*usedefaultp) {
-	otrg_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep);
+	otrg_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep,
+		avoidloggingotrp);
     } else {
 	*enabledp = purple_blist_node_get_bool(node, "OTR/enabled");
 	*automaticp = purple_blist_node_get_bool(node, "OTR/automatic");
 	*onlyprivatep = purple_blist_node_get_bool(node, "OTR/onlyprivate");
+	*avoidloggingotrp =
+	    purple_blist_node_get_bool(node, "OTR/avoidloggingotr");
     }
 }
 
 /* Save the OTR prefs for a particular buddy */
 static void otrg_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
 	gboolean usedefault, gboolean enabled, gboolean automatic,
-	gboolean onlyprivate)
+	gboolean onlyprivate, gboolean avoidloggingotr)
 {
     PurpleBlistNode *node = &(buddy->node);
 
@@ -497,6 +495,7 @@ static void otrg_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
     purple_blist_node_set_bool(node, "OTR/enabled", enabled);
     purple_blist_node_set_bool(node, "OTR/automatic", automatic);
     purple_blist_node_set_bool(node, "OTR/onlyprivate", onlyprivate);
+    purple_blist_node_set_bool(node, "OTR/avoidloggingotr", avoidloggingotr);
 }
 
 static void load_otroptions(struct otroptionsdata *oo)
@@ -504,8 +503,10 @@ static void load_otroptions(struct otroptionsdata *oo)
     gboolean otrenabled;
     gboolean otrautomatic;
     gboolean otronlyprivate;
+    gboolean otravoidloggingotr;
 
-    otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate);
+    otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
+	    &otravoidloggingotr);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->enablebox),
 	    otrenabled);
@@ -513,6 +514,8 @@ static void load_otroptions(struct otroptionsdata *oo)
 	    otrautomatic);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->onlyprivatebox),
 	    otronlyprivate);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->avoidloggingotrbox),
+	    otravoidloggingotr);
 
     otroptions_clicked_cb(GTK_BUTTON(oo->enablebox), oo);
 }
@@ -525,7 +528,7 @@ static void make_privkeys_ui(GtkWidget *vbox)
     GtkWidget *label;
     GtkWidget *frame;
 
-    frame = gtk_frame_new("My private keys");
+    frame = gtk_frame_new(_("My private keys"));
     gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
     fbox = gtk_vbox_new(FALSE, 5);
@@ -534,7 +537,7 @@ static void make_privkeys_ui(GtkWidget *vbox)
 
     hbox = gtk_hbox_new(FALSE, 5);
     gtk_box_pack_start(GTK_BOX(fbox), hbox, FALSE, FALSE, 0);
-    label = gtk_label_new("Key for account:");
+    label = gtk_label_new(_("Key for account:"));
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
     ui_layout.accountmenu = pidgin_account_option_menu_new(NULL, 1,
@@ -559,7 +562,7 @@ static void make_privkeys_ui(GtkWidget *vbox)
     gtk_signal_connect(GTK_OBJECT(ui_layout.generate_button), "clicked",
 	    GTK_SIGNAL_FUNC(generate), NULL);
 
-    label = gtk_label_new("Generate");
+    label = gtk_label_new(_("Generate"));
     gtk_container_add(GTK_CONTAINER(ui_layout.generate_button), label);
 
     otrg_gtk_ui_update_fingerprint();
@@ -577,7 +580,9 @@ static void otroptions_save_cb(GtkButton *button, struct otroptionsdata *oo)
 	    gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(oo->automaticbox)),
 	    gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->onlyprivatebox)));
+		GTK_TOGGLE_BUTTON(oo->onlyprivatebox)),
+	    gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(oo->avoidloggingotrbox)));
 
     otrg_dialog_resensitize_all();
 }
@@ -588,7 +593,7 @@ static void make_options_ui(GtkWidget *vbox)
     GtkWidget *fbox;
     GtkWidget *frame;
 
-    frame = gtk_frame_new("Default OTR Settings");
+    frame = gtk_frame_new(_("Default OTR Settings"));
     gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
     fbox = gtk_vbox_new(FALSE, 0);
@@ -605,6 +610,8 @@ static void make_options_ui(GtkWidget *vbox)
 		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
     g_signal_connect(G_OBJECT(ui_layout.oo.onlyprivatebox), "clicked",
 		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
+    g_signal_connect(G_OBJECT(ui_layout.oo.avoidloggingotrbox), "clicked",
+		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
 }
 
 /* Create the fingerprint UI, and pack it into the vbox */
@@ -613,8 +620,13 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     GtkWidget *hbox;
     GtkWidget *table;
     GtkWidget *label;
-    char *titles[5] = { "Screenname", "Status", "Verified",
-	"Fingerprint", "Account" };
+    char *titles[5];
+
+    titles[0] = _("Screenname");
+    titles[1] = _("Status");
+    titles[2] = _("Verified");
+    titles[3] = _("Fingerprint");
+    titles[4] = _("Account");
 
     ui_layout.scrollwin = gtk_scrolled_window_new(0, 0);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ui_layout.scrollwin), 
@@ -650,7 +662,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     ui_layout.connect_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.connect_button), "clicked",
 	    GTK_SIGNAL_FUNC(connect_connection), NULL);
-    label = gtk_label_new("Start private connection");
+    label = gtk_label_new(_("Start private connection"));
     gtk_container_add(GTK_CONTAINER(ui_layout.connect_button), label);
     gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.connect_button,
 	    0, 1, 0, 1);
@@ -658,7 +670,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     ui_layout.disconnect_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.disconnect_button), "clicked",
 	    GTK_SIGNAL_FUNC(disconnect_connection), NULL);
-    label = gtk_label_new("End private connection");
+    label = gtk_label_new(_("End private connection"));
     gtk_container_add(GTK_CONTAINER(ui_layout.disconnect_button), label);
     gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.disconnect_button,
 	    0, 1, 1, 2);
@@ -666,7 +678,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     ui_layout.verify_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.verify_button), "clicked",
 	    GTK_SIGNAL_FUNC(verify_fingerprint), NULL);
-    label = gtk_label_new("Verify fingerprint");
+    label = gtk_label_new(_("Verify fingerprint"));
     gtk_container_add(GTK_CONTAINER(ui_layout.verify_button), label);
     gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.verify_button,
 	    1, 2, 0, 1);
@@ -674,7 +686,7 @@ static void make_fingerprints_ui(GtkWidget *vbox)
     ui_layout.forget_button = gtk_button_new();
     gtk_signal_connect(GTK_OBJECT(ui_layout.forget_button), "clicked",
 	    GTK_SIGNAL_FUNC(forget_fingerprint), NULL);
-    label = gtk_label_new("Forget fingerprint");
+    label = gtk_label_new(_("Forget fingerprint"));
     gtk_container_add(GTK_CONTAINER(ui_layout.forget_button), label);
     gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.forget_button,
 	    1, 2, 1, 2);
@@ -722,10 +734,10 @@ GtkWidget* otrg_gtk_ui_make_widget(PurplePlugin *plugin)
 
     make_fingerprints_ui(fingerprintbox);
 
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fingerprintbox,
-	    gtk_label_new("Known fingerprints"));
     gtk_notebook_append_page(GTK_NOTEBOOK(notebook), configbox,
-	    gtk_label_new("Config"));
+	    gtk_label_new(_("Config")));
+    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fingerprintbox,
+	    gtk_label_new(_("Known fingerprints")));
 
     gtk_widget_show_all(vbox);
 
@@ -747,6 +759,7 @@ static void default_clicked_cb(GtkButton *button, struct cbdata *data)
 	gtk_widget_set_sensitive(data->oo.enablebox, FALSE);
 	gtk_widget_set_sensitive(data->oo.automaticbox, FALSE);
 	gtk_widget_set_sensitive(data->oo.onlyprivatebox, FALSE);
+	gtk_widget_set_sensitive(data->oo.avoidloggingotrbox, FALSE);
     } else {
 	otroptions_clicked_cb(button, &(data->oo));
     }
@@ -754,10 +767,10 @@ static void default_clicked_cb(GtkButton *button, struct cbdata *data)
 
 static void load_buddyprefs(struct cbdata *data)
 {
-    gboolean usedefault, enabled, automatic, onlyprivate;
+    gboolean usedefault, enabled, automatic, onlyprivate, avoidloggingotr;
 
     otrg_gtk_ui_buddy_prefs_load(data->buddy, &usedefault, &enabled,
-	    &automatic, &onlyprivate);
+	    &automatic, &onlyprivate, &avoidloggingotr);
 
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->defaultbox),
 	    usedefault);
@@ -773,6 +786,9 @@ static void load_buddyprefs(struct cbdata *data)
 		GTK_TOGGLE_BUTTON(data->oo.automaticbox), automatic);
 	gtk_toggle_button_set_active(
 		GTK_TOGGLE_BUTTON(data->oo.onlyprivatebox), onlyprivate);
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(data->oo.avoidloggingotrbox),
+		avoidloggingotr);
     }
 
     default_clicked_cb(GTK_BUTTON(data->defaultbox), data);
@@ -796,7 +812,9 @@ static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data)
 	 gtk_toggle_button_get_active(
 	     GTK_TOGGLE_BUTTON(data->oo.automaticbox)),
 	 gtk_toggle_button_get_active(
-	     GTK_TOGGLE_BUTTON(data->oo.onlyprivatebox)));
+	     GTK_TOGGLE_BUTTON(data->oo.onlyprivatebox)),
+	 gtk_toggle_button_get_active(
+	     GTK_TOGGLE_BUTTON(data->oo.avoidloggingotrbox)));
 
     otrg_dialog_resensitize_all();
 }
@@ -812,11 +830,12 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
     GtkWidget *dialog;
     GtkWidget *label;
     char *label_text;
+    char *label_markup;
     struct cbdata *data = malloc(sizeof(struct cbdata));
 
     if (!data) return;
 
-    dialog = gtk_dialog_new_with_buttons("OTR Settings",
+    dialog = gtk_dialog_new_with_buttons(_("OTR Settings"),
 					 NULL, 0,
 					 GTK_STOCK_OK, GTK_RESPONSE_OK,
 					 NULL);
@@ -834,12 +853,15 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
 
     /* Set the title */
 
-    label_text = g_strdup_printf("<span weight=\"bold\" size=\"larger\">"
-	    "OTR Settings for %s</span>", purple_buddy_get_contact_alias(buddy));
+    label_text = g_strdup_printf(_("OTR Settings for %s"),
+	    purple_buddy_get_contact_alias(buddy));
+    label_markup = g_strdup_printf("<span weight=\"bold\" size=\"larger\">"
+	    "%s</span>", label_text);
 
     label = gtk_label_new(NULL);
 
-    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_markup(GTK_LABEL(label), label_markup);
+    g_free(label_markup);
     g_free(label_text);
     gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
@@ -848,8 +870,8 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
 
     /* Make the cascaded checkboxes */
 
-    data->defaultbox = gtk_check_button_new_with_label("Use default "
-	    "OTR settings for this buddy");
+    data->defaultbox = gtk_check_button_new_with_label(_("Use default "
+	    "OTR settings for this buddy"));
 
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), data->defaultbox,
 	    FALSE, FALSE, 0);
@@ -869,6 +891,8 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
 		     G_CALLBACK(config_buddy_clicked_cb), data);
     g_signal_connect(G_OBJECT(data->oo.onlyprivatebox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
+    g_signal_connect(G_OBJECT(data->oo.avoidloggingotrbox), "clicked",
+		     G_CALLBACK(config_buddy_clicked_cb), data);
 
     /* Set the inital states of the buttons */
     load_buddyprefs(data);
@@ -881,63 +905,81 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
     gtk_widget_show_all(dialog);
 }
 
-/* Calculate the policy for a particular account / username */
-static OtrlPolicy otrg_gtk_ui_find_policy(PurpleAccount *account,
+/* Load the preferences for a particular account / username */
+static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 	const char *name)
 {
     PurpleBuddy *buddy;
-    gboolean otrenabled, otrautomatic, otronlyprivate;
-    gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate;
-    OtrlPolicy policy = OTRL_POLICY_DEFAULT;
+    gboolean otrenabled, otrautomatic, otronlyprivate, otravoidloggingotr;
+    gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate,
+	     buddyavoidloggingotr;
+
+    prefsp->policy = OTRL_POLICY_DEFAULT;
+    prefsp->avoid_logging_otr = FALSE;
     
     /* Get the default policy */
-    otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate);
+    otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
+	    &otravoidloggingotr);
 
     if (otrenabled) {
 	if (otrautomatic) {
 	    if (otronlyprivate) {
-		policy = OTRL_POLICY_ALWAYS;
+		prefsp->policy = OTRL_POLICY_ALWAYS;
 	    } else {
-		policy = OTRL_POLICY_OPPORTUNISTIC;
+		prefsp->policy = OTRL_POLICY_OPPORTUNISTIC;
 	    }
 	} else {
-	    policy = OTRL_POLICY_MANUAL;
+	    prefsp->policy = OTRL_POLICY_MANUAL;
 	}
+	prefsp->avoid_logging_otr = otravoidloggingotr;
     } else {
-	policy = OTRL_POLICY_NEVER;
+	prefsp->policy = OTRL_POLICY_NEVER;
     }
 
     buddy = purple_find_buddy(account, name);
-    if (!buddy) return policy;
+    if (!buddy) return;
 
     /* Get the buddy-specific policy, if present */
     otrg_gtk_ui_buddy_prefs_load(buddy, &buddyusedefault, &buddyenabled,
-	    &buddyautomatic, &buddyonlyprivate);
+	    &buddyautomatic, &buddyonlyprivate, &buddyavoidloggingotr);
 
-    if (buddyusedefault) return policy;
+    if (buddyusedefault) return;
 
     if (buddyenabled) {
 	if (buddyautomatic) {
 	    if (buddyonlyprivate) {
-		policy = OTRL_POLICY_ALWAYS;
+		prefsp->policy = OTRL_POLICY_ALWAYS;
 	    } else {
-		policy = OTRL_POLICY_OPPORTUNISTIC;
+		prefsp->policy = OTRL_POLICY_OPPORTUNISTIC;
 	    }
 	} else {
-	    policy = OTRL_POLICY_MANUAL;
+	    prefsp->policy = OTRL_POLICY_MANUAL;
 	}
+	prefsp->avoid_logging_otr = buddyavoidloggingotr;
     } else {
-	policy = OTRL_POLICY_NEVER;
+	prefsp->policy = OTRL_POLICY_NEVER;
     }
+}
 
-    return policy;
+/* Initialize the OTR UI subsystem */
+static void otrg_gtk_ui_init(void)
+{
+    /* Nothing to do */
+}
+
+/* Deinitialize the OTR UI subsystem */
+static void otrg_gtk_ui_cleanup(void)
+{
+    /* Nothing to do */
 }
 
 static const OtrgUiUiOps gtk_ui_ui_ops = {
+    otrg_gtk_ui_init,
+    otrg_gtk_ui_cleanup,
     otrg_gtk_ui_update_fingerprint,
     otrg_gtk_ui_update_keylist,
     otrg_gtk_ui_config_buddy,
-    otrg_gtk_ui_find_policy
+    otrg_gtk_ui_get_prefs
 };
 
 /* Get the GTK UI ops */

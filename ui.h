@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -22,14 +22,25 @@
 
 #include <libotr/context.h>
 
+/* Global and per-buddy preferences */
 typedef struct {
+    OtrlPolicy policy;
+    gboolean avoid_logging_otr;
+} OtrgUiPrefs;
+
+typedef struct {
+    void (*init)(void);
+
+    void (*cleanup)(void);
+
     void (*update_fingerprint)(void);
 
     void (*update_keylist)(void);
 
     void (*config_buddy)(PurpleBuddy *buddy);
 
-    OtrlPolicy (*find_policy)(PurpleAccount *account, const char *name);
+    void (*get_prefs)(OtrgUiPrefs *prefsp, PurpleAccount *account,
+	    const char *name);
 } OtrgUiUiOps;
 
 /* Set the UI ops */
@@ -37,6 +48,12 @@ void otrg_ui_set_ui_ops(const OtrgUiUiOps *ops);
 
 /* Get the UI ops */
 const OtrgUiUiOps *otrg_ui_get_ui_ops(void);
+
+/* Initialize the UI subsystem */
+void otrg_ui_init(void);
+
+/* Deinitialize the UI subsystem */
+void otrg_ui_cleanup(void);
 
 /* Call this function when the DSA key is updated; it will redraw the
  * UI. */
@@ -57,7 +74,8 @@ void otrg_ui_forget_fingerprint(Fingerprint *fingerprint);
 /* Configure OTR for a particular buddy */
 void otrg_ui_config_buddy(PurpleBuddy *buddy);
 
-/* Calculate the policy for a particular account / username */
-OtrlPolicy otrg_ui_find_policy(PurpleAccount *account, const char *name);
+/* Load the preferences for a particular account / username */
+void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
+	const char *name);
 
 #endif

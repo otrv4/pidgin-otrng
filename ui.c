@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -17,12 +17,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* config.h */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /* system headers */
 #include <stdlib.h>
 
 /* purple headers */
 #include "util.h"
 #include "account.h"
+
+#ifdef ENABLE_NLS
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
+#endif
 
 /* libotr headers */
 #include <libotr/privkey.h>
@@ -46,6 +56,22 @@ void otrg_ui_set_ui_ops(const OtrgUiUiOps *ops)
 const OtrgUiUiOps *otrg_ui_get_ui_ops(void)
 {
     return ui_ops;
+}
+
+/* Initialize the OTR UI subsystem */
+void otrg_ui_init(void)
+{
+    if (ui_ops != NULL) {
+	ui_ops->init();
+    }
+}
+
+/* Deinitialize the OTR UI subsystem */
+void otrg_ui_cleanup(void)
+{
+    if (ui_ops != NULL) {
+	ui_ops->cleanup();
+    }
 }
 
 /* Call this function when the DSA key is updated; it will redraw the
@@ -79,11 +105,11 @@ void otrg_ui_connect_connection(ConnContext *context)
     account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) {
 	PurplePlugin *p = purple_find_prpl(context->protocol);
-	msg = g_strdup_printf("Account %s (%s) could not be found",
+	msg = g_strdup_printf(_("Account %s (%s) could not be found"),
 		  context->accountname,
-		  (p && p->info->name) ? p->info->name : "Unknown");
+		  (p && p->info->name) ? p->info->name : _("Unknown"));
 	otrg_dialog_notify_error(context->accountname, context->protocol,
-		context->username, "Account not found", msg, NULL);
+		context->username, _("Account not found"), msg, NULL);
 	g_free(msg);
 	return;
     }
@@ -128,17 +154,23 @@ void otrg_ui_config_buddy(PurpleBuddy *buddy)
     }
 }
 
-/* Calculate the policy for a particular account / username */
-OtrlPolicy otrg_ui_find_policy(PurpleAccount *account, const char *name)
+/* Load the preferences for a particular account / username */
+void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
+	const char *name)
 {
     /* Check to see if the protocol for this account supports OTR at all. */
     const char *proto = purple_account_get_protocol_id(account);
     if (!otrg_plugin_proto_supports_otr(proto)) {
-	return OTRL_POLICY_NEVER;
+	prefsp->policy = OTRL_POLICY_NEVER;
+	prefsp->avoid_logging_otr = FALSE;
+	return;
     }
 
     if (ui_ops != NULL) {
-	return ui_ops->find_policy(account, name);
+	ui_ops->get_prefs(prefsp, account, name);
+	return;
     }
-    return OTRL_POLICY_DEFAULT;
+    /* If we've got no other way to get the prefs, use sensible defaults */
+    prefsp->policy = OTRL_POLICY_DEFAULT;
+    prefsp->avoid_logging_otr = FALSE;
 }

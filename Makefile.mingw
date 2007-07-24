@@ -1,7 +1,10 @@
 WIN32=1
 
 # The version number to put in the plugin info
-PIDGIN_OTR_VERSION = 3.0.0
+PIDGIN_OTR_VERSION = 3.1.0
+
+# Name of the gettext domain
+GETTEXT_PACKAGE = pidgin-otr
 
 # Replace this with the path to the pidgin and purple headers
 PIDGIN_HEADERS ?= /usr/i586-mingw32msvc/include/pidgin
@@ -18,6 +21,12 @@ LIBOTRINCDIR = /usr/include
 # The locataion of libotr.a.
 LIBOTRLIBDIR = /usr/lib
 
+# Location of libintl.h
+LIBINTLINCDIR = /usr/i586-mingw32msvc/include
+
+# Location of libintl.a
+LIBINTLLIBDIR = /usr/i586-mingw32msvc/lib
+
 # The target
 TARGET = pidgin-otr.so
 
@@ -28,7 +37,8 @@ LIBOTRLIBDIR = /usr/i586-mingw32msvc/lib
 TARGET = pidgin-otr.dll
 LDFLAGS = -Wl,--enable-auto-image-base
 LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0 -lglib-2.0 -lgdk_pixbuf-2.0 \
-	 -lgobject-2.0 -lpidgin -llibpurple -lgcrypt -lgpg-error
+	 -lgobject-2.0 -lpidgin -llibpurple -lgcrypt -lgpg-error \
+	 -L$(LIBINTLLIBDIR) -lintl
 else
 FPIC = -fPIC
 LDFLAGS = -module -avoid-version
@@ -42,7 +52,9 @@ INSTALLDIR = $(DESTDIR)$(PIDGINDIR)
 CC ?= gcc
 override CFLAGS += -g -Wall -I$(PIDGIN_HEADERS) -I$(PURPLE_HEADERS) \
 	$(GTK_HDRS) -I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DPURPLE_PLUGINS \
-	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" -DPIDGIN_NAME=\"Pidgin\"
+	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" \
+	-DPIDGIN_NAME=\"Pidgin\" -I$(LIBINTLINCDIR) -DENABLE_NLS \
+	-DGETTEXT_PACKAGE=\"$(GETTEXT_PACKAGE)\"
  
 all: $(TARGET)
 
@@ -52,6 +64,8 @@ $(TARGET): otr-plugin.o ui.o dialogs.o gtk-ui.o gtk-dialog.o
 install: all
 	install -d $(INSTALLDIR)
 	install -m 0755 $(TARGET) $(INSTALLDIR)
+	$(MAKE) -C po -f Makefile.mingw install
+
 clean:
 	rm -f *.o
 	rm -f $(TARGET)

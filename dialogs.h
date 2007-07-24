@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@
 
 /* The various help URLs */
 #define BASE_HELPURL "http://otr-help.cypherpunks.ca/"
+#define AUTHENTICATE_HELPURL  BASE_HELPURL "authenticate.php"
 #define FINGERPRINT_HELPURL   BASE_HELPURL "fingerprint.php"
 #define SESSIONID_HELPURL     BASE_HELPURL "sessionid.php"
 #define UNVERIFIED_HELPURL    BASE_HELPURL "unverified.php"
@@ -37,6 +38,10 @@
 typedef struct s_OtrgDialogWait *OtrgDialogWaitHandle;
 
 typedef struct {
+    void (*init)(void);
+
+    void (*cleanup)(void);
+
     void (*notify_message)(PurpleNotifyMsgType type,
 	const char *accountname, const char *protocol, const char *username,
 	const char *title, const char *primary, const char *secondary);
@@ -53,6 +58,10 @@ typedef struct {
 	const char *protocol, const char *who, unsigned char fingerprint[20]);
 
     void (*verify_fingerprint)(Fingerprint *fprint);
+
+    void (*socialist_millionaires)(ConnContext *context, gboolean responder);
+
+    void (*update_smp)(ConnContext *context, double progress_level);
 
     void (*connected)(ConnContext *context);
 
@@ -75,6 +84,12 @@ void otrg_dialog_set_ui_ops(const OtrgDialogUiOps *ops);
 
 /* Get the UI ops */
 const OtrgDialogUiOps *otrg_dialog_get_ui_ops(void);
+
+/* Initialize the OTR dialog subsystem */
+void otrg_dialog_init(void);
+
+/* Deinitialize the OTR dialog subsystem */
+void otrg_dialog_cleanup(void);
 
 /* This is just like pidgin_notify_message, except: (a) it doesn't grab
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
@@ -120,6 +135,12 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 
 /* Show a dialog asking the user to verify the given fingerprint. */
 void otrg_dialog_verify_fingerprint(Fingerprint *fprint);
+
+/* Show a dialog asking the user to give an SMP secret. */
+void otrg_dialog_socialist_millionaires(ConnContext *context);
+
+/* Update the status of an ongoing socialist millionaires protocol. */
+void otrg_dialog_update_smp(ConnContext *context, double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */
 void otrg_dialog_connected(ConnContext *context);

@@ -1,5 +1,5 @@
 	       Off-the-Record Messaging plugin for pidgin
-			  v3.0.0,  6 May 2007
+			  v3.1.0, XX XXX 2007
 
 This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
@@ -21,7 +21,7 @@ OTR allows you to have private conversations over IM by providing:
      is compromised.
 
 For more information on Off-the-Record Messaging, see
-http://www.cypherpunks.ca/otr/
+http://otr.cypherpunks.ca/
 
 USAGE
 
@@ -29,7 +29,7 @@ Run pidgin, and open the Plugins panel.  (If you had a copy of pidgin
 running before you installed pidgin-otr, you will need to restart it.)
 Find the Off-the-Record Messaging plugin, and enable it by selecting the
 checkbox next to it.  Click "Configure Plugin" to bring up the OTR UI.
-The UI has two "pages": "Known fingerprints" and "Config".
+The UI has two "pages": "Config" and "Known fingerprints".
 
 The "Config" page allows you generate private keys, and to set OTR
 options.
@@ -52,6 +52,7 @@ options.
     [X] Enable private messaging
       [X] Automatically initiate private messaging
         [ ] Require private messaging
+    [ ] Don't log OTR conversations
 
     If the "enable private messaging" box is unchecked, private messages
     will be disabled completely (and the other two boxes will be greyed
@@ -68,8 +69,12 @@ options.
     understand OTR private messages, and if so, automatically start a
     private conversation.
 
-    If all three boxes are checked, messages will not be sent to your
+    If the first three boxes are checked, messages will not be sent to your
     buddy unless you are in a private conversation.
+
+    If the fourth box is checked, OTR-protected conversations will not
+    be logged, even if logging of instant messages is turned on in
+    pidgin.
 
 The "Known fingerprints" page allows you to see the fingerprints of any
 buddies you have previously communicated with privately.
@@ -222,7 +227,7 @@ The Off-the-Record Messaging plugin for pidgin is covered by the following
 (GPL) license:
 
     Off-the-Record Messaging plugin for pidgin
-    Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+    Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
 		             <otr@cypherpunks.ca>
 
     This program is free software; you can redistribute it and/or modify
@@ -244,7 +249,7 @@ CONTACT
 To report problems, comments, suggestions, patches, etc., you can email
 the authors:
 
-Nikita Borisov and Ian Goldberg <otr@cypherpunks.ca>
+Ian Goldberg, Chris Alexander, and Nikita Borisov <otr@cypherpunks.ca>
 
 For more information on Off-the-Record Messaging, visit
-http://www.cypherpunks.ca/otr/
+http://otr.cypherpunks.ca/

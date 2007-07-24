@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2005  Nikita Borisov and Ian Goldberg
+ *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -43,9 +43,23 @@
 #include "gtkplugin.h"
 #endif
 
+#ifdef ENABLE_NLS
+
+#ifdef WIN32
+/* On Win32, include win32dep.h from pidgin for correct definition
+ * of LOCALEDIR */
+#include "win32dep.h"
+#endif /* WIN32 */
+
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
+
+#endif /* ENABLE_NLS */
+
 /* libotr headers */
 #include <libotr/privkey.h>
 #include <libotr/proto.h>
+#include <libotr/tlv.h>
 #include <libotr/message.h>
 #include <libotr/userstate.h>
 
@@ -56,6 +70,7 @@
 
 #ifdef USING_GTK
 /* purple-otr GTK headers */
+#include <glib.h>
 #include "gtk-ui.h"
 #include "gtk-dialog.h"
 #endif
@@ -79,6 +94,10 @@ PurplePlugin *otrg_plugin_handle;
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
 
+/* GLib HashTable for storing the maximum message size for various
+ * protocols. */
+GHashTable* mms_table;
+
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
 void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
@@ -91,11 +110,11 @@ void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
 	const char *protocol = purple_account_get_protocol_id(account);
 	const char *accountname = purple_account_get_username(account);
 	PurplePlugin *p = purple_find_prpl(protocol);
-	char *msg = g_strdup_printf("You are not currently connected to "
-		"account %s (%s).", accountname,
-		(p && p->info->name) ? p->info->name : "Unknown");
+	char *msg = g_strdup_printf(_("You are not currently connected to "
+		"account %s (%s)."), accountname,
+		(p && p->info->name) ? p->info->name : _("Unknown"));
 	otrg_dialog_notify_error(accountname, protocol, recipient,
-		"Not connected", msg, NULL);
+		_("Not connected"), msg, NULL);
 	g_free(msg);
 	return;
     }
@@ -106,13 +125,15 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
 {
     PurpleAccount *account;
     OtrlPolicy policy = OTRL_POLICY_DEFAULT;
+    OtrgUiPrefs prefs;
 
     if (!context) return policy;
 
     account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) return policy;
 
-    return otrg_ui_find_policy(account, context->username);
+    otrg_ui_get_prefs(&prefs, account, context->username);
+    return prefs.policy;
 }
 
 static const char *protocol_name_cb(void *opdata, const char *protocol)
@@ -137,13 +158,13 @@ void otrg_plugin_create_privkey(const char *accountname,
 
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
     if (!privkeyfile) {
-	fprintf(stderr, "Out of memory building filenames!\n");
+	fprintf(stderr, _("Out of memory building filenames!\n"));
 	return;
     }
     privf = g_fopen(privkeyfile, "w+b");
     g_free(privkeyfile);
     if (!privf) {
-	fprintf(stderr, "Could not write private key file\n");
+	fprintf(stderr, _("Could not write private key file\n"));
 	return;
     }
 
@@ -186,10 +207,11 @@ static void inject_message_cb(void *opdata, const char *accountname,
     PurpleAccount *account = purple_accounts_find(accountname, protocol);
     if (!account) {
 	PurplePlugin *p = purple_find_prpl(protocol);
-	char *msg = g_strdup_printf("Unknown account %s (%s).", accountname,
-		(p && p->info->name) ? p->info->name : "Unknown");
+	char *msg = g_strdup_printf(_("Unknown account %s (%s)."),
+		accountname,
+		(p && p->info->name) ? p->info->name : _("Unknown"));
 	otrg_dialog_notify_error(accountname, protocol, recipient,
-		"Unknown account", msg, NULL);
+		_("Unknown account"), msg, NULL);
 	g_free(msg);
 	return;
     }
@@ -241,6 +263,8 @@ static void confirm_fingerprint_cb(void *opdata, OtrlUserState us,
 static void write_fingerprints_cb(void *opdata)
 {
     otrg_plugin_write_fingerprints();
+    otrg_ui_update_keylist();
+    otrg_dialog_resensitize_all();
 }
 
 static void gone_secure_cb(void *opdata, ConnContext *context)
@@ -265,6 +289,15 @@ static void log_message_cb(void *opdata, const char *message)
     purple_debug_info("otr", message);
 }
 
+static int max_message_size_cb(void *opdata, ConnContext *context)
+{
+    void* lookup_result = g_hash_table_lookup(mms_table, context->protocol);
+    if (!lookup_result)
+        return 0;
+    else
+        return *((int*)lookup_result);
+}
+
 static OtrlMessageAppOps ui_ops = {
     policy_cb,
     create_privkey_cb,
@@ -280,11 +313,14 @@ static OtrlMessageAppOps ui_ops = {
     gone_secure_cb,
     gone_insecure_cb,
     still_secure_cb,
-    log_message_cb
+    log_message_cb,
+    max_message_size_cb,
+    NULL,                   /* account_name */
+    NULL                    /* account_name_free */
 };
 
-static void process_sending_im(PurpleAccount *account, char *who, char **message,
-	void *m)
+static void process_sending_im(PurpleAccount *account, char *who,
+	char **message, void *m)
 {
     char *newmessage = NULL;
     const char *accountname = purple_account_get_username(account);
@@ -307,15 +343,43 @@ static void process_sending_im(PurpleAccount *account, char *who, char **message
 	free(*message);
 	*message = ourm;
     } else if (newmessage) {
-	char *ourm = malloc(strlen(newmessage) + 1);
-	if (ourm) {
-	    strcpy(ourm, newmessage);
-	}
-	otrl_message_free(newmessage);
+	/* Fragment the message if necessary, and send all but the last
+	 * fragment over the network.  Pidgin will send the last
+	 * fragment for us. */
+	ConnContext *context = otrl_context_find(otrg_plugin_userstate,
+		username, accountname, protocol, 0, NULL, NULL, NULL);
 	free(*message);
-	*message = ourm;
+	*message = NULL;
+	err = otrl_message_fragment_and_send(&ui_ops, NULL, context,
+		newmessage, OTRL_FRAGMENT_SEND_ALL_BUT_LAST, message);
+	otrl_message_free(newmessage);
     }
     free(username);
+}
+
+/* Abort the SMP protocol.  Used when malformed or unexpected messages
+ * are received. */
+void otrg_plugin_abort_smp(ConnContext *context)
+{
+    otrl_message_abort_smp(otrg_plugin_userstate, &ui_ops, NULL, context);
+}
+
+/* Start the Socialist Millionaires' Protocol over the current connection,
+ * using the given initial secret. */
+void otrg_plugin_start_smp(ConnContext *context,
+	const unsigned char *secret, size_t secretlen)
+{
+    otrl_message_initiate_smp(otrg_plugin_userstate, &ui_ops, NULL,
+	    context, secret, secretlen);
+}
+
+/* Continue the Socialist Millionaires' Protocol over the current connection,
+ * using the given initial secret (ie finish step 2). */
+void otrg_plugin_continue_smp(ConnContext *context,
+	const unsigned char *secret, size_t secretlen)
+{
+    otrl_message_respond_smp(otrg_plugin_userstate, &ui_ops, NULL,
+	    context, secret, secretlen);
 }
 
 /* Send the default OTR Query message to the correspondent of the given
@@ -325,8 +389,10 @@ static void process_sending_im(PurpleAccount *account, char *who, char **message
 void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
 {
     PurpleAccount *account = vaccount;
+    OtrgUiPrefs prefs;
+    otrg_ui_get_prefs(&prefs, account, context->username);
     char *msg = otrl_proto_default_query_msg(context->accountname,
-	    otrg_ui_find_policy(account, context->username));
+	    prefs.policy);
     otrg_plugin_inject_message(account, context->username,
 	    msg ? msg : "?OTRv2?");
     free(msg);
@@ -339,13 +405,14 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     PurpleAccount *account;
     const char *username, *accountname;
     char *msg;
+    OtrgUiPrefs prefs;
     
     account = purple_conversation_get_account(conv);
     accountname = purple_account_get_username(account);
     username = purple_conversation_get_name(conv);
     
-    msg = otrl_proto_default_query_msg(accountname,
-	    otrg_ui_find_policy(account, username));
+    otrg_ui_get_prefs(&prefs, account, username);
+    msg = otrl_proto_default_query_msg(accountname, prefs.policy);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv2?");
     free(msg);
 }
@@ -388,6 +455,53 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	otrg_dialog_finished(accountname, protocol, username);
 	otrg_ui_update_keylist();
     }
+
+    /* Keep track of our current progress in the Socialist Millionaires'
+     * Protocol. */
+    ConnContext *context = otrl_context_find(otrg_plugin_userstate, username,
+	    accountname, protocol, 0, NULL, NULL, NULL);
+    NextExpectedSMP nextMsg = context->smstate->nextExpected;
+
+    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
+    if (tlv) {
+        if (nextMsg != OTRL_SMP_EXPECT1)
+	    otrg_plugin_abort_smp(context);
+        else {
+	    otrg_dialog_socialist_millionaires(context);
+        }
+    }
+    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
+    if (tlv) {
+        if (nextMsg != OTRL_SMP_EXPECT2)
+	    otrg_plugin_abort_smp(context);
+        else {
+	    otrg_dialog_update_smp(context, 0.6);
+            context->smstate->nextExpected = OTRL_SMP_EXPECT4;
+        }
+    }
+    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
+    if (tlv) {
+        if (nextMsg != OTRL_SMP_EXPECT3)
+	    otrg_plugin_abort_smp(context);
+        else {
+	    otrg_dialog_update_smp(context, 1.0);
+            context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+        }
+    }
+    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
+    if (tlv) {
+        if (nextMsg != OTRL_SMP_EXPECT4)
+	    otrg_plugin_abort_smp(context);
+        else {
+	    otrg_dialog_update_smp(context, 1.0);
+            context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+        }
+    }
+    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
+    if (tlv) {
+	otrg_dialog_update_smp(context, 0.0);
+	context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+    }
     
     otrl_tlv_free(tlvs);
 
@@ -407,6 +521,25 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 static void process_conv_create(PurpleConversation *conv, void *data)
 {
     if (conv) otrg_dialog_new_conv(conv);
+}
+
+static void process_conv_updated(PurpleConversation *conv,
+	PurpleConvUpdateType type, void *data)
+{
+    /* See if someone's trying to turn logging on for this conversation,
+     * and we don't want them to. */
+    if (type == PURPLE_CONV_UPDATE_LOGGING) {
+	OtrgUiPrefs prefs;
+	PurpleAccount *account = purple_conversation_get_account(conv);
+	otrg_ui_get_prefs(&prefs, account, purple_conversation_get_name(conv));
+
+	ConnContext *context = otrg_plugin_conv_to_context(conv);
+	if (context && prefs.avoid_logging_otr &&
+		context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
+		conv->logging == TRUE) {
+	    purple_conversation_set_logging(conv, FALSE);
+	}
+    }
 }
 
 static void process_connection_change(PurpleConnection *conn, void *data)
@@ -441,8 +574,8 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu)
     proto = purple_account_get_protocol_id(acct);
     if (!otrg_plugin_proto_supports_otr(proto)) return;
 
-    act = purple_menu_action_new("OTR Settings", (PurpleCallback)otr_options_cb,
-	    NULL, NULL);
+    act = purple_menu_action_new(_("OTR Settings"),
+	    (PurpleCallback)otr_options_cb, NULL, NULL);
     *menu = g_list_append(*menu, act);
 }
 
@@ -487,23 +620,33 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv)
     return context;
 }
 
+/* Find the PurpleConversation appropriate to the given userinfo.  If
+ * one doesn't yet exist, create it if force_create is true. */
+PurpleConversation *otrg_plugin_userinfo_to_conv(const char *accountname,
+	const char *protocol, const char *username, int force_create)
+{
+    PurpleAccount *account;
+    PurpleConversation *conv;
+
+    account = purple_accounts_find(accountname, protocol);
+    if (account == NULL) return NULL;
+
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
+	    username, account);
+    if (conv == NULL && force_create) {
+	conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, username);
+    }
+
+    return conv;
+}
+
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */
 PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
 	int force_create)
 {
-    PurpleAccount *account;
-    PurpleConversation *conv;
-
-    account = purple_accounts_find(context->accountname, context->protocol);
-    if (account == NULL) return NULL;
-
-    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, context->username, account);
-    if (conv == NULL && force_create) {
-	conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, context->username);
-    }
-
-    return conv;
+    return otrg_plugin_userinfo_to_conv(context->accountname,
+	    context->protocol, context->username, force_create);
 }
 
 /* What level of trust do we have in the privacy of this ConnContext? */
@@ -539,6 +682,98 @@ static void process_quitting(void)
     }
 }
 
+/* Read the maxmsgsizes from a FILE* into the given GHashTable.
+ * The FILE* must be open for reading. */
+static void mms_read_FILEp(FILE *mmsf, GHashTable *ght)
+{
+    char storeline[50];
+    size_t maxsize = sizeof(storeline);
+
+    if (!mmsf) return;
+
+    while(fgets(storeline, maxsize, mmsf)) {
+	char *protocol;
+	char *prot_in_table;
+	char *mms;
+	int *mms_in_table;
+	char *tab;
+	char *eol;
+	/* Parse the line, which should be of the form:
+	 *    protocol\tmaxmsgsize\n          */
+	protocol = storeline;
+	tab = strchr(protocol, '\t');
+	if (!tab) continue;
+	*tab = '\0';
+
+	mms = tab + 1;
+	tab = strchr(mms, '\t');
+	if (tab) continue;
+        eol = strchr(mms, '\r');
+	if (!eol) eol = strchr(mms, '\n');
+	if (!eol) continue;
+	*eol = '\0';
+	
+	prot_in_table = strdup(protocol);
+	mms_in_table = malloc(sizeof(int));
+	*mms_in_table = atoi(mms);
+	g_hash_table_insert(ght, prot_in_table, mms_in_table);
+    }
+}
+
+static void otrg_str_free(gpointer data)
+{
+    g_free((char*)data);
+}
+
+static void otrg_int_free(gpointer data)
+{
+    g_free((int*)data);
+}
+
+static void otrg_init_mms_table()
+{
+    mms_table = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    otrg_str_free, otrg_int_free);
+
+    /* Hardcoded defaults for maximum message sizes for various
+     * protocols.  These can be overridden in the user's MAXMSGSIZEFNAME
+     * file. */
+    static const struct s_OtrgIdProtPair {
+        char *protid;
+	int maxmsgsize;
+    } mmsPairs[8] = {{"prpl-msn", 1409}, {"prpl-icq", 2346},
+	{"prpl-aim", 2343}, {"prpl-yahoo", 832}, {"prpl-gg", 1999},
+	{"prpl-irc", 417}, {"prpl-oscar", 2343}, {NULL, 0}};
+
+    int i = 0;
+    for (i=0; mmsPairs[i].protid != NULL; i++) {
+    	char* nextprot = g_strdup(mmsPairs[i].protid);
+    	int* nextsize = g_malloc(sizeof(int));
+    	*nextsize = mmsPairs[i].maxmsgsize;
+    	g_hash_table_insert(mms_table, nextprot, nextsize);
+    }
+
+    gchar *maxmsgsizefile = g_build_filename(purple_user_dir(),
+	    MAXMSGSIZEFNAME, NULL);
+    FILE *mmsf;
+
+    if (maxmsgsizefile) {
+	mmsf = g_fopen(maxmsgsizefile, "rt");
+	/* Actually read the file here */
+	if (mmsf) {
+	    mms_read_FILEp(mmsf, mms_table);
+	    fclose(mmsf);
+	}
+    }
+    
+    g_free(maxmsgsizefile);
+}
+
+static void otrg_free_mms_table()
+{
+    g_hash_table_destroy(mms_table);
+}
+
 static gboolean otr_plugin_load(PurplePlugin *handle)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME,
@@ -562,6 +797,8 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     g_free(privkeyfile);
     g_free(storefile);
 
+    otrg_init_mms_table();
+
     otrg_plugin_handle = handle;
 
     /* Make our OtrlUserState; we'll only use the one. */
@@ -581,6 +818,8 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
             PURPLE_CALLBACK(process_sending_im), NULL);
     purple_signal_connect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
             PURPLE_CALLBACK(process_receiving_im), NULL);
+    purple_signal_connect(conv_handle, "conversation-updated",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_updated), NULL);
     purple_signal_connect(conv_handle, "conversation-created",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create), NULL);
     purple_signal_connect(conn_handle, "signed-on", otrg_plugin_handle,
@@ -589,6 +828,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	    PURPLE_CALLBACK(process_connection_change), NULL);
     purple_signal_connect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu), NULL);
+
+    otrg_ui_init();
+    otrg_dialog_init();
 
     purple_conversation_foreach(otrg_dialog_new_conv);
 
@@ -606,12 +848,16 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
+    otrg_free_mms_table();
+
     purple_signal_disconnect(core_handle, "quitting", otrg_plugin_handle,
 	    PURPLE_CALLBACK(process_quitting));
-    purple_signal_disconnect(conv_handle, "sending-im-msg", otrg_plugin_handle,
-            PURPLE_CALLBACK(process_sending_im));
-    purple_signal_disconnect(conv_handle, "receiving-im-msg", otrg_plugin_handle,
-            PURPLE_CALLBACK(process_receiving_im));
+    purple_signal_disconnect(conv_handle, "sending-im-msg",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_sending_im));
+    purple_signal_disconnect(conv_handle, "receiving-im-msg",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_receiving_im));
+    purple_signal_disconnect(conv_handle, "conversation-updated",
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_updated));
     purple_signal_disconnect(conv_handle, "conversation-created",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create));
     purple_signal_disconnect(conn_handle, "signed-on", otrg_plugin_handle,
@@ -623,23 +869,23 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
 
     purple_conversation_foreach(otrg_dialog_remove_conv);
 
+    otrg_dialog_cleanup();
+    otrg_ui_cleanup();
+
     return 1;
 }
 
 /* Return 1 if the given protocol supports OTR, 0 otherwise. */
 int otrg_plugin_proto_supports_otr(const char *proto)
 {
-    /* IRC is the only protocol we know of that OTR doesn't work on (its
-     * maximum message size is too small to fit a Key Exchange Message). */
-    if (proto && !strcmp(proto, "prpl-irc")) {
-	return 0;
-    }
+    /* Right now, OTR should work on all protocols, possibly
+     * with the help of fragmentation. */
     return 1;
 }
 
 #ifdef USING_GTK
 
-static PurplePluginUiInfo ui_info =
+static PidginPluginUiInfo ui_info =
 {
 	otrg_gtk_ui_make_widget
 };
@@ -662,26 +908,23 @@ static PurplePluginInfo info =
         2,                                                /* major version  */
 	0,                                                /* minor version  */
 
-	PURPLE_PLUGIN_STANDARD,                             /* type           */
+	PURPLE_PLUGIN_STANDARD,                           /* type           */
 	PLUGIN_TYPE,                                      /* ui_requirement */
 	0,                                                /* flags          */
 	NULL,                                             /* dependencies   */
-	PURPLE_PRIORITY_DEFAULT,                            /* priority       */
+	PURPLE_PRIORITY_DEFAULT,                          /* priority       */
 	"otr",                                            /* id             */
-	"Off-the-Record Messaging",                       /* name           */
-	PIDGIN_OTR_VERSION,                                 /* version        */
-	                                                  /* summary        */
-	"Provides private and secure conversations",
-	                                                  /* description    */
-	"Preserves the privacy of IM communications by providing "
-	    "encryption, authentication, deniability, and perfect "
-	    "forward secrecy.",
+	NULL,                                             /* name           */
+	PIDGIN_OTR_VERSION,                               /* version        */
+	NULL,                                             /* summary        */
+	NULL,                                             /* description    */
 	                                                  /* author         */
-	"Nikita Borisov and Ian Goldberg\n\t\t\t<otr@cypherpunks.ca>",
-	"http://www.cypherpunks.ca/otr/",                 /* homepage       */
+	"Ian Goldberg, Chris Alexander, Nikita Borisov\n"
+	    "\t\t\t<otr@cypherpunks.ca>",
+	"http://otr.cypherpunks.ca/",                     /* homepage       */
 
-	otr_plugin_load,                                 /* load           */
-	otr_plugin_unload,                               /* unload         */
+	otr_plugin_load,                                  /* load           */
+	otr_plugin_unload,                                /* unload         */
 	NULL,                                             /* destroy        */
 
 	UI_INFO,                                          /* ui_info        */
@@ -701,6 +944,17 @@ __init_plugin(PurplePlugin *plugin)
 
     /* Initialize the OTR library */
     OTRL_INIT;
+
+#ifdef ENABLE_NLS
+    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+#endif
+
+    info.name        = _("Off-the-Record Messaging");
+    info.summary     = _("Provides private and secure conversations");
+    info.description = _("Preserves the privacy of IM communications "
+                         "by providing encryption, authentication, "
+			 "deniability, and perfect forward secrecy.");
 }
 
 PURPLE_INIT_PLUGIN(otr, __init_plugin, info)

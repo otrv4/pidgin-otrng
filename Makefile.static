@@ -1,0 +1,21 @@
+LIBOTRDIR?=/usr/lib
+LIBGCRYPTDIR?=/usr/lib
+
+.libs/pidgin-otr.so: FORCE
+	# Build everything from the standard Makefile
+	make
+	# Link everything, including libotr and libgcrypt, together into
+	# a single .o file
+	ld -r  .libs/otr-plugin.o .libs/ui.o .libs/dialogs.o .libs/gtk-ui.o \
+		.libs/gtk-dialog.o $(LIBOTRDIR)/libotr.a \
+		$(LIBGCRYPTDIR)/libgcrypt.a /usr/lib/libgpg-error.a \
+		-o .libs/pidgin-otr-shared.o
+	# Make all the libgcrypt references local to that .o file
+	objcopy -w -L '*gcry*' .libs/pidgin-otr-shared.o \
+		.libs/pidgin-otr-static.o
+	# Turn the .o into a .so
+	gcc -shared .libs/pidgin-otr-static.o -Wl,-soname -Wl,pidgin-otr.so \
+		-o .libs/pidgin-otr.so
+
+FORCE:
+
