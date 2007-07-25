@@ -1,0 +1,524 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-07-24 15:47-0400\n"
+"PO-Revision-Date: 2007-07-25 12:41+EDT\n"
+"Last-Translator: Paul Wouters <paul@cypherpunks.ca>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../gtk-dialog.c:913 ../gtk-dialog.c:2095
+msgid "_What's this?"
+msgstr "Wat betekent dit?"
+
+#: ../gtk-dialog.c:924
+msgid "_More..."
+msgstr "Meer..."
+
+#. Create the Advanced... button, and left-justify it.  This
+#. * involves adding the button, and a blank label as a spacer, and
+#. * reordering them so that they're at the beginning.
+#: ../gtk-dialog.c:980
+msgid "Advanced..."
+msgstr "geavanceerd"
+
+#: ../gtk-dialog.c:1025
+msgid "Enter secret here"
+msgstr "Voer de geheime code hier in"
+
+#: ../gtk-dialog.c:1030
+msgid "This buddy is already authenticated."
+msgstr "Deze friend is al ge-authentificeerd"
+
+#: ../gtk-dialog.c:1049
+msgid ""
+"To authenticate, pick a secret known only to you and your buddy.  Enter this "
+"secret, then wait for your buddy to enter it too.  If the secrets don't "
+"match, then you may be talking to an imposter."
+msgstr "Om te authoriseren dien je een geheime code te bedenken die alleen "
+"jij en je vriend kennen. Voer dit geheim in, en wacht op je vriend om "
+"hetzelfde te doen. Als de geheimen niet overeenkomen, dan kun je te maken "
+"hebben met een bedrieger."
+
+#: ../gtk-dialog.c:1053
+msgid ""
+"If your buddy uses multiple IM accounts or multiple computers, you may have "
+"to authenticate multiple times.  However, as long as they use an account and "
+"computer that you've seen before, you don't need to authenticate each "
+"individual conversation."
+msgstr "Als je vriend meerdere IM accounts of meerdere computers gebruikt, kan "
+"het zijn dat je meerdere keren moet authenticeren. Zolang je vriend een account "
+" of een computer gebruikt die je al eerder gezien hebt, hoef je niet elke "
+" individueel gesprek apart te authenticeren."
+
+#: ../gtk-dialog.c:1058 ../gtk-dialog.c:1322 ../gtk-dialog.c:1326
+#: ../gtk-dialog.c:1423 ../gtk-dialog.c:1590 ../gtk-dialog.c:1750
+#: ../gtk-dialog.c:1850 ../gtk-dialog.c:1935
+msgid "?lang=en"
+msgstr "?lang=nl"
+
+#: ../gtk-dialog.c:1059
+msgid "Click here for more information about authentication in OTR."
+msgstr "Klik hier voor meer informatie over OTR authenticatie"
+
+#: ../gtk-dialog.c:1063
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who they claim to be."
+msgstr "Door middel van het authenticeren van een vriend kun je gegarandeerd "
+"weten dat de persoon waarmee je praat, daadwerkelijk je vriend is."
+
+#: ../gtk-dialog.c:1113
+msgid "Authenticating Buddy"
+msgstr "Vriend authenticatie"
+
+#: ../gtk-dialog.c:1140
+msgid "Authenticating"
+msgstr "Authenticeren"
+
+#: ../gtk-dialog.c:1201
+msgid "Generating private key"
+msgstr "Geheime sleutel aan het genereren"
+
+#: ../gtk-dialog.c:1202
+msgid "Please wait"
+msgstr "Een moment a.u.b."
+
+#: ../gtk-dialog.c:1210 ../gtk-dialog.c:1627 ../gtk-dialog.c:1664
+#: ../gtk-ui.c:175 ../otr-plugin.c:115 ../otr-plugin.c:212 ../ui.c:110
+msgid "Unknown"
+msgstr ""
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1213
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "Geheime sleutel voor %s (%s) aan het genereren..."
+
+#: ../gtk-dialog.c:1258
+#, c-format
+msgid "%s Done."
+msgstr "%s Klaar"
+
+#: ../gtk-dialog.c:1320
+#, c-format
+msgid ""
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
+"s\">authenticate</a> this buddy."
+msgstr "%s zoekt contact met je vanaf een onherkenbare computer. Je kunt het beste "
+"deze vriend <a href=\"%s%s\">authenticeren</a>."
+
+#: ../gtk-dialog.c:1324
+#, c-format
+msgid ""
+"%s has not been authenticated yet.  You should <a href=\"%s%s"
+"\">authenticate</a> this buddy."
+msgstr "%s is nog niet ge-authenticeerd. Je kunt het beste "
+"deze vriend <a href=\"%s%s\">authenticeren</a>."
+
+#: ../gtk-dialog.c:1365 ../gtk-ui.c:76
+msgid "Finished"
+msgstr "Klaar"
+
+#: ../gtk-dialog.c:1366 ../gtk-ui.c:75
+msgid "Private"
+msgstr "Besloten"
+
+#: ../gtk-dialog.c:1367 ../gtk-ui.c:74
+msgid "Unverified"
+msgstr "Ongeverificeerde"
+
+#: ../gtk-dialog.c:1368 ../gtk-ui.c:73
+msgid "Not private"
+msgstr "Niet besloten"
+
+#: ../gtk-dialog.c:1370
+msgid "Start a private conversation"
+msgstr "Start een besloten conversatie"
+
+#: ../gtk-dialog.c:1371
+msgid "Refresh the private conversation"
+msgstr "Hernieuw een besloten conversatie"
+
+#: ../gtk-dialog.c:1375
+msgid "Start _private conversation"
+msgstr "Start _besloten conversatie"
+
+#: ../gtk-dialog.c:1376
+msgid "Refresh _private conversation"
+msgstr "Hernieuw besloten conversatie"
+
+#: ../gtk-dialog.c:1555
+msgid "I have not"
+msgstr "ik heb niet"
+
+#: ../gtk-dialog.c:1556
+msgid "I have"
+msgstr "ik heb"
+
+#: ../gtk-dialog.c:1558
+msgid " verified that this is in fact the correct"
+msgstr "bevestigd of dit daadwerkelijk de correcte"
+
+#: ../gtk-dialog.c:1567
+#, c-format
+msgid "fingerprint for %s."
+msgstr "vingerafdruk is voor %s."
+
+#: ../gtk-dialog.c:1579
+msgid ""
+"To verify the fingerprint, contact your buddy via some <i>other</i> "
+"authenticated channel, such as the telephone or GPG-signed email.  Each of "
+"you should tell your fingerprint to the other."
+msgstr ""
+
+#: ../gtk-dialog.c:1583
+msgid ""
+"If everything matches up, you should indicate in the above dialog that you "
+"<b>have</b> verified the fingerprint."
+msgstr "Als alles precies klopt, kun je in het bovenstaande dialoogvenster "
+"aangeven dat je de vingerafdruk hebt <b>bevestigd</b>."
+
+#: ../gtk-dialog.c:1585
+msgid ""
+"If your buddy has more than one IM account, or uses more than one computer, "
+"he may have multiple fingerprints."
+msgstr "Als je vriend meerdere IM accounts heeft, of meer dan een computer"
+"gebruikt, dan kan het zijn dat de vriend meerdere vingerafdrukken heeft."
+
+#: ../gtk-dialog.c:1587
+msgid ""
+"However, the only way an imposter could duplicate one of your buddy's "
+"fingerprints is by stealing information from her/his computer."
+msgstr "Echter, de enige methode waarop een bedrieger je vriend's "
+"vingerafdrukken kan namaken, is door geheime informatie te stelen "
+"van je vriend's computer."
+
+#: ../gtk-dialog.c:1591
+msgid "Click here for more information about fingerprints."
+msgstr "Klik hier voor meer informatie over vingerafdrukken"
+
+#: ../gtk-dialog.c:1594
+msgid ""
+"A <b>fingerprint</b> is a unique identifier that you should use to "
+"authenticate your buddy."
+msgstr "Een <b>vingerafdruk</b> is een unieke herkenbare eigenschap waarmee"
+"je je vriend kunt authenticeren."
+
+#: ../gtk-dialog.c:1616
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "Bevestig de vingerafdruk van %s"
+
+#: ../gtk-dialog.c:1620
+msgid "[none]"
+msgstr "[geen]"
+
+#: ../gtk-dialog.c:1628
+#, c-format
+msgid ""
+"Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr "Jouw vingerafdruk, %s (5s):\n"
+"%s\n"
+"\n"
+"Vermeende vingerafdruk van %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1633 ../gtk-ui.c:681
+msgid "Verify fingerprint"
+msgstr "Bevestig vingerafdruk"
+
+#: ../gtk-dialog.c:1660
+#, c-format
+msgid "Authenticate %s"
+msgstr "Authenticeer %s"
+
+#: ../gtk-dialog.c:1665
+#, c-format
+msgid "Enter a secret known only to %s and yourself.\n"
+msgstr "Voer het geheim in dat alleen jij en je vriend %s kennen.\n"
+
+#: ../gtk-dialog.c:1668
+msgid "Authenticate buddy"
+msgstr "Authenticeer vriend"
+
+#: ../gtk-dialog.c:1700
+msgid "An error occurred during authentication."
+msgstr "Er is een fout opgetreden tijdens de authenticatie"
+
+#: ../gtk-dialog.c:1716
+msgid "Authentication successful."
+msgstr "Authenticatie successvol."
+
+#: ../gtk-dialog.c:1719
+msgid "Authentication failed."
+msgstr "Authenticatie mislukt."
+
+#: ../gtk-dialog.c:1744
+#, c-format
+msgid "Private conversation with %s started.%s"
+msgstr "Besloten conversatie gestart met %s.%s"
+
+#: ../gtk-dialog.c:1748
+#, c-format
+msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
+msgstr "<a href=\"%s%s\">Onbeschermde</a> conversatie gestart met %%s.%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1756
+#, c-format
+msgid "Not private conversation with %s started.%s"
+msgstr "Geen besloten conversatie gestart met %s.%s"
+
+#: ../gtk-dialog.c:1762 ../gtk-dialog.c:1863
+msgid "  Warning: using old protocol version 1."
+msgstr "  Waarschuwing: het oude protocol versie 1 is gebruikt."
+
+#: ../gtk-dialog.c:1782
+#, c-format
+msgid "Private conversation with %s lost."
+msgstr "Besloten conversatie met %s verloren."
+
+#: ../gtk-dialog.c:1817
+#, c-format
+msgid ""
+"%s has ended his/her private conversation with you; you should do the same."
+msgstr "%s heeft de besloten conversatie met jou afgesloten. Jij kunt dit "
+"het beste nu ook zelf afsluiten."
+
+#: ../gtk-dialog.c:1842
+#, c-format
+msgid "Successfully refreshed the private conversation with %s.%s"
+msgstr "De besloten conversatie met %s is successvol hernieuwd"
+
+#: ../gtk-dialog.c:1847
+#, c-format
+msgid ""
+"Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
+"%%s.%%s"
+msgstr "De <a href=\"%s%s\">onbeschermde</a> conversatie met %%s.%%s is met "
+"success hernieuwd"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1856
+#, c-format
+msgid "Successfully refreshed the not private conversation with %s.%s"
+msgstr "De onbeschermde conversatie met %s.%s is met success hernieuwd. Huh?"
+
+#: ../gtk-dialog.c:1883
+#, c-format
+msgid "Attempting to refresh the private conversation with %s..."
+msgstr "Bezig met het vernieuwen van de beschermde conversatie met %s..."
+
+#: ../gtk-dialog.c:1885
+#, c-format
+msgid "Attempting to start a private conversation with %s..."
+msgstr "Een poging is gestart om een beschermde conversatie te beginnen met %s..."
+
+# Paul to Ian: Should/can we really translate these entries here?
+#: ../gtk-dialog.c:2045
+msgid "OTR:"
+msgstr "OTR:"
+
+#: ../gtk-dialog.c:2054
+msgid "OTR Messaging"
+msgstr "OTR Berichtgeving"
+
+#: ../gtk-dialog.c:2060
+msgid "_End private conversation"
+msgstr "_Einde beschermde conversatie"
+
+#.
+#. * Don't show the Verify fingerprint menu option any more.  You can
+#. * still get to the dialog through Authenticate connection ->
+#. * Advanced...
+#. *
+#. menuverf = gtk_menu_item_new_with_mnemonic(_("_Verify fingerprint"));
+#. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
+#. gtk_widget_show(menuverf);
+#.
+#: ../gtk-dialog.c:2078
+msgid "_Authenticate buddy"
+msgstr "Authenticeer vriend"
+
+#: ../gtk-ui.c:96
+#, c-format
+msgid "Fingerprint: %.80s"
+msgstr "vingerafdruk %.80s"
+
+#: ../gtk-ui.c:100
+#, c-format
+msgid "No key present"
+msgstr "Geen sleutel aanwezig"
+
+#: ../gtk-ui.c:105
+#, c-format
+msgid "No account available"
+msgstr "Geen account beschikbaar"
+
+#: ../gtk-ui.c:165
+msgid "Unused"
+msgstr "Ongebruikt"
+
+#: ../gtk-ui.c:171
+msgid "Yes"
+msgstr "Ja"
+
+#: ../gtk-ui.c:171
+msgid "No"
+msgstr "Nee"
+
+#: ../gtk-ui.c:396
+msgid "Enable private messaging"
+msgstr "Start beschermde conversatie"
+
+#: ../gtk-ui.c:398
+msgid "Automatically initiate private messaging"
+msgstr "Automatisch initieren van beschermde berichten"
+
+#: ../gtk-ui.c:400
+msgid "Require private messaging"
+msgstr "Alleen beschermde berichten toestaan"
+
+#: ../gtk-ui.c:403
+msgid "Don't log OTR conversations"
+msgstr "OTR conversaties niet opslaan"
+
+#: ../gtk-ui.c:531
+msgid "My private keys"
+msgstr "Mijn geheime sleutels"
+
+#: ../gtk-ui.c:540
+msgid "Key for account:"
+msgstr "Sleutel voor account:"
+
+#: ../gtk-ui.c:565
+msgid "Generate"
+msgstr "Genereer"
+
+#: ../gtk-ui.c:596
+msgid "Default OTR Settings"
+msgstr "Standaard OTR instellingen"
+
+#: ../gtk-ui.c:625
+msgid "Screenname"
+msgstr "Naam"
+
+#: ../gtk-ui.c:626
+msgid "Status"
+msgstr "Status"
+
+#: ../gtk-ui.c:627
+msgid "Verified"
+msgstr "Geverificeerd"
+
+#: ../gtk-ui.c:628
+msgid "Fingerprint"
+msgstr "vingerafdruk"
+
+#: ../gtk-ui.c:629
+msgid "Account"
+msgstr "Account"
+
+#: ../gtk-ui.c:665
+msgid "Start private connection"
+msgstr "Start besloten verbinding"
+
+#: ../gtk-ui.c:673
+msgid "End private connection"
+msgstr "Stop besloten verbinding"
+
+#: ../gtk-ui.c:689
+msgid "Forget fingerprint"
+msgstr "Vergeet vingerafdruk"
+
+#: ../gtk-ui.c:738
+msgid "Config"
+msgstr "Configuratie"
+
+#: ../gtk-ui.c:740
+msgid "Known fingerprints"
+msgstr "Bekende vingerafdrukken"
+
+#: ../gtk-ui.c:838 ../otr-plugin.c:577
+msgid "OTR Settings"
+msgstr "OTR Instellingen"
+
+#. Set the title
+#: ../gtk-ui.c:856
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "OTR Instellingen voor %s"
+
+#. Make the cascaded checkboxes
+#: ../gtk-ui.c:873
+msgid "Use default OTR settings for this buddy"
+msgstr "Gebruik de standaard OTR instellingen voor deze vriend"
+
+#: ../otr-plugin.c:113
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "Je bent op dit moment niet verbonden aan het account %s (%s)."
+
+#: ../otr-plugin.c:117
+msgid "Not connected"
+msgstr "Niet verbonden"
+
+#: ../otr-plugin.c:161
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "Te weinig geheugen voor het opbouwen van bestandsnamen!"
+
+#: ../otr-plugin.c:167
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "Kon het geheime sleutel bestand niet schrijven\n"
+
+#: ../otr-plugin.c:210
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "Onbekend account %s (%s)."
+
+#: ../otr-plugin.c:214
+msgid "Unknown account"
+msgstr "Onbekend account"
+
+#: ../otr-plugin.c:953
+msgid "Off-the-Record Messaging"
+msgstr "Off-the-Record Berichtgeving"
+
+#: ../otr-plugin.c:954
+msgid "Provides private and secure conversations"
+msgstr "Beschermd en versleuteld gesprekken"
+
+#: ../otr-plugin.c:955
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr "Beschermd de privacy van IM communicatie door middel van "
+"het gebruik van versleuteling, authenticatie, onken-mogelijkheid en "
+"'perfect forward secrecy'.
+
+#: ../ui.c:108
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "Account %s (%s) kon niet worden gevonden"
+
+#: ../ui.c:112
+msgid "Account not found"
+msgstr "Account niet gevonden"
