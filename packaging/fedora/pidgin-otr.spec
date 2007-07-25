@@ -6,8 +6,6 @@ Source: http://www.cypherpunks.ca/otr/%{name}-%{version}.tar.gz
 Url: http://www.cypherpunks.ca/otr/
 License: GPL
 Group: Applications/Internet
-Provides: otr-plugin = %{version}
-Obsoletes: otr-plugin
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: pidgin >= 2.0.0, libotr >= 3.1.0
 BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, pidgin >= 2.0.0, libotr-devel >= 3.1.0
@@ -41,7 +39,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pidgin/pidgin-otr.so
 
 %changelog
-* Mon Oct 17 2005 Paul Wouters <paul@cypherpunks.ca> 3.0.0
+* Wed Jul 25 2007 Paul Wouters <paul@cypherpunks.ca> 3.1.0-1
+- Upgraded to current version
+
+* Mon Oct 17 2005 Paul Wouters <paul@cypherpunks.ca> 3.0.0-1
 - Minor change to allow for new documentation files. Ensure
   dependancy on at least libotr version 3.0.0
 
