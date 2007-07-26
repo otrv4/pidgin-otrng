@@ -393,7 +393,7 @@ msgstr "Start beschermde conversatie"
 
 #: ../gtk-ui.c:398
 msgid "Automatically initiate private messaging"
-msgstr "Automatisch initieren van beschermde berichten"
+msgstr "Automatisch initieeren van beschermde berichten"
 
 #: ../gtk-ui.c:400
 msgid "Require private messaging"
@@ -514,8 +514,8 @@ msgstr "Bescherm en versleutel gesprekken"
 msgid ""
 "Preserves the privacy of IM communications by providing encryption, "
 "authentication, deniability, and perfect forward secrecy."
-msgstr "Beschermd de privacy van IM communicatie door middel van "
-"het gebruik van versleuteling, authenticatie, onken-mogelijkheid en "
+msgstr "Beschermt de privacy van IM communicatie door middel van "
+"het gebruik van versleuteling, authenticatie, ontken-mogelijkheid en "
 "'perfect forward secrecy'."
 
 #: ../ui.c:108
