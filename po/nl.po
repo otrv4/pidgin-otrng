@@ -345,7 +345,7 @@ msgstr "OTR Berichtgeving"
 
 #: ../gtk-dialog.c:2060
 msgid "_End private conversation"
-msgstr "_Einde beschermde conversatie"
+msgstr "_Beeindig beschermde conversatie"
 
 #.
 #. * Don't show the Verify fingerprint menu option any more.  You can
