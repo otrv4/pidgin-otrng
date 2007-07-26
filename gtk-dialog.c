@@ -994,7 +994,7 @@ static GtkWidget *create_smp_dialog(const char *title,
 	gtk_dialog_set_response_sensitive(GTK_DIALOG(dialog),
 	        GTK_RESPONSE_ACCEPT, sensitive);
 
-	gtk_window_set_focus_on_map(GTK_WINDOW(dialog), FALSE);
+	gtk_window_set_focus_on_map(GTK_WINDOW(dialog), !responder);
 	gtk_window_set_role(GTK_WINDOW(dialog), "notify_dialog");
 
 	gtk_container_set_border_width(GTK_CONTAINER(dialog), 6);

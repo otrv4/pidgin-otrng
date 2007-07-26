@@ -6,6 +6,10 @@
 	* otr-plugin.c: Defend against potential NULL pointer
 	dereferences
 
+	* gtk-dialog.c: The SMP secret window should grab focus, but
+	only if the user requested to authenticate buddy (and not if it
+	popped up because the remote side asked for it)
+
 2007-07-24
 
 	* INSTALL: Added information about i18n; added information about
