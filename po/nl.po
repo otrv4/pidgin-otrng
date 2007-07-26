@@ -135,7 +135,7 @@ msgstr "Besloten"
 
 #: ../gtk-dialog.c:1367 ../gtk-ui.c:74
 msgid "Unverified"
-msgstr "Ongeverificeerde"
+msgstr "Ongeverificeerd"
 
 #: ../gtk-dialog.c:1368 ../gtk-ui.c:73
 msgid "Not private"
