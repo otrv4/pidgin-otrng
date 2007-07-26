@@ -508,7 +508,7 @@ msgstr "Off-the-Record Berichtgeving"
 
 #: ../otr-plugin.c:954
 msgid "Provides private and secure conversations"
-msgstr "Beschermd en versleuteld gesprekken"
+msgstr "Bescherm en versleutel gesprekken"
 
 #: ../otr-plugin.c:955
 msgid ""
