@@ -745,9 +745,13 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
 static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 	SmpResponsePair *smppair)
 {
+    ConnContext* context;
+    PurpleConversation *conv;
+    SMPData *smp_data;
+
     if (!smppair) return;
 
-    ConnContext* context = smppair->context;
+    context = smppair->context;
     if (response == GTK_RESPONSE_ACCEPT) {
 	GtkEntry* entry = smppair->entry;
 	char *secret;
@@ -785,9 +789,8 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     gtk_widget_destroy(GTK_WIDGET(dialog));
     
     /* Clean up references to this window */
-    PurpleConversation *conv =
-	otrg_plugin_context_to_conv(smppair->context, 0);
-    SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
+    conv = otrg_plugin_context_to_conv(smppair->context, 0);
+    smp_data = purple_conversation_get_data(conv, "otr-smpdata");
     if (smp_data) {
 	smp_data->smp_secret_dialog = NULL;
 	smp_data->smp_secret_smppair = NULL;
@@ -963,6 +966,7 @@ static GtkWidget *create_smp_dialog(const char *title,
 	char *label_text;
 	const char *icon_name = NULL;
 	SmpResponsePair* smppair;
+	char *moremarkup;
 
 	icon_name = PIDGIN_STOCK_DIALOG_INFO;
 	img = gtk_image_new_from_stock(icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
@@ -1044,7 +1048,7 @@ static GtkWidget *create_smp_dialog(const char *title,
 		    FALSE, 0);
 	}
 
-	char *moremarkup = g_strdup_printf(
+	moremarkup = g_strdup_printf(
 		"%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
 		_("To authenticate, pick a secret known "
 		    "only to you and your buddy.  Enter this secret, then "
@@ -1104,6 +1108,8 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
     GtkWidget *img = NULL;
     char *label_text;
     const char *icon_name = NULL;
+    PurpleConversation *conv;
+    SMPData *smp_data;
 
     icon_name = PIDGIN_STOCK_DIALOG_INFO;
     img = gtk_image_new_from_stock(icon_name,
@@ -1161,11 +1167,13 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
     
     gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
 
-    PurpleConversation *conv = otrg_plugin_context_to_conv(context, 0);
-    SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
-    smp_data->smp_progress_dialog = dialog;
-    smp_data->smp_progress_bar = bar;
-    smp_data->smp_progress_label = proglabel;
+    conv = otrg_plugin_context_to_conv(context, 0);
+    smp_data = purple_conversation_get_data(conv, "otr-smpdata");
+    if (smp_data) {
+	smp_data->smp_progress_dialog = dialog;
+	smp_data->smp_progress_bar = bar;
+	smp_data->smp_progress_label = proglabel;
+    }
 
     g_signal_connect(G_OBJECT(dialog), "response",
 		     G_CALLBACK(smp_progress_response_cb),

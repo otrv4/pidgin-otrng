@@ -389,9 +389,11 @@ void otrg_plugin_continue_smp(ConnContext *context,
 void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
 {
     PurpleAccount *account = vaccount;
+    char *msg;
     OtrgUiPrefs prefs;
+
     otrg_ui_get_prefs(&prefs, account, context->username);
-    char *msg = otrl_proto_default_query_msg(context->accountname,
+    msg = otrl_proto_default_query_msg(context->accountname,
 	    prefs.policy);
     otrg_plugin_inject_message(account, context->username,
 	    msg ? msg : "?OTRv2?");
@@ -427,6 +429,8 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     gboolean res;
     const char *accountname;
     const char *protocol;
+    ConnContext *context;
+    NextExpectedSMP nextMsg;
 
     if (!who || !*who || !message || !*message)
         return 0;
@@ -458,52 +462,54 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     /* Keep track of our current progress in the Socialist Millionaires'
      * Protocol. */
-    ConnContext *context = otrl_context_find(otrg_plugin_userstate, username,
+    context = otrl_context_find(otrg_plugin_userstate, username,
 	    accountname, protocol, 0, NULL, NULL, NULL);
-    NextExpectedSMP nextMsg = context->smstate->nextExpected;
+    if (context) {
+	nextMsg = context->smstate->nextExpected;
 
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
-    if (tlv) {
-        if (nextMsg != OTRL_SMP_EXPECT1)
-	    otrg_plugin_abort_smp(context);
-        else {
-	    otrg_dialog_socialist_millionaires(context);
-        }
+	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
+	if (tlv) {
+	    if (nextMsg != OTRL_SMP_EXPECT1)
+		otrg_plugin_abort_smp(context);
+	    else {
+		otrg_dialog_socialist_millionaires(context);
+	    }
+	}
+	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
+	if (tlv) {
+	    if (nextMsg != OTRL_SMP_EXPECT2)
+		otrg_plugin_abort_smp(context);
+	    else {
+		otrg_dialog_update_smp(context, 0.6);
+		context->smstate->nextExpected = OTRL_SMP_EXPECT4;
+	    }
+	}
+	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
+	if (tlv) {
+	    if (nextMsg != OTRL_SMP_EXPECT3)
+		otrg_plugin_abort_smp(context);
+	    else {
+		otrg_dialog_update_smp(context, 1.0);
+		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+	    }
+	}
+	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
+	if (tlv) {
+	    if (nextMsg != OTRL_SMP_EXPECT4)
+		otrg_plugin_abort_smp(context);
+	    else {
+		otrg_dialog_update_smp(context, 1.0);
+		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+	    }
+	}
+	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
+	if (tlv) {
+	    otrg_dialog_update_smp(context, 0.0);
+	    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+	}
+	
+	otrl_tlv_free(tlvs);
     }
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
-    if (tlv) {
-        if (nextMsg != OTRL_SMP_EXPECT2)
-	    otrg_plugin_abort_smp(context);
-        else {
-	    otrg_dialog_update_smp(context, 0.6);
-            context->smstate->nextExpected = OTRL_SMP_EXPECT4;
-        }
-    }
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
-    if (tlv) {
-        if (nextMsg != OTRL_SMP_EXPECT3)
-	    otrg_plugin_abort_smp(context);
-        else {
-	    otrg_dialog_update_smp(context, 1.0);
-            context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-        }
-    }
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
-    if (tlv) {
-        if (nextMsg != OTRL_SMP_EXPECT4)
-	    otrg_plugin_abort_smp(context);
-        else {
-	    otrg_dialog_update_smp(context, 1.0);
-            context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-        }
-    }
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
-    if (tlv) {
-	otrg_dialog_update_smp(context, 0.0);
-	context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-    }
-    
-    otrl_tlv_free(tlvs);
 
     free(username);
 
@@ -529,11 +535,12 @@ static void process_conv_updated(PurpleConversation *conv,
     /* See if someone's trying to turn logging on for this conversation,
      * and we don't want them to. */
     if (type == PURPLE_CONV_UPDATE_LOGGING) {
+	ConnContext *context;
 	OtrgUiPrefs prefs;
 	PurpleAccount *account = purple_conversation_get_account(conv);
 	otrg_ui_get_prefs(&prefs, account, purple_conversation_get_name(conv));
 
-	ConnContext *context = otrg_plugin_conv_to_context(conv);
+	context = otrg_plugin_conv_to_context(conv);
 	if (context && prefs.avoid_logging_otr &&
 		context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 		conv->logging == TRUE) {
@@ -732,9 +739,6 @@ static void otrg_int_free(gpointer data)
 
 static void otrg_init_mms_table()
 {
-    mms_table = g_hash_table_new_full(g_str_hash, g_str_equal,
-	    otrg_str_free, otrg_int_free);
-
     /* Hardcoded defaults for maximum message sizes for various
      * protocols.  These can be overridden in the user's MAXMSGSIZEFNAME
      * file. */
@@ -744,8 +748,13 @@ static void otrg_init_mms_table()
     } mmsPairs[8] = {{"prpl-msn", 1409}, {"prpl-icq", 2346},
 	{"prpl-aim", 2343}, {"prpl-yahoo", 832}, {"prpl-gg", 1999},
 	{"prpl-irc", 417}, {"prpl-oscar", 2343}, {NULL, 0}};
-
     int i = 0;
+    gchar *maxmsgsizefile;
+    FILE *mmsf;
+
+    mms_table = g_hash_table_new_full(g_str_hash, g_str_equal,
+	    otrg_str_free, otrg_int_free);
+
     for (i=0; mmsPairs[i].protid != NULL; i++) {
     	char* nextprot = g_strdup(mmsPairs[i].protid);
     	int* nextsize = g_malloc(sizeof(int));
@@ -753,9 +762,8 @@ static void otrg_init_mms_table()
     	g_hash_table_insert(mms_table, nextprot, nextsize);
     }
 
-    gchar *maxmsgsizefile = g_build_filename(purple_user_dir(),
+    maxmsgsizefile = g_build_filename(purple_user_dir(),
 	    MAXMSGSIZEFNAME, NULL);
-    FILE *mmsf;
 
     if (maxmsgsizefile) {
 	mmsf = g_fopen(maxmsgsizefile, "rt");
@@ -764,9 +772,8 @@ static void otrg_init_mms_table()
 	    mms_read_FILEp(mmsf, mms_table);
 	    fclose(mmsf);
 	}
+	g_free(maxmsgsizefile);
     }
-    
-    g_free(maxmsgsizefile);
 }
 
 static void otrg_free_mms_table()

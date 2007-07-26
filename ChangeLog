@@ -1,3 +1,11 @@
+2007-07-26
+
+	* gtk-dialog.c:
+	* otr-plugin.c: ISO C cleanups (no mixing declarations with code)
+
+	* otr-plugin.c: Defend against potential NULL pointer
+	dereferences
+
 2007-07-24
 
 	* INSTALL: Added information about i18n; added information about
