@@ -24,7 +24,7 @@ LIBOTRLIBDIR = /usr/lib
 # Location of libintl.h
 LIBINTLINCDIR = /usr/i586-mingw32msvc/include
 
-# Location of libintl.a
+# Location of libintl.a and libiconv.a
 LIBINTLLIBDIR = /usr/i586-mingw32msvc/lib
 
 # The target
@@ -38,7 +38,7 @@ TARGET = pidgin-otr.dll
 LDFLAGS = -Wl,--enable-auto-image-base
 LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0 -lglib-2.0 -lgdk_pixbuf-2.0 \
 	 -lgobject-2.0 -lpidgin -llibpurple -lgcrypt -lgpg-error \
-	 -L$(LIBINTLLIBDIR) -lintl
+	 $(LIBINTLLIBDIR)/libintl.a $(LIBINTLLIBDIR)/libiconv.a
 else
 FPIC = -fPIC
 LDFLAGS = -module -avoid-version

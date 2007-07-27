@@ -10,6 +10,8 @@
 	only if the user requested to authenticate buddy (and not if it
 	popped up because the remote side asked for it)
 
+	* Makefile.mingw: Statically link libintl and libiconv
+
 2007-07-24
 
 	* INSTALL: Added information about i18n; added information about
