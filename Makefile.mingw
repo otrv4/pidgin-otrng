@@ -36,6 +36,9 @@ LIBOTRSRCDIR = ../libotr
 # The target
 TARGET = pidgin-otr.dll
 
+# The target zipfile
+ZIPFILE = pidgin-otr-$(PIDGIN_OTR_VERSION).zip
+
 CC = i586-mingw32msvc-gcc
 LDFLAGS = -Wl,--enable-auto-image-base
 LDLIBS = $(LIBOTRLIBDIR)/libotr.a -lgtk-win32-2.0 -lglib-2.0 -lgdk_pixbuf-2.0 \
@@ -77,12 +80,18 @@ zip: all
 	cp -a $(TARGET) win32_export/
 	cp -a README win32_export/README.txt
 	cp -a packaging/windows/pidgin-otr.nsi win32_export/
+	for i in po/*.gmo; do \
+		l=`basename $$i .gmo`; \
+		mkdir -p win32_export/locale/$$l/LC_MESSAGES; \
+		cp -a $$i win32_export/locale/$$l/LC_MESSAGES/pidgin-otr.mo; \
+	done
 	cp -a po/*.gmo win32_export/
 	cd win32_export; \
 	i586-mingw32msvc-strip *.exe *.dll; \
 	perl -pi -e 's/$$/\r/' README.Toolkit.txt Protocol-v2.html \
 		COPYING.txt COPYING.LIB.txt README.txt; \
-	zip ../pidgin-otr-$(PIDGIN_OTR_VERSION).zip README.txt \
+	rm -f ../$(ZIPFILE); \
+	zip -r ../$(ZIPFILE) README.txt \
 		README.Toolkit.txt Protocol-v2.html COPYING.txt \
-		COPYING.LIB.txt *.exe *.dll *.gmo *.nsi
+		COPYING.LIB.txt *.exe *.dll *.nsi locale
 	rm -rf win32_export

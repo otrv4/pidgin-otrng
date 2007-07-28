@@ -1,9 +1,10 @@
 ; Script based on generated HM NIS Edit Script Wizard.
-; Forgive me, i am new at this. -- {paul,iang}@cypherpunks.ca
+; Forgive me, i am new at this. -- {paul,ian}@cypherpunks.ca
 ;
-; known issue. installer induced uninstaller abortion causes overwrite by installer without
-; uninstall.
-; v3.0.0    - Version for pidgin-2.0.0
+; known issue. installer induced uninstaller abortion causes overwrite
+; by installer without uninstall.
+; v3.1.0   - New source version.  Install and uninstall i18n files.
+; v3.0.0   - Version for pidgin-2.0.0
 ; v3.0.0   - Bump version number.
 ; v2.0.2   - Bump version number.
 ; v2.0.1   - Bump version number.
@@ -23,7 +24,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "3.0.0"
+!define PRODUCT_VERSION "3.1.0-preview3"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -69,33 +70,39 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
-;InstallDir "$PROGRAMFILES\Pidgin\plugins"
+    ;InstallDir "$PROGRAMFILES\Pidgin\plugins"
 
-; uninstall previous pidgin-otr install if found.
-Call UnInstOld
- ;Check for pidgin installation
-Call GetPidginInstPath
-WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\pidgin-otr" "pidgindir" "$PidginDir"
+    ; uninstall previous pidgin-otr install if found.
+    Call UnInstOld
+    ;Check for pidgin installation
+    Call GetPidginInstPath
+    WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\pidgin-otr" "pidgindir" "$PidginDir"
 
-	SetOutPath "$INSTDIR"
-  SetOverwrite on
-  File "c:\otr\pidgin-otr.dll"
-  ; move to pidgin plugin directory, check if not busy (pidgin is running)
-	call CopyDLL
-  ; hard part is done, do the rest now.
-  SetOverwrite on	  
-  File "c:\otr\README.Toolkit.txt"
-	File "c:\otr\README.txt"
-	File "c:\otr\Protocol-v2.html"
-	File "c:\otr\COPYING.txt"
-	File "c:\otr\COPYING.LIB.txt"
-	File "c:\otr\otr_mackey.exe"
-	File "c:\otr\otr_modify.exe"
-	File "c:\otr\otr_parse.exe"
-	File "c:\otr\otr_readforge.exe"
-	File "c:\otr\otr_remac.exe"
-	File "c:\otr\otr_sesskeys.exe"
-	File "c:\otr\pidgin-otr.nsi"
+    SetOutPath "$PidginDir\locale"
+    SetOverwrite on
+    ; What the next line means is to recursively search c:\otr\locale
+    ; and install all files under there named pidgin-otr.mo
+    File /r "c:\otr\locale\pidgin-otr.mo"
+
+    SetOutPath "$INSTDIR"
+    SetOverwrite on
+    File "c:\otr\pidgin-otr.dll"
+    ; move to pidgin plugin directory, check if not busy (pidgin is running)
+    call CopyDLL
+    ; hard part is done, do the rest now.
+    SetOverwrite on	  
+    File "c:\otr\README.Toolkit.txt"
+    File "c:\otr\README.txt"
+    File "c:\otr\Protocol-v2.html"
+    File "c:\otr\COPYING.txt"
+    File "c:\otr\COPYING.LIB.txt"
+    File "c:\otr\otr_mackey.exe"
+    File "c:\otr\otr_modify.exe"
+    File "c:\otr\otr_parse.exe"
+    File "c:\otr\otr_readforge.exe"
+    File "c:\otr\otr_remac.exe"
+    File "c:\otr\otr_sesskeys.exe"
+    File "c:\otr\pidgin-otr.nsi"
 SectionEnd
 
 Section -AdditionalIcons
@@ -125,18 +132,18 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\pidgin-otr-uninst.exe"
-	Delete "$INSTDIR\README.Toolkit.txt"
-	Delete "$INSTDIR\README.txt"
-	Delete "$INSTDIR\Protocol-v2.txt"
-	Delete "$INSTDIR\COPYING.txt"
-	Delete "$INSTDIR\COPYING.LIB.txt"
-	Delete "$INSTDIR\otr_mackey.exe"
-	Delete "$INSTDIR\otr_modify.exe"
-	Delete "$INSTDIR\otr_parse.exe"
-	Delete "$INSTDIR\otr_readforge.exe"
-	Delete "$INSTDIR\otr_remac.exe"
-	Delete "$INSTDIR\otr_sesskeys.exe"
-	Delete "$INSTDIR\pidgin-otr.nsi"
+  Delete "$INSTDIR\README.Toolkit.txt"
+  Delete "$INSTDIR\README.txt"
+  Delete "$INSTDIR\Protocol-v2.txt"
+  Delete "$INSTDIR\COPYING.txt"
+  Delete "$INSTDIR\COPYING.LIB.txt"
+  Delete "$INSTDIR\otr_mackey.exe"
+  Delete "$INSTDIR\otr_modify.exe"
+  Delete "$INSTDIR\otr_parse.exe"
+  Delete "$INSTDIR\otr_readforge.exe"
+  Delete "$INSTDIR\otr_remac.exe"
+  Delete "$INSTDIR\otr_sesskeys.exe"
+  Delete "$INSTDIR\pidgin-otr.nsi"
   Delete "$SMPROGRAMS\pidgin-otr\Uninstall.lnk"
   RMDir "$SMPROGRAMS\pidgin-otr"
   RMDir "$INSTDIR"
@@ -153,14 +160,29 @@ Section Uninstall
   MessageBox MB_OK|MB_ICONINFORMATION "Could not find pidgin plugin directory, pidgin-otr.dll not uninstalled!" IDOK ok
 dodelete:
 	Delete "$PidginDir\plugins\pidgin-otr.dll"
+
+	; Find all the language dirs and delete pidgin-otr.mo in all of them
+	Push $0
+	Push $1
+	FindFirst $0 $1 $PidginDir\locale\*
+	loop:
+		StrCmp $1 "" loopdone
+		Delete $PidginDir\locale\$1\LC_MESSAGES\pidgin-otr.mo
+		FindNext $0 $1
+		Goto loop
+	loopdone:
+	Pop $1
+	Pop $0
 	
 	IfFileExists "$PidginDir\plugins\pidgin-otr.dll" 0 +2
 		MessageBox MB_OK|MB_ICONINFORMATION "pidgin-otr.dll is busy. Probably Pidgin is still running. Please delete $PidginDir\plugins\pidgin-otr.dll manually."
+
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\pidgin-otr\pidgindir"
 ok:
 SetAutoClose true
 SectionEnd
+
 Function GetPidginInstPath
   Push $0
   ReadRegStr $0 HKLM "Software\pidgin" ""

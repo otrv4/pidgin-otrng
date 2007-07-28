@@ -7,6 +7,9 @@
 	* po/Makefile.mingw: Cleaned up Makefile.mingw files, removed
 	"install" target, added "zip" target
 
+	* packaging/windows/pidgin-otr.nsi: Install and uninstall the
+	translation files
+
 2007-07-26
 
 	* gtk-dialog.c:
