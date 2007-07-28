@@ -1,3 +1,8 @@
+2007-07-28
+
+	* configure.ac: Fix PKG_CHECK_MODULES so that it gives a
+	sensible error if the packages aren't found
+
 2007-07-26
 
 	* gtk-dialog.c:

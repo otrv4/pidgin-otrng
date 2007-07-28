@@ -16,7 +16,7 @@ AM_PATH_LIBGCRYPT(1:1.2.0,,AC_MSG_ERROR(libgcrypt 1.2.0 or newer is required.))
 
 AM_PATH_LIBOTR(3.1.0,,AC_MSG_ERROR(libotr 3.1.0 or newer is required.))
 
-PKG_CHECK_MODULES(EXTRA, glib-2.0 >= 2.6 gtk+-2.0 >= 2.6 pidgin >= 2.0 purple >= 2.0, , AC_MSG_ERROR(glib, gtk, pidgin and purple required))
+PKG_CHECK_MODULES([EXTRA], [glib-2.0 >= 2.6 gtk+-2.0 >= 2.6 pidgin >= 2.0 purple >= 2.0])
 
 AC_PROG_INTLTOOL
 

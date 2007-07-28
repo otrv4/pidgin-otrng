@@ -499,7 +499,7 @@ msgstr "Compte inconnu"
 
 #: ../otr-plugin.c:953
 msgid "Off-the-Record Messaging"
-msgstr "'Off-the-Record' Messagerie Confidentiel"
+msgstr "Messagerie Confidentiel 'Off-the-Record'"
 
 #: ../otr-plugin.c:954
 msgid "Provides private and secure conversations"
