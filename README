@@ -98,24 +98,17 @@ to automatically initiate private messaging, your clients may recognize
 each other and automatically start a private conversation.
 
 The first time you have a private conversation with one of your buddies,
-his fingerprint will appear.  It's usually a good idea to make sure it's
-correct, perhaps via the phone, or some other authenticated
-communication.
-
-If it's wrong, it means someone's intercepting your communication.
-While unlikely, this is one of the things this plugin detects.
-
-Once you've seen your buddy's fingerprint, it will be stored, and
-future private conversations with him won't bother you with this dialog.
-[Unless, of course, he uses a different fingerprint, perhaps from a
-different IM account, or on a different computer.  It's OK to have
-multiple fingerprints for the same IM account, on different machines.]
+a message will appear in your conversation telling you to authenticate
+them.  You may authenticate by selecting "Authenticate Buddy" on the
+OTR button's menu.  This is described later on.
 
 At this point, the label on the OTR button in the conversation window
 will change to "OTR: Unverified".  This means that, although you are
-sending encrypted messages, you have not yet verified your buddy's
-fingerprint, and so it is not certain that the person who can decrypt
-these messages is actually your buddy (it may be an attacker).
+sending encrypted messages, you have not yet authenticated your buddy,
+and so it is not certain that the person who can decrypt these messages
+is actually your buddy (it may be an attacker).  This situation will
+remain until either you or your buddy choose "Authenticate Buddy" from
+the OTR button menu (described next).
 
 If you right-click on the OTR button, you will get a menu with the
 following options:
@@ -134,34 +127,32 @@ End private conversation
     messaging" set, it is likely that a new private conversation will
     automatically begin immediately.
 
-Verify fingerprint
+Authenticate Buddy
 
-    Choose this menu option once you have your buddy on the phone, or
-    some other authenticated communication channel (such as a gpg-signed
-    message).  Have your buddy read you his fingerprint.  If it matches
-    what is displayed in the dialog box, pull down the selection that
-    says "I have not" (verified that this is in fact the correct
-    fingerprint), and change it to "I have".
+    To authenticate someone, you and your buddy should decide on a secret
+    word or phrase in advance.  This can be done however you like, but you
+    shouldn't type the phrase directly into your conversation.  Once
+    you've chosen a secret, select this menu option.
 
-    Once you do this, the label on the OTR button will change to "OTR:
-    Private".  Note that you only need to do this once per buddy (or
-    once per fingerprint, if your buddy has more than one fingerprint).
-    pidgin-otr will remember which fingerprints you have marked as
-    verified.
+    A screen will pop up asking you to type in your secret text.  Once you
+    enter the secret and hit OK, your buddy will be asked to do exactly
+    the same thing.  If you both enter the same text, then OTR will accept
+    that you are really talking to your buddy.  Otherwise, OTR reports that
+    authentication has failed.  This either means that your buddy made a
+    mistake typing in the text, or it may mean that someone is intercepting
+    your communication.
 
-View secure session id
+    For more details on authentication, or for examples of how to easily
+    agree on a secret online, click on the hyperlink under "What's This?"
+    at the bottom of the authentication screen.
 
-    The "secure session id" is another way to verify that you're actually
-    chatting with your buddy, and not some eavesdropper
-    ("man-in-the-middle" is the technical term).  Phone him up, and ask
-    him to read his bold part, and read yours back to him.  If they're
-    both correct, you're assured that there's no one intercepting your
-    private conversation.  This is secure, even if you know that one or
-    both of your private keys have been compromised.
-
-    You should almost never need to use this; it is only useful in the
-    event that you know your private keys have been compromised, and you
-    wish to have a private conversation anyway.
+    Once you've authenticated your buddy, the label on the OTR button
+    will change to "OTR: Private".  OTR will also remember that you
+    authenticated, and during future private conversations with the same
+    buddy, you will no longer get the warning message when you start
+    chatting.  This will continue until your buddy switches to a computer
+    or an IM account he hasn't used before, at which point OTR will not
+    recognize him and you will be asked to authenticate again.
 
 What's this?
 
@@ -189,11 +180,13 @@ or more of the following things by clicking the buttons below the list:
    or "Finished", you can force an end to your private conversation by
    clicking this button.  There's not usually a good reason to do this,
    though.
- - "Verify fingerprint": this will open the fingerprint verification
-   dialog discussed above.
+ - "Verify fingerprint": this will open a window where you can
+   verify the value of your buddies' fingerprint.  If you do not wish
+   to work with fingerprints directly, you should instead authenticate
+   used the OTR button from within a conversation.
  - "Forget fingerprint": this will remove your buddy's fingerprint from
-   the list.  You'll have to re-verify it the next time you start a
-   private conversation with him.  Note that you can't forget a
+   the list.  You'll have to re-authenticate him the next time you start
+   a private conversation with him.  Note that you can't forget a
    fingerprint that's currently in use in a private conversation.
 
 NOTES
