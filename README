@@ -1,5 +1,5 @@
 	       Off-the-Record Messaging plugin for pidgin
-			  v3.1.0, XX XXX 2007
+			  v3.1.0,  1 Aug 2007
 
 This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
@@ -153,6 +153,24 @@ Authenticate Buddy
     chatting.  This will continue until your buddy switches to a computer
     or an IM account he hasn't used before, at which point OTR will not
     recognize him and you will be asked to authenticate again.
+
+    To authenticate buddies using the old (fingerprint) method, click
+    the "Advanced..." button in the Authenticate Buddy window.  This is
+    useful if, for example, your buddy is using an older version of OTR
+    that does not yet support the new method.
+    
+    Click the "Advanced..." button once you have your buddy on the
+    phone, or some other authenticated communication channel (such as a
+    gpg-signed message).  Have your buddy read you his fingerprint.  If
+    it matches what is displayed in the dialog box, pull down the
+    selection that says "I have not" (verified that this is in fact the
+    correct fingerprint), and change it to "I have".
+
+    Once you do this, the label on the OTR button will change to "OTR:
+    Private".  Note that you only need to do this once per buddy (or
+    once per fingerprint, if your buddy has more than one fingerprint).
+    pidgin-otr will remember which fingerprints you have marked as
+    verified.
 
 What's this?
 
