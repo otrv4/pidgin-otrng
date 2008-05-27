@@ -894,7 +894,7 @@ static GtkWidget *create_smp_dialog(const char *title,
             GtkWidget *one_way_vbox = gtk_vbox_new(FALSE, 0);
             add_to_vbox_init_one_way_auth(one_way_vbox, context, auth_opt_data, question);
             gtk_notebook_append_page(GTK_NOTEBOOK(notebook), one_way_vbox,
-                gtk_label_new(_("0")));
+                gtk_label_new("0"));
             smppair->entry = auth_opt_data->one_way_entry;
             smppair->smp_type = 0;
         }
@@ -903,7 +903,7 @@ static GtkWidget *create_smp_dialog(const char *title,
             GtkWidget *two_way_vbox = gtk_vbox_new(FALSE, 0);
             add_to_vbox_init_two_way_auth(two_way_vbox, context, auth_opt_data);
             gtk_notebook_append_page(GTK_NOTEBOOK(notebook), two_way_vbox,
-                gtk_label_new(_("1")));
+                gtk_label_new("1"));
                     
             if (responder && question == NULL) {
                 smppair->entry = auth_opt_data->two_way_entry;
@@ -915,7 +915,7 @@ static GtkWidget *create_smp_dialog(const char *title,
             GtkWidget *fingerprint_vbox = gtk_vbox_new(FALSE, 0);
             add_to_vbox_verify_fingerprint(fingerprint_vbox, context, smppair);
             gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fingerprint_vbox,
-                gtk_label_new(_("2")));
+                gtk_label_new("2"));
         }
         
         gtk_notebook_set_show_tabs (GTK_NOTEBOOK(notebook), FALSE);

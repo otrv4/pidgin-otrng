@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2007.
 #
+#: ../gtk-dialog.c:557 ../gtk-dialog.c:649
 msgid ""
 msgstr ""
-"Project-Id-Version: pidgin-otr 3.1.0.sk\n"
+"Project-Id-Version: pidgin-otr 3.2.0.sk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-24 15:47-0400\n"
+"POT-Creation-Date: 2008-05-27 20:36+0200\n"
 "PO-Revision-Date: 2007-07-31 19:48+0200\n"
 "Last-Translator: Milan Plzik <emempi@gmail.com>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -15,223 +16,121 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gtk-dialog.c:913 ../gtk-dialog.c:2095
+#: ../gtk-dialog.c:434 ../gtk-dialog.c:2472
 msgid "_What's this?"
 msgstr "Čo je _toto?"
 
-#: ../gtk-dialog.c:924
+#: ../gtk-dialog.c:445
 msgid "_More..."
 msgstr "_Viac..."
 
-#. Create the Advanced... button, and left-justify it.  This
-#. * involves adding the button, and a blank label as a spacer, and
-#. * reordering them so that they're at the beginning.
-#: ../gtk-dialog.c:980
-msgid "Advanced..."
-msgstr "Rozšírené..."
+#: ../gtk-dialog.c:479
+#, c-format
+msgid ""
+"%s wishes to authenticate you. Your buddy has chosen a question for you to "
+"answer.\n"
+msgstr "%s by Vás chcel autentifikovať. Váš priateľ zvolil otázku, ktorú "
+"by ste mali zodpovedať.\n"
 
-#: ../gtk-dialog.c:1025
-msgid "Enter secret here"
-msgstr ""
+#: ../gtk-dialog.c:482
+#, c-format
+msgid "Enter a question only %s and yourself can answer.\n"
+msgstr "Zadajte heslo známe iba %s a Vám.\n"
 
-#: ../gtk-dialog.c:1030
+#: ../gtk-dialog.c:497
+#, c-format
+msgid "This is the question asked by your buddy:"
+msgstr "Toto je otázka položená Vaším priateľom:"
+
+#: ../gtk-dialog.c:531 ../gtk-dialog.c:655
 msgid "This buddy is already authenticated."
 msgstr "Tento priateľ už je autentifikovaný."
 
-#: ../gtk-dialog.c:1049
+#: ../gtk-dialog.c:543
+#, c-format
+msgid "Enter secret answer here (case sensitive):"
+msgstr "Zadajte tajnú odpoveď (citlivé na veľkosť písmen):"
+
+#: ../gtk-dialog.c:578
+msgid ""
+"Your buddy is attempting to determine if he or she is really talking to you, "
+"or if it's someone pretending to be you.  Your buddy has asked a question, "
+"indicated above.  To authenticate to your buddy, enter the answer and click "
+"OK."
+msgstr ""
+"Váš priateľ sa pokúša zistiť, či sa skutočne zhovára s Vami, alebo iba niekto"
+"predstiera, že ste to Vy - spýtal sa otázku, ktorá je zobrazená vyššie. Na"
+"to, aby ste sa priateľovi autentifikovali, zadajte odpoveď a kliknite na OK."
+
+#: ../gtk-dialog.c:583 ../gtk-dialog.c:599 ../gtk-dialog.c:679
+#
+msgid ""
+"If your buddy uses multiple IM accounts or multiple computers, you may have "
+"to authenticate multiple times.  However, as long as he or she uses an "
+"account and computer that you've seen before, you don't need to authenticate "
+"each individual conversation."
+msgstr ""
+"Ak Váš priateľ používa viacero IM kont alebo viacero počítačov, možno ho "
+"budete musiet autentifikovať viackrát. Avšak, pokiaľ používa konto a "
+"počítač, ktorý ste už videli, netreba autentifikovať každý rozhovor."
+
+#. The UNVERIFIED_HELPURL actually contains help info for all statuses
+#: ../gtk-dialog.c:588 ../gtk-dialog.c:604 ../gtk-dialog.c:684
+#: ../gtk-dialog.c:1188 ../gtk-dialog.c:1192 ../gtk-dialog.c:1316
+#: ../gtk-dialog.c:1484 ../gtk-dialog.c:1656 ../gtk-dialog.c:1759
+#: ../gtk-dialog.c:1850 ../gtk-dialog.c:2282
+msgid "?lang=en"
+msgstr "?lang=sk"
+
+#: ../gtk-dialog.c:589 ../gtk-dialog.c:605 ../gtk-dialog.c:685
+msgid "Click here for more information about authentication in OTR."
+msgstr "Kliknite sem pre viac informácií o autentifikácii v OTR."
+
+#: ../gtk-dialog.c:594
+msgid ""
+"To authenticate using a question, pick a question whose answer is known only "
+"to you and your buddy.  Enter this question and this answer, then wait for "
+"your buddy to enter the answer too.  If the answers don't match, then you "
+"may be talking to an imposter."
+msgstr ""
+"Na autentifikáciu použite heslo, ktoré poznáte iba Vy a priateľ. Zadajte "
+"toto heslo a počkajte, kým ho zadá aj priateľ. Ak sa heslá nezhodujú, je "
+"riziko, že sa rozprávate s podvodníkom."
+
+#: ../gtk-dialog.c:610 ../gtk-dialog.c:689
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who he or she claims to be."
+msgstr ""
+"Autentifikácia priateľa pomáha zabezpečiť, že osoba, s ktorou sa rozprávate, "
+"je skutočne tá, za ktorú sa vydáva."
+
+#: ../gtk-dialog.c:626
+#, c-format
+msgid "Enter a secret known only to %s and yourself.\n"
+msgstr "Zadajte heslo známe iba %s a Vám.\n"
+
+#: ../gtk-dialog.c:675
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
 msgstr ""
-"Na autentifikáciu použite heslo, ktoré poznáte iba Vy a priateľ. Zadajte toto "
-"heslo a počkajte, kým ho zadá aj priateľ. Ak sa heslá nezhodujú, je riziko, "
-"že sa rozprávate s podvodníkom."
-#: ../gtk-dialog.c:1053
+"Na autentifikáciu použite heslo, ktoré poznáte iba Vy a priateľ. Zadajte "
+"toto heslo a počkajte, kým ho zadá aj priateľ. Ak sa heslá nezhodujú, je "
+"riziko, že sa rozprávate s podvodníkom."
 
-msgid ""
-"If your buddy uses multiple IM accounts or multiple computers, you may have "
-"to authenticate multiple times.  However, as long as they use an account and "
-"computer that you've seen before, you don't need to authenticate each "
-"individual conversation."
-msgstr ""
-"Ak Váš priateľ používa viacero IM kont alebo viacero počítačov, možno ho "
-"budete musiet autentifikovať viackrát. Avšak, pokiaľ používa konto a počítať, "
-"ktorý ste už videli, netreba autentifikovať každý rozhovor."
-
-#: ../gtk-dialog.c:1058 ../gtk-dialog.c:1322 ../gtk-dialog.c:1326
-#: ../gtk-dialog.c:1423 ../gtk-dialog.c:1590 ../gtk-dialog.c:1750
-#: ../gtk-dialog.c:1850 ../gtk-dialog.c:1935
-msgid "?lang=en"
-msgstr "?lang=sk"
-
-#: ../gtk-dialog.c:1059
-msgid "Click here for more information about authentication in OTR."
-msgstr "Kliknite sem pre viac informácií o autentifikácii v OTR."
-
-#: ../gtk-dialog.c:1063
-msgid ""
-"Authenticating a buddy helps ensure that the person you are talking to is "
-"who they claim to be."
-msgstr ""
-"Autentifikácia priateľa pomáha zabezpečiť, že osoba, s ktorou sa rozprávate, "
-"je skutočne tá, za ktorú sa vydáva."
-
-#: ../gtk-dialog.c:1113
-msgid "Authenticating Buddy"
-msgstr "Autentifikujem priateľa."
-
-#: ../gtk-dialog.c:1140
-msgid "Authenticating"
-msgstr "Autentifikujem"
-
-#: ../gtk-dialog.c:1201
-msgid "Generating private key"
-msgstr "Generujem súkromný kľúč"
-
-#: ../gtk-dialog.c:1202
-msgid "Please wait"
-msgstr "Prosím čakajte"
-
-#: ../gtk-dialog.c:1210 ../gtk-dialog.c:1627 ../gtk-dialog.c:1664
-#: ../gtk-ui.c:175 ../otr-plugin.c:115 ../otr-plugin.c:212 ../ui.c:110
-msgid "Unknown"
-msgstr "Neznámy"
-
-#. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1213
-#, c-format
-msgid "Generating private key for %s (%s)..."
-msgstr "Generujem súkromný kľúč pre %s (%s)..."
-
-#: ../gtk-dialog.c:1258
-#, c-format
-msgid "%s Done."
-msgstr "%s Dokončené."
-
-#: ../gtk-dialog.c:1320
-#, c-format
-msgid ""
-"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
-"s\">authenticate</a> this buddy."
-msgstr ""
-"%s vás kontaktuje z neznámeho počítača. Tohto priateľa by ste mali <a "
-"href=\"%s%s\">autentifikovať</a>."
-
-#: ../gtk-dialog.c:1324
-#, c-format
-msgid ""
-"%s has not been authenticated yet.  You should <a href=\"%s%s"
-"\">authenticate</a> this buddy."
-msgstr ""
-"%s ešte nebol autentifikovaný. Tohto priateľa by ste mali <a href=\"%s%s\">"
-"autentifikovať</a>."
-
-#: ../gtk-dialog.c:1365 ../gtk-ui.c:76
-msgid "Finished"
-msgstr "Dokončené"
-
-#: ../gtk-dialog.c:1366 ../gtk-ui.c:75
-msgid "Private"
-msgstr "Súkromné"
-
-#: ../gtk-dialog.c:1367 ../gtk-ui.c:74
-msgid "Unverified"
-msgstr "Neoverené"
-
-#: ../gtk-dialog.c:1368 ../gtk-ui.c:73
-msgid "Not private"
-msgstr "Nesúkromné"
-
-#: ../gtk-dialog.c:1370
-msgid "Start a private conversation"
-msgstr "Začať súkromný rozhovor"
-
-#: ../gtk-dialog.c:1371
-msgid "Refresh the private conversation"
-msgstr "Obnoviť súkromný rozhovor"
-
-#: ../gtk-dialog.c:1375
-msgid "Start _private conversation"
-msgstr "Začať _súkromný rozhovor"
-
-#: ../gtk-dialog.c:1376
-msgid "Refresh _private conversation"
-msgstr "Obnoviť _súkromný rozhovor"
-
-#: ../gtk-dialog.c:1555
-msgid "I have not"
-msgstr "Neoveril som,"
-
-#: ../gtk-dialog.c:1556
-msgid "I have"
-msgstr "Overil som,"
-
-#: ../gtk-dialog.c:1558
-msgid " verified that this is in fact the correct"
-msgstr " že toto je ten správny"
-
-#: ../gtk-dialog.c:1567
-#, c-format
-msgid "fingerprint for %s."
-msgstr "odtlačok prsta pre %s."
-
-#: ../gtk-dialog.c:1579
-msgid ""
-"To verify the fingerprint, contact your buddy via some <i>other</i> "
-"authenticated channel, such as the telephone or GPG-signed email.  Each of "
-"you should tell your fingerprint to the other."
-msgstr ""
-"Na overenie odtlačku prsta kontaktujte Vášho priateľa pomocou <i>iného</i> "
-"autentifikovaného kanálu, ako napríklad telefón alebo e-mail podpísaný "
-"pomocou GPG. Obaja by ste si mali navzájom povedať odtlačky prstov."
-
-#: ../gtk-dialog.c:1583
-msgid ""
-"If everything matches up, you should indicate in the above dialog that you "
-"<b>have</b> verified the fingerprint."
-msgstr ""
-"Ak sa všetko zhoduje, mali by ste v dialógu vyššie označiť, že <b>ste "
-"skontrolovali</b> odtlačok prsta."
-
-#: ../gtk-dialog.c:1585
-msgid ""
-"If your buddy has more than one IM account, or uses more than one computer, "
-"he may have multiple fingerprints."
-msgstr ""
-"Ak Váš priateľ má viac ako jedno IM konto, alebo používa viac ako jeden "
-"počítač, môže mať viacero odtlačkov prstov."
-
-#: ../gtk-dialog.c:1587
-msgid ""
-"However, the only way an imposter could duplicate one of your buddy's "
-"fingerprints is by stealing information from her/his computer."
-msgstr ""
-"Jediný spôsob, ako mohol podvodník duplikovať jeden z odtlačkov prstov Vášho "
-"priateľa, je ukradnúť informácie z jej/jeho počítača."
-
-#: ../gtk-dialog.c:1591
-msgid "Click here for more information about fingerprints."
-msgstr "Kliknite sem pre viac informácií o odtlačkoch prstov."
-
-#: ../gtk-dialog.c:1594
-msgid ""
-"A <b>fingerprint</b> is a unique identifier that you should use to "
-"authenticate your buddy."
-msgstr ""
-"<b>Odtlačok prsta</b> je jednoznačný identifikátor, ktorý by ste mali použiť "
-"na autentifikovanie Vášho priateľa."
-
-#: ../gtk-dialog.c:1616
-#, c-format
-msgid "Verify fingerprint for %s"
-msgstr "Skontrolujte odtlačok prsta pre %s"
-
-#: ../gtk-dialog.c:1620
+#: ../gtk-dialog.c:713 ../gtk-dialog.c:1514
 msgid "[none]"
 msgstr "[žiaden]"
 
-#: ../gtk-dialog.c:1628
+#: ../gtk-dialog.c:720 ../gtk-dialog.c:1076 ../gtk-dialog.c:1521
+#: ../gtk-dialog.c:1564 ../gtk-ui.c:181 ../otr-plugin.c:116
+#: ../otr-plugin.c:213 ../ui.c:111
+msgid "Unknown"
+msgstr "Neznámy"
+
+#: ../gtk-dialog.c:721 ../gtk-dialog.c:1522
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -246,108 +145,299 @@ msgstr ""
 "Údajný odtlačok pre %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1633 ../gtk-ui.c:681
+#: ../gtk-dialog.c:769
+msgid "Other Authentication Options"
+msgstr "Iné možnosti autentifikácie"
+
+#: ../gtk-dialog.c:781
+msgid "Authenticate by posing a question only your buddy will know"
+msgstr "Autentifikácia položením otázky, na ktorú bude poznať odpoveď iba Váš priateľ"
+
+#: ../gtk-dialog.c:783
+msgid "Authenticate each other using a predetermined shared secret phrase"
+msgstr "Vzájomná autentifikácia použitím dopredu určenej tajnej frázy"
+
+#: ../gtk-dialog.c:785
+msgid "Authenticate by verifying your buddy's fingerprint (Advanced)"
+msgstr "Autentifikácia overením digitálneho odtlačku prsta priateľa (pokročilé)"
+
+#: ../gtk-dialog.c:897
+msgid "0"
+msgstr "0"
+
+#: ../gtk-dialog.c:906
+msgid "1"
+msgstr "1"
+
+#: ../gtk-dialog.c:918
+msgid "2"
+msgstr "2"
+
+#: ../gtk-dialog.c:974
+msgid "Authenticating to Buddy"
+msgstr "Autentifikujem sa priateľovi."
+
+#: ../gtk-dialog.c:975
+msgid "Authenticating Buddy"
+msgstr "Autentifikujem priateľa."
+
+#: ../gtk-dialog.c:1002
+msgid "Authenticating to"
+msgstr "Autentifikujem sa"
+
+#: ../gtk-dialog.c:1003
+msgid "Authenticating"
+msgstr "Autentifikujem"
+
+#: ../gtk-dialog.c:1034
+msgid "Waiting for buddy..."
+msgstr "Čakám na priateľa..."
+
+#: ../gtk-dialog.c:1067
+msgid "Generating private key"
+msgstr "Generujem súkromný kľúč"
+
+#: ../gtk-dialog.c:1068
+msgid "Please wait"
+msgstr "Prosím čakajte"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1079
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "Generujem súkromný kľúč pre %s (%s)..."
+
+#: ../gtk-dialog.c:1124
+#, c-format
+msgid "%s Done."
+msgstr "%s Dokončené."
+
+#: ../gtk-dialog.c:1186
+#, c-format
+msgid ""
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
+"s\">authenticate</a> this buddy."
+msgstr ""
+"%s vás kontaktuje z neznámeho počítača. Tohto priateľa by ste mali <a href="
+"\"%s%s\">autentifikovať</a>."
+
+#: ../gtk-dialog.c:1190
+#, c-format
+msgid ""
+"%s has not been authenticated yet.  You should <a href=\"%s%s"
+"\">authenticate</a> this buddy."
+msgstr ""
+"%s ešte nebol autentifikovaný. Tohto priateľa by ste mali <a href=\"%s%s"
+"\">autentifikovať</a>."
+
+#: ../gtk-dialog.c:1237 ../gtk-dialog.c:2007 ../gtk-dialog.c:2277
+#: ../gtk-ui.c:82
+msgid "Finished"
+msgstr "Dokončené"
+
+#: ../gtk-dialog.c:1238 ../gtk-dialog.c:2004 ../gtk-dialog.c:2274
+#: ../gtk-ui.c:81
+msgid "Private"
+msgstr "Súkromné"
+
+#: ../gtk-dialog.c:1239 ../gtk-dialog.c:2001 ../gtk-dialog.c:2271
+#: ../gtk-ui.c:80
+msgid "Unverified"
+msgstr "Neoverené"
+
+#: ../gtk-dialog.c:1240 ../gtk-ui.c:79
+msgid "Not private"
+msgstr "Nesúkromné"
+
+#: ../gtk-dialog.c:1243
+msgid "Start a private conversation"
+msgstr "Začať súkromný rozhovor"
+
+#: ../gtk-dialog.c:1244
+msgid "Refresh the private conversation"
+msgstr "Obnoviť súkromný rozhovor"
+
+#: ../gtk-dialog.c:1249 ../gtk-dialog.c:1954 ../gtk-dialog.c:2042
+msgid "Start _private conversation"
+msgstr "Začať _súkromný rozhovor"
+
+#: ../gtk-dialog.c:1250 ../gtk-dialog.c:1955
+msgid "Refresh _private conversation"
+msgstr "Obnoviť _súkromný rozhovor"
+
+#: ../gtk-dialog.c:1449
+msgid "I have not"
+msgstr "Neoveril som,"
+
+#: ../gtk-dialog.c:1450
+msgid "I have"
+msgstr "Overil som,"
+
+#: ../gtk-dialog.c:1452
+msgid " verified that this is in fact the correct"
+msgstr " že toto je ten správny"
+
+#: ../gtk-dialog.c:1461
+#, c-format
+msgid "fingerprint for %s."
+msgstr "odtlačok prsta pre %s."
+
+#: ../gtk-dialog.c:1473
+msgid ""
+"To verify the fingerprint, contact your buddy via some <i>other</i> "
+"authenticated channel, such as the telephone or GPG-signed email.  Each of "
+"you should tell your fingerprint to the other."
+msgstr ""
+"Na overenie odtlačku prsta kontaktujte Vášho priateľa pomocou <i>iného</i> "
+"autentifikovaného kanálu, ako napríklad telefón alebo e-mail podpísaný "
+"pomocou GPG. Obaja by ste si mali navzájom povedať odtlačky prstov."
+
+#: ../gtk-dialog.c:1477
+msgid ""
+"If everything matches up, you should indicate in the above dialog that you "
+"<b>have</b> verified the fingerprint."
+msgstr ""
+"Ak sa všetko zhoduje, mali by ste v dialógu vyššie označiť, že <b>ste "
+"skontrolovali</b> odtlačok prsta."
+
+#: ../gtk-dialog.c:1479
+msgid ""
+"If your buddy has more than one IM account, or uses more than one computer, "
+"he may have multiple fingerprints."
+msgstr ""
+"Ak Váš priateľ má viac ako jedno IM konto, alebo používa viac ako jeden "
+"počítač, môže mať viacero odtlačkov prstov."
+
+#: ../gtk-dialog.c:1481
+msgid ""
+"However, the only way an imposter could duplicate one of your buddy's "
+"fingerprints is by stealing information from her/his computer."
+msgstr ""
+"Jediný spôsob, ako mohol podvodník duplikovať jeden z odtlačkov prstov Vášho "
+"priateľa, je ukradnúť informácie z jej/jeho počítača."
+
+#: ../gtk-dialog.c:1485
+msgid "Click here for more information about fingerprints."
+msgstr "Kliknite sem pre viac informácií o odtlačkoch prstov."
+
+#: ../gtk-dialog.c:1488
+msgid ""
+"A <b>fingerprint</b> is a unique identifier that you should use to "
+"authenticate your buddy."
+msgstr ""
+"<b>Odtlačok prsta</b> je jednoznačný identifikátor, ktorý by ste mali použiť "
+"na autentifikovanie Vášho priateľa."
+
+#: ../gtk-dialog.c:1510
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "Skontrolujte odtlačok prsta pre %s"
+
+#: ../gtk-dialog.c:1527 ../gtk-ui.c:773
 msgid "Verify fingerprint"
 msgstr "Skontrolujte odtlačok"
 
-#: ../gtk-dialog.c:1660
+#: ../gtk-dialog.c:1554
+#, c-format
+msgid "Authentication from %s"
+msgstr "Autentifikácia od %s"
+
+#: ../gtk-dialog.c:1557
 #, c-format
 msgid "Authenticate %s"
 msgstr "Autentifikujte %s"
 
-#: ../gtk-dialog.c:1665
-#, c-format
-msgid "Enter a secret known only to %s and yourself.\n"
-msgstr "Zadajte heslo známe iba %s a Vám.\n"
-
-#: ../gtk-dialog.c:1668
+#: ../gtk-dialog.c:1567
 msgid "Authenticate buddy"
 msgstr "Autentifikujte priateľa"
 
-#: ../gtk-dialog.c:1700
+#: ../gtk-dialog.c:1598
 msgid "An error occurred during authentication."
 msgstr "Nastala chyba pri autentifikácii."
 
-#: ../gtk-dialog.c:1716
+#: ../gtk-dialog.c:1613
 msgid "Authentication successful."
 msgstr "Autentifikácia bola úspešná"
 
-#: ../gtk-dialog.c:1719
+#: ../gtk-dialog.c:1616
+msgid ""
+"Your buddy has successfully authenticated you.  You may want to authenticate "
+"your buddy as well by asking your own question."
+msgstr ""
+"Váš priateľ Vás úspešne autentifikoval. Možno tiež chcete autentifikovať Vášho"
+" priateľa spýtaním sa vlastnej otázky."
+
+#: ../gtk-dialog.c:1622
 msgid "Authentication failed."
 msgstr "Autentifikácia zlyhala"
 
-#: ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1650
 #, c-format
 msgid "Private conversation with %s started.%s"
 msgstr "Súkromný rozhovor s %s začal.%s"
 
-#: ../gtk-dialog.c:1748
+#: ../gtk-dialog.c:1654
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
 msgstr "<a href=\"%s%s\">Neoverený</a> rozhovor s %%s začal.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1756
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Not private conversation with %s started.%s"
 msgstr "Nesúkromný rozhovor s %s začal.%s"
 
-#: ../gtk-dialog.c:1762 ../gtk-dialog.c:1863
+#: ../gtk-dialog.c:1668 ../gtk-dialog.c:1772
 msgid "  Warning: using old protocol version 1."
 msgstr "  Varovanie: použvam starý protokol verzie 1."
 
-#: ../gtk-dialog.c:1782
+#: ../gtk-dialog.c:1688
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Súkromný rozhovor s %s stratený."
 
-#: ../gtk-dialog.c:1817
+#: ../gtk-dialog.c:1725
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
 msgstr ""
 "%s ukončil(-a) svoj súkromný rozhovor s Vami; mali by ste spraviť to isté."
 
-#: ../gtk-dialog.c:1842
+#: ../gtk-dialog.c:1751
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "Súkromný rozhovor s %s úspešne obnovený.%s"
 
-#: ../gtk-dialog.c:1847
+#: ../gtk-dialog.c:1756
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
-msgstr ""
-"<a href=\"%s%s\">Neoverený</a> rozhovor s %%s úspešne obnovený.%%s"
+msgstr "<a href=\"%s%s\">Neoverený</a> rozhovor s %%s úspešne obnovený.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1856
+#: ../gtk-dialog.c:1765
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "Nesúkromný rozhovor s %s úspešne obnovený.%s"
 
-#: ../gtk-dialog.c:1883
+#: ../gtk-dialog.c:1797
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "Pokúšam sa obnoviť súkromný rozhovor s %s..."
 
-#: ../gtk-dialog.c:1885
+#: ../gtk-dialog.c:1799
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "Pokúšam sa začať súkromný rozhovor s %s..."
 
-#: ../gtk-dialog.c:2045
-msgid "OTR:"
-msgstr "OTR:"
+#: ../gtk-dialog.c:1998 ../gtk-dialog.c:2268
+msgid "Not Private"
+msgstr "Nesúkromné"
 
-#: ../gtk-dialog.c:2054
-msgid "OTR Messaging"
-msgstr "OTR odosielanie správ"
-
-#: ../gtk-dialog.c:2060
+#: ../gtk-dialog.c:2043 ../gtk-dialog.c:2437
 msgid "_End private conversation"
 msgstr "_Ukončiť súkromný rozhovor"
 
@@ -360,161 +450,185 @@ msgstr "_Ukončiť súkromný rozhovor"
 #. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
 #. gtk_widget_show(menuverf);
 #.
-#: ../gtk-dialog.c:2078
+#: ../gtk-dialog.c:2044 ../gtk-dialog.c:2455
 msgid "_Authenticate buddy"
 msgstr "_Autentifikovať priateľa"
 
-#: ../gtk-ui.c:96
+#: ../gtk-dialog.c:2264
+#, c-format
+msgid ""
+"The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
+"a>"
+msgstr ""
+"Stav súkromnosti pre aktuálnu konverzáciu je: <a href=\"%s%s\">%s</a>"
+
+#: ../gtk-dialog.c:2419
+msgid "OTR:"
+msgstr "OTR:"
+
+#: ../gtk-dialog.c:2431
+msgid "OTR Messaging"
+msgstr "OTR odosielanie správ"
+
+#: ../gtk-ui.c:102
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "Odtlačok prsta: %.80s"
 
-#: ../gtk-ui.c:100
+#: ../gtk-ui.c:106
 #, c-format
 msgid "No key present"
 msgstr "Nie je dostupný žiaden kľúč"
 
-#: ../gtk-ui.c:105
+#: ../gtk-ui.c:111
 #, c-format
 msgid "No account available"
 msgstr "Nie je dostupné žiadne konto"
 
-#: ../gtk-ui.c:165
+#: ../gtk-ui.c:171
 msgid "Unused"
 msgstr "Nepoužité"
 
-#: ../gtk-ui.c:171
+#: ../gtk-ui.c:177
 msgid "Yes"
 msgstr "Áno"
 
-#: ../gtk-ui.c:171
+#: ../gtk-ui.c:177
 msgid "No"
 msgstr "Nie"
 
-#: ../gtk-ui.c:396
+#: ../gtk-ui.c:403
 msgid "Enable private messaging"
 msgstr "Zapnúť súkromné odosielanie správ"
 
-#: ../gtk-ui.c:398
+#: ../gtk-ui.c:405
 msgid "Automatically initiate private messaging"
 msgstr "Automaticky iniciovať súkromné odosielanie správ"
 
-#: ../gtk-ui.c:400
+#: ../gtk-ui.c:407
 msgid "Require private messaging"
 msgstr "Vyžadovať súkromné odosielanie správ"
 
-#: ../gtk-ui.c:403
+#: ../gtk-ui.c:410
 msgid "Don't log OTR conversations"
 msgstr "Nezaznamenávať OTR rozhovory"
 
-#: ../gtk-ui.c:531
+#: ../gtk-ui.c:453
+msgid "Show OTR button"
+msgstr ""
+
+#: ../gtk-ui.c:592
 msgid "My private keys"
 msgstr "Moje súkromné kľúče"
 
-#: ../gtk-ui.c:540
+#: ../gtk-ui.c:601
 msgid "Key for account:"
 msgstr "Kľúč pre konto:"
 
-#: ../gtk-ui.c:565
+#: ../gtk-ui.c:626
 msgid "Generate"
 msgstr "Generuj"
 
-#: ../gtk-ui.c:596
+#: ../gtk-ui.c:667
 msgid "Default OTR Settings"
 msgstr "Štandardné nastavenia OTR"
 
-#: ../gtk-ui.c:625
+#: ../gtk-ui.c:694
+msgid "OTR UI Options"
+msgstr "Nastavenia rozhrania OTR"
+
+#: ../gtk-ui.c:717
 msgid "Screenname"
 msgstr "Používateľské meno"
 
-#: ../gtk-ui.c:626
+#: ../gtk-ui.c:718
 msgid "Status"
 msgstr "Stav"
 
-#: ../gtk-ui.c:627
+#: ../gtk-ui.c:719
 msgid "Verified"
 msgstr "Overený"
 
-#: ../gtk-ui.c:628
+#: ../gtk-ui.c:720
 msgid "Fingerprint"
 msgstr "Odtlačok prsta"
 
-#: ../gtk-ui.c:629
+#: ../gtk-ui.c:721
 msgid "Account"
 msgstr "Konto"
 
-#: ../gtk-ui.c:665
+#: ../gtk-ui.c:757
 msgid "Start private connection"
 msgstr "Začať súkromný rozhovor"
 
-#: ../gtk-ui.c:673
+#: ../gtk-ui.c:765
 msgid "End private connection"
 msgstr "Ukončiť súkromný rozhovor"
 
-#: ../gtk-ui.c:689
+#: ../gtk-ui.c:781
 msgid "Forget fingerprint"
 msgstr "Zabudnúť odtlačok prsta"
 
-#: ../gtk-ui.c:738
+#: ../gtk-ui.c:832
 msgid "Config"
 msgstr "Nastaviť"
 
-#: ../gtk-ui.c:740
+#: ../gtk-ui.c:834
 msgid "Known fingerprints"
 msgstr "Známe odtlačky prstov"
 
-#: ../gtk-ui.c:838 ../otr-plugin.c:577
+#: ../gtk-ui.c:932 ../otr-plugin.c:606
 msgid "OTR Settings"
 msgstr "Nastavenia OTR"
 
 #. Set the title
-#: ../gtk-ui.c:856
+#: ../gtk-ui.c:950
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "OTR nastavenia pre %s"
 
 #. Make the cascaded checkboxes
-#: ../gtk-ui.c:873
+#: ../gtk-ui.c:967
 msgid "Use default OTR settings for this buddy"
 msgstr "Pre tohto priateľa použiť štandardné nastavenia"
 
-#: ../otr-plugin.c:113
+#: ../otr-plugin.c:114
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "Momentálne nie ste pripojený(-á) ku kontu %s (%s)."
 
-#: ../otr-plugin.c:117
+#: ../otr-plugin.c:118
 msgid "Not connected"
 msgstr "Nepripojený"
 
-#: ../otr-plugin.c:161
+#: ../otr-plugin.c:162
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "Nedostatok pamäte pri vytváraní mien súborov\n"
 
-#: ../otr-plugin.c:167
+#: ../otr-plugin.c:168
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "Nemohol som zapísať súbor so súkromným kľúčom\n"
 
-#: ../otr-plugin.c:210
+#: ../otr-plugin.c:211
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "Neznáme konto %s (%s)."
 
-#: ../otr-plugin.c:214
+#: ../otr-plugin.c:215
 msgid "Unknown account"
 msgstr "Neznáme konto"
 
-#: ../otr-plugin.c:953
+#: ../otr-plugin.c:983
 msgid "Off-the-Record Messaging"
 msgstr "Utajené posielanie správ (OTR)"
 
-#: ../otr-plugin.c:954
+#: ../otr-plugin.c:984
 msgid "Provides private and secure conversations"
 msgstr "Umožňuje súkromné a bezpečné rozhovory"
 
-#: ../otr-plugin.c:955
+#: ../otr-plugin.c:985
 msgid ""
 "Preserves the privacy of IM communications by providing encryption, "
 "authentication, deniability, and perfect forward secrecy."
@@ -522,11 +636,14 @@ msgstr ""
 "Zachováva súkromie IM rozhovorov použitím šifrovania, autentifikácie, "
 "popreteľnosti a dokonalého dopredného zabezpečenia."
 
-#: ../ui.c:108
+#: ../ui.c:109
 #, c-format
 msgid "Account %s (%s) could not be found"
 msgstr "Konto %s (%s) nemohlo byť nájdené"
 
-#: ../ui.c:112
+#: ../ui.c:113
 msgid "Account not found"
 msgstr "Konto nenájdené"
+
+#~ msgid "Advanced..."
+#~ msgstr "Rozšírené..."
