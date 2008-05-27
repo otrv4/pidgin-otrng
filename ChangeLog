@@ -57,6 +57,14 @@
 	* Makefile.am: Include new files in compilation and distribution
 	targets.
 
+	* gtk-dialog.c: Added "What's this?" item to OTR menu
+
+	* gtk-dialog.c: Name of authentication dialog is now
+	"Authenticate Buddy" with a capital "B".
+
+	* gtk-dialog.c: Authentication dialog now says "Authentication
+	Options" instead of "Other Authentication Options".
+
 2007-07-28
 
 	* configure.ac: Fix PKG_CHECK_MODULES so that it gives a

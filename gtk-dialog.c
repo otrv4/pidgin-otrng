@@ -766,7 +766,7 @@ static void add_other_authentication_options(GtkWidget *dialog,
     GtkWidget *two_way_smp;
     GtkWidget *fingerprint;  
 
-    expander = gtk_expander_new_with_mnemonic(_("Other Authentication Options"));
+    expander = gtk_expander_new_with_mnemonic(_("Authentication Options"));
 
     gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->vbox), expander, FALSE, FALSE, 0);
 
@@ -1564,7 +1564,7 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
     
 
-    dialog = create_smp_dialog(_("Authenticate buddy"),
+    dialog = create_smp_dialog(_("Authenticate Buddy"),
 	    primary, NULL, 1, NULL, context, responder, question);
 
     g_free(primary);
@@ -1965,8 +1965,9 @@ static void otr_build_status_submenu(PidginWindow *win,
     GtkWidget *levelimage;
     GtkWidget *buddy_name;
     GtkWidget *buddy_status;
-    GtkWidget *menusep;
+    GtkWidget *menusep, *menusep2;
     GdkPixbuf *pixbuf;
+    GtkWidget *whatsthis;
 
     GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
     
@@ -2014,22 +2015,32 @@ static void otr_build_status_submenu(PidginWindow *win,
     
     gtk_widget_show(buddy_status);
     gtk_widget_show(levelimage);
-    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_status ), levelimage );
+    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_status ),
+	    levelimage);
 
     menusep = gtk_separator_menu_item_new();
+    menusep2 = gtk_separator_menu_item_new();
+    whatsthis = gtk_image_menu_item_new_with_mnemonic(_("_What's this?"));
     
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_name);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_status);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep2);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
+    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( whatsthis ),
+	    gtk_image_new_from_stock(GTK_STOCK_HELP,
+		gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_EXTRA_SMALL)));
 
     gtk_widget_show(menusep);
+    gtk_widget_show(menusep2);
+    gtk_widget_show_all(whatsthis);
 
     menu_list = g_list_append(menu_list, buddy_name);
     menu_list = g_list_append(menu_list, buddy_status);
 
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 
-    gtk_signal_connect(GTK_OBJECT(buddy_status), "activate",
+    gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
         GTK_SIGNAL_FUNC(menu_whatsthis), conv);
 }
 
