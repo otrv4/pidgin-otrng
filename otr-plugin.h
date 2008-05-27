@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -45,9 +46,10 @@ void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
 void otrg_plugin_create_privkey(const char *accountname,
 	const char *protocol);
 
-/* Start or continue the Socialist Millionaires' Protocol over the current
- * connection, using the given initial secret. */
-void otrg_plugin_start_smp(ConnContext *context,
+/* Start the Socialist Millionaires' Protocol over the current connection,
+ * using the given initial secret, and optionally a question to pass to
+ * the buddy. */
+void otrg_plugin_start_smp(ConnContext *context, const char *question,
 	const unsigned char *secret, size_t secretlen);
 void otrg_plugin_continue_smp(ConnContext *context,
 	const unsigned char *secret, size_t secretlen);

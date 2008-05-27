@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -39,6 +40,9 @@
 #include "gtkutils.h"
 #include "gtkimhtml.h"
 #include "util.h"
+#include "core.h"
+#include "gtkmenutray.h"
+#include "tooltipmenu.h"
 
 #ifdef ENABLE_NLS
 /* internationalisation headers */
@@ -57,558 +61,24 @@
 #include "dialogs.h"
 #include "gtk-dialog.h"
 #include "ui.h"
+#include "otr-icons.h"
 
-/* The OTR icons */
+static GHashTable * otr_win_menus = 0;
+static GHashTable * otr_win_status = 0;
 
-static const char * not_private_xpm[] = {
-"20 20 100 2",
-"  	c None",
-". 	c #555555",
-"+ 	c #5A5A5A",
-"@ 	c #404040",
-"# 	c #515151",
-"$ 	c #919191",
-"% 	c #9C9C9C",
-"& 	c #949494",
-"* 	c #848484",
-"= 	c #646464",
-"- 	c #161616",
-"; 	c #959595",
-"> 	c #B7B7B7",
-", 	c #C2C2C2",
-"' 	c #AFAFAF",
-") 	c #8F8F8F",
-"! 	c #7B7B7B",
-"~ 	c #4F4F4F",
-"{ 	c #5C5C5C",
-"] 	c #A8A8A8",
-"^ 	c #CECECE",
-"/ 	c #D4D4D4",
-"( 	c #B9B9B9",
-"_ 	c #7A7A7A",
-": 	c #686868",
-"< 	c #101010",
-"[ 	c #636363",
-"} 	c #A3A3A3",
-"| 	c #C4C4C4",
-"1 	c #888888",
-"2 	c #757575",
-"3 	c #6B6B6B",
-"4 	c #141414",
-"5 	c #9E9E9E",
-"6 	c #9D9D9D",
-"7 	c #8C8C8C",
-"8 	c #6D6D6D",
-"9 	c #0C0C0C",
-"0 	c #777777",
-"a 	c #808080",
-"b 	c #7E7E7E",
-"c 	c #767676",
-"d 	c #6C6C6C",
-"e 	c #373737",
-"f 	c #000000",
-"g 	c #313131",
-"h 	c #696969",
-"i 	c #606060",
-"j 	c #3D3D3D",
-"k 	c #707070",
-"l 	c #676767",
-"m 	c #626262",
-"n 	c #0E0E0E",
-"o 	c #020202",
-"p 	c #DADADA",
-"q 	c #B2B2B2",
-"r 	c #969696",
-"s 	c #898989",
-"t 	c #5E5E5E",
-"u 	c #5B5B5B",
-"v 	c #727272",
-"w 	c #303030",
-"x 	c #CFCFCF",
-"y 	c #A2A2A2",
-"z 	c #828282",
-"A 	c #7C7C7C",
-"B 	c #797979",
-"C 	c #CBCBCB",
-"D 	c #9F9F9F",
-"E 	c #747474",
-"F 	c #6E6E6E",
-"G 	c #9A9A9A",
-"H 	c #868686",
-"I 	c #272727",
-"J 	c #BFBFBF",
-"K 	c #909090",
-"L 	c #818181",
-"M 	c #7D7D7D",
-"N 	c #151515",
-"O 	c #878787",
-"P 	c #717171",
-"Q 	c #1A1A1A",
-"R 	c #8B8B8B",
-"S 	c #656565",
-"T 	c #292929",
-"U 	c #4D4D4D",
-"V 	c #1D1D1D",
-"W 	c #616161",
-"X 	c #3A3A3A",
-"Y 	c #525252",
-"Z 	c #464646",
-"` 	c #080808",
-" .	c #565656",
-"..	c #2E2E2E",
-"+.	c #262626",
-"@.	c #2F2F2F",
-"#.	c #535353",
-"$.	c #4B4B4B",
-"%.	c #111111",
-"&.	c #2C2C2C",
-"      . + @                             ",
-"  # $ % & * = -             . + @       ",
-"  ; > , ' ) ! ~         # $ % & * = -   ",
-"{ ] ^ / ( $ _ : <       ; > , ' ) ! ~   ",
-"[ } , | ] 1 2 3 4     { ] ^ / ( $ _ : < ",
-"# ) 5 6 7 _ 8 { 9     [ } , | ] 1 2 3 4 ",
-"  0 a b c d = e f     # ) 5 6 7 _ 8 { 9 ",
-"  g h d h i j . + @     0 a b c d = e f ",
-"  & k l m # $ % & * = - g h d h i j n o ",
-"  p q r s ; > , ' ) ! ~ & k l m t u v w ",
-"  x y 1 { ] ^ / ( $ _ : < q r s z A B m ",
-"  C D 1 [ } , | ] 1 2 3 4 y 1 b _ E F u ",
-"  | G H # ) 5 6 7 _ 8 { 9 D 1 b _ 2 8 I ",
-"  J K L _ 0 a b c d = e f G H M B E 3 N ",
-"  } O _ 2 g h d h i j n o K L _ c P : Q ",
-"  R M v 3 & k l m t u v w O _ 2 P d S T ",
-"  3 c h U p q r s z A B m V v 3 : l W X ",
-"  Y P Z ` x y 1 b _ E F u  ...U +.@.#.$.",
-"    i <   C D 1 b _ 2 8 I %.@.&.    n Z ",
-"          | G H M B E 3 N i <           "};
+static int img_id_not_private = 0;
+static int img_id_unverified = 0;
+static int img_id_private = 0;
+static int img_id_finished = 0;
 
-static const char * unverified_xpm[] = {
-"20 20 103 2",
-"  	c None",
-". 	c #555555",
-"+ 	c #5A5A5A",
-"@ 	c #404040",
-"# 	c #000000",
-"$ 	c #515151",
-"% 	c #919191",
-"& 	c #9C9C9C",
-"* 	c #949494",
-"= 	c #848484",
-"- 	c #646464",
-"; 	c #161616",
-"> 	c #FFFF00",
-", 	c #959595",
-"' 	c #B7B7B7",
-") 	c #C2C2C2",
-"! 	c #AFAFAF",
-"~ 	c #8F8F8F",
-"{ 	c #7B7B7B",
-"] 	c #4F4F4F",
-"^ 	c #5C5C5C",
-"/ 	c #A8A8A8",
-"( 	c #CECECE",
-"_ 	c #D4D4D4",
-": 	c #B9B9B9",
-"< 	c #7A7A7A",
-"[ 	c #686868",
-"} 	c #101010",
-"| 	c #636363",
-"1 	c #A3A3A3",
-"2 	c #C4C4C4",
-"3 	c #888888",
-"4 	c #757575",
-"5 	c #6B6B6B",
-"6 	c #141414",
-"7 	c #9E9E9E",
-"8 	c #9D9D9D",
-"9 	c #8C8C8C",
-"0 	c #6D6D6D",
-"a 	c #0C0C0C",
-"b 	c #777777",
-"c 	c #808080",
-"d 	c #7E7E7E",
-"e 	c #767676",
-"f 	c #6C6C6C",
-"g 	c #373737",
-"h 	c #313131",
-"i 	c #696969",
-"j 	c #606060",
-"k 	c #3D3D3D",
-"l 	c #0E0E0E",
-"m 	c #020202",
-"n 	c #707070",
-"o 	c #676767",
-"p 	c #626262",
-"q 	c #5E5E5E",
-"r 	c #5B5B5B",
-"s 	c #727272",
-"t 	c #303030",
-"u 	c #DADADA",
-"v 	c #B2B2B2",
-"w 	c #969696",
-"x 	c #898989",
-"y 	c #828282",
-"z 	c #7C7C7C",
-"A 	c #797979",
-"B 	c #1D1D1D",
-"C 	c #CFCFCF",
-"D 	c #A2A2A2",
-"E 	c #747474",
-"F 	c #6E6E6E",
-"G 	c #565656",
-"H 	c #2E2E2E",
-"I 	c #CBCBCB",
-"J 	c #9F9F9F",
-"K 	c #272727",
-"L 	c #111111",
-"M 	c #2F2F2F",
-"N 	c #2C2C2C",
-"O 	c #9A9A9A",
-"P 	c #868686",
-"Q 	c #7D7D7D",
-"R 	c #151515",
-"S 	c #BFBFBF",
-"T 	c #909090",
-"U 	c #818181",
-"V 	c #717171",
-"W 	c #1A1A1A",
-"X 	c #878787",
-"Y 	c #656565",
-"Z 	c #292929",
-"` 	c #8B8B8B",
-" .	c #616161",
-"..	c #3A3A3A",
-"+.	c #4D4D4D",
-"@.	c #262626",
-"#.	c #535353",
-"$.	c #4B4B4B",
-"%.	c #525252",
-"&.	c #464646",
-"*.	c #080808",
-"=.	c #121212",
-"-.	c #242424",
-"      . + @               # # # # #     ",
-"  $ % & * = - ;         # > > > > > #   ",
-"  , ' ) ! ~ { ]       # > > > # > > > # ",
-"^ / ( _ : % < [ }     # > > #   # > > # ",
-"| 1 ) 2 / 3 4 5 6     # > > #   # > > # ",
-"$ ~ 7 8 9 < 0 ^ a     # > > #   # > > # ",
-"  b c d e f - g #       # #     # > > # ",
-"  h i f i j k l m             # > > > # ",
-"  * n o p q r s t             # > > #   ",
-"  u v w x y z A p B         # > > #     ",
-"  C D 3 d < E F r G H       # > #       ",
-"  I J 3 d < 4 0 K L M N     # > #       ",
-"  2 O P Q A E 5 R             #         ",
-"  S T U < e V [ W           # # #       ",
-"  1 X < 4 V f Y Z         # > > > #     ",
-"  ` Q s 5 [ o  ...        # > > > #     ",
-"  5 e i +.@.M #.$.m       # > > > #     ",
-"  %.V &.*.    l &.=.        # # #       ",
-"    j }           -.                    ",
-"                                        "};
-
-static const char * private_xpm[] = {
-"20 20 148 2",
-"  	c None",
-". 	c #978214",
-"+ 	c #A58A10",
-"@ 	c #77620A",
-"# 	c #85781D",
-"$ 	c #EBD437",
-"% 	c #F4DE44",
-"& 	c #F3D936",
-"* 	c #EFC819",
-"= 	c #C19207",
-"- 	c #2C1E01",
-"; 	c #EAD641",
-"> 	c #F6E978",
-", 	c #F7EB8D",
-"' 	c #F5E569",
-") 	c #F2D42C",
-"! 	c #EBB50C",
-"~ 	c #9C6302",
-"{ 	c #99891F",
-"] 	c #F5E45C",
-"^ 	c #F8EFA4",
-"/ 	c #F8F0B0",
-"( 	c #F6E97D",
-"_ 	c #F1D531",
-": 	c #E9B20C",
-"< 	c #CE7C02",
-"[ 	c #201000",
-"} 	c #AB961B",
-"| 	c #F4E252",
-"1 	c #F6EB8F",
-"2 	c #F6EC93",
-"3 	c #F4E25C",
-"4 	c #EECB22",
-"5 	c #E4A407",
-"6 	c #D67401",
-"7 	c #291400",
-"8 	c #8F7A13",
-"9 	c #F0D32E",
-"0 	c #F2DC4B",
-"a 	c #F2DB49",
-"b 	c #EECE2B",
-"c 	c #E6B10F",
-"d 	c #D88503",
-"e 	c #B95800",
-"f 	c #190A00",
-"g 	c #D9AE15",
-"h 	c #E7BC1A",
-"i 	c #E6B817",
-"j 	c #E0A60D",
-"k 	c #D58404",
-"l 	c #C76301",
-"m 	c #6E2E00",
-"n 	c #010000",
-"o 	c #58440B",
-"p 	c #C68E0C",
-"q 	c #D28A07",
-"r 	c #CE7904",
-"s 	c #BE5F02",
-"t 	c #793601",
-"u 	c #1A0F02",
-"v 	c #040300",
-"w 	c #A9A480",
-"x 	c #8A8156",
-"y 	c #9C8032",
-"z 	c #A27A23",
-"A 	c #9D7E1F",
-"B 	c #9C801A",
-"C 	c #C39D21",
-"D 	c #5B3B05",
-"E 	c #F5EEC0",
-"F 	c #F0E074",
-"G 	c #EAD243",
-"H 	c #E7C72C",
-"I 	c #E5BE20",
-"J 	c #E1B218",
-"K 	c #DDA615",
-"L 	c #C27003",
-"M 	c #3B1C00",
-"N 	c #F5ECA9",
-"O 	c #F1DE53",
-"P 	c #ECCD25",
-"Q 	c #E9C013",
-"R 	c #E8B50C",
-"S 	c #E2A307",
-"T 	c #D98B03",
-"U 	c #B66501",
-"V 	c #AC5201",
-"W 	c #5D2B00",
-"X 	c #F6ECA1",
-"Y 	c #F3DF4B",
-"Z 	c #F0CF21",
-"` 	c #EDC30F",
-" .	c #EBB709",
-"..	c #E5A405",
-"+.	c #D88603",
-"@.	c #4E2600",
-"#.	c #231000",
-"$.	c #5F2900",
-"%.	c #582300",
-"&.	c #F6EA93",
-"*.	c #F4DD40",
-"=.	c #F1CF1B",
-"-.	c #EEC10C",
-";.	c #EBB307",
-">.	c #E49D04",
-",.	c #D47A02",
-"'.	c #2B1500",
-").	c #F6E889",
-"!.	c #F2D72F",
-"~.	c #EFC614",
-"{.	c #ECB508",
-"].	c #E8A604",
-"^.	c #E09002",
-"/.	c #CF6E01",
-"(.	c #351800",
-"_.	c #EEDB59",
-":.	c #F0CB1E",
-"<.	c #EAB40B",
-"[.	c #E5A205",
-"}.	c #D87B01",
-"|.	c #C96101",
-"1.	c #532100",
-"2.	c #DCC33B",
-"3.	c #EAB811",
-"4.	c #E09804",
-"5.	c #D57D02",
-"6.	c #CD6601",
-"7.	c #C35600",
-"8.	c #742D00",
-"9.	c #BD9D19",
-"0.	c #E3A109",
-"a.	c #D17402",
-"b.	c #9A4801",
-"c.	c #4C2400",
-"d.	c #5E2900",
-"e.	c #A64300",
-"f.	c #963500",
-"g.	c #050200",
-"h.	c #957610",
-"i.	c #DC9107",
-"j.	c #8B4101",
-"k.	c #100600",
-"l.	c #1C0A00",
-"m.	c #8D3000",
-"n.	c #240B00",
-"o.	c #BB7B06",
-"p.	c #210E00",
-"q.	c #491800",
-"            . + @                       ",
-"        # $ % & * = -                   ",
-"        ; > , ' ) ! ~                   ",
-"      { ] ^ / ( _ : < [                 ",
-"      } | 1 2 3 4 5 6 7                 ",
-"      8 9 0 a b c d e f                 ",
-"        g h i j k l m n                 ",
-"        o p q r s t u v                 ",
-"        w x y z A B C D                 ",
-"        E F G H I J K L M               ",
-"        N O P Q R S T U V W             ",
-"        X Y Z `  ...+.@.#.$.%.          ",
-"        &.*.=.-.;.>.,.'.                ",
-"        ).!.~.{.].^./.(.                ",
-"        _.:.<.[.^.}.|.1.                ",
-"        2.3.4.5./.6.7.8.                ",
-"        9.0.a.b.c.d.e.f.g.              ",
-"        h.i.j.k.    l.m.n.              ",
-"          o.p.          q.              ",
-"                                        "};
-
-static const char * finished_xpm[] = {
-"20 20 101 2",
-"  	c None",
-". 	c #555555",
-"+ 	c #FF0000",
-"@ 	c #F31111",
-"# 	c #C94949",
-"$ 	c #C14242",
-"% 	c #B13232",
-"& 	c #8A0A0A",
-"* 	c #FE0000",
-"= 	c #DC5656",
-"- 	c #C2BFBF",
-"; 	c #AFAFAF",
-"> 	c #8F8F8F",
-", 	c #7B7B7B",
-"' 	c #4F4F4F",
-") 	c #C66D6D",
-"! 	c #CECECE",
-"~ 	c #D4D4D4",
-"{ 	c #B9B9B9",
-"] 	c #919191",
-"^ 	c #7A7A7A",
-"/ 	c #686868",
-"( 	c #101010",
-"_ 	c #9E3D3D",
-": 	c #A3A3A3",
-"< 	c #C2C2C2",
-"[ 	c #C4C4C4",
-"} 	c #A8A8A8",
-"| 	c #888888",
-"1 	c #757575",
-"2 	c #6B6B6B",
-"3 	c #141414",
-"4 	c #515151",
-"5 	c #9E9E9E",
-"6 	c #9D9D9D",
-"7 	c #8C8C8C",
-"8 	c #6D6D6D",
-"9 	c #5C5C5C",
-"0 	c #0C0C0C",
-"a 	c #777777",
-"b 	c #808080",
-"c 	c #7E7E7E",
-"d 	c #767676",
-"e 	c #6C6C6C",
-"f 	c #646464",
-"g 	c #373737",
-"h 	c #000000",
-"i 	c #313131",
-"j 	c #696969",
-"k 	c #606060",
-"l 	c #3D3D3D",
-"m 	c #0E0E0E",
-"n 	c #949494",
-"o 	c #707070",
-"p 	c #676767",
-"q 	c #626262",
-"r 	c #5E5E5E",
-"s 	c #5B5B5B",
-"t 	c #DADADA",
-"u 	c #B2B2B2",
-"v 	c #969696",
-"w 	c #898989",
-"x 	c #828282",
-"y 	c #1D1D1D",
-"z 	c #CFCFCF",
-"A 	c #A2A2A2",
-"B 	c #6E6E6E",
-"C 	c #565656",
-"D 	c #2E2E2E",
-"E 	c #CBCBCB",
-"F 	c #9F9F9F",
-"G 	c #272727",
-"H 	c #111111",
-"I 	c #2F2F2F",
-"J 	c #2C2C2C",
-"K 	c #9A9A9A",
-"L 	c #797979",
-"M 	c #747474",
-"N 	c #151515",
-"O 	c #BFBFBF",
-"P 	c #717171",
-"Q 	c #1A1A1A",
-"R 	c #656565",
-"S 	c #292929",
-"T 	c #7D7D7D",
-"U 	c #727272",
-"V 	c #616161",
-"W 	c #3A3A3A",
-"X 	c #9B4848",
-"Y 	c #4D4D4D",
-"Z 	c #262626",
-"` 	c #535353",
-" .	c #4B4B4B",
-"..	c #020202",
-"+.	c #C13030",
-"@.	c #4F4242",
-"#.	c #080808",
-"$.	c #464646",
-"%.	c #121212",
-"&.	c #FC0000",
-"*.	c #DE0505",
-"            . + + + + +                 ",
-"        + + @ # $ % & + + + +           ",
-"      + * = - ; > , '       + +         ",
-"    + * ) ! ~ { ] ^ / (       + +       ",
-"    + _ : < [ } | 1 2 3     + + +       ",
-"  + + 4 > 5 6 7 ^ 8 9 0   + +   + +     ",
-"  +     a b c d e f g h + +       +     ",
-"+ +     i j e j k l m + +         + +   ",
-"+ +     n o p q r s + +           + +   ",
-"+       t u v w x + + q y           +   ",
-"+       z A | c + + B s C D       + +   ",
-"+ +     E F | + + 1 8 G H I J     + +   ",
-"+ +     [ K + + L M 2 N           + +   ",
-"  +     O + + ^ d P / Q           +     ",
-"  + +   + + ^ 1 P e R S         + +     ",
-"    + + + T U 2 / p V W         +       ",
-"    + + X d j Y Z I `  ...    + +       ",
-"      + + +.@.#.    m $.%.  + +         ",
-"        + + &.+       + *.+ +           ",
-"              + + + + +                 "};
 
 typedef struct {
-    ConnContext *context;  /* The context used to fire library code */
-    GtkEntry *entry;	   /* The text entry field containing the secret */
-    gboolean responder;	   /* Whether or not this is the first side to give
-			      their secret */
+    ConnContext *context;       /* The context used to fire library code */
+    GtkEntry* question_entry;       /* The text entry field containing the user question */
+    GtkEntry *entry;	        /* The text entry field containing the secret */
+    int smp_type;               /* Whether the SMP type is based on question challenge (0) or shared secret (1) */
+    gboolean responder;	        /* Whether or not this is the first side to give
+			                       their secret */
 } SmpResponsePair;
 
 /* The response code returned by pushing the "Advanced..." button on the
@@ -624,6 +94,16 @@ typedef struct dialog_context_data {
     GtkWidget       *smp_progress_bar;
     GtkWidget       *smp_progress_label;
 } SMPData;
+
+typedef struct {
+    GtkWidget       *one_way;
+    GtkEntry        *one_way_entry;
+    SmpResponsePair *smppair;
+    GtkWidget       *two_way;
+    GtkEntry        *two_way_entry;
+    GtkWidget       *fingerprint;
+    GtkWidget       *notebook;
+} AuthSignalData;
 
 static void close_progress_window(SMPData *smp_data)
 {
@@ -667,33 +147,36 @@ static void otrg_gtk_dialog_add_smp_data(PurpleConversation *conv)
     purple_conversation_set_data(conv, "otr-smpdata", smp_data);
 }
 
-static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level)
+static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level,
+	gboolean sensitivity)
 {
     GdkPixbuf *pixbuf = NULL;
-    const char **data = NULL;
+    const guint8 *data = NULL;
 
     switch(level) {
 	case TRUST_NOT_PRIVATE:
-	    data = not_private_xpm;
+	    data = not_private_pixbuf;
 	    break;
 	case TRUST_UNVERIFIED:
-	    data = unverified_xpm;
+	    data = unverified_pixbuf;
 	    break;
 	case TRUST_PRIVATE:
-	    data = private_xpm;
+	    data = private_pixbuf;
 	    break;
 	case TRUST_FINISHED:
-	    data = finished_xpm;
+	    data = finished_pixbuf;
 	    break;
     }
 
-    pixbuf = gdk_pixbuf_new_from_xpm_data(data);
+    pixbuf = gdk_pixbuf_new_from_inline(-1, data, FALSE, NULL);
     if (image) {
 	gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
     } else {
 	image = gtk_image_new_from_pixbuf(pixbuf);
     }
     gdk_pixbuf_unref(pixbuf);
+
+    gtk_widget_set_sensitive (image, sensitivity);
 
     return image;
 }
@@ -703,8 +186,12 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget)
     gtk_widget_destroy(GTK_WIDGET(widget));
 }
 
-/* Forward declarations for the benefit of smp_message_response_cb */
+/* Forward declarations for the benefit of smp_message_response_cb/redraw authvbox */
 static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint);
+static void add_vrfy_fingerprint(GtkWidget *vbox, void *data);
+static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(Fingerprint *fprint);
+static void conversation_switched ( PurpleConversation *conv, void * data );
+
 static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 	ConnContext *context);
 
@@ -743,60 +230,91 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
  * the entered secret as well as the current context.
  */
 static void smp_secret_response_cb(GtkDialog *dialog, gint response,
-	SmpResponsePair *smppair)
+	AuthSignalData *auth_opt_data)
 {
     ConnContext* context;
     PurpleConversation *conv;
     SMPData *smp_data;
+    SmpResponsePair *smppair;
 
+    if (!auth_opt_data) return;
+    
+    smppair = auth_opt_data->smppair;
+    
     if (!smppair) return;
 
     context = smppair->context;
-    if (response == GTK_RESPONSE_ACCEPT) {
-	GtkEntry* entry = smppair->entry;
-	char *secret;
-	size_t secret_len;
 
-	if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
-		return;
+    if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
+        GtkEntry* entry = smppair->entry;
+        char *secret;
+        size_t secret_len;
 
-	secret = g_strdup(gtk_entry_get_text(entry));
+        GtkEntry* question_entry = smppair->question_entry;
+    
+        const char *user_question = NULL;
 
-	secret_len = strlen(secret);
 
-	if (smppair->responder) {
-	    otrg_plugin_continue_smp(context, (const unsigned char *)secret,
-		    secret_len);
-	} else {
-	    otrg_plugin_start_smp(context, (const unsigned char *)secret,
-		    secret_len);
-	}
-	g_free(secret);
+        if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED) {
+            return;
+        }
+    
+        secret = g_strdup(gtk_entry_get_text(entry));
+        secret_len = strlen(secret);
 
-	/* launch progress bar window */
-	create_smp_progress_dialog(GTK_WINDOW(dialog), context);
+        if (smppair->responder) {
+            otrg_plugin_continue_smp(context, (const unsigned char *)secret,
+                secret_len);
+            
+        } else {
+            
+            if (smppair->smp_type == 0) {
+                if (!question_entry) {
+                    return;
+                }
+              
+                user_question = gtk_entry_get_text(question_entry);
+        
+                if (user_question == NULL || strlen(user_question) == 0) {
+                    return;
+                }
+            }
+
+            /* pass user question here */
+            otrg_plugin_start_smp(context, user_question,
+	           (const unsigned char *)secret, secret_len);
+
+        }
+    
+        g_free(secret);
+
+        /* launch progress bar window */
+        create_smp_progress_dialog(GTK_WINDOW(dialog), context);
     } else if (response == OTRG_RESPONSE_ADVANCED) {
-	ConnContext* context = smppair->context;
+        ConnContext* context = smppair->context;
 
-	if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
-		return;
+        if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
+		  return;
 
-	verify_fingerprint(GTK_WINDOW(dialog), context->active_fingerprint);
+        verify_fingerprint(GTK_WINDOW(dialog), context->active_fingerprint);
     } else {
         otrg_plugin_abort_smp(context);
     }
+    
     /* In all cases, destroy the current window */
     gtk_widget_destroy(GTK_WIDGET(dialog));
     
     /* Clean up references to this window */
     conv = otrg_plugin_context_to_conv(smppair->context, 0);
     smp_data = purple_conversation_get_data(conv, "otr-smpdata");
+    
     if (smp_data) {
-	smp_data->smp_secret_dialog = NULL;
-	smp_data->smp_secret_smppair = NULL;
+        smp_data->smp_secret_dialog = NULL;
+        smp_data->smp_secret_smppair = NULL;
     }
 
-    /* Free the smppair memory */
+    /* Free memory */
+    free(auth_opt_data);
     free(smppair);
 }
 
@@ -944,9 +462,353 @@ static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
     gtk_widget_set_size_request(scrl, -1, 6 * (font->ascent + font->descent));
 }
 
+
+static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, ConnContext *context,
+        AuthSignalData *auth_opt_data, char *question) {
+    GtkWidget *question_entry;
+    GtkWidget *entry;
+    GtkWidget *label;
+    GtkWidget *label2;
+    
+    char *moremarkup;
+    char *label_text;   
+    
+    SmpResponsePair* smppair = auth_opt_data->smppair;
+    
+    if (smppair->responder) {
+        label_text = g_strdup_printf(_("%s wishes to authenticate you. Your "
+          "buddy has chosen a question for you to answer.\n"), context->username);
+    } else {
+        label_text = g_strdup_printf(_("Enter a question only %s and "
+          "yourself can answer.\n"), context->username);
+    }
+
+    label = gtk_label_new(NULL);
+
+    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+       
+       
+    if (smppair->responder) {
+        label_text = g_strdup_printf(_("This is the question asked by "
+		    "your buddy:"));
+    } else {
+        label_text = g_strdup_printf("Enter question here:");
+    }
+    
+    label = gtk_label_new(label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    
+
+    
+    if (smppair->responder && question) {
+        label_text = g_markup_printf_escaped("<span background=\"white\" foreground=\"black\" weight=\"bold\">%s</span>", question);
+        label = gtk_label_new(NULL);
+        gtk_label_set_markup (GTK_LABEL(label), label_text);
+        gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+        g_free(label_text);
+        gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+        smppair->question_entry = NULL;
+    } else {
+        /* Create the text view where the user enters their question */
+        question_entry = gtk_entry_new ();
+        smppair->question_entry = GTK_ENTRY(question_entry);
+        gtk_box_pack_start(GTK_BOX(vbox), question_entry, FALSE, FALSE, 0);
+    }
+    
+    if (context->active_fingerprint->trust &&
+        context->active_fingerprint->trust[0] && !(smppair->responder)) {
+        label2 = gtk_label_new(_("This buddy is already authenticated."));
+    } else {
+        label2 = NULL;
+    }
+
+    
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    
+    /* Leave a blank line */
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
+        FALSE, 0);
+
+    label_text = g_strdup_printf(_("Enter secret answer here "
+		"(case sensitive):"));
+
+    label = gtk_label_new(NULL);
+
+    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+    /* Create the text view where the user enters their secret */
+    entry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry), _(""));
+
+    auth_opt_data->one_way_entry = GTK_ENTRY(entry);
+    gtk_entry_set_activates_default(GTK_ENTRY(entry), smppair->responder);
+
+    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    
+    /* Leave a blank line */
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
+        FALSE, 0);
+        
+    if (label2) {
+        gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
+            FALSE, 0);
+    }
+    
+    if (smppair->responder && question) {
+	moremarkup = g_strdup_printf(
+	    "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
+	    _("Your buddy is attempting to determine if he or she is really "
+		"talking to you, or if it's someone pretending to be you.  "
+		"Your buddy has asked a question, indicated above.  "
+		"To authenticate to your buddy, enter the answer and "
+		"click OK."),
+	    _("If your buddy uses multiple IM accounts or multiple "
+		"computers, you may have to authenticate multiple "
+		"times.  However, as long as he or she uses an account and "
+		"computer that you've seen before, you don't need to "
+		"authenticate each individual conversation."),
+	    AUTHENTICATE_HELPURL, _("?lang=en"),
+	    _("Click here for more information about authentication "
+            "in OTR."));
+    } else {
+	moremarkup = g_strdup_printf(
+	    "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
+	    _("To authenticate using a question, pick a question whose "
+		"answer is known only to you and your buddy.  Enter this "
+		"question and this answer, then wait for your buddy to "
+		"enter the answer too.  If the answers "
+		"don't match, then you may be talking to an imposter."),
+	    _("If your buddy uses multiple IM accounts or multiple "
+		"computers, you may have to authenticate multiple "
+		"times.  However, as long as he or she uses an account and "
+		"computer that you've seen before, you don't need to "
+		"authenticate each individual conversation."),
+	    AUTHENTICATE_HELPURL, _("?lang=en"),
+	    _("Click here for more information about authentication "
+            "in OTR."));
+    }
+
+    add_whatsthis_more(vbox,
+        _("Authenticating a buddy helps ensure that the person "
+            "you are talking to is who he or she claims to be."),
+        moremarkup);
+
+    g_free(moremarkup);
+}
+
+static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
+	ConnContext *context, AuthSignalData *auth_opt_data) {
+    GtkWidget *entry;
+    GtkWidget *label;
+    GtkWidget *label2;
+    
+    char *moremarkup;
+    char *label_text;   
+    
+    label_text = g_strdup_printf(_("Enter a secret known only to %s and "
+      "yourself.\n"), context->username);
+
+    label = gtk_label_new(NULL);
+
+    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+       
+    label_text = g_strdup_printf("Enter secret here:");
+    label = gtk_label_new(label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+        
+       
+    /* Create the text view where the user enters their secret */
+    entry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry), _(""));
+    gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
+    auth_opt_data->two_way_entry = GTK_ENTRY(entry);
+
+    if (context->active_fingerprint->trust &&
+        context->active_fingerprint->trust[0]) {
+        label2 = gtk_label_new(_("This buddy is already authenticated."));
+    } else {
+        label2 = NULL;
+    }
+
+    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    
+    /* Leave a blank line */
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
+        FALSE, 0);
+        
+    if (label2) {
+        gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
+            FALSE, 0);
+    }
+    
+    moremarkup = g_strdup_printf(
+        "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
+        _("To authenticate, pick a secret known "
+            "only to you and your buddy.  Enter this secret, then "
+            "wait for your buddy to enter it too.  If the secrets "
+            "don't match, then you may be talking to an imposter."),
+        _("If your buddy uses multiple IM accounts or multiple "
+            "computers, you may have to authenticate multiple "
+            "times.  However, as long as he or she uses an account and "
+            "computer that you've seen before, you don't need to "
+            "authenticate each individual conversation."),
+        AUTHENTICATE_HELPURL, _("?lang=en"),
+        _("Click here for more information about authentication "
+            "in OTR."));
+
+    add_whatsthis_more(vbox,
+        _("Authenticating a buddy helps ensure that the person "
+            "you are talking to is who he or she claims to be."),
+        moremarkup);
+
+    g_free(moremarkup);
+}
+
+static void add_to_vbox_verify_fingerprint(GtkWidget *vbox, ConnContext *context, SmpResponsePair* smppair) {
+    char our_hash[45], their_hash[45];
+    GtkWidget *label;
+    char *label_text;
+    struct vrfy_fingerprint_data *vfd;
+    PurplePlugin *p;
+    char *proto_name;
+    Fingerprint *fprint = context->active_fingerprint;
+
+    if (fprint == NULL) return;
+    if (fprint->fingerprint == NULL) return;
+    context = fprint->context;
+    if (context == NULL) return;
+
+
+    vfd = vrfy_fingerprint_data_new(fprint);
+
+    strcpy(our_hash, _("[none]"));
+    otrl_privkey_fingerprint(otrg_plugin_userstate, our_hash,
+        context->accountname, context->protocol);
+
+    otrl_privkey_hash_to_human(their_hash, fprint->fingerprint);
+
+    p = purple_find_prpl(context->protocol);
+    proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
+    label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
+        "Purported fingerprint for %s:\n%s\n"), context->accountname,
+        proto_name, our_hash, context->username, their_hash);
+        
+    label = gtk_label_new(NULL);
+    
+    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+        
+    add_vrfy_fingerprint(vbox, vrfy_fingerprint_data_new(fprint));
+}
+
+static void redraw_auth_vbox(GtkToggleButton *togglebutton, void *data) {
+    AuthSignalData *auth_data = (AuthSignalData*) data;
+
+    GtkWidget *notebook = auth_data != NULL ? auth_data->notebook : NULL;
+    
+    if (auth_data == NULL) return;
+    
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->one_way)) == TRUE) {
+        gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 0);
+        auth_data->smppair->entry = auth_data->one_way_entry;
+        auth_data->smppair->smp_type = 0;
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->two_way)) == TRUE) {
+        gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 1);
+        auth_data->smppair->entry = auth_data->two_way_entry;
+        auth_data->smppair->smp_type = 1;
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->fingerprint)) == TRUE) {
+        auth_data->smppair->entry = NULL;
+        gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 2);
+        auth_data->smppair->smp_type = -1;
+    }
+    
+}
+
+static void add_other_authentication_options(GtkWidget *dialog,
+	GtkWidget *notebook, ConnContext *context, AuthSignalData *data) {
+    GtkWidget *expander;
+    GtkWidget *ebox;
+    GtkWidget *frame;
+    GtkWidget *one_way_smp;
+    GtkWidget *two_way_smp;
+    GtkWidget *fingerprint;  
+
+    expander = gtk_expander_new_with_mnemonic(_("Other Authentication Options"));
+
+    gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->vbox), expander, FALSE, FALSE, 0);
+
+
+    frame = gtk_frame_new(NULL);
+    gtk_container_add(GTK_CONTAINER(expander), frame);
+    ebox = gtk_vbox_new(FALSE, 10);
+    gtk_container_add(GTK_CONTAINER(frame), ebox);
+
+    
+  
+   one_way_smp = gtk_radio_button_new_with_label(NULL, _("Authenticate by posing a question only your buddy will know"));
+   two_way_smp = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (one_way_smp),
+                            _("Authenticate each other using a predetermined shared secret phrase"));
+   fingerprint = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (one_way_smp),
+                            _("Authenticate by verifying your buddy's fingerprint (Advanced)"));       
+                                             
+   gtk_box_pack_start(GTK_BOX(ebox), one_way_smp, FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(ebox), two_way_smp, FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(ebox), fingerprint, FALSE, FALSE, 0);
+
+   data->notebook = notebook;
+   data->one_way = one_way_smp;
+   data->two_way = two_way_smp;
+   data->fingerprint = fingerprint;
+   
+   g_signal_connect (one_way_smp, "toggled",
+                  G_CALLBACK (redraw_auth_vbox), data);
+                  
+   g_signal_connect (two_way_smp, "toggled",
+                  G_CALLBACK (redraw_auth_vbox), data);
+                  
+   g_signal_connect (fingerprint, "toggled",
+                  G_CALLBACK (redraw_auth_vbox), data);
+                        
+}
+
+
 static GtkWidget *create_smp_dialog(const char *title,
-	const char *primary, const char *secondary, int sensitive,
-	GtkWidget **labelp, ConnContext *context, gboolean responder)
+    const char *primary, const char *secondary, int sensitive,
+    GtkWidget **labelp, ConnContext *context, gboolean responder,
+    char *question)
 {
     GtkWidget *dialog;
 
@@ -954,143 +816,134 @@ static GtkWidget *create_smp_dialog(const char *title,
     SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
     close_progress_window(smp_data);
+    
     if (!(smp_data->smp_secret_dialog)) {
-	GtkWidget *advbutton;
-	GtkWidget *buttonspacer;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
-	GtkWidget *entry;
-	GtkWidget *label;
-	GtkWidget *label2;
-	GtkWidget *img = NULL;
-	char *label_text;
-	const char *icon_name = NULL;
-	SmpResponsePair* smppair;
-	char *moremarkup;
-
-	icon_name = PIDGIN_STOCK_DIALOG_INFO;
-	img = gtk_image_new_from_stock(icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
-	gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
-
-	dialog = gtk_dialog_new_with_buttons(title ? title : PIDGIN_ALERT_TITLE, NULL, 0,
-				     GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-				     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
-	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
+        GtkWidget *hbox;
+        GtkWidget *vbox;
+        GtkWidget *auth_vbox;
+        GtkWidget *label;
+        GtkWidget *img = NULL;
+        char *label_text;
+        const char *icon_name = NULL;
+        SmpResponsePair* smppair;
+        GtkWidget *notebook;
+        AuthSignalData *auth_opt_data;     
+    
+        icon_name = PIDGIN_STOCK_DIALOG_INFO;
+        img = gtk_image_new_from_stock(icon_name,
+		gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
+        gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
+    
+        dialog = gtk_dialog_new_with_buttons(title ? title :
+		PIDGIN_ALERT_TITLE, NULL, 0,
+                         GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+                         GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+        gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
-
-	/* Create the Advanced... button, and left-justify it.  This
-	 * involves adding the button, and a blank label as a spacer, and
-	 * reordering them so that they're at the beginning. */
-	advbutton = gtk_dialog_add_button(GTK_DIALOG(dialog), _("Advanced..."),
-		OTRG_RESPONSE_ADVANCED);
-	buttonspacer = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-		buttonspacer, TRUE, TRUE, 0);
-	gtk_box_reorder_child(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-		advbutton, 0);
-	gtk_box_reorder_child(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-		buttonspacer, 1);
-
-	gtk_dialog_set_response_sensitive(GTK_DIALOG(dialog),
-	        GTK_RESPONSE_ACCEPT, sensitive);
-
-	gtk_window_set_focus_on_map(GTK_WINDOW(dialog), !responder);
-	gtk_window_set_role(GTK_WINDOW(dialog), "notify_dialog");
-
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 6);
-	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-	gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
-	gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(dialog)->vbox), 12);
-	gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 6);
-
-	hbox = gtk_hbox_new(FALSE, 12);
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), hbox);
-
-	gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
-
-	label_text = g_strdup_printf(
-	       "<span weight=\"bold\" size=\"larger\">%s</span>%s%s",
-	       (primary ? primary : ""),
-	       (primary ? "\n\n" : ""),
-	       (secondary ? secondary : ""));
-
-	label = gtk_label_new(NULL);
-
-	gtk_label_set_markup(GTK_LABEL(label), label_text);
-	gtk_label_set_selectable(GTK_LABEL(label), 1);
-	g_free(label_text);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-       
-	/* Create the text view where the user enters their secret */
-	entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry), _("Enter secret here"));
-	gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
-
-	if (context->active_fingerprint->trust &&
-		context->active_fingerprint->trust[0]) {
-	    label2 = gtk_label_new(_("This buddy is already authenticated."));
-	} else {
-	    label2 = NULL;
-	}
-
-	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-	
-	/* Leave a blank line */
-	gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
-		FALSE, 0);
-	if (label2) {
-	    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
-	    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
-		    FALSE, 0);
-	}
-
-	moremarkup = g_strdup_printf(
-		"%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-		_("To authenticate, pick a secret known "
-		    "only to you and your buddy.  Enter this secret, then "
-		    "wait for your buddy to enter it too.  If the secrets "
-		    "don't match, then you may be talking to an imposter."),
-		_("If your buddy uses multiple IM accounts or multiple "
-		    "computers, you may have to authenticate multiple "
-		    "times.  However, as long as they use an account and "
-		    "computer that you've seen before, you don't need to "
-		    "authenticate each individual conversation."),
-		AUTHENTICATE_HELPURL, _("?lang=en"),
-		_("Click here for more information about authentication "
-		    "in OTR."));
-
-	add_whatsthis_more(vbox,
-		_("Authenticating a buddy helps ensure that the person "
-		    "you are talking to is who they claim to be."),
-		moremarkup);
-
-	g_free(moremarkup);
-	
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
-
-	smppair = malloc(sizeof(SmpResponsePair));
-	smppair->context = context;
-	smppair->entry = GTK_ENTRY(entry);
-	smppair->responder = responder;
-	g_signal_connect(G_OBJECT(dialog), "response",
-			 G_CALLBACK(smp_secret_response_cb),
-			 smppair);
-
-	gtk_widget_show_all(dialog);
-	smp_data->smp_secret_dialog = dialog;
-	smp_data->smp_secret_smppair = smppair;
-
-	if (labelp) *labelp = label;
+    
+        auth_vbox = gtk_vbox_new(FALSE, 0);
+        hbox = gtk_hbox_new(FALSE, 15);
+        vbox = gtk_vbox_new(FALSE, 0);
+        
+        smppair = malloc(sizeof(SmpResponsePair));
+        smppair->responder = responder;
+        smppair->context = context;
+        
+        
+        notebook = gtk_notebook_new();
+        auth_opt_data = malloc(sizeof(AuthSignalData)); 
+        auth_opt_data->smppair = smppair;
+        
+        if (!responder) {
+            add_other_authentication_options(dialog, notebook, context, auth_opt_data);
+        }
+        
+        gtk_window_set_focus_on_map(GTK_WINDOW(dialog), !responder);
+        gtk_window_set_role(GTK_WINDOW(dialog), "notify_dialog");
+    
+        gtk_container_set_border_width(GTK_CONTAINER(dialog), 6);
+        gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+        gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
+        gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(dialog)->vbox), 12);
+        gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 6);
+    
+        gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), hbox);
+    
+        gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
+    
+        label_text = g_strdup_printf(
+               "<span weight=\"bold\" size=\"larger\">%s</span>%s%s",
+               (primary ? primary : ""),
+               (primary ? "\n\n" : ""),
+               (secondary ? secondary : ""));
+    
+        label = gtk_label_new(NULL);
+    
+        gtk_label_set_markup(GTK_LABEL(label), label_text);
+        gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+        g_free(label_text);
+        gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+        gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+        gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    
+        g_signal_connect(G_OBJECT(dialog), "response",
+                 G_CALLBACK(smp_secret_response_cb),
+                 auth_opt_data);
+    
+        if (!responder || (responder && question != NULL)) {
+            GtkWidget *one_way_vbox = gtk_vbox_new(FALSE, 0);
+            add_to_vbox_init_one_way_auth(one_way_vbox, context, auth_opt_data, question);
+            gtk_notebook_append_page(GTK_NOTEBOOK(notebook), one_way_vbox,
+                gtk_label_new(_("0")));
+            smppair->entry = auth_opt_data->one_way_entry;
+            smppair->smp_type = 0;
+        }
+        
+        if (!responder || (responder && question == NULL)) {
+            GtkWidget *two_way_vbox = gtk_vbox_new(FALSE, 0);
+            add_to_vbox_init_two_way_auth(two_way_vbox, context, auth_opt_data);
+            gtk_notebook_append_page(GTK_NOTEBOOK(notebook), two_way_vbox,
+                gtk_label_new(_("1")));
+                    
+            if (responder && question == NULL) {
+                smppair->entry = auth_opt_data->two_way_entry;
+                smppair->smp_type = 1;
+            }
+        }
+        
+        if (!responder) {
+            GtkWidget *fingerprint_vbox = gtk_vbox_new(FALSE, 0);
+            add_to_vbox_verify_fingerprint(fingerprint_vbox, context, smppair);
+            gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fingerprint_vbox,
+                gtk_label_new(_("2")));
+        }
+        
+        gtk_notebook_set_show_tabs (GTK_NOTEBOOK(notebook), FALSE);
+        
+        gtk_notebook_set_show_border (GTK_NOTEBOOK(notebook), FALSE);
+        gtk_box_pack_start(GTK_BOX(auth_vbox), notebook, FALSE, FALSE, 0);
+        gtk_widget_show(notebook);
+    
+    
+        gtk_box_pack_start(GTK_BOX(vbox), auth_vbox, FALSE, FALSE, 0);
+        
+        gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
+    
+        gtk_widget_show_all(dialog);
+        
+        gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 0);
+        
+        smp_data->smp_secret_dialog = dialog;
+        smp_data->smp_secret_smppair = smppair;
+    
+        if (labelp) *labelp = label;
+    
     } else {
-	/* Set the responder field to TRUE if we were passed that value,
-	 * even if the window was already up. */
-	if (responder) {
-	    smp_data->smp_secret_smppair->responder = responder;
-	}
+        /* Set the responder field to TRUE if we were passed that value,
+         * even if the window was already up. */
+        if (responder) {
+            smp_data->smp_secret_smppair->responder = responder;
+        }
     }
 
     return smp_data->smp_secret_dialog;
@@ -1116,7 +969,10 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 	    gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
 
-    dialog = gtk_dialog_new_with_buttons(_("Authenticating Buddy"),
+    dialog = gtk_dialog_new_with_buttons(
+	    context->smstate->received_question ?
+	    _("Authenticating to Buddy") :
+	    _("Authenticating Buddy"),
 	    parent, 0, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 	    GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
     gtk_dialog_set_default_response(GTK_DIALOG(dialog),
@@ -1143,7 +999,8 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 
     label_text = g_strdup_printf(
 	       "<span weight=\"bold\" size=\"larger\">%s %s</span>\n",
-	       _("Authenticating"), context->username);
+	       context->smstate->received_question ? _("Authenticating to")
+	       : _("Authenticating"), context->username);
 
     label = gtk_label_new(NULL);
 
@@ -1174,6 +1031,7 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 	smp_data->smp_progress_bar = bar;
 	smp_data->smp_progress_label = proglabel;
     }
+    gtk_label_set_text(GTK_LABEL(proglabel), _("Waiting for buddy..."));
 
     g_signal_connect(G_OBJECT(dialog), "response",
 		     G_CALLBACK(smp_progress_response_cb),
@@ -1336,12 +1194,18 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 
     conv = otrg_plugin_userinfo_to_conv(accountname, protocol, who, TRUE);
 
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
-	    time(NULL));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
     g_free(buf);
 }
 
 static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data);
+
+static void otr_refresh_otr_buttons(PurpleConversation *conv);
+static void otr_destroy_top_menu_objects(PurpleConversation *conv);
+static void otr_add_top_otr_menu(PurpleConversation *conv);
+static void otr_add_buddy_top_menus(PurpleConversation *conv);
+static void otr_check_conv_status_change( PurpleConversation *conv);
 
 static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
@@ -1368,33 +1232,54 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     menusmp = purple_conversation_get_data(conv, "otr-menusmp");
 
     /* Set the button's icon, label and tooltip. */
-    otr_icon(icon, level);
+    otr_icon(icon, level, 1);
     gtk_label_set_text(GTK_LABEL(label),
 	    level == TRUST_FINISHED ? _("Finished") :
 	    level == TRUST_PRIVATE ? _("Private") :
 	    level == TRUST_UNVERIFIED ? _("Unverified") :
 	    _("Not private"));
     gtk_tooltips_set_tip(gtkconv->tooltips, button,
-	    level == TRUST_NOT_PRIVATE ? _("Start a private conversation") :
+	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
+		    _("Start a private conversation") :
 		    _("Refresh the private conversation"), NULL);
 
     /* Set the menu item label for the OTR Query item. */
     gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
-	    level == TRUST_NOT_PRIVATE ? _("Start _private conversation") :
+	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
+		    _("Start _private conversation") :
 		    _("Refresh _private conversation"));
 
     /* Sensitize the menu items as appropriate. */
     gtk_widget_set_sensitive(GTK_WIDGET(menuend), level != TRUST_NOT_PRIVATE);
     gtk_widget_set_sensitive(GTK_WIDGET(menuview), level != TRUST_NOT_PRIVATE);
     gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE);
+    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE
+	    && level != TRUST_FINISHED);
 
     /* Use any non-NULL value for "private", NULL for "not private" */
     purple_conversation_set_data(conv, "otr-private",
-	    level == TRUST_NOT_PRIVATE ? NULL : conv);
+	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
+		    NULL : conv);
+
+    /* Use any non-NULL value for "finished", NULL for "not finished" */
+    purple_conversation_set_data(conv, "otr-finished",
+	    level == TRUST_FINISHED ? conv : NULL);
 
     /* Set the appropriate visibility */
-    gtk_widget_show_all(button);
+    /* gtk_widget_show_all(button); */
+
+    /* Update other widgets */
+    if (gtkconv != pidgin_conv_window_get_active_gtkconv(gtkconv->win)) {
+        return;
+    }
+
+    conv = gtkconv->active_conv;
+    otr_destroy_top_menu_objects(conv);
+    otr_add_top_otr_menu(conv);
+    otr_refresh_otr_buttons(conv);
+    otr_add_buddy_top_menus(conv);
+    otr_check_conv_status_change(conv);
+    
 }
 
 static void dialog_update_label(ConnContext *context)
@@ -1541,6 +1426,7 @@ static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data)
 	otrg_plugin_write_fingerprints();
 	otrg_ui_update_keylist();
 	otrg_dialog_resensitize_all();
+    
     }
 }
 
@@ -1655,29 +1541,33 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
 /* Create the SMP dialog.  responder is true if this is called in
  * response to someone else's run of SMP. */
 static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
-	gboolean responder)
+	char *question, gboolean responder)
 {
     GtkWidget *dialog;
     char *primary;
-    char *secondary;
     PurplePlugin *p;
     char *proto_name;
 
     if (context == NULL) return;
 
-    primary = g_strdup_printf(_("Authenticate %s"),
-	    context->username);
+    if (responder && question) {
+        primary = g_strdup_printf(_("Authentication from %s"),
+            context->username);
+    } else {
+        primary = g_strdup_printf(_("Authenticate %s"),
+            context->username);
+    }
+    
+    /* fprintf(stderr, "Question = ``%s''\n", question); */
 
     p = purple_find_prpl(context->protocol);
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
-    secondary = g_strdup_printf(_("Enter a secret known only to %s and "
-		"yourself.\n"), context->username);
+    
 
     dialog = create_smp_dialog(_("Authenticate buddy"),
-	    primary, secondary, 1, NULL, context, responder);
+	    primary, NULL, 1, NULL, context, responder, question);
 
     g_free(primary);
-    g_free(secondary);
 }
 
 /* Call this to update the status of an ongoing socialist millionaires
@@ -1707,10 +1597,8 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 	gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
 		_("An error occurred during authentication."));
 	return;
-    }
-
-    /* If the counter reaches 1.0, the protocol is complete */
-    if (progress_level == 1.0) {
+    } else if (progress_level == 1.0) {
+	/* If the counter reaches 1.0, the protocol is complete */
         GtkDialog *dialog = GTK_DIALOG(smp_data->smp_progress_dialog);
 
 	gtk_dialog_set_response_sensitive(dialog, GTK_RESPONSE_ACCEPT, 1);
@@ -1718,14 +1606,24 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
 
-        if (context->active_fingerprint->trust &&
-		context->active_fingerprint->trust[0]) {
-	    gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
-		    _("Authentication successful."));
+        if (context->smstate->sm_prog_state == OTRL_SMP_PROG_SUCCEEDED) {
+	    if (context->active_fingerprint->trust &&
+		    context->active_fingerprint->trust[0]) {
+		gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
+			_("Authentication successful."));
+	    } else {
+		gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
+			_("Your buddy has successfully authenticated you.  "
+			    "You may want to authenticate your buddy as "
+			    "well by asking your own question."));
+	    }
         } else {
 	    gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
 		    _("Authentication failed."));
 	}
+    } else {
+	/* Clear the progress label */
+	gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label), "");
     }
 }
 
@@ -1770,8 +1668,8 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 		context->protocol_version == 1 ? _("  Warning: using old "
 		    "protocol version 1.") : "");
 
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
-	time(NULL));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
     g_free(buf);
     g_free(format_buf);
 
@@ -1789,7 +1687,9 @@ static void otrg_gtk_dialog_disconnected(ConnContext *context)
 
     buf = g_strdup_printf(_("Private conversation with %s lost."),
 	    purple_conversation_get_name(conv));
+    
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
     g_free(buf);
 
     otrg_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
@@ -1825,8 +1725,9 @@ static void otrg_gtk_dialog_finished(const char *accountname,
     buf = g_strdup_printf(_("%s has ended his/her private conversation with "
 		"you; you should do the same."),
 	    purple_conversation_get_name(conv));
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
-	    time(NULL));
+        
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+        
     g_free(buf);
 
     dialog_update_label_conv(conv, TRUST_FINISHED);
@@ -1871,8 +1772,8 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 		context->protocol_version == 1 ? _("  Warning: using old "
 		    "protocol version 1.") : "");
 
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
-	time(NULL));
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
     g_free(buf);
     g_free(format_buf);
 
@@ -1886,6 +1787,11 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
     const char *format;
     char *buf;
     PurpleConversation *conv = data;
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+
+    if (gtkconv->active_conv != conv) {
+        pidgin_conv_switch_active_conversation(conv);
+    }
 
     if (purple_conversation_get_data(conv, "otr-private")) {
 	format = _("Attempting to refresh the private conversation with %s...");
@@ -1893,8 +1799,9 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 	format = _("Attempting to start a private conversation with %s...");
     }
     buf = g_strdup_printf(format, purple_conversation_get_name(conv));
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
-	    time(NULL));
+    
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
     g_free(buf);
 	
     otrg_plugin_send_default_query_conv(conv);
@@ -1922,7 +1829,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
     if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
 	return;
 
-    otrg_gtk_dialog_socialist_millionaires(context, FALSE);
+    otrg_gtk_dialog_socialist_millionaires(context, NULL, FALSE);
 }
 
 #if 0
@@ -1940,7 +1847,7 @@ static void verify_fingerprint(GtkWidget *widget, gpointer data)
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data)
 {
-    char *uri = g_strdup_printf("%s%s", BUTTON_HELPURL, _("?lang=en"));
+    char *uri = g_strdup_printf("%s%s", LEVELS_HELPURL, _("?lang=en"));
     purple_notify_uri(otrg_plugin_handle, uri);
     g_free(uri);
 }
@@ -1972,28 +1879,468 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
     return FALSE;
 }
 
+static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv);
+
+
+static void otr_refresh_otr_buttons(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    GList * list_iter = gtkconv->convs;
+    PurpleConversation * current_conv;
+    GtkWidget *button;
+
+    for (;list_iter;list_iter = list_iter->next) {
+
+        current_conv = list_iter->data;
+        button = purple_conversation_get_data(current_conv, "otr-button");
+
+	if (button) {
+	    if (current_conv == gtkconv->active_conv) {
+		gtk_widget_show (button);
+	    } else {
+		gtk_widget_hide (button);
+	    }
+	}
+    }
+}
+
+static void otr_destroy_top_menu_objects(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    PidginWindow *win = pidgin_conv_get_window ( gtkconv );
+    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
+    GList * iter;
+    GList * next;
+
+    if ( menu_list != NULL ) {
+        iter = menu_list;
+        while ( iter ) {
+            if ( iter->data ) gtk_object_destroy ( GTK_OBJECT ( iter->data ) );
+            next = iter->next;
+            menu_list = g_list_remove ( menu_list, iter->data );
+            iter = next;
+        }
+    }
+    g_hash_table_replace ( otr_win_menus, win, menu_list );
+
+}
+
+static int otr_get_menu_insert_pos(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    PidginWindow *win = pidgin_conv_get_window ( gtkconv );
+    GtkWidget *menu_bar = win->menu.menubar;
+
+    GList * list_iter = gtk_container_get_children ( GTK_CONTAINER ( menu_bar ) );
+    GList * head = list_iter;
+
+    int pos = 0;
+    while ( list_iter ) {
+        pos++;
+        list_iter = list_iter->next;
+    }
+
+    if (pos != 0) pos--;
+
+    g_list_free ( head );
+
+    return pos;
+}
+
+static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query, GtkWidget *end, GtkWidget *smp) {
+    int insecure = purple_conversation_get_data(conv, "otr-private") ? 0 : 1;
+    int finished = purple_conversation_get_data(conv, "otr-finished") ? 1 : 0;
+
+    GtkWidget * label = gtk_bin_get_child(GTK_BIN(query));
+
+    gtk_label_set_markup_with_mnemonic(GTK_LABEL(label),
+        insecure ? _("Start _private conversation") :
+        _("Refresh _private conversation"));
+
+    gtk_widget_set_sensitive(GTK_WIDGET(end), !insecure || finished);
+    gtk_widget_set_sensitive(GTK_WIDGET(smp), !insecure);
+}
+
+static void otr_build_status_submenu(PidginWindow *win,
+	PurpleConversation *conv, GtkWidget *menu, TrustLevel level) {
+    char *status = "";
+    GtkWidget *image;
+    GtkWidget *levelimage;
+    GtkWidget *buddy_name;
+    GtkWidget *buddy_status;
+    GtkWidget *menusep;
+    GdkPixbuf *pixbuf;
+
+    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
+    
+    gchar *text = g_strdup_printf("%s (%s)", conv->name,
+	    purple_account_get_username(conv->account));
+    buddy_name = gtk_image_menu_item_new_with_label(text);
+    
+    /* Add the prpl icon in front of the menuitem label.  This is from
+     * pidgin's gtkconv.c. */
+
+    /* Create a pixmap for the protocol icon. */
+    pixbuf = pidgin_create_prpl_icon(conv->account, PIDGIN_PRPL_ICON_SMALL);
+
+    /* Now convert it to GtkImage */
+    if (pixbuf == NULL)
+	    image = gtk_image_new();
+    else
+    {
+	    image = gtk_image_new_from_pixbuf(pixbuf);
+	    g_object_unref(G_OBJECT(pixbuf));
+    }
+
+    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_name ), image);
+    gtk_widget_show(buddy_name);
+    g_free(text);
+
+    switch(level) {
+        case TRUST_NOT_PRIVATE:
+            status = _("Not Private");
+            break;
+        case TRUST_UNVERIFIED:
+            status = _("Unverified");
+            break;
+        case TRUST_PRIVATE:
+            status = _("Private");
+            break;
+        case TRUST_FINISHED:
+            status = _("Finished");
+            break;
+        }
+
+    buddy_status = gtk_image_menu_item_new_with_label(status);
+
+    levelimage = otr_icon(NULL, level, 1);
+    
+    gtk_widget_show(buddy_status);
+    gtk_widget_show(levelimage);
+    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_status ), levelimage );
+
+    menusep = gtk_separator_menu_item_new();
+    
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_name);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_status);
+
+    gtk_widget_show(menusep);
+
+    menu_list = g_list_append(menu_list, buddy_name);
+    menu_list = g_list_append(menu_list, buddy_status);
+
+    g_hash_table_replace ( otr_win_menus, win, menu_list );
+
+    gtk_signal_connect(GTK_OBJECT(buddy_status), "activate",
+        GTK_SIGNAL_FUNC(menu_whatsthis), conv);
+}
+
+static void otr_build_buddy_submenu(PurpleConversation *conv, GtkWidget *menu) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    PidginWindow *win = pidgin_conv_get_window ( gtkconv );
+
+    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
+
+    GtkWidget *buddymenuquery = gtk_menu_item_new_with_mnemonic(_("Start _private conversation"));
+    GtkWidget *buddymenuend = gtk_menu_item_new_with_mnemonic(_("_End private conversation"));
+    GtkWidget *buddymenusmp = gtk_menu_item_new_with_mnemonic(_("_Authenticate buddy"));
+
+    otr_set_menu_labels(conv, buddymenuquery, buddymenuend, buddymenusmp);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddymenuquery);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddymenuend);
+    gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddymenusmp);
+
+    gtk_widget_show(buddymenuquery);
+    gtk_widget_show(buddymenuend);
+    gtk_widget_show(buddymenusmp);
+
+    gtk_signal_connect(GTK_OBJECT(buddymenuquery), "activate",
+        GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
+    gtk_signal_connect(GTK_OBJECT(buddymenuend), "activate",
+        GTK_SIGNAL_FUNC(menu_end_private_conversation), conv);
+    gtk_signal_connect(GTK_OBJECT(buddymenusmp), "activate",
+        GTK_SIGNAL_FUNC(socialist_millionaires), conv);
+
+    menu_list = g_list_append(menu_list, buddymenuquery);
+    menu_list = g_list_append(menu_list, buddymenuend);
+    menu_list = g_list_append(menu_list, buddymenusmp);
+
+    g_hash_table_replace ( otr_win_menus, win, menu_list );
+
+}
+
+static void otr_add_top_otr_menu(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    PidginWindow *win = pidgin_conv_get_window ( gtkconv );
+    GtkWidget *menu_bar = win->menu.menubar;
+
+    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
+
+    GtkWidget *topmenu;
+    GtkWidget *topmenuitem;
+
+    TrustLevel level = TRUST_NOT_PRIVATE;
+    ConnContext *context = otrg_plugin_conv_to_context(conv);
+
+    int pos = otr_get_menu_insert_pos(conv);
+
+    if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
+
+    topmenuitem = gtk_menu_item_new_with_label ( "OTR" );
+    topmenu = gtk_menu_new();
+        
+    if (context != NULL) {
+        level = otrg_plugin_context_to_trust(context);
+    }
+    
+    otr_build_buddy_submenu(conv, topmenu);
+    otr_build_status_submenu(win, conv, topmenu, level);
+
+    gtk_menu_item_set_submenu ( GTK_MENU_ITEM ( topmenuitem ), topmenu );
+
+    gtk_widget_show(topmenuitem);
+    gtk_widget_show(topmenu);
+
+    gtk_menu_shell_insert ( GTK_MENU_SHELL ( menu_bar ), topmenuitem, pos++ );
+
+
+    menu_list = g_list_append(menu_list, topmenuitem);
+    menu_list = g_list_append(menu_list, topmenu);
+
+    g_hash_table_replace ( otr_win_menus, win, menu_list );
+}
+
+static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+
+    GList *pres_list = NULL;
+    GList *conv_list = NULL;
+    
+    GSList *l, *buds;
+
+    /* This code is derived from pidgin's 'generating sendto menu' stuff */
+    if ( gtkconv->active_conv->type == PURPLE_CONV_TYPE_IM ) {
+        buds = purple_find_buddies ( gtkconv->active_conv->account, gtkconv->active_conv->name );
+        
+        if ( buds == NULL) {  /* buddy not on list */
+            conv_list = g_list_prepend ( conv_list, conv);
+        } else  {
+            for ( l = buds; l != NULL; l = l->next ) {
+                PurpleBlistNode *node = ( PurpleBlistNode * ) purple_buddy_get_contact ( ( PurpleBuddy * ) l->data );
+
+                for ( node = node->child; node != NULL; node = node->next ) {
+                    PurpleBuddy *buddy = ( PurpleBuddy * ) node;
+                    PurpleAccount *account;
+
+                    if ( !PURPLE_BLIST_NODE_IS_BUDDY ( node ) )
+                        continue;
+
+                    account = purple_buddy_get_account ( buddy );
+                    if ( purple_account_is_connected ( account ) ) {
+                        /* Use the PurplePresence to get unique buddies. */
+                        PurplePresence *presence = purple_buddy_get_presence ( buddy );
+                        if ( !g_list_find ( pres_list, presence ) ) {
+                            
+                            PurpleConversation * currentConv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, \
+                                purple_buddy_get_name ( buddy ), purple_buddy_get_account ( buddy ));
+                            
+                            pres_list = g_list_prepend ( pres_list, presence );
+                            
+                            if (currentConv != NULL) {
+                                conv_list = g_list_prepend ( conv_list, currentConv);    
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            
+            g_slist_free ( buds );
+            g_list_free( pres_list );
+        }
+    }
+    
+    return conv_list;
+}
+
+static void otr_add_buddy_top_menus(PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
+    PidginWindow *win = pidgin_conv_get_window ( gtkconv );
+    
+    PurpleConversation * currentConv;
+
+    GtkWidget *menu_bar = win->menu.menubar;
+
+    GtkWidget *menu;
+    GtkWidget *menu_image;
+
+    GList *full_buddy_list = NULL;
+    GList * list_iter;
+    
+    int pos;
+    
+    full_buddy_list = otr_get_full_buddy_list(conv);
+
+    list_iter = full_buddy_list;
+
+    pos = otr_get_menu_insert_pos(conv);
+
+    for (list_iter = g_list_last ( full_buddy_list ); list_iter != NULL; list_iter = list_iter->prev) {
+        TrustLevel level;
+        ConnContext *context;
+        GList * menu_list;
+        GtkWidget * tooltip_menu;
+        gchar *tooltip_text;
+        
+        currentConv = list_iter->data;
+
+        if (currentConv == NULL) {
+            continue;       
+        }
+
+        if (purple_conversation_get_type(currentConv) != PURPLE_CONV_TYPE_IM) continue;
+
+        level = TRUST_NOT_PRIVATE;
+        context = otrg_plugin_conv_to_context(currentConv);
+        
+        if (context != NULL) {
+            level = otrg_plugin_context_to_trust(context);
+        }
+
+        menu_image = otr_icon(NULL, level, 1);
+
+        if (currentConv == gtkconv->active_conv) {
+            menu_image = otr_icon(menu_image, level, 1);
+        } else {
+            menu_image = otr_icon(menu_image, level, 0);
+        }
+        menu = gtk_menu_new();
+            
+        otr_build_buddy_submenu(currentConv, menu);
+        otr_build_status_submenu(win, currentConv, menu, level);
+        
+        tooltip_menu = tooltip_menu_new();
+        
+        gtk_widget_show ( menu_image );
+        gtk_widget_show(tooltip_menu);
+        gtk_menu_shell_insert ( GTK_MENU_SHELL ( menu_bar ), tooltip_menu, pos++ );
+        gtk_menu_item_set_submenu ( GTK_MENU_ITEM ( tooltip_menu ), menu );
+        
+        tooltip_text = g_strdup_printf("%s (%s)", currentConv->name, purple_account_get_username(currentConv->account));
+        tooltip_menu_prepend(TOOLTIP_MENU(tooltip_menu), menu_image, tooltip_text);
+        g_free(tooltip_text);
+        
+        menu_list = g_hash_table_lookup ( otr_win_menus, win );
+        menu_list = g_list_append(menu_list, tooltip_menu);
+        menu_list = g_list_append(menu_list, menu);
+        
+        g_hash_table_replace ( otr_win_menus, win, menu_list );
+        
+
+    }
+    
+    g_list_free ( full_buddy_list );
+
+}
+
+static void otr_check_conv_status_change( PurpleConversation *conv) {
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+    TrustLevel current_level = TRUST_NOT_PRIVATE;
+    ConnContext *context = otrg_plugin_conv_to_context(conv);
+    
+    int *previous_level;
+    char *buf;
+    char *status = "";
+    
+    if (context != NULL) {
+        current_level = otrg_plugin_context_to_trust(context);
+    }
+    
+    previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );    
+    
+    if (!previous_level || (previous_level && *previous_level == current_level)) {
+        return;
+    }
+    
+    buf = _("The privacy status of the current conversation is now: <a href=\"%s%s\">%s</a>");
+    
+    switch(current_level) {
+        case TRUST_NOT_PRIVATE:
+            status = _("Not Private");
+            break;
+        case TRUST_UNVERIFIED:
+            status = _("Unverified");
+            break;
+        case TRUST_PRIVATE:
+            status = _("Private");
+            break;
+        case TRUST_FINISHED:
+            status = _("Finished");
+            break;
+    }
+    
+    /* The UNVERIFIED_HELPURL actually contains help info for all statuses */
+    buf = g_strdup_printf(buf, UNVERIFIED_HELPURL, _("?lang=en"), status);
+    
+    /* Write a new message indicating the level change. The timestamp image will be appended as the message
+       timestamp signal is caught, which will also update the privacy level for this gtkconv */
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+    
+    g_free(buf);
+}
+
+/* If the conversation switches on us */
+static void conversation_switched ( PurpleConversation *conv, void * data ) {
+    if ( conv == NULL ) return;
+
+    otrg_gtk_dialog_new_purple_conv(conv);
+
+}
+
 /* If the conversation gets destroyed on us, clean up the data we stored
  * pointing to it. */
 static void conversation_destroyed(PurpleConversation *conv, void *data)
 {
     GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
+    PidginConversation *gtkconv;
+    PidginWindow *win;
+    GList * menu_list;
+    GList * iter;
+    
     if (menu) gtk_object_destroy(GTK_OBJECT(menu));
     g_hash_table_remove(conv->data, "otr-label");
     g_hash_table_remove(conv->data, "otr-button");
     g_hash_table_remove(conv->data, "otr-icon");
     g_hash_table_remove(conv->data, "otr-icontext");
     g_hash_table_remove(conv->data, "otr-private");
+    g_hash_table_remove(conv->data, "otr-finished");
     g_hash_table_remove(conv->data, "otr-menu");
     g_hash_table_remove(conv->data, "otr-menuquery");
     g_hash_table_remove(conv->data, "otr-menuend");
     g_hash_table_remove(conv->data, "otr-menuview");
     g_hash_table_remove(conv->data, "otr-menuverf");
     g_hash_table_remove(conv->data, "otr-menusmp");
+
     otrg_gtk_dialog_free_smp_data(conv);
+
+    gtkconv = PIDGIN_CONVERSATION ( conv );
+    win = pidgin_conv_get_window ( gtkconv );
+    menu_list = g_hash_table_lookup ( otr_win_menus, win );
+    iter = menu_list;
+
+    while ( iter ) {
+        GList * next;
+        if ( iter->data ) gtk_object_destroy ( GTK_OBJECT ( iter->data ) );
+        next = iter->next;
+        menu_list = g_list_remove ( menu_list, iter->data );
+        iter = next;
+    }
+
+    g_hash_table_remove(otr_win_menus, win);
+    g_list_free(menu_list);
 }
 
 /* Set up the per-conversation information display */
-static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
+static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 {
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     ConnContext *context;
@@ -2016,8 +2363,18 @@ static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
     GtkWidget *menusmp;
     GtkWidget *whatsthis;
 
+    PurpleAccount *account;
+    const char *name;
+    OtrgUiPrefs prefs;
+
     /* Do nothing if this isn't an IM conversation */
     if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
+
+    /* Get the prefs */
+    account = purple_conversation_get_account(conv);
+    name = purple_conversation_get_name(conv);
+    otrg_ui_get_prefs(&prefs, account, name);
+
     bbox = gtkconv->lower_hbox;
 
     context = otrg_plugin_conv_to_context(conv);
@@ -2025,22 +2382,31 @@ static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
     /* See if we're already set up */
     button = purple_conversation_get_data(conv, "otr-button");
     if (button) {
-	/* Check if we've been removed from the bbox; purple does this
-	 * when the user changes her prefs for the style of buttons to
-	 * display. */
-	GList *children = gtk_container_get_children(GTK_CONTAINER(bbox));
-	if (!g_list_find(children, button)) {
-	    gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+	if (prefs.show_otr_button) {
+	    /* Check if we've been removed from the bbox; purple does this
+	     * when the user changes her prefs for the style of buttons to
+	     * display. */
+	    GList *children = gtk_container_get_children(GTK_CONTAINER(bbox));
+	    if (!g_list_find(children, button)) {
+		gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+	    }
+	    g_list_free(children);
+	    gtk_widget_show_all(button);
+	} else {
+	    gtk_container_remove(GTK_CONTAINER(bbox), button);
+	    gtk_widget_hide_all(button);
 	}
-	g_list_free(children);
 	dialog_update_label_conv(conv, otrg_plugin_context_to_trust(context));
 	return;
     }
 
     /* Make the button */
     button = gtk_button_new();
+
     gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-    gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+    if (prefs.show_otr_button) {
+	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
+    }
 
     bwbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(button), bwbox);
@@ -2052,12 +2418,15 @@ static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
     gtk_box_pack_start(GTK_BOX(bvbox), label, FALSE, FALSE, 0);
     icontext = gtk_label_new(_("OTR:"));
     gtk_box_pack_start(GTK_BOX(iconbox), icontext, FALSE, FALSE, 0);
-    icon = otr_icon(NULL, TRUST_NOT_PRIVATE);
+    icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
     gtk_box_pack_start(GTK_BOX(iconbox), icon, TRUE, FALSE, 0);
 
-    gtk_widget_show_all(button);
+    if (prefs.show_otr_button) {
+	gtk_widget_show_all(button);
+    }
 
     /* Make the context menu */
+
     menu = gtk_menu_new();
     gtk_menu_set_title(GTK_MENU(menu), _("OTR Messaging"));
 
@@ -2109,6 +2478,7 @@ static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
     purple_conversation_set_data(conv, "otr-icon", icon);
     purple_conversation_set_data(conv, "otr-icontext", icontext);
     purple_conversation_set_data(conv, "otr-menu", menu);
+
     purple_conversation_set_data(conv, "otr-menuquery", menuquery);
     purple_conversation_set_data(conv, "otr-menuend", menuend);
     /*
@@ -2144,6 +2514,13 @@ static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
     otrg_gtk_dialog_add_smp_data(conv);
 }
 
+/* Set up the per-conversation information display */
+static void otrg_gtk_dialog_new_conv(PurpleConversation *conv)
+{
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+    conversation_switched (gtkconv->active_conv, NULL);
+}
+
 /* Remove the per-conversation information display */
 static void otrg_gtk_dialog_remove_conv(PurpleConversation *conv)
 {
@@ -2154,6 +2531,7 @@ static void otrg_gtk_dialog_remove_conv(PurpleConversation *conv)
 
     button = purple_conversation_get_data(conv, "otr-button");
     if (button) gtk_object_destroy(GTK_OBJECT(button));
+
     conversation_destroyed(conv, NULL);
 }
 
@@ -2176,7 +2554,7 @@ static void dialog_resensitize(PurpleConversation *conv)
     if (prefs.policy == OTRL_POLICY_NEVER) {
 	otrg_gtk_dialog_remove_conv(conv);
     } else {
-	otrg_gtk_dialog_new_conv(conv);
+        otrg_gtk_dialog_new_conv(conv);
     }
     button = purple_conversation_get_data(conv, "otr-button");
     if (!button) return;
@@ -2184,7 +2562,7 @@ static void dialog_resensitize(PurpleConversation *conv)
 	connection = purple_account_get_connection(account);
 	if (connection) {
 	    /* Set the button to "sensitive" */
-	    gtk_widget_set_sensitive(button, 1);
+	    gtk_widget_set_sensitive(button, 1);   
 	    return;
 	}
     }
@@ -2199,20 +2577,175 @@ static void otrg_gtk_dialog_resensitize_all(void)
     purple_conversation_foreach(dialog_resensitize);
 }
 
+static void foreach_free_lists(void * key, void * value, void* data) {
+    GList * menu_list = (GList *) value;
+    GList * iter = menu_list;
+
+    while ( iter ) {
+        GList * next;
+        if ( iter->data ) gtk_object_destroy ( GTK_OBJECT ( iter->data ) );
+        next = iter->next;
+        menu_list = g_list_remove ( menu_list, iter->data );
+        iter = next;
+    }
+
+    g_list_free(menu_list);
+}
+
+static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
+                                gboolean show_date) {
+
+    PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+    TrustLevel current_level = TRUST_NOT_PRIVATE;
+    ConnContext *context = otrg_plugin_conv_to_context(conv);
+    
+    int *previous_level;
+    int id;
+    
+    
+    if (context != NULL) {
+        current_level = otrg_plugin_context_to_trust(context);
+    }
+    
+    previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );    
+    
+    
+    if (previous_level && *previous_level == current_level) {
+        return NULL;
+    }
+    
+    /* We want to update this gtkconv's privacy level only if the new privacy level we 
+       received corresponds to the active conversation.  */
+    if (conv == gtkconv->active_conv) {
+        int * current_level_ptr = malloc(sizeof(int));  /* 'free' is handled by the hashtable */
+        *current_level_ptr = current_level;
+        g_hash_table_replace ( otr_win_status, gtkconv, current_level_ptr );
+    }
+    
+    if (!previous_level) {
+        return NULL;
+    }
+    
+    id = -1;
+
+    switch(current_level) {
+        case TRUST_NOT_PRIVATE:
+            id = img_id_not_private;
+            break;
+        case TRUST_UNVERIFIED:
+            id = img_id_unverified;
+            break;
+        case TRUST_PRIVATE:
+            id = img_id_private;
+            break;
+        case TRUST_FINISHED:
+            id = img_id_finished;
+            break;
+    }
+    
+
+    if (id > 0 ) {
+        char * msg = g_strdup_printf("<IMG ID=\"%d\"> ", id);
+        gtk_imhtml_append_text_with_images((GtkIMHtml*)gtkconv->imhtml, msg, 0, NULL);  
+        g_free(msg);  
+    }
+    
+    
+    return NULL;
+}
+
+static void unref_img_by_id(int *id)
+{
+    if (id && *id > 0) {
+        purple_imgstore_unref_by_id(*id);
+	*id = -1;
+    }
+}
+
+static void dialog_quitting(void)
+{
+    /* We need to do this by catching the quitting signal, because
+     * purple (mistakenly?) frees up all data structures, including
+     * the imgstore, *before* calling the unload() method of the
+     * plugins. */
+    unref_img_by_id(&img_id_not_private);
+    unref_img_by_id(&img_id_unverified);
+    unref_img_by_id(&img_id_private);
+    unref_img_by_id(&img_id_finished);
+}
+
 /* Initialize the OTR dialog subsystem */
 static void otrg_gtk_dialog_init(void)
 {
+    otr_win_menus = g_hash_table_new(g_direct_hash, g_direct_equal);
+    otr_win_status = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, free);
+    
+    
+    img_id_not_private = purple_imgstore_add_with_id(
+	    g_memdup(not_private_png, sizeof(not_private_png)),
+	    sizeof(not_private_png), "");
+    
+    img_id_unverified = purple_imgstore_add_with_id(
+	    g_memdup(unverified_png, sizeof(unverified_png)),
+	    sizeof(unverified_png), "");
+    
+    img_id_private = purple_imgstore_add_with_id(
+	    g_memdup(private_png, sizeof(private_png)),
+	    sizeof(private_png), "");
+    
+    img_id_finished = purple_imgstore_add_with_id(
+	    g_memdup(finished_png, sizeof(finished_png)),
+	    sizeof(finished_png), "");
+
+    
+    purple_signal_connect(pidgin_conversations_get_handle(),
+	    "conversation-switched", otrg_plugin_handle,
+	    PURPLE_CALLBACK(conversation_switched), NULL);
+
     purple_signal_connect(purple_conversations_get_handle(),
 	    "deleting-conversation", otrg_plugin_handle,
 	    PURPLE_CALLBACK(conversation_destroyed), NULL);
+        
+    purple_signal_connect(pidgin_conversations_get_handle(),
+        "conversation-timestamp", otrg_plugin_handle,
+        PURPLE_CALLBACK(conversation_timestamp), NULL);
+
+    purple_signal_connect(purple_get_core(),
+	"quitting", otrg_plugin_handle, PURPLE_CALLBACK(dialog_quitting),
+	NULL);
 }
 
 /* Deinitialize the OTR dialog subsystem */
 static void otrg_gtk_dialog_cleanup(void)
 {
+    purple_signal_disconnect(purple_get_core(), "quitting",
+	    otrg_plugin_handle, PURPLE_CALLBACK(dialog_quitting));
+
+    purple_signal_disconnect(pidgin_conversations_get_handle(),
+	    "conversation-switched", otrg_plugin_handle,
+	    PURPLE_CALLBACK(conversation_switched));
+
+    purple_signal_disconnect(pidgin_conversations_get_handle(),
+        "conversation-timestamp", otrg_plugin_handle,
+        PURPLE_CALLBACK(conversation_timestamp));
+
     purple_signal_disconnect(purple_conversations_get_handle(),
 	    "deleting-conversation", otrg_plugin_handle,
 	    PURPLE_CALLBACK(conversation_destroyed));
+
+    /* If we're quitting, the imgstore will already have been destroyed
+     * by purple, but we should have already called dialog_quitting(),
+     * so the img_id_* should be -1, and all should be OK. */
+    unref_img_by_id(&img_id_not_private);
+    unref_img_by_id(&img_id_unverified);
+    unref_img_by_id(&img_id_private);
+    unref_img_by_id(&img_id_finished);
+    
+    g_hash_table_foreach(otr_win_menus, foreach_free_lists, NULL);
+
+    g_hash_table_destroy(otr_win_menus);
+    
+    g_hash_table_destroy(otr_win_status);
 }
 
 static const OtrgDialogUiOps gtk_dialog_ui_ops = {

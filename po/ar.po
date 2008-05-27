@@ -1,0 +1,500 @@
+# translation of pidgin-otr.po to Arabic
+# Arabic translations for pidgin-otr package.
+# Copyright (C) 2007 THE pidgin-otr'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the pidgin-otr package.
+#
+# Automatically generated, 2007.
+# Khaled Hosny <khaledhosny@eglug.org>, 2007.
+# Ahmad Gharbeia <gharbeia@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: pidgin-otr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-18 16:56+0200\n"
+"PO-Revision-Date: 2008-02-13 18:14+0200\n"
+"Last-Translator: Ahmad Gharbeia أحمد غربية <gharbeia@gmail.com>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: ../gtk-dialog.c:916
+#: ../gtk-dialog.c:2103
+msgid "_What's this?"
+msgstr "_ما هذا؟"
+
+#: ../gtk-dialog.c:927
+msgid "_More..."
+msgstr "_المزيد..."
+
+#. Create the Advanced... button, and left-justify it.  This
+#. * involves adding the button, and a blank label as a spacer, and
+#. * reordering them so that they're at the beginning.
+#: ../gtk-dialog.c:984
+msgid "Advanced..."
+msgstr "متقدم..."
+
+#: ../gtk-dialog.c:1029
+msgid "Enter secret here"
+msgstr "أدخل السر هنا"
+
+#: ../gtk-dialog.c:1034
+msgid "This buddy is already authenticated."
+msgstr "هذا الصديق مُستوثَق بالفعل."
+
+#: ../gtk-dialog.c:1053
+msgid "To authenticate, pick a secret known only to you and your buddy.  Enter this secret, then wait for your buddy to enter it too.  If the secrets don't match, then you may be talking to an imposter."
+msgstr "لأجل الاستيثاق اختر سرا لا يعرفه إلاك و صديقك. أدخل هذا السر ثم انتظر أن يُدخله الصديق كذلك. إذا لم يتطابق السران فلربما كنت تحادث مُنتحلا."
+
+#: ../gtk-dialog.c:1057
+msgid "If your buddy uses multiple IM accounts or multiple computers, you may have to authenticate multiple times.  However, as long as they use an account and computer that you've seen before, you don't need to authenticate each individual conversation."
+msgstr "إن كان صديقك يستخدم حسابات تراسل فوري متعددة أو حواسيب مختلفة فربما تحتاجان للاستيثاق أكثر من مرّة. لكن إن كان صديقك يستخدم حاسوبا و حسابا سبق تعرُّفهما فلن تحتاج لاستيثاق كل محادثة على حدة."
+
+#: ../gtk-dialog.c:1062
+#: ../gtk-dialog.c:1330
+#: ../gtk-dialog.c:1334
+#: ../gtk-dialog.c:1431
+#: ../gtk-dialog.c:1598
+#: ../gtk-dialog.c:1758
+#: ../gtk-dialog.c:1858
+#: ../gtk-dialog.c:1943
+msgid "?lang=en"
+msgstr "?lang=ar"
+
+#: ../gtk-dialog.c:1063
+msgid "Click here for more information about authentication in OTR."
+msgstr "انقر هنا لمزيد من المعلومات عن الاستيثاق في OTR."
+
+#: ../gtk-dialog.c:1067
+msgid "Authenticating a buddy helps ensure that the person you are talking to is who they claim to be."
+msgstr "الاستيثاق من الصديق يُساعد على التأكد من أن الشخص الذي تُحدثه هو من يزعم أن يكونه."
+
+#: ../gtk-dialog.c:1119
+msgid "Authenticating Buddy"
+msgstr "يجري الاستيثاق من الصديق"
+
+#: ../gtk-dialog.c:1146
+msgid "Authenticating"
+msgstr "يجري الاستيثاق"
+
+#: ../gtk-dialog.c:1209
+msgid "Generating private key"
+msgstr "يجري توليد المفتاح السري"
+
+#: ../gtk-dialog.c:1210
+msgid "Please wait"
+msgstr "من فضلك انتظر"
+
+#: ../gtk-dialog.c:1218
+#: ../gtk-dialog.c:1635
+#: ../gtk-dialog.c:1672
+#: ../gtk-ui.c:175
+#: ../otr-plugin.c:115
+#: ../otr-plugin.c:212
+#: ../ui.c:110
+msgid "Unknown"
+msgstr "مجهول"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1221
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "يجري توليد مفتاح سري لأجل %s (%s)..."
+
+#: ../gtk-dialog.c:1266
+#, c-format
+msgid "%s Done."
+msgstr "%s تم."
+
+#: ../gtk-dialog.c:1328
+#, c-format
+msgid "%s is contacting you from an unrecognized computer.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "يتصل بك %s من حاسوب لم يُتعرّف عليه. ينبغي لك <a href=\"%s%s\">الاستيثاق</a> من هذا الصديق."
+
+#: ../gtk-dialog.c:1332
+#, c-format
+msgid "%s has not been authenticated yet.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "لم يُستوثق من %s بعد. يجب عليك <a href=\"%s%s\">الاستيثاق</a> من هذا الصديق."
+
+#: ../gtk-dialog.c:1373
+#: ../gtk-ui.c:76
+msgid "Finished"
+msgstr "تم"
+
+#: ../gtk-dialog.c:1374
+#: ../gtk-ui.c:75
+msgid "Private"
+msgstr "خاصة"
+
+#: ../gtk-dialog.c:1375
+#: ../gtk-ui.c:74
+msgid "Unverified"
+msgstr "غير محقّق"
+
+#: ../gtk-dialog.c:1376
+#: ../gtk-ui.c:73
+msgid "Not private"
+msgstr "ليست خاصة"
+
+#: ../gtk-dialog.c:1378
+msgid "Start a private conversation"
+msgstr "ابدأ محادثة خاصة"
+
+#: ../gtk-dialog.c:1379
+msgid "Refresh the private conversation"
+msgstr "أنعش المحادثة الخاصة"
+
+#: ../gtk-dialog.c:1383
+msgid "Start _private conversation"
+msgstr "ابدأ محادثة _خاصة"
+
+#: ../gtk-dialog.c:1384
+msgid "Refresh _private conversation"
+msgstr "أنعش المحادثة ال_خاصة"
+
+#: ../gtk-dialog.c:1563
+msgid "I have not"
+msgstr "لم أتحقق"
+
+#: ../gtk-dialog.c:1564
+msgid "I have"
+msgstr "تحققتُ"
+
+#: ../gtk-dialog.c:1566
+msgid " verified that this is in fact the correct"
+msgstr "من أن هذا صحيح حقا"
+
+#: ../gtk-dialog.c:1575
+#, c-format
+msgid "fingerprint for %s."
+msgstr "بصمة %s."
+
+#: ../gtk-dialog.c:1587
+msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authenticated channel, such as the telephone or GPG-signed email.  Each of you should tell your fingerprint to the other."
+msgstr "لتتحقق من البصمة اتصل بصديقك عبر قناة <i>أخرى</i> مستوثقة، كالهاتف أو بريد موقع رقميا، بحيث يُخبر كل منكما الآخر ببصمته."
+
+#: ../gtk-dialog.c:1591
+msgid "If everything matches up, you should indicate in the above dialog that you <b>have</b> verified the fingerprint."
+msgstr "إذا تطابق كل شيء عليك أن توضح في الحوار السابق أنك <b>تحققت</b> من البصمة."
+
+#: ../gtk-dialog.c:1593
+msgid "If your buddy has more than one IM account, or uses more than one computer, he may have multiple fingerprints."
+msgstr "إن كان لصديقك أكثر من حساب تراسل فوري أو يستخدم أكثر من حاسوب فقد تكون له أكثر من بصمة."
+
+#: ../gtk-dialog.c:1595
+msgid "However, the only way an imposter could duplicate one of your buddy's fingerprints is by stealing information from her/his computer."
+msgstr "مع هذا فالطريقة الوحيدة التي يمكن بها لمنتحل تزييف بصمة أحد أصدقائك هي السطو على معلومات معينة من حاسوبه."
+
+#: ../gtk-dialog.c:1599
+msgid "Click here for more information about fingerprints."
+msgstr "انقر هنا لمزيد من المعلومات عن البصمات."
+
+#: ../gtk-dialog.c:1602
+msgid "A <b>fingerprint</b> is a unique identifier that you should use to authenticate your buddy."
+msgstr "<b>البصمة</b> هي مُعرف فريد يتعين عليك استخدامه للاستيثاق من أصدقائك."
+
+#: ../gtk-dialog.c:1624
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "تحقق من بصمة %s"
+
+#: ../gtk-dialog.c:1628
+msgid "[none]"
+msgstr "[لاشيء]"
+
+#: ../gtk-dialog.c:1636
+#, c-format
+msgid ""
+"Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"بصمتك، %s (%s):\n"
+"%s\n"
+"\n"
+"بصمة %s المزعومة:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1641
+#: ../gtk-ui.c:681
+msgid "Verify fingerprint"
+msgstr "تحقق من البصمة"
+
+#: ../gtk-dialog.c:1668
+#, c-format
+msgid "Authenticate %s"
+msgstr "استوثق من %s"
+
+#: ../gtk-dialog.c:1673
+#, c-format
+msgid "Enter a secret known only to %s and yourself.\n"
+msgstr "أدخل سرا لا يعرفه سواك و %s.\n"
+
+#: ../gtk-dialog.c:1676
+msgid "Authenticate buddy"
+msgstr "استوثق من الصديق"
+
+#: ../gtk-dialog.c:1708
+msgid "An error occurred during authentication."
+msgstr "حدث عطل أثناء الاستيثاق."
+
+#: ../gtk-dialog.c:1724
+msgid "Authentication successful."
+msgstr "نجح الاستيثاق."
+
+#: ../gtk-dialog.c:1727
+msgid "Authentication failed."
+msgstr "فشل الاستيثاق."
+
+#: ../gtk-dialog.c:1752
+#, c-format
+msgid "Private conversation with %s started.%s"
+msgstr "بدأت محادثة خاصة مع %s. %s "
+
+#: ../gtk-dialog.c:1756
+#, c-format
+msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
+msgstr "بدأت محادثة <a href=\"%s%s\">غير مستوثقة</a> مع %%s .%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1764
+#, c-format
+msgid "Not private conversation with %s started.%s"
+msgstr "بدأت محادثة غير خاصة مع %s. %s "
+
+#: ../gtk-dialog.c:1770
+#: ../gtk-dialog.c:1871
+msgid "  Warning: using old protocol version 1."
+msgstr "  تحذير: تستخدم بروتوكولا قديما من الإصدارة 1."
+
+#: ../gtk-dialog.c:1790
+#, c-format
+msgid "Private conversation with %s lost."
+msgstr "انقطعت المحادثة الخاصة مع %s."
+
+#: ../gtk-dialog.c:1825
+#, c-format
+msgid "%s has ended his/her private conversation with you; you should do the same."
+msgstr "أنهى %s من طرفه المحادثة الخاصة معك. عليك فعل الشيء ذاته."
+
+#: ../gtk-dialog.c:1850
+#, c-format
+msgid "Successfully refreshed the private conversation with %s.%s"
+msgstr "تم إنعاش المحادثة الخاصة مع %s بنجاح.%s"
+
+#: ../gtk-dialog.c:1855
+#, c-format
+msgid "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with %%s.%%s"
+msgstr "تم إنعاش المحادثة <a href=\"%s%s\">غير المستوثقة</a> مع %%s بنجاح.%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1864
+#, c-format
+msgid "Successfully refreshed the not private conversation with %s.%s"
+msgstr "تم إنعاش المحادثة غير الخاصة مع %s بنجاح.%s"
+
+#: ../gtk-dialog.c:1891
+#, c-format
+msgid "Attempting to refresh the private conversation with %s..."
+msgstr "تجري محاولة تنشيط المحادثة الخاصة مع %s..."
+
+#: ../gtk-dialog.c:1893
+#, c-format
+msgid "Attempting to start a private conversation with %s..."
+msgstr "تجري محاولة بدء محادثة خاصة مع %s..."
+
+#: ../gtk-dialog.c:2053
+msgid "OTR:"
+msgstr "OTR:"
+
+#: ../gtk-dialog.c:2062
+msgid "OTR Messaging"
+msgstr "تراسل OTR"
+
+#: ../gtk-dialog.c:2068
+msgid "_End private conversation"
+msgstr "ا_نهِ المحادثة الخاصة"
+
+#.
+#. * Don't show the Verify fingerprint menu option any more.  You can
+#. * still get to the dialog through Authenticate connection ->
+#. * Advanced...
+#. *
+#. menuverf = gtk_menu_item_new_with_mnemonic(_("_Verify fingerprint"));
+#. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
+#. gtk_widget_show(menuverf);
+#.
+#: ../gtk-dialog.c:2086
+msgid "_Authenticate buddy"
+msgstr "ا_ستوثق من الصديق"
+
+#: ../gtk-ui.c:96
+#, c-format
+msgid "Fingerprint: %.80s"
+msgstr "البصمة: %.80s "
+
+#: ../gtk-ui.c:100
+#, c-format
+msgid "No key present"
+msgstr "لا توجد مفاتيح"
+
+#: ../gtk-ui.c:105
+#, c-format
+msgid "No account available"
+msgstr "لا توجد حسابات"
+
+#: ../gtk-ui.c:165
+msgid "Unused"
+msgstr "غير مستخدم"
+
+#: ../gtk-ui.c:171
+msgid "Yes"
+msgstr "نعم"
+
+#: ../gtk-ui.c:171
+msgid "No"
+msgstr "لا"
+
+#: ../gtk-ui.c:396
+msgid "Enable private messaging"
+msgstr "فعِّل التراسل الخاص"
+
+#: ../gtk-ui.c:398
+msgid "Automatically initiate private messaging"
+msgstr "ابدأ التراسل الخاص تلقائيا"
+
+#: ../gtk-ui.c:400
+msgid "Require private messaging"
+msgstr "اشترط التراسل الخاص"
+
+#: ../gtk-ui.c:403
+msgid "Don't log OTR conversations"
+msgstr "لا تُسجِّل محادثات OTR"
+
+#: ../gtk-ui.c:531
+msgid "My private keys"
+msgstr "مفاتيحي السريّة"
+
+#: ../gtk-ui.c:540
+msgid "Key for account:"
+msgstr "مفتاح الحساب:"
+
+#: ../gtk-ui.c:565
+msgid "Generate"
+msgstr "ولِّد"
+
+#: ../gtk-ui.c:596
+msgid "Default OTR Settings"
+msgstr "اعدادات OTR المبدئية"
+
+#: ../gtk-ui.c:625
+msgid "Screenname"
+msgstr "اسم الشاشة"
+
+#: ../gtk-ui.c:626
+msgid "Status"
+msgstr "الحالة"
+
+#: ../gtk-ui.c:627
+msgid "Verified"
+msgstr "محققة"
+
+#: ../gtk-ui.c:628
+msgid "Fingerprint"
+msgstr "البصمة"
+
+#: ../gtk-ui.c:629
+msgid "Account"
+msgstr "الحساب"
+
+#: ../gtk-ui.c:665
+msgid "Start private connection"
+msgstr "ابدأ محادثة خاصة"
+
+#: ../gtk-ui.c:673
+msgid "End private connection"
+msgstr "انهِ المحادثة الخاصة"
+
+#: ../gtk-ui.c:689
+msgid "Forget fingerprint"
+msgstr "انس البصمة"
+
+#: ../gtk-ui.c:738
+msgid "Config"
+msgstr "اضبط"
+
+#: ../gtk-ui.c:740
+msgid "Known fingerprints"
+msgstr "البصمات المعروفة"
+
+#: ../gtk-ui.c:838
+#: ../otr-plugin.c:584
+msgid "OTR Settings"
+msgstr "تضبيطات OTR"
+
+#. Set the title
+#: ../gtk-ui.c:856
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "تضبيطات OTR لأجل %s"
+
+#. Make the cascaded checkboxes
+#: ../gtk-ui.c:873
+msgid "Use default OTR settings for this buddy"
+msgstr "استخدم تضبيطات OTR المبدئية لهذا الصديق"
+
+#: ../otr-plugin.c:113
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "لست حاليا متصلا بالحساب %s (%s)."
+
+#: ../otr-plugin.c:117
+msgid "Not connected"
+msgstr "غير متّصل"
+
+#: ../otr-plugin.c:161
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "نفدت الذاكرة أثناء بناء أسماء الملفات!\n"
+
+#: ../otr-plugin.c:167
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "تعذّرت كتابة ملف المفتاح السري\n"
+
+#: ../otr-plugin.c:210
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "حساب مجهول %s (%s)."
+
+#: ../otr-plugin.c:214
+msgid "Unknown account"
+msgstr "حساب مجهول"
+
+#: ../otr-plugin.c:960
+msgid "Off-the-Record Messaging"
+msgstr "التراسل الخاص Off-the-record Messaging"
+
+#: ../otr-plugin.c:961
+msgid "Provides private and secure conversations"
+msgstr "يتيح إقامة محادثات خاصة و مؤمَّنة"
+
+#: ../otr-plugin.c:962
+msgid "Preserves the privacy of IM communications by providing encryption, authentication, deniability, and perfect forward secrecy."
+msgstr "يحفظ خصوصية اتصالات التراسل الفوري باستخدام التعمية و الاستيثاق و الإنكار و الأمن اللاحق."
+
+#: ../ui.c:108
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "لم يُعثر على الحساب %s (%s)"
+
+#: ../ui.c:112
+msgid "Account not found"
+msgstr "لم يُعثر على الحساب"
+

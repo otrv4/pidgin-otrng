@@ -1,5 +1,5 @@
 	       Off-the-Record Messaging plugin for pidgin
-			  v3.1.0,  1 Aug 2007
+			  v3.2.0, 27 May 2008
 
 This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
@@ -32,7 +32,7 @@ checkbox next to it.  Click "Configure Plugin" to bring up the OTR UI.
 The UI has two "pages": "Config" and "Known fingerprints".
 
 The "Config" page allows you generate private keys, and to set OTR
-options.
+settings and options.
 
     Private keys are used to authenticate you to your buddies.  Choose
     one of your accounts from the menu, click "Generate" and wait until
@@ -43,12 +43,12 @@ options.
     Note that if you don't generate keys in this way, they will be
     generated automatically, when they are needed.
 
-    The OTR options determine when private messaging is enabled.  The
+    The OTR settings determine when private messaging is enabled.  The
     checkboxes on this page control the default settings; you can edit
     the per-buddy settings by right-clicking on your buddy in the buddy
-    list, and choosing "OTR Options" from the menu.
+    list, and choosing "OTR Settings" from the menu.
 
-    The options are:
+    The settings are:
     [X] Enable private messaging
       [X] Automatically initiate private messaging
         [ ] Require private messaging
@@ -93,7 +93,7 @@ instead.]
 If your buddy does have the OTR plugin (and it's enabled), a private
 conversation will be initiated.
 
-If both you and your buddy have OTR software, and your OTR options set
+If both you and your buddy have OTR software, and your OTR settings set
 to automatically initiate private messaging, your clients may recognize
 each other and automatically start a private conversation.
 
@@ -260,7 +260,8 @@ CONTACT
 To report problems, comments, suggestions, patches, etc., you can email
 the authors:
 
-Ian Goldberg, Chris Alexander, and Nikita Borisov <otr@cypherpunks.ca>
+Ian Goldberg, Rob Smits, Chris Alexander, and Nikita Borisov
+<otr@cypherpunks.ca>
 
 For more information on Off-the-Record Messaging, visit
 http://otr.cypherpunks.ca/

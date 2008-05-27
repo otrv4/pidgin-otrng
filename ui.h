@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -26,6 +27,7 @@
 typedef struct {
     OtrlPolicy policy;
     gboolean avoid_logging_otr;
+    gboolean show_otr_button;
 } OtrgUiPrefs;
 
 typedef struct {

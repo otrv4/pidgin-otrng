@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -47,11 +48,15 @@
 #include "ui.h"
 #include "otr-plugin.h"
 
-struct otroptionsdata {
+struct otrsettingsdata {
     GtkWidget *enablebox;
     GtkWidget *automaticbox;
     GtkWidget *onlyprivatebox;
     GtkWidget *avoidloggingotrbox;
+};
+
+struct otroptionsdata {
+    GtkWidget *showotrbutton;
 };
 
 static struct {
@@ -66,6 +71,7 @@ static struct {
     GtkWidget *disconnect_button;
     GtkWidget *forget_button;
     GtkWidget *verify_button;
+    struct otrsettingsdata os;
     struct otroptionsdata oo;
 } ui_layout;
 
@@ -222,9 +228,9 @@ static void ui_destroyed(GtkObject *object)
     ui_layout.disconnect_button = NULL;
     ui_layout.forget_button = NULL;
     ui_layout.verify_button = NULL;
-    ui_layout.oo.enablebox = NULL;
-    ui_layout.oo.automaticbox = NULL;
-    ui_layout.oo.onlyprivatebox = NULL;
+    ui_layout.os.enablebox = NULL;
+    ui_layout.os.automaticbox = NULL;
+    ui_layout.os.onlyprivatebox = NULL;
 }
 
 static void clist_selected(GtkWidget *widget, gint row, gint column,
@@ -368,41 +374,42 @@ static void verify_fingerprint(GtkWidget *widget, gpointer data)
     otrg_dialog_verify_fingerprint(fingerprint);
 }
 
-static void otroptions_clicked_cb(GtkButton *button, struct otroptionsdata *oo)
+static void otrsettings_clicked_cb(GtkButton *button,
+	struct otrsettingsdata *os)
 {
-    gtk_widget_set_sensitive(oo->enablebox, TRUE);
+    gtk_widget_set_sensitive(os->enablebox, TRUE);
     if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->enablebox))) {
-	gtk_widget_set_sensitive(oo->automaticbox, TRUE);
+		GTK_TOGGLE_BUTTON(os->enablebox))) {
+	gtk_widget_set_sensitive(os->automaticbox, TRUE);
 	if (gtk_toggle_button_get_active(
-		    GTK_TOGGLE_BUTTON(oo->automaticbox))) {
-	    gtk_widget_set_sensitive(oo->onlyprivatebox, TRUE);
+		    GTK_TOGGLE_BUTTON(os->automaticbox))) {
+	    gtk_widget_set_sensitive(os->onlyprivatebox, TRUE);
 	} else {
-	    gtk_widget_set_sensitive(oo->onlyprivatebox, FALSE);
+	    gtk_widget_set_sensitive(os->onlyprivatebox, FALSE);
 	}
-	gtk_widget_set_sensitive(oo->avoidloggingotrbox, TRUE);
+	gtk_widget_set_sensitive(os->avoidloggingotrbox, TRUE);
     } else {
-	gtk_widget_set_sensitive(oo->automaticbox, FALSE);
-	gtk_widget_set_sensitive(oo->onlyprivatebox, FALSE);
-	gtk_widget_set_sensitive(oo->avoidloggingotrbox, FALSE);
+	gtk_widget_set_sensitive(os->automaticbox, FALSE);
+	gtk_widget_set_sensitive(os->onlyprivatebox, FALSE);
+	gtk_widget_set_sensitive(os->avoidloggingotrbox, FALSE);
     }
 }
 
-static void create_otroption_buttons(struct otroptionsdata *oo,
+static void create_otrsettings_buttons(struct otrsettingsdata *os,
 	GtkWidget *vbox)
 {
     GtkWidget *tempbox1, *tempbox2;
 
-    oo->enablebox = gtk_check_button_new_with_label(_("Enable private "
+    os->enablebox = gtk_check_button_new_with_label(_("Enable private "
 	    "messaging"));
-    oo->automaticbox = gtk_check_button_new_with_label(_("Automatically "
+    os->automaticbox = gtk_check_button_new_with_label(_("Automatically "
 	    "initiate private messaging"));
-    oo->onlyprivatebox = gtk_check_button_new_with_label(_("Require private "
+    os->onlyprivatebox = gtk_check_button_new_with_label(_("Require private "
 	    "messaging"));
-    oo->avoidloggingotrbox = gtk_check_button_new_with_label(
+    os->avoidloggingotrbox = gtk_check_button_new_with_label(
 	    _("Don't log OTR conversations"));
 
-    gtk_box_pack_start(GTK_BOX(vbox), oo->enablebox,
+    gtk_box_pack_start(GTK_BOX(vbox), os->enablebox,
 	    FALSE, FALSE, 0);
     tempbox1 = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), tempbox1,
@@ -410,25 +417,44 @@ static void create_otroption_buttons(struct otroptionsdata *oo,
     tempbox2 = gtk_vbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(tempbox1), tempbox2, FALSE, FALSE, 5);
 
-    gtk_box_pack_start(GTK_BOX(tempbox2), oo->automaticbox,
+    gtk_box_pack_start(GTK_BOX(tempbox2), os->automaticbox,
 	    FALSE, FALSE, 0);
     tempbox1 = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(tempbox2), tempbox1, FALSE, FALSE, 0);
     tempbox2 = gtk_vbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(tempbox1), tempbox2, FALSE, FALSE, 5);
 
-    gtk_box_pack_start(GTK_BOX(tempbox2), oo->onlyprivatebox,
+    gtk_box_pack_start(GTK_BOX(tempbox2), os->onlyprivatebox,
 	    FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(vbox), oo->avoidloggingotrbox, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), os->avoidloggingotrbox, FALSE, FALSE, 5);
 
-    g_signal_connect(G_OBJECT(oo->enablebox), "clicked",
-		     G_CALLBACK(otroptions_clicked_cb), oo);
-    g_signal_connect(G_OBJECT(oo->automaticbox), "clicked",
-		     G_CALLBACK(otroptions_clicked_cb), oo);
-    g_signal_connect(G_OBJECT(oo->onlyprivatebox), "clicked",
-		     G_CALLBACK(otroptions_clicked_cb), oo);
-    g_signal_connect(G_OBJECT(oo->avoidloggingotrbox), "clicked",
+    g_signal_connect(G_OBJECT(os->enablebox), "clicked",
+		     G_CALLBACK(otrsettings_clicked_cb), os);
+    g_signal_connect(G_OBJECT(os->automaticbox), "clicked",
+		     G_CALLBACK(otrsettings_clicked_cb), os);
+    g_signal_connect(G_OBJECT(os->onlyprivatebox), "clicked",
+		     G_CALLBACK(otrsettings_clicked_cb), os);
+    g_signal_connect(G_OBJECT(os->avoidloggingotrbox), "clicked",
+		     G_CALLBACK(otrsettings_clicked_cb), os);
+}
+
+static void otroptions_clicked_cb(GtkButton *button,
+	struct otroptionsdata *oo)
+{
+    /* This doesn't really do anything useful right now, but is here for
+     * future expansion purposes. */
+    gtk_widget_set_sensitive(oo->showotrbutton, TRUE);
+}
+
+static void create_otroptions_buttons(struct otroptionsdata *oo,
+	GtkWidget *vbox)
+{
+    oo->showotrbutton = gtk_check_button_new_with_label(_("Show OTR button"));
+
+    gtk_box_pack_start(GTK_BOX(vbox), oo->showotrbutton, FALSE, FALSE, 0);
+
+    g_signal_connect(G_OBJECT(oo->showotrbutton), "clicked",
 		     G_CALLBACK(otroptions_clicked_cb), oo);
 }
 
@@ -498,7 +524,7 @@ static void otrg_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
     purple_blist_node_set_bool(node, "OTR/avoidloggingotr", avoidloggingotr);
 }
 
-static void load_otroptions(struct otroptionsdata *oo)
+static void load_otrsettings(struct otrsettingsdata *os)
 {
     gboolean otrenabled;
     gboolean otrautomatic;
@@ -508,16 +534,51 @@ static void load_otroptions(struct otroptionsdata *oo)
     otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
 	    &otravoidloggingotr);
 
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->enablebox),
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->enablebox),
 	    otrenabled);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->automaticbox),
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->automaticbox),
 	    otrautomatic);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->onlyprivatebox),
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->onlyprivatebox),
 	    otronlyprivate);
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->avoidloggingotrbox),
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->avoidloggingotrbox),
 	    otravoidloggingotr);
 
-    otroptions_clicked_cb(GTK_BUTTON(oo->enablebox), oo);
+    otrsettings_clicked_cb(GTK_BUTTON(os->enablebox), os);
+}
+
+/* Load the global OTR UI options */
+static void otrg_gtk_ui_global_options_load(gboolean *showotrbuttonp)
+{
+    if (purple_prefs_exists("/OTR/showotrbutton")) {
+	*showotrbuttonp = purple_prefs_get_bool("/OTR/showotrbutton");
+    } else {
+	*showotrbuttonp = FALSE;
+    }
+}
+
+/* Save the global OTR UI options */
+static void otrg_gtk_ui_global_options_save(gboolean showotrbutton)
+{
+    if (! purple_prefs_exists("/OTR")) {
+	purple_prefs_add_none("/OTR");
+    }
+    if (! purple_prefs_exists("/OTR/showotrbutton")) {
+	purple_prefs_add_bool("/OTR/showotrbutton", showotrbutton);
+    }
+    purple_prefs_set_bool("/OTR/showotrbutton", showotrbutton);
+}
+
+
+static void load_otroptions(struct otroptionsdata *oo)
+{
+    gboolean showotrbutton;
+
+    otrg_gtk_ui_global_options_load(&showotrbutton);
+
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->showotrbutton),
+	    showotrbutton);
+
+    otroptions_clicked_cb(GTK_BUTTON(oo->showotrbutton), oo);
 }
 
 /* Create the privkeys UI, and pack it into the vbox */
@@ -571,24 +632,34 @@ static void make_privkeys_ui(GtkWidget *vbox)
 	    FALSE, FALSE, 0);
 }
 
-/* Save the global OTR options whenever they're clicked */
-static void otroptions_save_cb(GtkButton *button, struct otroptionsdata *oo)
+/* Save the global OTR settings whenever they're clicked */
+static void otrsettings_save_cb(GtkButton *button, struct otrsettingsdata *os)
 {
     otrg_gtk_ui_global_prefs_save(
 	    gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->enablebox)),
+		GTK_TOGGLE_BUTTON(os->enablebox)),
 	    gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->automaticbox)),
+		GTK_TOGGLE_BUTTON(os->automaticbox)),
 	    gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->onlyprivatebox)),
+		GTK_TOGGLE_BUTTON(os->onlyprivatebox)),
 	    gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(oo->avoidloggingotrbox)));
+		GTK_TOGGLE_BUTTON(os->avoidloggingotrbox)));
 
     otrg_dialog_resensitize_all();
 }
 
-/* Make the options UI, and pack it into the vbox */
-static void make_options_ui(GtkWidget *vbox)
+/* Save the global OTR UI options whenever they're clicked */
+static void otroptions_save_cb(GtkButton *button, struct otroptionsdata *oo)
+{
+    otrg_gtk_ui_global_options_save(
+	    gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(oo->showotrbutton)));
+
+    otrg_dialog_resensitize_all();
+}
+
+/* Make the settings UI, and pack it into the vbox */
+static void make_settings_ui(GtkWidget *vbox)
 {
     GtkWidget *fbox;
     GtkWidget *frame;
@@ -600,17 +671,38 @@ static void make_options_ui(GtkWidget *vbox)
     gtk_container_set_border_width(GTK_CONTAINER(fbox), 10);
     gtk_container_add(GTK_CONTAINER(frame), fbox);
 
-    create_otroption_buttons(&(ui_layout.oo), fbox);
+    create_otrsettings_buttons(&(ui_layout.os), fbox);
+
+    load_otrsettings(&(ui_layout.os));
+
+    g_signal_connect(G_OBJECT(ui_layout.os.enablebox), "clicked",
+		     G_CALLBACK(otrsettings_save_cb), &(ui_layout.os));
+    g_signal_connect(G_OBJECT(ui_layout.os.automaticbox), "clicked",
+		     G_CALLBACK(otrsettings_save_cb), &(ui_layout.os));
+    g_signal_connect(G_OBJECT(ui_layout.os.onlyprivatebox), "clicked",
+		     G_CALLBACK(otrsettings_save_cb), &(ui_layout.os));
+    g_signal_connect(G_OBJECT(ui_layout.os.avoidloggingotrbox), "clicked",
+		     G_CALLBACK(otrsettings_save_cb), &(ui_layout.os));
+}
+
+/* Make the options UI, and pack it into the vbox */
+static void make_options_ui(GtkWidget *vbox)
+{
+    GtkWidget *fbox;
+    GtkWidget *frame;
+
+    frame = gtk_frame_new(_("OTR UI Options"));
+    gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
+
+    fbox = gtk_vbox_new(FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(fbox), 10);
+    gtk_container_add(GTK_CONTAINER(frame), fbox);
+
+    create_otroptions_buttons(&(ui_layout.oo), fbox);
 
     load_otroptions(&(ui_layout.oo));
 
-    g_signal_connect(G_OBJECT(ui_layout.oo.enablebox), "clicked",
-		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
-    g_signal_connect(G_OBJECT(ui_layout.oo.automaticbox), "clicked",
-		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
-    g_signal_connect(G_OBJECT(ui_layout.oo.onlyprivatebox), "clicked",
-		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
-    g_signal_connect(G_OBJECT(ui_layout.oo.avoidloggingotrbox), "clicked",
+    g_signal_connect(G_OBJECT(ui_layout.oo.showotrbutton), "clicked",
 		     G_CALLBACK(otroptions_save_cb), &(ui_layout.oo));
 }
 
@@ -725,6 +817,8 @@ GtkWidget* otrg_gtk_ui_make_widget(PurplePlugin *plugin)
 
     make_privkeys_ui(configbox);
 
+    make_settings_ui(configbox);
+
     make_options_ui(configbox);
 
     /*
@@ -748,7 +842,7 @@ struct cbdata {
     GtkWidget *dialog;
     PurpleBuddy *buddy;
     GtkWidget *defaultbox;
-    struct otroptionsdata oo;
+    struct otrsettingsdata os;
 };
 
 static void default_clicked_cb(GtkButton *button, struct cbdata *data)
@@ -756,12 +850,12 @@ static void default_clicked_cb(GtkButton *button, struct cbdata *data)
     gboolean defaultset =
 	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->defaultbox));
     if (defaultset) {
-	gtk_widget_set_sensitive(data->oo.enablebox, FALSE);
-	gtk_widget_set_sensitive(data->oo.automaticbox, FALSE);
-	gtk_widget_set_sensitive(data->oo.onlyprivatebox, FALSE);
-	gtk_widget_set_sensitive(data->oo.avoidloggingotrbox, FALSE);
+	gtk_widget_set_sensitive(data->os.enablebox, FALSE);
+	gtk_widget_set_sensitive(data->os.automaticbox, FALSE);
+	gtk_widget_set_sensitive(data->os.onlyprivatebox, FALSE);
+	gtk_widget_set_sensitive(data->os.avoidloggingotrbox, FALSE);
     } else {
-	otroptions_clicked_cb(button, &(data->oo));
+	otrsettings_clicked_cb(button, &(data->os));
     }
 }
 
@@ -777,17 +871,17 @@ static void load_buddyprefs(struct cbdata *data)
 
     if (usedefault) {
 	/* Load the global defaults */
-	load_otroptions(&(data->oo));
+	load_otrsettings(&(data->os));
     } else {
 	/* We've got buddy-specific prefs */
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON(data->oo.enablebox), enabled);
+		GTK_TOGGLE_BUTTON(data->os.enablebox), enabled);
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON(data->oo.automaticbox), automatic);
+		GTK_TOGGLE_BUTTON(data->os.automaticbox), automatic);
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON(data->oo.onlyprivatebox), onlyprivate);
+		GTK_TOGGLE_BUTTON(data->os.onlyprivatebox), onlyprivate);
 	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON(data->oo.avoidloggingotrbox),
+		GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox),
 		avoidloggingotr);
     }
 
@@ -802,7 +896,7 @@ static void config_buddy_destroy_cb(GtkWidget *w, struct cbdata *data)
 static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data)
 {
     gboolean enabled = gtk_toggle_button_get_active(
-			     GTK_TOGGLE_BUTTON(data->oo.enablebox));
+			     GTK_TOGGLE_BUTTON(data->os.enablebox));
     
     /* Apply the changes */
     otrg_gtk_ui_buddy_prefs_save(data->buddy,
@@ -810,11 +904,11 @@ static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data)
 	     GTK_TOGGLE_BUTTON(data->defaultbox)),
 	 enabled,
 	 gtk_toggle_button_get_active(
-	     GTK_TOGGLE_BUTTON(data->oo.automaticbox)),
+	     GTK_TOGGLE_BUTTON(data->os.automaticbox)),
 	 gtk_toggle_button_get_active(
-	     GTK_TOGGLE_BUTTON(data->oo.onlyprivatebox)),
+	     GTK_TOGGLE_BUTTON(data->os.onlyprivatebox)),
 	 gtk_toggle_button_get_active(
-	     GTK_TOGGLE_BUTTON(data->oo.avoidloggingotrbox)));
+	     GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox)));
 
     otrg_dialog_resensitize_all();
 }
@@ -840,7 +934,7 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
 					 GTK_STOCK_OK, GTK_RESPONSE_OK,
 					 NULL);
     gtk_window_set_accept_focus(GTK_WINDOW(dialog), FALSE);
-    gtk_window_set_role(GTK_WINDOW(dialog), "otr_options");
+    gtk_window_set_role(GTK_WINDOW(dialog), "otr_settings");
 
     gtk_container_set_border_width(GTK_CONTAINER(dialog), 6);
     gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
@@ -879,19 +973,19 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy)
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), gtk_hseparator_new(),
 	    FALSE, FALSE, 5);
 
-    create_otroption_buttons(&(data->oo), GTK_DIALOG(dialog)->vbox);
+    create_otrsettings_buttons(&(data->os), GTK_DIALOG(dialog)->vbox);
 
     g_signal_connect(G_OBJECT(data->defaultbox), "clicked",
 		     G_CALLBACK(default_clicked_cb), data);
     g_signal_connect(G_OBJECT(data->defaultbox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
-    g_signal_connect(G_OBJECT(data->oo.enablebox), "clicked",
+    g_signal_connect(G_OBJECT(data->os.enablebox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
-    g_signal_connect(G_OBJECT(data->oo.automaticbox), "clicked",
+    g_signal_connect(G_OBJECT(data->os.automaticbox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
-    g_signal_connect(G_OBJECT(data->oo.onlyprivatebox), "clicked",
+    g_signal_connect(G_OBJECT(data->os.onlyprivatebox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
-    g_signal_connect(G_OBJECT(data->oo.avoidloggingotrbox), "clicked",
+    g_signal_connect(G_OBJECT(data->os.avoidloggingotrbox), "clicked",
 		     G_CALLBACK(config_buddy_clicked_cb), data);
 
     /* Set the inital states of the buttons */
@@ -916,10 +1010,12 @@ static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 
     prefsp->policy = OTRL_POLICY_DEFAULT;
     prefsp->avoid_logging_otr = FALSE;
+    prefsp->show_otr_button = FALSE;
     
     /* Get the default policy */
     otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
 	    &otravoidloggingotr);
+    otrg_gtk_ui_global_options_load(&(prefsp->show_otr_button));
 
     if (otrenabled) {
 	if (otrautomatic) {

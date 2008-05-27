@@ -1,3 +1,18 @@
+28 May 2008:
+
+- The functionality of the OTR button has now moved to a menu.  There's
+  an "OTR" menu, as well as an icon showing the current OTR state of
+  each active conversation in the window.
+- New OTR icons from <cyrus_xiii@yahoo.com>
+- OTR icons show up inline in the conversation window when the OTR
+  status changes.
+- Buddy authentication has been revamped, based on the user study
+  published in SOUPS 2008.  The default is now to choose a question and
+  an answer only you and the buddy should know.  The question is
+  displayed to the buddy, who is prompted for the answer.  The "shared
+  secret" and "fingerprint" authentication methods are still available.
+- Translations for Arabic, German, Russian
+
 1 Aug 2007:
 - Released 3.1.0
 

@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -163,6 +164,7 @@ void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
     if (!otrg_plugin_proto_supports_otr(proto)) {
 	prefsp->policy = OTRL_POLICY_NEVER;
 	prefsp->avoid_logging_otr = FALSE;
+	prefsp->show_otr_button = FALSE;
 	return;
     }
 
@@ -173,4 +175,5 @@ void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
     /* If we've got no other way to get the prefs, use sensible defaults */
     prefsp->policy = OTRL_POLICY_DEFAULT;
     prefsp->avoid_logging_otr = FALSE;
+    prefsp->show_otr_button = FALSE;
 }

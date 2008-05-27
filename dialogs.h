@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -28,12 +29,12 @@
 #include <libotr/message.h>
 
 /* The various help URLs */
-#define BASE_HELPURL "http://otr-help.cypherpunks.ca/"
+#define BASE_HELPURL "http://otr-help.cypherpunks.ca/" PIDGIN_OTR_VERSION "/"
 #define AUTHENTICATE_HELPURL  BASE_HELPURL "authenticate.php"
 #define FINGERPRINT_HELPURL   BASE_HELPURL "fingerprint.php"
 #define SESSIONID_HELPURL     BASE_HELPURL "sessionid.php"
 #define UNVERIFIED_HELPURL    BASE_HELPURL "unverified.php"
-#define BUTTON_HELPURL        BASE_HELPURL "buttonhelp.php"
+#define LEVELS_HELPURL        BASE_HELPURL "levels.php"
 
 typedef struct s_OtrgDialogWait *OtrgDialogWaitHandle;
 
@@ -59,7 +60,8 @@ typedef struct {
 
     void (*verify_fingerprint)(Fingerprint *fprint);
 
-    void (*socialist_millionaires)(ConnContext *context, gboolean responder);
+    void (*socialist_millionaires)(ConnContext *context, char *question,
+	    gboolean responder);
 
     void (*update_smp)(ConnContext *context, double progress_level);
 
@@ -138,6 +140,11 @@ void otrg_dialog_verify_fingerprint(Fingerprint *fprint);
 
 /* Show a dialog asking the user to give an SMP secret. */
 void otrg_dialog_socialist_millionaires(ConnContext *context);
+
+/* Show a dialog asking the user to give an SMP secret, prompting with a
+ * question. */
+void otrg_dialog_socialist_millionaires_q(ConnContext *context,
+	char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
 void otrg_dialog_update_smp(ConnContext *context, double progress_level);

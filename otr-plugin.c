@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -365,12 +366,13 @@ void otrg_plugin_abort_smp(ConnContext *context)
 }
 
 /* Start the Socialist Millionaires' Protocol over the current connection,
- * using the given initial secret. */
-void otrg_plugin_start_smp(ConnContext *context,
+ * using the given initial secret, and optionally a question to pass to
+ * the buddy. */
+void otrg_plugin_start_smp(ConnContext *context, const char *question,
 	const unsigned char *secret, size_t secretlen)
 {
-    otrl_message_initiate_smp(otrg_plugin_userstate, &ui_ops, NULL,
-	    context, secret, secretlen);
+    otrl_message_initiate_smp_q(otrg_plugin_userstate, &ui_ops, NULL,
+	    context, question, secret, secretlen);
 }
 
 /* Continue the Socialist Millionaires' Protocol over the current connection,
@@ -467,49 +469,69 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     if (context) {
 	nextMsg = context->smstate->nextExpected;
 
-	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
-	if (tlv) {
-	    if (nextMsg != OTRL_SMP_EXPECT1)
-		otrg_plugin_abort_smp(context);
-	    else {
-		otrg_dialog_socialist_millionaires(context);
-	    }
-	}
-	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
-	if (tlv) {
-	    if (nextMsg != OTRL_SMP_EXPECT2)
-		otrg_plugin_abort_smp(context);
-	    else {
-		otrg_dialog_update_smp(context, 0.6);
-		context->smstate->nextExpected = OTRL_SMP_EXPECT4;
-	    }
-	}
-	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
-	if (tlv) {
-	    if (nextMsg != OTRL_SMP_EXPECT3)
-		otrg_plugin_abort_smp(context);
-	    else {
-		otrg_dialog_update_smp(context, 1.0);
-		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-	    }
-	}
-	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
-	if (tlv) {
-	    if (nextMsg != OTRL_SMP_EXPECT4)
-		otrg_plugin_abort_smp(context);
-	    else {
-		otrg_dialog_update_smp(context, 1.0);
-		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-	    }
-	}
-	tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
-	if (tlv) {
+	if (context->smstate->sm_prog_state == OTRL_SMP_PROG_CHEATED) {
+	    otrg_plugin_abort_smp(context);
 	    otrg_dialog_update_smp(context, 0.0);
 	    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+	    context->smstate->sm_prog_state = OTRL_SMP_PROG_OK;
+	} else {
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1Q);
+	    if (tlv) {
+		if (nextMsg != OTRL_SMP_EXPECT1)
+		    otrg_plugin_abort_smp(context);
+		else {
+		    char *question = (char *)tlv->data;
+		    char *eoq = memchr(question, '\0', tlv->len);
+		    if (eoq) {
+			otrg_dialog_socialist_millionaires_q(context,
+				question);
+		    }
+		}
+	    }
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
+	    if (tlv) {
+		if (nextMsg != OTRL_SMP_EXPECT1)
+		    otrg_plugin_abort_smp(context);
+		else {
+		    otrg_dialog_socialist_millionaires(context);
+		}
+	    }
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
+	    if (tlv) {
+		if (nextMsg != OTRL_SMP_EXPECT2)
+		    otrg_plugin_abort_smp(context);
+		else {
+		    otrg_dialog_update_smp(context, 0.6);
+		    context->smstate->nextExpected = OTRL_SMP_EXPECT4;
+		}
+	    }
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
+	    if (tlv) {
+		if (nextMsg != OTRL_SMP_EXPECT3)
+		    otrg_plugin_abort_smp(context);
+		else {
+		    otrg_dialog_update_smp(context, 1.0);
+		    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+		}
+	    }
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
+	    if (tlv) {
+		if (nextMsg != OTRL_SMP_EXPECT4)
+		    otrg_plugin_abort_smp(context);
+		else {
+		    otrg_dialog_update_smp(context, 1.0);
+		    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+		}
+	    }
+	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
+	    if (tlv) {
+		otrg_dialog_update_smp(context, 0.0);
+		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
+	    }
 	}
-	
-	otrl_tlv_free(tlvs);
     }
+
+    otrl_tlv_free(tlvs);
 
     free(username);
 
@@ -926,7 +948,8 @@ static PurplePluginInfo info =
 	NULL,                                             /* summary        */
 	NULL,                                             /* description    */
 	                                                  /* author         */
-	"Ian Goldberg, Chris Alexander, Nikita Borisov\n"
+	"Ian Goldberg, Rob Smits,\n"
+	    "\t\t\tChris Alexander, Nikita Borisov\n"
 	    "\t\t\t<otr@cypherpunks.ca>",
 	"http://otr.cypherpunks.ca/",                     /* homepage       */
 

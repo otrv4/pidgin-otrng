@@ -1,6 +1,7 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2007  Ian Goldberg, Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -140,7 +141,15 @@ void otrg_dialog_verify_fingerprint(Fingerprint *fprint)
 /* Show a dialog asking the user to give an SMP secret. */
 void otrg_dialog_socialist_millionaires(ConnContext *context)
 {
-    ui_ops->socialist_millionaires(context, TRUE);
+    ui_ops->socialist_millionaires(context, NULL, TRUE);
+}
+
+/* Show a dialog asking the user to give an SMP secret, prompting with a
+ * question. */
+void otrg_dialog_socialist_millionaires_q(ConnContext *context,
+	char *question)
+{
+    ui_ops->socialist_millionaires(context, question, TRUE);
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */

@@ -1,3 +1,61 @@
+2008-05-28
+
+	* tooltipmenu.[ch]: New classes to allow tooltips on menus.
+
+	* otr-icons.h: New OTR icons from <cyrus_xiii@yahoo.com>.
+
+	* README:
+	* AUTHORS:
+	* *.[ch]: Update copyright dates to 2004-2008 and add Rob Smits
+	as an author. (Rob wrote the new gtk-dialog stuff to handle user
+	authentication with an explicit question, inserted inline OTR
+	icons into the conversation when the status changes, and moved
+	the OTR button to the menu bar.)
+
+	* gtk-ui.c: Updated variable names to reflect the (old) change
+	from "OTR Options" to "OTR Settings".
+
+	* ui.h:
+	* ui.c:
+	* gtk-ui.c: Added new OTR UI Options section of the
+	configuration panel, which currently controls only whether the
+	old OTR button will still show up.
+
+	* dialogs.h:
+	* dialogs.c:
+	* gtk-dialog.c: 
+	* otr-plugin.h:
+	* otr-plugin.c: Support starting the SMP authentication with an
+	explicit question.
+
+	* otr-plugin.c: Better handling of the case where an SMP message
+	fails a verification step.
+
+	* configure.ac:
+	* Makefile.mingw: Update version number to 3.2.0.
+
+	* gtk-dialog.c: Made new OTR menus (one master one, and one for
+	each active conversation in the window) that replace the old OTR
+	button.  [The old button is still available as an option, but
+	the menu is always present.]
+
+	* gtk-dialog.c: OTR icons are inserted inline into the
+	conversation when the OTR status changes.
+
+	* configure.ac:
+	* po/ar.po:
+	* po/de.po:
+	* po/ru.po: New translations:
+	Arabic (Ahmad Gharbeia ﺄﺤﻣﺩ ﻍﺮﺒﻳﺓ <gharbeia@gmail.com>),
+	German (Thorsten Mühlfelder <thenktor@gmx.de>),
+	Russian (Sergei Smirnov <moscow@hro.org>)
+
+	* dialogs.h: Help URLs now have version numbers in them, so the
+	appropriate help page can be served.
+
+	* Makefile.am: Include new files in compilation and distribution
+	targets.
+
 2007-07-28
 
 	* configure.ac: Fix PKG_CHECK_MODULES so that it gives a
