@@ -48,6 +48,7 @@
 	* po/ru.po: New translations:
 	Arabic (Ahmad Gharbeia ﺄﺤﻣﺩ ﻍﺮﺒﻳﺓ <gharbeia@gmail.com>),
 	German (Thorsten Mühlfelder <thenktor@gmx.de>),
+	Hungarian (Mate Ory <orymate@gmail.com>),
 	Russian (Sergei Smirnov <moscow@hro.org>)
 
 	* dialogs.h: Help URLs now have version numbers in them, so the
