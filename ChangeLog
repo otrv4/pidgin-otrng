@@ -1,3 +1,19 @@
+2008-05-29
+
+	* gtk-ui.c:
+	* gtk-dialog.c: Try moving the OTR button to the toolbar, based
+	on an idea from Pontus Andersson at
+	http://blog.pesa.se/2007/09/25/goodbye-big-bloated-otr-button/
+
+	* gtk-dialog.c: Some changes to the authenticate buddy dialog;
+	more to come.
+
+	* gtk-dialog.c: Some strings were missing _(), and others had
+	them unnecessarily.
+
+	* po/de.po: Updated German translation from Michael Meier
+	<mail@code.mmsources.de>
+
 2008-05-28
 
 	* tooltipmenu.[ch]: New classes to allow tooltips on menus.

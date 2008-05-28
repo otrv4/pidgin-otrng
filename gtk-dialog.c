@@ -485,7 +485,7 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, ConnContext *context,
         label_text = g_strdup_printf(_("This is the question asked by "
 		    "your buddy:"));
     } else {
-        label_text = g_strdup_printf("Enter question here:");
+        label_text = g_strdup_printf(_("Enter question here:"));
     }
     
     label = gtk_label_new(label_text);
@@ -542,7 +542,7 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, ConnContext *context,
 
     /* Create the text view where the user enters their secret */
     entry = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(entry), _(""));
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
 
     auth_opt_data->one_way_entry = GTK_ENTRY(entry);
     gtk_entry_set_activates_default(GTK_ENTRY(entry), smppair->responder);
@@ -623,7 +623,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
        
-    label_text = g_strdup_printf("Enter secret here:");
+    label_text = g_strdup_printf(_("Enter secret here:"));
     label = gtk_label_new(label_text);
     gtk_label_set_selectable(GTK_LABEL(label), FALSE);
     g_free(label_text);
@@ -634,7 +634,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
        
     /* Create the text view where the user enters their secret */
     entry = gtk_entry_new();
-    gtk_entry_set_text(GTK_ENTRY(entry), _(""));
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
     gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
     auth_opt_data->two_way_entry = GTK_ENTRY(entry);
 
