@@ -552,7 +552,11 @@ static void otrg_gtk_ui_global_options_load(gboolean *showotrbuttonp)
     if (purple_prefs_exists("/OTR/showotrbutton")) {
 	*showotrbuttonp = purple_prefs_get_bool("/OTR/showotrbutton");
     } else {
+#ifdef OLD_OTR_BUTTON
 	*showotrbuttonp = FALSE;
+#else
+	*showotrbuttonp = TRUE;
+#endif
     }
 }
 

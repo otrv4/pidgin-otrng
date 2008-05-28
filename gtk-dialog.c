@@ -423,33 +423,21 @@ static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
 	const char *moremarkup)
 {
     GtkWidget *expander;
-    GtkWidget *ebox;
-    GtkWidget *whatsthis;
-    GtkWidget *more;
-    GtkWidget *frame;
     GtkWidget *scrl;
     GtkWidget *imh;
     GdkFont *font;
+    char *alltext;
 
     expander = gtk_expander_new_with_mnemonic(_("_What's this?"));
     gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, FALSE, 0);
-    frame = gtk_frame_new(NULL);
-    gtk_container_add(GTK_CONTAINER(expander), frame);
-    ebox = gtk_vbox_new(FALSE, 10);
-    gtk_container_add(GTK_CONTAINER(frame), ebox);
-    whatsthis = gtk_label_new(NULL);
-    gtk_label_set_line_wrap(GTK_LABEL(whatsthis), TRUE);
-    gtk_label_set_markup(GTK_LABEL(whatsthis), whatsthismarkup);
-
-    gtk_box_pack_start(GTK_BOX(ebox), whatsthis, FALSE, FALSE, 0);
-    more = gtk_expander_new_with_mnemonic(_("_More..."));
-    gtk_box_pack_start(GTK_BOX(ebox), more, FALSE, FALSE, 0);
     scrl = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_add(GTK_CONTAINER(more), scrl);
+    gtk_container_add(GTK_CONTAINER(expander), scrl);
 
     imh = gtk_imhtml_new(NULL, NULL);
     pidgin_setup_imhtml(imh);
-    gtk_imhtml_append_text(GTK_IMHTML(imh), moremarkup, GTK_IMHTML_NO_SCROLL);
+    alltext = g_strdup_printf("%s\n\n%s", whatsthismarkup, moremarkup);
+    gtk_imhtml_append_text(GTK_IMHTML(imh), alltext, GTK_IMHTML_NO_SCROLL);
+    g_free(alltext);
 
     gtk_container_add(GTK_CONTAINER(scrl), imh);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrl),
@@ -459,7 +447,7 @@ static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
      * is (a) complicated, and (b) not fully supported by older versions
      * of libpango, which some people may have. */
     font = gtk_style_get_font(imh->style);
-    gtk_widget_set_size_request(scrl, -1, 6 * (font->ascent + font->descent));
+    gtk_widget_set_size_request(scrl, -1, 10 * (font->ascent + font->descent));
 }
 
 
@@ -1232,6 +1220,7 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     menusmp = purple_conversation_get_data(conv, "otr-menusmp");
 
     /* Set the button's icon, label and tooltip. */
+#ifdef OLD_OTR_BUTTON
     otr_icon(icon, level, 1);
     gtk_label_set_text(GTK_LABEL(label),
 	    level == TRUST_FINISHED ? _("Finished") :
@@ -1242,6 +1231,25 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
 		    _("Start a private conversation") :
 		    _("Refresh the private conversation"), NULL);
+#else
+    {
+	char *markup;
+
+	otr_icon(icon, level, 1);
+	markup = g_strdup_printf("<span color=\"%s\">%s</span>",
+		level == TRUST_FINISHED ? "#000000" :
+		level == TRUST_PRIVATE ? "#00a000" :
+		level == TRUST_UNVERIFIED ? "#a06000" :
+		"#ff0000",
+		level == TRUST_FINISHED ? _("Finished") :
+		level == TRUST_PRIVATE ? _("Private") :
+		level == TRUST_UNVERIFIED ? _("Unverified") :
+		_("Not private"));
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	g_free(markup);
+	gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
+    }
+#endif
 
     /* Set the menu item label for the OTR Query item. */
     gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
@@ -1868,6 +1876,7 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 {
     PurpleConversation *conv = data;
 
+#ifdef OLD_OTR_BUTTON
     if ((event->button == 3) && (event->type == GDK_BUTTON_PRESS)) {
 	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
 	if (menu) {
@@ -1876,6 +1885,17 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 	    return TRUE;
 	}
     }
+#else
+    /* Any button will do */
+    if (event->type == GDK_BUTTON_PRESS) {
+	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
+	if (menu) {
+	    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+		    3, event->time);
+	    return TRUE;
+	}
+    }
+#endif
     return FALSE;
 }
 
@@ -2289,8 +2309,7 @@ static void otr_check_conv_status_change( PurpleConversation *conv) {
             break;
     }
     
-    /* The UNVERIFIED_HELPURL actually contains help info for all statuses */
-    buf = g_strdup_printf(buf, UNVERIFIED_HELPURL, _("?lang=en"), status);
+    buf = g_strdup_printf(buf, LEVELS_HELPURL, _("?lang=en"), status);
     
     /* Write a new message indicating the level change. The timestamp image will be appended as the message
        timestamp signal is caught, which will also update the privacy level for this gtkconv */
@@ -2386,7 +2405,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     name = purple_conversation_get_name(conv);
     otrg_ui_get_prefs(&prefs, account, name);
 
+#ifdef OLD_OTR_BUTTON
     bbox = gtkconv->lower_hbox;
+#else
+    bbox = gtkconv->toolbar;
+#endif
 
     context = otrg_plugin_conv_to_context(conv);
 
@@ -2419,6 +2442,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
     }
 
+#ifdef OLD_OTR_BUTTON
     bwbox = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(button), bwbox);
     bvbox = gtk_vbox_new(FALSE, 0);
@@ -2431,6 +2455,14 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     gtk_box_pack_start(GTK_BOX(iconbox), icontext, FALSE, FALSE, 0);
     icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
     gtk_box_pack_start(GTK_BOX(iconbox), icon, TRUE, FALSE, 0);
+#else
+    bwbox = gtk_hbox_new(FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(button), bwbox);
+    icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
+    gtk_box_pack_start(GTK_BOX(bwbox), icon, TRUE, FALSE, 0);
+    label = gtk_label_new(NULL);
+    gtk_box_pack_start(GTK_BOX(bwbox), label, FALSE, FALSE, 3);
+#endif
 
     if (prefs.show_otr_button) {
 	gtk_widget_show_all(button);
@@ -2513,8 +2545,10 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     */
     gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
 	    GTK_SIGNAL_FUNC(menu_whatsthis), conv);
+#ifdef OLD_OTR_BUTTON
     gtk_signal_connect(GTK_OBJECT(button), "clicked",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
+#endif
     g_signal_connect(G_OBJECT(button), "button-press-event",
 	    G_CALLBACK(button_pressed), conv);
 
