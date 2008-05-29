@@ -9,6 +9,9 @@
 	* gtk-ui.c: Specify that the OTR button shows up in the toolbar
 	now.
 
+	* gtk-dialog.c: Added a context-sensitive Help button to the
+	Authenticate Buddy dialog.
+
 2008-05-29
 
 	* gtk-ui.c:

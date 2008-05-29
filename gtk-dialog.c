@@ -297,11 +297,30 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 		  return;
 
         verify_fingerprint(GTK_WINDOW(dialog), context->active_fingerprint);
+    } else if (response == GTK_RESPONSE_HELP) {
+	char *helpurl = g_strdup_printf("%s%s&context=%s",
+		AUTHENTICATE_HELPURL, _("?lang=en"),
+		auth_opt_data->smppair->smp_type == 0 ?
+		    ( /* Question and Answer */
+		      auth_opt_data->smppair->responder ?
+		      "answer" : "question" ) :
+		auth_opt_data->smppair->smp_type == 1 ?
+		    ( /* Shared secret */
+		      auth_opt_data->smppair->responder ?
+		      "secretresp" : "secret" ) :
+		    /* Fingerprint */
+		    "fingerprint"
+		);
+	purple_notify_uri(otrg_plugin_handle, helpurl);
+	g_free(helpurl);
+
+	/* Don't destroy the window */
+	return;
     } else {
         otrg_plugin_abort_smp(context);
     }
     
-    /* In all cases, destroy the current window */
+    /* In all cases except HELP, destroy the current window */
     gtk_widget_destroy(GTK_WIDGET(dialog));
     
     /* Clean up references to this window */
@@ -824,6 +843,7 @@ static GtkWidget *create_smp_dialog(const char *title,
     
         dialog = gtk_dialog_new_with_buttons(title ? title :
 		PIDGIN_ALERT_TITLE, NULL, 0,
+                         GTK_STOCK_HELP, GTK_RESPONSE_HELP,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
                          GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog),
