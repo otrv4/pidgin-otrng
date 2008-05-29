@@ -1,3 +1,11 @@
+2008-05-30
+
+	* gtk-dialog.c: The new toolbar OTR button now uses the standard
+	OTR menu
+
+	* gtk-dialog.c: The buddy and status items in the OTR menu are
+	no longer selectable
+
 2008-05-29
 
 	* gtk-ui.c:

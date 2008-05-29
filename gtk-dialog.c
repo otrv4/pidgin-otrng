@@ -1189,35 +1189,50 @@ static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 
 static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data);
 
+static void build_otr_menu(PurpleConversation *conv, GtkWidget *menu,
+	TrustLevel level);
 static void otr_refresh_otr_buttons(PurpleConversation *conv);
 static void otr_destroy_top_menu_objects(PurpleConversation *conv);
 static void otr_add_top_otr_menu(PurpleConversation *conv);
 static void otr_add_buddy_top_menus(PurpleConversation *conv);
 static void otr_check_conv_status_change( PurpleConversation *conv);
 
+static void destroy_menuitem(GtkWidget *widget, gpointer data)
+{
+    gtk_widget_destroy(widget);
+}
+
 static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
     GtkWidget *label;
     GtkWidget *icon;
+#ifdef OLD_OTR_BUTTON
     GtkWidget *icontext;
+#endif
     GtkWidget *button;
+    GtkWidget *menu;
+#ifdef OLD_OTR_BUTTON
     GtkWidget *menuquery;
     GtkWidget *menuend;
     GtkWidget *menuquerylabel;
     GtkWidget *menuview;
     GtkWidget *menuverf;
     GtkWidget *menusmp;
+#endif
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     label = purple_conversation_get_data(conv, "otr-label");
     icon = purple_conversation_get_data(conv, "otr-icon");
-    icontext = purple_conversation_get_data(conv, "otr-icontext");
     button = purple_conversation_get_data(conv, "otr-button");
+    menu = purple_conversation_get_data(conv, "otr-menu");
+#ifdef OLD_OTR_BUTTON
+    icontext = purple_conversation_get_data(conv, "otr-icontext");
     menuquery = purple_conversation_get_data(conv, "otr-menuquery");
     menuquerylabel = gtk_bin_get_child(GTK_BIN(menuquery));
     menuend = purple_conversation_get_data(conv, "otr-menuend");
     menuview = purple_conversation_get_data(conv, "otr-menuview");
     menuverf = purple_conversation_get_data(conv, "otr-menuverf");
     menusmp = purple_conversation_get_data(conv, "otr-menusmp");
+#endif
 
     /* Set the button's icon, label and tooltip. */
 #ifdef OLD_OTR_BUTTON
@@ -1231,6 +1246,19 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
 		    _("Start a private conversation") :
 		    _("Refresh the private conversation"), NULL);
+
+    /* Set the menu item label for the OTR Query item. */
+    gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
+	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
+		    _("Start _private conversation") :
+		    _("Refresh _private conversation"));
+
+    /* Sensitize the menu items as appropriate. */
+    gtk_widget_set_sensitive(GTK_WIDGET(menuend), level != TRUST_NOT_PRIVATE);
+    gtk_widget_set_sensitive(GTK_WIDGET(menuview), level != TRUST_NOT_PRIVATE);
+    gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
+    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE
+	    && level != TRUST_FINISHED);
 #else
     {
 	char *markup;
@@ -1249,20 +1277,8 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	g_free(markup);
 	gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
     }
+
 #endif
-
-    /* Set the menu item label for the OTR Query item. */
-    gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
-	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
-		    _("Start _private conversation") :
-		    _("Refresh _private conversation"));
-
-    /* Sensitize the menu items as appropriate. */
-    gtk_widget_set_sensitive(GTK_WIDGET(menuend), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuview), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE
-	    && level != TRUST_FINISHED);
 
     /* Use any non-NULL value for "private", NULL for "not private" */
     purple_conversation_set_data(conv, "otr-private",
@@ -1273,21 +1289,23 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     purple_conversation_set_data(conv, "otr-finished",
 	    level == TRUST_FINISHED ? conv : NULL);
 
-    /* Set the appropriate visibility */
-    /* gtk_widget_show_all(button); */
+#ifdef OLD_OTR_BUTTON
+#else
+    build_otr_menu(conv, menu, level);
+#endif
+
+    conv = gtkconv->active_conv;
+    otr_check_conv_status_change(conv);
 
     /* Update other widgets */
     if (gtkconv != pidgin_conv_window_get_active_gtkconv(gtkconv->win)) {
         return;
     }
 
-    conv = gtkconv->active_conv;
     otr_destroy_top_menu_objects(conv);
     otr_add_top_otr_menu(conv);
     otr_refresh_otr_buttons(conv);
     otr_add_buddy_top_menus(conv);
-    otr_check_conv_status_change(conv);
-    
 }
 
 static void dialog_update_label(ConnContext *context)
@@ -1978,6 +1996,11 @@ static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query, GtkW
     gtk_widget_set_sensitive(GTK_WIDGET(smp), !insecure);
 }
 
+static void force_deselect(GtkItem *item, gpointer data)
+{
+    gtk_item_deselect(item);
+}
+
 static void otr_build_status_submenu(PidginWindow *win,
 	PurpleConversation *conv, GtkWidget *menu, TrustLevel level) {
     char *status = "";
@@ -1989,30 +2012,22 @@ static void otr_build_status_submenu(PidginWindow *win,
     GdkPixbuf *pixbuf;
     GtkWidget *whatsthis;
 
-    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
-    
     gchar *text = g_strdup_printf("%s (%s)", conv->name,
 	    purple_account_get_username(conv->account));
     buddy_name = gtk_image_menu_item_new_with_label(text);
-    
-    /* Add the prpl icon in front of the menuitem label.  This is from
-     * pidgin's gtkconv.c. */
+    g_free(text);
 
     /* Create a pixmap for the protocol icon. */
     pixbuf = pidgin_create_prpl_icon(conv->account, PIDGIN_PRPL_ICON_SMALL);
 
     /* Now convert it to GtkImage */
-    if (pixbuf == NULL)
-	    image = gtk_image_new();
-    else
-    {
-	    image = gtk_image_new_from_pixbuf(pixbuf);
-	    g_object_unref(G_OBJECT(pixbuf));
+    if (pixbuf == NULL) {
+	image = gtk_image_new();
+    } else {
+	image = gtk_image_new_from_pixbuf(pixbuf);
     }
 
     gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_name ), image);
-    gtk_widget_show(buddy_name);
-    g_free(text);
 
     switch(level) {
         case TRUST_NOT_PRIVATE:
@@ -2033,48 +2048,50 @@ static void otr_build_status_submenu(PidginWindow *win,
 
     levelimage = otr_icon(NULL, level, 1);
     
-    gtk_widget_show(buddy_status);
-    gtk_widget_show(levelimage);
     gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( buddy_status ),
 	    levelimage);
 
     menusep = gtk_separator_menu_item_new();
     menusep2 = gtk_separator_menu_item_new();
     whatsthis = gtk_image_menu_item_new_with_mnemonic(_("_What's this?"));
+    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( whatsthis ),
+	    gtk_image_new_from_stock(GTK_STOCK_HELP,
+		gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_EXTRA_SMALL)));
     
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_name);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_status);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep2);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
-    gtk_image_menu_item_set_image ( GTK_IMAGE_MENU_ITEM ( whatsthis ),
-	    gtk_image_new_from_stock(GTK_STOCK_HELP,
-		gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_EXTRA_SMALL)));
 
     gtk_widget_show(menusep);
+    gtk_widget_show_all(buddy_name);
+    gtk_widget_show_all(buddy_status);
     gtk_widget_show(menusep2);
     gtk_widget_show_all(whatsthis);
 
-    menu_list = g_list_append(menu_list, buddy_name);
-    menu_list = g_list_append(menu_list, buddy_status);
-
-    g_hash_table_replace ( otr_win_menus, win, menu_list );
-
+    gtk_signal_connect(GTK_OBJECT(buddy_name), "select",
+        GTK_SIGNAL_FUNC(force_deselect), NULL);
+    gtk_signal_connect(GTK_OBJECT(buddy_status), "select",
+        GTK_SIGNAL_FUNC(force_deselect), NULL);
     gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
         GTK_SIGNAL_FUNC(menu_whatsthis), conv);
 }
 
-static void otr_build_buddy_submenu(PurpleConversation *conv, GtkWidget *menu) {
+static void build_otr_menu(PurpleConversation *conv, GtkWidget *menu,
+	TrustLevel level)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
-
-    GList * menu_list = g_hash_table_lookup ( otr_win_menus, win );
 
     GtkWidget *buddymenuquery = gtk_menu_item_new_with_mnemonic(_("Start _private conversation"));
     GtkWidget *buddymenuend = gtk_menu_item_new_with_mnemonic(_("_End private conversation"));
     GtkWidget *buddymenusmp = gtk_menu_item_new_with_mnemonic(_("_Authenticate buddy"));
 
     otr_set_menu_labels(conv, buddymenuquery, buddymenuend, buddymenusmp);
+
+    /* Empty out the menu */
+    gtk_container_foreach(GTK_CONTAINER(menu), destroy_menuitem, NULL);
 
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddymenuquery);
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddymenuend);
@@ -2091,12 +2108,7 @@ static void otr_build_buddy_submenu(PurpleConversation *conv, GtkWidget *menu) {
     gtk_signal_connect(GTK_OBJECT(buddymenusmp), "activate",
         GTK_SIGNAL_FUNC(socialist_millionaires), conv);
 
-    menu_list = g_list_append(menu_list, buddymenuquery);
-    menu_list = g_list_append(menu_list, buddymenuend);
-    menu_list = g_list_append(menu_list, buddymenusmp);
-
-    g_hash_table_replace ( otr_win_menus, win, menu_list );
-
+    otr_build_status_submenu(win, conv, menu, level);
 }
 
 static void otr_add_top_otr_menu(PurpleConversation *conv) {
@@ -2123,8 +2135,7 @@ static void otr_add_top_otr_menu(PurpleConversation *conv) {
         level = otrg_plugin_context_to_trust(context);
     }
     
-    otr_build_buddy_submenu(conv, topmenu);
-    otr_build_status_submenu(win, conv, topmenu, level);
+    build_otr_menu(conv, topmenu, level);
 
     gtk_menu_item_set_submenu ( GTK_MENU_ITEM ( topmenuitem ), topmenu );
 
@@ -2246,8 +2257,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
         }
         menu = gtk_menu_new();
             
-        otr_build_buddy_submenu(currentConv, menu);
-        otr_build_status_submenu(win, currentConv, menu, level);
+	build_otr_menu(currentConv, menu, level);
         
         tooltip_menu = tooltip_menu_new();
         
@@ -2340,15 +2350,17 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     g_hash_table_remove(conv->data, "otr-label");
     g_hash_table_remove(conv->data, "otr-button");
     g_hash_table_remove(conv->data, "otr-icon");
-    g_hash_table_remove(conv->data, "otr-icontext");
+    g_hash_table_remove(conv->data, "otr-menu");
     g_hash_table_remove(conv->data, "otr-private");
     g_hash_table_remove(conv->data, "otr-finished");
-    g_hash_table_remove(conv->data, "otr-menu");
+#ifdef OLD_OTR_BUTTON
+    g_hash_table_remove(conv->data, "otr-icontext");
     g_hash_table_remove(conv->data, "otr-menuquery");
     g_hash_table_remove(conv->data, "otr-menuend");
     g_hash_table_remove(conv->data, "otr-menuview");
     g_hash_table_remove(conv->data, "otr-menuverf");
     g_hash_table_remove(conv->data, "otr-menusmp");
+#endif
 
     otrg_gtk_dialog_free_smp_data(conv);
 
@@ -2378,11 +2390,10 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     GtkWidget *button;
     GtkWidget *label;
     GtkWidget *bwbox;
+#ifdef OLD_OTR_BUTTON
     GtkWidget *bvbox;
     GtkWidget *iconbox;
-    GtkWidget *icon;
     GtkWidget *icontext;
-    GtkWidget *menu;
     GtkWidget *menuquery;
     GtkWidget *menuend;
     GtkWidget *menusep;
@@ -2392,6 +2403,9 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     */
     GtkWidget *menusmp;
     GtkWidget *whatsthis;
+#endif
+    GtkWidget *icon;
+    GtkWidget *menu;
 
     PurpleAccount *account;
     const char *name;
@@ -2473,6 +2487,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     menu = gtk_menu_new();
     gtk_menu_set_title(GTK_MENU(menu), _("OTR Messaging"));
 
+#ifdef OLD_OTR_BUTTON
     menuquery = gtk_menu_item_new_with_mnemonic("");
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuquery);
     gtk_widget_show(menuquery);
@@ -2515,12 +2530,16 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     whatsthis = gtk_menu_item_new_with_mnemonic(_("_What's this?"));
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
     gtk_widget_show(whatsthis);
+#else
+    build_otr_menu(conv, menu, TRUST_NOT_PRIVATE);
+#endif
 
     purple_conversation_set_data(conv, "otr-label", label);
     purple_conversation_set_data(conv, "otr-button", button);
     purple_conversation_set_data(conv, "otr-icon", icon);
-    purple_conversation_set_data(conv, "otr-icontext", icontext);
     purple_conversation_set_data(conv, "otr-menu", menu);
+#ifdef OLD_OTR_BUTTON
+    purple_conversation_set_data(conv, "otr-icontext", icontext);
 
     purple_conversation_set_data(conv, "otr-menuquery", menuquery);
     purple_conversation_set_data(conv, "otr-menuend", menuend);
@@ -2528,6 +2547,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     purple_conversation_set_data(conv, "otr-menuview", menuview);
     purple_conversation_set_data(conv, "otr-menuverf", menuverf);
     */
+
     purple_conversation_set_data(conv, "otr-menusmp", menusmp);
     gtk_signal_connect(GTK_OBJECT(menuquery), "activate",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
@@ -2545,7 +2565,6 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     */
     gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
 	    GTK_SIGNAL_FUNC(menu_whatsthis), conv);
-#ifdef OLD_OTR_BUTTON
     gtk_signal_connect(GTK_OBJECT(button), "clicked",
 	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
 #endif
