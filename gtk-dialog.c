@@ -81,10 +81,6 @@ typedef struct {
 			                       their secret */
 } SmpResponsePair;
 
-/* The response code returned by pushing the "Advanced..." button on the
- * SMP dialog */
-#define OTRG_RESPONSE_ADVANCED 1
-
 /* Information used by the plugin that is specific to both the
  * application and connection. */
 typedef struct dialog_context_data {
@@ -96,12 +92,9 @@ typedef struct dialog_context_data {
 } SMPData;
 
 typedef struct {
-    GtkWidget       *one_way;
-    GtkEntry        *one_way_entry;
     SmpResponsePair *smppair;
-    GtkWidget       *two_way;
+    GtkEntry        *one_way_entry;
     GtkEntry        *two_way_entry;
-    GtkWidget       *fingerprint;
     GtkWidget       *notebook;
 } AuthSignalData;
 
@@ -189,7 +182,10 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget)
 /* Forward declarations for the benefit of smp_message_response_cb/redraw authvbox */
 static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint);
 static void add_vrfy_fingerprint(GtkWidget *vbox, void *data);
-static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(Fingerprint *fprint);
+static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(
+	Fingerprint *fprint);
+static void vrfy_fingerprint_destroyed(GtkWidget *w,
+	struct vrfy_fingerprint_data *vfd);
 static void conversation_switched ( PurpleConversation *conv, void * data );
 
 static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
@@ -290,13 +286,6 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
         /* launch progress bar window */
         create_smp_progress_dialog(GTK_WINDOW(dialog), context);
-    } else if (response == OTRG_RESPONSE_ADVANCED) {
-        ConnContext* context = smppair->context;
-
-        if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
-		  return;
-
-        verify_fingerprint(GTK_WINDOW(dialog), context->active_fingerprint);
     } else if (response == GTK_RESPONSE_HELP) {
 	char *helpurl = g_strdup_printf("%s%s&context=%s",
 		AUTHENTICATE_HELPURL, _("?lang=en"),
@@ -435,6 +424,7 @@ static GtkWidget *create_dialog(GtkWindow *parent,
     return dialog;
 }
 
+#if 0
 /* Adds a "What's this?" expander to a vbox, containing { some "whatsthis"
  * markup (displayed in a GtkLabel) and a "More..." expander, containing
  * { some "more" markup (displayed in a GtkIMHTML) } }. */
@@ -468,26 +458,32 @@ static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
     font = gtk_style_get_font(imh->style);
     gtk_widget_set_size_request(scrl, -1, 10 * (font->ascent + font->descent));
 }
+#endif
 
-
-static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, ConnContext *context,
-        AuthSignalData *auth_opt_data, char *question) {
+static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
+	ConnContext *context, AuthSignalData *auth_opt_data, char *question) {
     GtkWidget *question_entry;
     GtkWidget *entry;
     GtkWidget *label;
     GtkWidget *label2;
-    
-    char *moremarkup;
     char *label_text;   
     
     SmpResponsePair* smppair = auth_opt_data->smppair;
     
     if (smppair->responder) {
-        label_text = g_strdup_printf(_("%s wishes to authenticate you. Your "
-          "buddy has chosen a question for you to answer.\n"), context->username);
+        label_text = g_strdup_printf("<small><i>\n%s\n</i></small>",
+	    _("Your buddy is attempting to determine if he or she is really "
+		"talking to you, or if it's someone pretending to be you.  "
+		"Your buddy has asked a question, indicated below.  "
+		"To authenticate to your buddy, enter the answer and "
+		"click OK."));
     } else {
-        label_text = g_strdup_printf(_("Enter a question only %s and "
-          "yourself can answer.\n"), context->username);
+        label_text = g_strdup_printf("<small><i>\n%s\n</i></small>",
+	    _("To authenticate using a question, pick a question whose "
+	    "answer is known only to you and your buddy.  Enter this "
+	    "question and this answer, then wait for your buddy to "
+	    "enter the answer too.  If the answers "
+	    "don't match, then you may be talking to an imposter."));
     }
 
     label = gtk_label_new(NULL);
@@ -578,47 +574,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, ConnContext *context,
         gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
             FALSE, 0);
     }
-    
-    if (smppair->responder && question) {
-	moremarkup = g_strdup_printf(
-	    "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-	    _("Your buddy is attempting to determine if he or she is really "
-		"talking to you, or if it's someone pretending to be you.  "
-		"Your buddy has asked a question, indicated above.  "
-		"To authenticate to your buddy, enter the answer and "
-		"click OK."),
-	    _("If your buddy uses multiple IM accounts or multiple "
-		"computers, you may have to authenticate multiple "
-		"times.  However, as long as he or she uses an account and "
-		"computer that you've seen before, you don't need to "
-		"authenticate each individual conversation."),
-	    AUTHENTICATE_HELPURL, _("?lang=en"),
-	    _("Click here for more information about authentication "
-            "in OTR."));
-    } else {
-	moremarkup = g_strdup_printf(
-	    "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-	    _("To authenticate using a question, pick a question whose "
-		"answer is known only to you and your buddy.  Enter this "
-		"question and this answer, then wait for your buddy to "
-		"enter the answer too.  If the answers "
-		"don't match, then you may be talking to an imposter."),
-	    _("If your buddy uses multiple IM accounts or multiple "
-		"computers, you may have to authenticate multiple "
-		"times.  However, as long as he or she uses an account and "
-		"computer that you've seen before, you don't need to "
-		"authenticate each individual conversation."),
-	    AUTHENTICATE_HELPURL, _("?lang=en"),
-	    _("Click here for more information about authentication "
-            "in OTR."));
-    }
-
-    add_whatsthis_more(vbox,
-        _("Authenticating a buddy helps ensure that the person "
-            "you are talking to is who he or she claims to be."),
-        moremarkup);
-
-    g_free(moremarkup);
 }
 
 static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
@@ -626,12 +581,13 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     GtkWidget *entry;
     GtkWidget *label;
     GtkWidget *label2;
-    
-    char *moremarkup;
     char *label_text;   
     
-    label_text = g_strdup_printf(_("Enter a secret known only to %s and "
-      "yourself.\n"), context->username);
+    label_text = g_strdup_printf("<small><i>\n%s\n</i></small>",
+        _("To authenticate, pick a secret known "
+            "only to you and your buddy.  Enter this secret, then "
+            "wait for your buddy to enter it too.  If the secrets "
+            "don't match, then you may be talking to an imposter."));
 
     label = gtk_label_new(NULL);
 
@@ -676,28 +632,6 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
         gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
             FALSE, 0);
     }
-    
-    moremarkup = g_strdup_printf(
-        "%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-        _("To authenticate, pick a secret known "
-            "only to you and your buddy.  Enter this secret, then "
-            "wait for your buddy to enter it too.  If the secrets "
-            "don't match, then you may be talking to an imposter."),
-        _("If your buddy uses multiple IM accounts or multiple "
-            "computers, you may have to authenticate multiple "
-            "times.  However, as long as he or she uses an account and "
-            "computer that you've seen before, you don't need to "
-            "authenticate each individual conversation."),
-        AUTHENTICATE_HELPURL, _("?lang=en"),
-        _("Click here for more information about authentication "
-            "in OTR."));
-
-    add_whatsthis_more(vbox,
-        _("Authenticating a buddy helps ensure that the person "
-            "you are talking to is who he or she claims to be."),
-        moremarkup);
-
-    g_free(moremarkup);
 }
 
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox, ConnContext *context, SmpResponsePair* smppair) {
@@ -714,6 +648,19 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox, ConnContext *context
     context = fprint->context;
     if (context == NULL) return;
 
+    label_text = g_strdup_printf("<small><i>\n%s %s\n</i></small>",
+	    _("To verify the fingerprint, contact your buddy via some "
+	    "<i>other</i> authenticated channel, such as the telephone "
+	    "or GPG-signed email.  Each of you should tell your fingerprint "
+	    "to the other."),
+	    _("If everything matches up, you should indicate in the above "
+	    "dialog that you <b>have</b> verified the fingerprint."));
+    label = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label), label_text);
+    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    g_free(label_text);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
     vfd = vrfy_fingerprint_data_new(fprint);
 
@@ -738,25 +685,31 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox, ConnContext *context
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
         
-    add_vrfy_fingerprint(vbox, vrfy_fingerprint_data_new(fprint));
+    add_vrfy_fingerprint(vbox, vfd);
+    g_signal_connect(G_OBJECT(vbox), "destroy",
+	    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
 }
 
-static void redraw_auth_vbox(GtkToggleButton *togglebutton, void *data) {
+static void redraw_auth_vbox(GtkComboBox *combo, void *data) {
     AuthSignalData *auth_data = (AuthSignalData*) data;
 
-    GtkWidget *notebook = auth_data != NULL ? auth_data->notebook : NULL;
+    GtkWidget *notebook = auth_data ? auth_data->notebook : NULL;
+
+    int selected;
     
     if (auth_data == NULL) return;
+
+    selected = gtk_combo_box_get_active(combo);
     
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->one_way)) == TRUE) {
+    if (selected == 0) {
         gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 0);
         auth_data->smppair->entry = auth_data->one_way_entry;
         auth_data->smppair->smp_type = 0;
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->two_way)) == TRUE) {
+    } else if (selected == 1) {
         gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 1);
         auth_data->smppair->entry = auth_data->two_way_entry;
         auth_data->smppair->smp_type = 1;
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(auth_data->fingerprint)) == TRUE) {
+    } else if (selected == 2) {
         auth_data->smppair->entry = NULL;
         gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 2);
         auth_data->smppair->smp_type = -1;
@@ -764,58 +717,42 @@ static void redraw_auth_vbox(GtkToggleButton *togglebutton, void *data) {
     
 }
 
-static void add_other_authentication_options(GtkWidget *dialog,
+static void add_other_authentication_options(GtkWidget *vbox,
 	GtkWidget *notebook, ConnContext *context, AuthSignalData *data) {
-    GtkWidget *expander;
-    GtkWidget *ebox;
-    GtkWidget *frame;
-    GtkWidget *one_way_smp;
-    GtkWidget *two_way_smp;
-    GtkWidget *fingerprint;  
+    GtkWidget *label;
+    GtkWidget *combo;
+    char *labeltext;
 
-    expander = gtk_expander_new_with_mnemonic(_("Authentication Options"));
+    labeltext = g_strdup_printf("\n%s",
+	_("How would you like to authenticate your buddy?"));
+    label = gtk_label_new(labeltext);
+    g_free(labeltext);
+    gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-    gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->vbox), expander, FALSE, FALSE, 0);
+    combo = gtk_combo_box_new_text();
 
+    gtk_combo_box_append_text(GTK_COMBO_BOX(combo),
+	    _("Question and answer"));
 
-    frame = gtk_frame_new(NULL);
-    gtk_container_add(GTK_CONTAINER(expander), frame);
-    ebox = gtk_vbox_new(FALSE, 10);
-    gtk_container_add(GTK_CONTAINER(frame), ebox);
+    gtk_combo_box_append_text(GTK_COMBO_BOX(combo),
+	    _("Shared secret"));
 
-    
-  
-   one_way_smp = gtk_radio_button_new_with_label(NULL, _("Authenticate by posing a question only your buddy will know"));
-   two_way_smp = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (one_way_smp),
-                            _("Authenticate each other using a predetermined shared secret phrase"));
-   fingerprint = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (one_way_smp),
-                            _("Authenticate by verifying your buddy's fingerprint (Advanced)"));       
-                                             
-   gtk_box_pack_start(GTK_BOX(ebox), one_way_smp, FALSE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX(ebox), two_way_smp, FALSE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX(ebox), fingerprint, FALSE, FALSE, 0);
+    gtk_combo_box_append_text(GTK_COMBO_BOX(combo),
+	    _("Manual fingerprint verification"));
 
-   data->notebook = notebook;
-   data->one_way = one_way_smp;
-   data->two_way = two_way_smp;
-   data->fingerprint = fingerprint;
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
+    gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
+
+    data->notebook = notebook;
    
-   g_signal_connect (one_way_smp, "toggled",
+    g_signal_connect (combo, "changed",
                   G_CALLBACK (redraw_auth_vbox), data);
-                  
-   g_signal_connect (two_way_smp, "toggled",
-                  G_CALLBACK (redraw_auth_vbox), data);
-                  
-   g_signal_connect (fingerprint, "toggled",
-                  G_CALLBACK (redraw_auth_vbox), data);
-                        
 }
 
 
-static GtkWidget *create_smp_dialog(const char *title,
-    const char *primary, const char *secondary, int sensitive,
-    GtkWidget **labelp, ConnContext *context, gboolean responder,
-    char *question)
+static GtkWidget *create_smp_dialog(const char *title, const char *primary,
+	ConnContext *context, gboolean responder, char *question)
 {
     GtkWidget *dialog;
 
@@ -845,7 +782,7 @@ static GtkWidget *create_smp_dialog(const char *title,
 		PIDGIN_ALERT_TITLE, NULL, 0,
                          GTK_STOCK_HELP, GTK_RESPONSE_HELP,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-                         GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+                         _("_Authenticate"), GTK_RESPONSE_ACCEPT, NULL);
         gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
     
@@ -862,10 +799,6 @@ static GtkWidget *create_smp_dialog(const char *title,
         auth_opt_data = malloc(sizeof(AuthSignalData)); 
         auth_opt_data->smppair = smppair;
         
-        if (!responder) {
-            add_other_authentication_options(dialog, notebook, context, auth_opt_data);
-        }
-        
         gtk_window_set_focus_on_map(GTK_WINDOW(dialog), !responder);
         gtk_window_set_role(GTK_WINDOW(dialog), "notify_dialog");
     
@@ -880,10 +813,10 @@ static GtkWidget *create_smp_dialog(const char *title,
         gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
     
         label_text = g_strdup_printf(
-               "<span weight=\"bold\" size=\"larger\">%s</span>%s%s",
+               "<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
                (primary ? primary : ""),
-               (primary ? "\n\n" : ""),
-               (secondary ? secondary : ""));
+		_("Authenticating a buddy helps ensure that the person "
+		    "you are talking to is who he or she claims to be."));
     
         label = gtk_label_new(NULL);
     
@@ -894,13 +827,18 @@ static GtkWidget *create_smp_dialog(const char *title,
         gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
     
+        if (!responder) {
+            add_other_authentication_options(vbox, notebook, context, auth_opt_data);
+        }
+        
         g_signal_connect(G_OBJECT(dialog), "response",
                  G_CALLBACK(smp_secret_response_cb),
                  auth_opt_data);
     
         if (!responder || (responder && question != NULL)) {
             GtkWidget *one_way_vbox = gtk_vbox_new(FALSE, 0);
-            add_to_vbox_init_one_way_auth(one_way_vbox, context, auth_opt_data, question);
+            add_to_vbox_init_one_way_auth(one_way_vbox, context,
+		    auth_opt_data, question);
             gtk_notebook_append_page(GTK_NOTEBOOK(notebook), one_way_vbox,
                 gtk_label_new("0"));
             smppair->entry = auth_opt_data->one_way_entry;
@@ -940,11 +878,17 @@ static GtkWidget *create_smp_dialog(const char *title,
         gtk_widget_show_all(dialog);
         
         gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 0);
+
+	if (!responder) {
+	    gtk_window_set_focus(GTK_WINDOW(dialog),
+		    GTK_WIDGET(smppair->question_entry));
+	} else {
+	    gtk_window_set_focus(GTK_WINDOW(dialog),
+		    GTK_WIDGET(smppair->entry));
+	}
         
         smp_data->smp_secret_dialog = dialog;
         smp_data->smp_secret_smppair = smppair;
-    
-        if (labelp) *labelp = label;
     
     } else {
         /* Set the responder field to TRUE if we were passed that value,
@@ -1284,7 +1228,7 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	char *markup;
 
 	otr_icon(icon, level, 1);
-	markup = g_strdup_printf("<span color=\"%s\">%s</span>",
+	markup = g_strdup_printf(" <span color=\"%s\">%s</span>",
 		level == TRUST_FINISHED ? "#000000" :
 		level == TRUST_PRIVATE ? "#00a000" :
 		level == TRUST_UNVERIFIED ? "#a06000" :
@@ -1484,7 +1428,9 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
     struct vrfy_fingerprint_data *vfd = data;
     char *labelt;
     int verified = 0;
+#if 0
     char *moremarkup;
+#endif
 
     if (vfd->fprint->trust && vfd->fprint->trust[0]) {
 	verified = 1;
@@ -1514,6 +1460,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
 
+#if 0
     moremarkup = g_strdup_printf(
 	    "%s\n\n%s\n\n%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
 	    _("To verify the fingerprint, contact your buddy via some "
@@ -1534,6 +1481,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 	    _("A <b>fingerprint</b> is a unique identifier that you should "
 	    "use to authenticate your buddy."), moremarkup);
     g_free(moremarkup);
+#endif
 
 }
 
@@ -1565,9 +1513,17 @@ static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
 
     p = purple_find_prpl(context->protocol);
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
-    secondary = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
-	    "Purported fingerprint for %s:\n%s\n"), context->accountname,
-	    proto_name, our_hash, context->username, their_hash);
+    secondary = g_strdup_printf(_("<small><i>%s %s\n\n</i></small>"
+		"Fingerprint for you, %s (%s):\n%s\n\n"
+		"Purported fingerprint for %s:\n%s\n"),
+	    _("To verify the fingerprint, contact your buddy via some "
+	    "<i>other</i> authenticated channel, such as the telephone "
+	    "or GPG-signed email.  Each of you should tell your fingerprint "
+	    "to the other."),
+	    _("If everything matches up, you should indicate in the above "
+	    "dialog that you <b>have</b> verified the fingerprint."),
+	    context->accountname, proto_name, our_hash,
+	    context->username, their_hash);
 
     dialog = create_dialog(parent, PURPLE_NOTIFY_MSG_INFO,
 	    _("Verify fingerprint"), primary, secondary, 1, NULL,
@@ -1611,7 +1567,7 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
     
 
     dialog = create_smp_dialog(_("Authenticate Buddy"),
-	    primary, NULL, 1, NULL, context, responder, question);
+	    primary, context, responder, question);
 
     g_free(primary);
 }
@@ -2495,7 +2451,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
     gtk_box_pack_start(GTK_BOX(bwbox), icon, TRUE, FALSE, 0);
     label = gtk_label_new(NULL);
-    gtk_box_pack_start(GTK_BOX(bwbox), label, FALSE, FALSE, 3);
+    gtk_box_pack_start(GTK_BOX(bwbox), label, FALSE, FALSE, 0);
 #endif
 
     if (prefs.show_otr_button) {

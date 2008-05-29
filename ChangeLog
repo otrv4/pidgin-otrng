@@ -12,6 +12,9 @@
 	* gtk-dialog.c: Added a context-sensitive Help button to the
 	Authenticate Buddy dialog.
 
+	* gtk-dialog.c: Revamp of Authenticate Buddy dialog, based on a
+	mockup by hcat@gmx.net
+
 2008-05-29
 
 	* gtk-ui.c:
