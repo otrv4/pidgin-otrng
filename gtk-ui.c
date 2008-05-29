@@ -450,7 +450,12 @@ static void otroptions_clicked_cb(GtkButton *button,
 static void create_otroptions_buttons(struct otroptionsdata *oo,
 	GtkWidget *vbox)
 {
+#ifdef OLD_OTR_BUTTON
     oo->showotrbutton = gtk_check_button_new_with_label(_("Show OTR button"));
+#else
+    oo->showotrbutton = gtk_check_button_new_with_label(
+	    _("Show OTR button in toolbar"));
+#endif
 
     gtk_box_pack_start(GTK_BOX(vbox), oo->showotrbutton, FALSE, FALSE, 0);
 
