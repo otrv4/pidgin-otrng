@@ -8,229 +8,107 @@ msgid ""
 msgstr ""
 "Project-Id-Version: hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-08 23:21+0200\n"
-"PO-Revision-Date: 2008-04-09 20:05+0200\n"
+"POT-Creation-Date: 2008-06-11 16:18-0400\n"
+"PO-Revision-Date: 2008-06-08 19:05+0200\n"
 "Last-Translator: Mate Ory <orymate@gmail.com>\n"
 "Language-Team: Hungarian <ubuntu-l10n-hu@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../gtk-dialog.c:916 ../gtk-dialog.c:2103
+#: ../gtk-dialog.c:291 ../gtk-dialog.c:1144 ../gtk-dialog.c:1148
+#: ../gtk-dialog.c:1310 ../gtk-dialog.c:1488 ../gtk-dialog.c:1669
+#: ../gtk-dialog.c:1772 ../gtk-dialog.c:1863 ../gtk-dialog.c:2309
+msgid "?lang=en"
+msgstr "?lang=hu"
+
+#: ../gtk-dialog.c:440 ../gtk-dialog.c:2043 ../gtk-dialog.c:2517
 msgid "_What's this?"
 msgstr "_Mi ez?"
 
-#: ../gtk-dialog.c:927
-msgid "_More..."
-msgstr "_Tovább..."
+#: ../gtk-dialog.c:475
+msgid ""
+"Your buddy is attempting to determine if he or she is really talking to you, "
+"or if it's someone pretending to be you.  Your buddy has asked a question, "
+"indicated below.  To authenticate to your buddy, enter the answer and click "
+"OK."
+msgstr ""
+"A partnere el szeretné dönteni, hogy valóban azzal beszél-e, akinek ön magát "
+"állítja. Feltette az alábbi kérdést. A hitelesítéshez válaszolja meg, majd "
+"válassza az OK gombot."
 
-#. Create the Advanced... button, and left-justify it.  This
-#. * involves adding the button, and a blank label as a spacer, and
-#. * reordering them so that they're at the beginning.
-#: ../gtk-dialog.c:984
-msgid "Advanced..."
-msgstr "Haladó..."
+#: ../gtk-dialog.c:482
+msgid ""
+"To authenticate using a question, pick a question whose answer is known only "
+"to you and your buddy.  Enter this question and this answer, then wait for "
+"your buddy to enter the answer too.  If the answers don't match, then you "
+"may be talking to an imposter."
+msgstr ""
+"A kérdéssel történő hitelesítéshez válasszon egy csak a partnere és ön által "
+"ismert titkot. Adja meg ezt egy kérdés és egy válasz formájában, majd várja "
+"meg, míg a partner is így tesz. Ha a válaszok nem egyeznek meg, lehetséges, "
+"hogy egy szélhámossal cseveg."
 
-#: ../gtk-dialog.c:1029
-msgid "Enter secret here"
-msgstr "Adja meg a titkot"
+#: ../gtk-dialog.c:500
+msgid "This is the question asked by your buddy:"
+msgstr "A következő kérdést tette fel a partnere:"
 
-#: ../gtk-dialog.c:1034
+#: ../gtk-dialog.c:503
+msgid "Enter question here:"
+msgstr "Adja meg a kérdést:"
+
+#: ../gtk-dialog.c:534 ../gtk-dialog.c:618
 msgid "This buddy is already authenticated."
 msgstr "A partner már hitelesítve van."
 
-#: ../gtk-dialog.c:1053
+#: ../gtk-dialog.c:546
+msgid "Enter secret answer here (case sensitive):"
+msgstr "Adja meg a (kis- és nagybetűérzékeny) titkos választ:"
+
+#: ../gtk-dialog.c:587
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
 msgstr ""
 "A hitelesítéshez válasszon egy csak a partnere és ön által ismert titkot. "
-"Adja meg ezt, majd várja meg, míg a partner is így tesz. Ha a titkok "
-"nem egyeznek meg, lehetséges, hogy egy szélhámossal cseveg."
+"Adja meg ezt, majd várja meg, míg a partner is így tesz. Ha a titkok nem "
+"egyeznek meg, lehetséges, hogy egy szélhámossal cseveg."
 
-#: ../gtk-dialog.c:1057
-msgid ""
-"If your buddy uses multiple IM accounts or multiple computers, you may have "
-"to authenticate multiple times.  However, as long as they use an account and "
-"computer that you've seen before, you don't need to authenticate each "
-"individual conversation."
-msgstr ""
-"Ha partnere több azonnali üzenetküldő felhasználót vagy számítógépet használ, "
-"lehetséges, hogy több alkalommal is hitelesíteni kell. Azonban amíg azonos "
-"számítógépet és felhasználót használ, a hitelesítés megismétlése nem szükséges."
+#: ../gtk-dialog.c:601
+msgid "Enter secret here:"
+msgstr "Adja meg a titkot:"
 
-#: ../gtk-dialog.c:1062 ../gtk-dialog.c:1330 ../gtk-dialog.c:1334
-#: ../gtk-dialog.c:1431 ../gtk-dialog.c:1598 ../gtk-dialog.c:1758
-#: ../gtk-dialog.c:1858 ../gtk-dialog.c:1943
-msgid "?lang=en"
-msgstr "?lang=hu"
-
-#: ../gtk-dialog.c:1063
-msgid "Click here for more information about authentication in OTR."
-msgstr "Kattintson ide további információért az OTR hitelesítési módszeréről."
-
-#: ../gtk-dialog.c:1067
-msgid ""
-"Authenticating a buddy helps ensure that the person you are talking to is "
-"who they claim to be."
-msgstr ""
-"Partnerének hitelesítése segíti annak az ellenőrzését, hogy ön azzal a "
-"személlyel cseveg-e, akinek ő magát állítja."
-
-#: ../gtk-dialog.c:1119
-msgid "Authenticating Buddy"
-msgstr "Partner hitelesítése"
-
-#: ../gtk-dialog.c:1146
-msgid "Authenticating"
-msgstr "Hitelesítés"
-
-#: ../gtk-dialog.c:1209
-msgid "Generating private key"
-msgstr "Személyes kulcs létrehozása"
-
-#: ../gtk-dialog.c:1210
-msgid "Please wait"
-msgstr "Kis türelmet"
-
-#: ../gtk-dialog.c:1218 ../gtk-dialog.c:1635 ../gtk-dialog.c:1672
-#: ../gtk-ui.c:175 ../otr-plugin.c:115 ../otr-plugin.c:212 ../ui.c:110
-msgid "Unknown"
-msgstr "Ismeretlen"
-
-#. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1221
-#, c-format
-msgid "Generating private key for %s (%s)..."
-msgstr "Személyes kulcs létrehozása a következőhöz: %s (%s)..."
-
-#: ../gtk-dialog.c:1266
-#, c-format
-msgid "%s Done."
-msgstr "%s elkészült."
-
-#: ../gtk-dialog.c:1328
-#, c-format
-msgid ""
-"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
-"s\">authenticate</a> this buddy."
-msgstr "%s egy ismeretlen számítógépről kapcsolódik. <a href=\"%s%s\">Hitelesítse</a> partnerét."
-
-#: ../gtk-dialog.c:1332
-#, c-format
-msgid ""
-"%s has not been authenticated yet.  You should <a href=\"%s%s"
-"\">authenticate</a> this buddy."
-msgstr "%s még nincs hitelesítve. <a href=\"%s%s\">Hitelesítse</a> partnerét."
-
-#: ../gtk-dialog.c:1373 ../gtk-ui.c:76
-msgid "Finished"
-msgstr "Kész"
-
-#: ../gtk-dialog.c:1374 ../gtk-ui.c:75
-msgid "Private"
-msgstr "Bizalmas"
-
-#: ../gtk-dialog.c:1375 ../gtk-ui.c:74
-msgid "Unverified"
-msgstr "Ellenőrizetlen"
-
-#: ../gtk-dialog.c:1376 ../gtk-ui.c:73
-msgid "Not private"
-msgstr "Nem bizalmas"
-
-#: ../gtk-dialog.c:1378
-msgid "Start a private conversation"
-msgstr "Bizalmas beszélgetés kezdeményezése"
-
-#: ../gtk-dialog.c:1379
-msgid "Refresh the private conversation"
-msgstr "Bizalmas beszélgetés megerősítése"
-
-#: ../gtk-dialog.c:1383
-msgid "Start _private conversation"
-msgstr "_Bizalmas beszélgetés kezdeményezése"
-
-#: ../gtk-dialog.c:1384
-msgid "Refresh _private conversation"
-msgstr "_Bizalmas beszélgetés megerősítése"
-
-#: ../gtk-dialog.c:1563
-msgid "I have not"
-msgstr "Nem győződtem meg"
-
-#: ../gtk-dialog.c:1564
-msgid "I have"
-msgstr "Meggyőződtem"
-
-#: ../gtk-dialog.c:1566
-msgid " verified that this is in fact the correct"
-msgstr "arról, hogy"
-
-#: ../gtk-dialog.c:1575
-#, c-format
-msgid "fingerprint for %s."
-msgstr "valóban %s ujjlenyomata."
-
-#: ../gtk-dialog.c:1587
+#: ../gtk-dialog.c:652 ../gtk-dialog.c:1477 ../gtk-dialog.c:1530
 msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
 msgstr ""
-"Az ujjlenyomat ellenőrzéséhez vegye fel a kapcsolatot egy <i>másik</i> hiteles "
-"csatornán, például telefonon vagy digitálisan aláírt elektronikus levélben. Mindkét "
-"fél meg kell adja a saját ujjlenyomatát."
+"Az ujjlenyomat ellenőrzéséhez vegye fel a kapcsolatot egy <i>másik</i> "
+"hiteles csatornán, például telefonon vagy digitálisan aláírt elektronikus "
+"levélben. Mindkét fél meg kell adja a saját ujjlenyomatát."
 
-#: ../gtk-dialog.c:1591
+#: ../gtk-dialog.c:656 ../gtk-dialog.c:1481 ../gtk-dialog.c:1534
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
 msgstr ""
-"Amennyiben minden egyezik, a fenti ablakban válassza, hogy "
-"<i>meggyőződött</i> az ujjlenyomat hitelességéről."
+"Amennyiben minden egyezik, a fenti ablakban válassza, hogy <i>meggyőződött</"
+"i> az ujjlenyomat hitelességéről."
 
-#: ../gtk-dialog.c:1593
-msgid ""
-"If your buddy has more than one IM account, or uses more than one computer, "
-"he may have multiple fingerprints."
-msgstr ""
-"Amennyiben partnere egynél több azonnali üzenetküldő felhasználót vagy "
-"számítógépet használ, több ujjlenyomata is lehet."
-
-#: ../gtk-dialog.c:1595
-msgid ""
-"However, the only way an imposter could duplicate one of your buddy's "
-"fingerprints is by stealing information from her/his computer."
-msgstr ""
-"Azonban a szélhámos egyetlen módja az ujjlenyomat hamisítására az, "
-"hogy partnerének számítógépéről adatot lop."
-
-#: ../gtk-dialog.c:1599
-msgid "Click here for more information about fingerprints."
-msgstr "Kattintson ide további információért az ujjlenyomatokról."
-
-#: ../gtk-dialog.c:1602
-msgid ""
-"A <b>fingerprint</b> is a unique identifier that you should use to "
-"authenticate your buddy."
-msgstr ""
-"Az <b>ujjlenyomat</b> egy olyan egyedi azonosító, melyet "
-"partnerének hitelesítésére használhat."
-
-#: ../gtk-dialog.c:1624
-#, c-format
-msgid "Verify fingerprint for %s"
-msgstr "%s ujjlenyomatának ellenőrzése"
-
-#: ../gtk-dialog.c:1628
+#: ../gtk-dialog.c:667 ../gtk-dialog.c:1519
 msgid "[none]"
 msgstr "[nincs]"
 
-#: ../gtk-dialog.c:1636
+#: ../gtk-dialog.c:674 ../gtk-dialog.c:1032 ../gtk-dialog.c:1526
+#: ../gtk-dialog.c:1577 ../gtk-ui.c:181 ../otr-plugin.c:116
+#: ../otr-plugin.c:213 ../ui.c:111
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../gtk-dialog.c:675
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -245,107 +123,315 @@ msgstr ""
 "%s feltételezett ujjlenyomata:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1641 ../gtk-ui.c:681
+#: ../gtk-dialog.c:727
+msgid "How would you like to authenticate your buddy?"
+msgstr "Milyen módon szeretné partnerét hitelesíteni?"
+
+#: ../gtk-dialog.c:736
+msgid "Question and answer"
+msgstr "Kérdés-válasz"
+
+#: ../gtk-dialog.c:739
+msgid "Shared secret"
+msgstr "Közös titok"
+
+#: ../gtk-dialog.c:742
+msgid "Manual fingerprint verification"
+msgstr "Kézi ujjlenyomat-ellenőrzés"
+
+#: ../gtk-dialog.c:785
+msgid "_Authenticate"
+msgstr "_Hitelesítés"
+
+#: ../gtk-dialog.c:818
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who he or she claims to be."
+msgstr ""
+"Partnerének hitelesítése segíti annak az ellenőrzését, hogy ön azzal a "
+"személlyel cseveg-e, akinek ő magát állítja."
+
+#. Translators: you are asked to authenticate yourself
+#: ../gtk-dialog.c:927
+msgid "Authenticating to Buddy"
+msgstr "Hitelesítés partnernek"
+
+#. Translators: you asked your buddy to authenticate him/herself
+#: ../gtk-dialog.c:929
+msgid "Authenticating Buddy"
+msgstr "Partner hitelesítése"
+
+#: ../gtk-dialog.c:956
+#, c-format
+msgid "Authenticating to %s"
+msgstr "Hitelesítés %s részére"
+
+#: ../gtk-dialog.c:957
+#, c-format
+msgid "Authenticating %s"
+msgstr "%s hitelesítése"
+
+#: ../gtk-dialog.c:990
+msgid "Waiting for buddy..."
+msgstr "Várakozás a partnerre…"
+
+#: ../gtk-dialog.c:1023
+msgid "Generating private key"
+msgstr "Személyes kulcs létrehozása"
+
+#: ../gtk-dialog.c:1024
+msgid "Please wait"
+msgstr "Kis türelmet"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1035
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "Személyes kulcs létrehozása a következőhöz: %s (%s)…"
+
+#: ../gtk-dialog.c:1080
+#, c-format
+msgid "%s Done."
+msgstr "%s elkészült."
+
+#: ../gtk-dialog.c:1142
+#, c-format
+msgid ""
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
+"s\">authenticate</a> this buddy."
+msgstr ""
+"%s egy ismeretlen számítógépről kapcsolódik. <a href=\"%s%s\">Hitelesítse</"
+"a> partnerét."
+
+#: ../gtk-dialog.c:1146
+#, c-format
+msgid ""
+"%s has not been authenticated yet.  You should <a href=\"%s%s"
+"\">authenticate</a> this buddy."
+msgstr "%s még nincs hitelesítve. <a href=\"%s%s\">Hitelesítse</a> partnerét."
+
+#: ../gtk-dialog.c:1209 ../gtk-dialog.c:1240 ../gtk-dialog.c:2030
+#: ../gtk-dialog.c:2305 ../gtk-ui.c:82
+msgid "Finished"
+msgstr "Kész"
+
+#: ../gtk-dialog.c:1210 ../gtk-dialog.c:1241 ../gtk-dialog.c:2027
+#: ../gtk-dialog.c:2302 ../gtk-ui.c:81
+msgid "Private"
+msgstr "Bizalmas"
+
+#: ../gtk-dialog.c:1211 ../gtk-dialog.c:1242 ../gtk-dialog.c:2024
+#: ../gtk-dialog.c:2299 ../gtk-ui.c:80
+msgid "Unverified"
+msgstr "Ellenőrizetlen"
+
+#: ../gtk-dialog.c:1212 ../gtk-dialog.c:1243 ../gtk-ui.c:79
+msgid "Not private"
+msgstr "Nem bizalmas"
+
+#: ../gtk-dialog.c:1215
+msgid "Start a private conversation"
+msgstr "Bizalmas beszélgetés kezdeményezése"
+
+#: ../gtk-dialog.c:1216
+msgid "Refresh the private conversation"
+msgstr "Bizalmas beszélgetés megerősítése"
+
+#: ../gtk-dialog.c:1221 ../gtk-dialog.c:1979 ../gtk-dialog.c:2074
+msgid "Start _private conversation"
+msgstr "_Bizalmas beszélgetés kezdeményezése"
+
+#: ../gtk-dialog.c:1222 ../gtk-dialog.c:1980
+msgid "Refresh _private conversation"
+msgstr "_Bizalmas beszélgetés megerősítése"
+
+#: ../gtk-dialog.c:1246
+msgid "OTR"
+msgstr "OTR"
+
+#. Translators: the following four messages should give alternative sentences.
+#. The user selects the first or second message in a combo box;
+#. the third message, a new line, a fingerprint, a new line, and
+#. the fourth message will follow it.
+#: ../gtk-dialog.c:1449
+msgid "I have not"
+msgstr "Nem győződtem meg"
+
+#. 2nd message
+#: ../gtk-dialog.c:1451
+msgid "I have"
+msgstr "Meggyőződtem"
+
+#. 3rd message
+#: ../gtk-dialog.c:1454
+msgid " verified that this is in fact the correct"
+msgstr " arról, hogy"
+
+#. 4th message
+#: ../gtk-dialog.c:1464
+#, c-format
+msgid "fingerprint for %s."
+msgstr "valóban %s ujjlenyomata."
+
+#: ../gtk-dialog.c:1483
+msgid ""
+"If your buddy has more than one IM account, or uses more than one computer, "
+"he may have multiple fingerprints."
+msgstr ""
+"Amennyiben partnere egynél több azonnali üzenetküldő felhasználót vagy "
+"számítógépet használ, több ujjlenyomata is lehet."
+
+#: ../gtk-dialog.c:1485
+msgid ""
+"However, the only way an imposter could duplicate one of your buddy's "
+"fingerprints is by stealing information from her/his computer."
+msgstr ""
+"Azonban a szélhámos egyetlen módja az ujjlenyomat hamisítására az, hogy "
+"partnerének számítógépéről adatot lop."
+
+#: ../gtk-dialog.c:1489
+msgid "Click here for more information about fingerprints."
+msgstr "Kattintson ide további információért az ujjlenyomatokról."
+
+#: ../gtk-dialog.c:1492
+msgid ""
+"A <b>fingerprint</b> is a unique identifier that you should use to "
+"authenticate your buddy."
+msgstr ""
+"Az <b>ujjlenyomat</b> egy olyan egyedi azonosító, melyet partnerének "
+"hitelesítésére használhat."
+
+#: ../gtk-dialog.c:1515
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "%s ujjlenyomatának ellenőrzése"
+
+#: ../gtk-dialog.c:1527
+#, c-format
+msgid ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Az ön (%s, %s) ujjlenyomata:\n"
+"%s\n"
+"\n"
+"%s feltételezett ujjlenyomata:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1540 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "Ujjlenyomat ellenőrzése"
 
-#: ../gtk-dialog.c:1668
+#: ../gtk-dialog.c:1567
+#, c-format
+msgid "Authentication from %s"
+msgstr "%s hitelesítése"
+
+#: ../gtk-dialog.c:1570
 #, c-format
 msgid "Authenticate %s"
 msgstr "%s hitelesítése"
 
-#: ../gtk-dialog.c:1673
-#, c-format
-msgid "Enter a secret known only to %s and yourself.\n"
-msgstr "Adjon meg egy titkot, amelyet csak ön és %s ismer.\n"
-
-#: ../gtk-dialog.c:1676
-msgid "Authenticate buddy"
+#: ../gtk-dialog.c:1580
+msgid "Authenticate Buddy"
 msgstr "Partner hitelesítése"
 
-#: ../gtk-dialog.c:1708
+#: ../gtk-dialog.c:1611
 msgid "An error occurred during authentication."
 msgstr "Hiba lépett fel a hitelesítés során."
 
-#: ../gtk-dialog.c:1724
+#: ../gtk-dialog.c:1626
 msgid "Authentication successful."
 msgstr "A hitelesítés sikeres."
 
-#: ../gtk-dialog.c:1727
+#: ../gtk-dialog.c:1629
+msgid ""
+"Your buddy has successfully authenticated you.  You may want to authenticate "
+"your buddy as well by asking your own question."
+msgstr ""
+"Partnere sikeresen hitelesítette önt. Ez nem jelenti azt, hogy ön is biztos "
+"lehet partnere kilétében, ezért tegyen fel ön is egy kérdést."
+
+#: ../gtk-dialog.c:1635
 msgid "Authentication failed."
 msgstr "A hitelesítés meghiúsult."
 
-#: ../gtk-dialog.c:1752
+#: ../gtk-dialog.c:1663
 #, c-format
 msgid "Private conversation with %s started.%s"
 msgstr "Bizalmas beszélgetés kezdődött %s partnerrel.%s"
 
-#: ../gtk-dialog.c:1756
+#: ../gtk-dialog.c:1667
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
-msgstr "<a href=\"%s%s\">Ellenőrizetlen</a> beszélgetés kezdődött %%s partnerrel.%%s"
+msgstr ""
+"<a href=\"%s%s\">Ellenőrizetlen</a> beszélgetés kezdődött %%s partnerrel.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1764
+#: ../gtk-dialog.c:1675
 #, c-format
 msgid "Not private conversation with %s started.%s"
 msgstr "Nem bizalmas beszélgetés kezdődött %s partnerrel.%s"
 
-#: ../gtk-dialog.c:1770 ../gtk-dialog.c:1871
+#: ../gtk-dialog.c:1681 ../gtk-dialog.c:1785
 msgid "  Warning: using old protocol version 1."
 msgstr "  Figyelmeztetés: elavult protokoll használata: 1-es verzió."
 
-#: ../gtk-dialog.c:1790
+#: ../gtk-dialog.c:1701
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Megszűnt a bizalmas beszélgetés %s partnerrel."
 
-#: ../gtk-dialog.c:1825
+#: ../gtk-dialog.c:1738
 #, c-format
-msgid "%s has ended his/her private conversation with you; you should do the same."
+msgid ""
+"%s has ended his/her private conversation with you; you should do the same."
 msgstr "%s befejezte a bizalmas beszélgetést. Tegyen ön is így."
 
-#: ../gtk-dialog.c:1850
+#: ../gtk-dialog.c:1764
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "A bizalmas beszélgetés %s partnerrel megerősítésre került.%s"
 
-#: ../gtk-dialog.c:1855
+#: ../gtk-dialog.c:1769
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
 msgstr ""
-"Az <a href=\"%s%s\">ellenőrizetlen</a> beszélgetés "
-"%%s partnerrel megerősítésre került.%%s"
+"Az <a href=\"%s%s\">ellenőrizetlen</a> beszélgetés %%s partnerrel "
+"megerősítésre került.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1864
+#: ../gtk-dialog.c:1778
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "A nem bizalmas beszélgetés %s partnerrel megerősítésre került.%s"
 
-#: ../gtk-dialog.c:1891
+#: ../gtk-dialog.c:1810
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
-msgstr "%s partnerrel folyó bizalmas beszélgetés megerősítése..."
+msgstr "%s partnerrel folyó bizalmas beszélgetés megerősítése…"
 
-#: ../gtk-dialog.c:1893
+#: ../gtk-dialog.c:1812
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
-msgstr "Bizalmas beszélgetés kezdeményezése %s partnerrel..."
+msgstr "Bizalmas beszélgetés kezdeményezése %s partnerrel…"
 
-#: ../gtk-dialog.c:2053
-msgid "OTR:"
-msgstr "OTR:"
+#: ../gtk-dialog.c:2021 ../gtk-dialog.c:2296
+msgid "Not Private"
+msgstr "Nem bizalmas"
 
-#: ../gtk-dialog.c:2062
-msgid "OTR Messaging"
-msgstr "OTR üzenetküldés"
-
-#: ../gtk-dialog.c:2068
+#: ../gtk-dialog.c:2075 ../gtk-dialog.c:2482
 msgid "_End private conversation"
 msgstr "Bizalmas beszélgetés _befejezése"
 
@@ -358,161 +444,188 @@ msgstr "Bizalmas beszélgetés _befejezése"
 #. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
 #. gtk_widget_show(menuverf);
 #.
-#: ../gtk-dialog.c:2086
+#: ../gtk-dialog.c:2076 ../gtk-dialog.c:2500
 msgid "_Authenticate buddy"
 msgstr "Partner _hitelesítése"
 
-#: ../gtk-ui.c:96
+#: ../gtk-dialog.c:2292
+#, c-format
+msgid ""
+"The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
+"a>"
+msgstr "A beszélgetés biztonságossága jelenleg <a href=\"%s%s\">%s</a>"
+
+#: ../gtk-dialog.c:2455
+msgid "OTR:"
+msgstr "OTR:"
+
+#: ../gtk-dialog.c:2475
+msgid "OTR Messaging"
+msgstr "OTR üzenetküldés"
+
+#: ../gtk-ui.c:102
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "Ujjlenyomat: %.80s"
 
-#: ../gtk-ui.c:100
+#: ../gtk-ui.c:106
 #, c-format
 msgid "No key present"
 msgstr "Nem érhető el kulcs"
 
-#: ../gtk-ui.c:105
+#: ../gtk-ui.c:111
 #, c-format
 msgid "No account available"
 msgstr "Nem érhető el felhasználó"
 
-#: ../gtk-ui.c:165
+#: ../gtk-ui.c:171
 msgid "Unused"
 msgstr "Használaton kívül"
 
-#: ../gtk-ui.c:171
+#: ../gtk-ui.c:177
 msgid "Yes"
 msgstr "Igen"
 
-#: ../gtk-ui.c:171
+#: ../gtk-ui.c:177
 msgid "No"
 msgstr "Nem"
 
-#: ../gtk-ui.c:396
+#: ../gtk-ui.c:403
 msgid "Enable private messaging"
 msgstr "Bizalmas beszélgetés engedélyezése"
 
-#: ../gtk-ui.c:398
+#: ../gtk-ui.c:405
 msgid "Automatically initiate private messaging"
 msgstr "Bizalmas beszélgetés automatikus kezdeményezése"
 
-#: ../gtk-ui.c:400
+#: ../gtk-ui.c:407
 msgid "Require private messaging"
 msgstr "Bizalmas beszélgetés megkövetelése"
 
-#: ../gtk-ui.c:403
+#: ../gtk-ui.c:410
 msgid "Don't log OTR conversations"
 msgstr "OTR beszélgetések ne kerüljenek naplózásra"
 
-#: ../gtk-ui.c:531
+#: ../gtk-ui.c:454
+msgid "Show OTR button"
+msgstr "OTR gomb megjelenítése"
+
+#: ../gtk-ui.c:457
+msgid "Show OTR button in toolbar"
+msgstr "OTR gomb megjelenítése az eszköztáron"
+
+#: ../gtk-ui.c:601
 msgid "My private keys"
 msgstr "Saját személyes kulcsok"
 
-#: ../gtk-ui.c:540
+#: ../gtk-ui.c:610
 msgid "Key for account:"
 msgstr "Kulcs a következő felhasználóhoz:"
 
-#: ../gtk-ui.c:565
+#: ../gtk-ui.c:635
 msgid "Generate"
 msgstr "Generálás"
 
-#: ../gtk-ui.c:596
+#: ../gtk-ui.c:676
 msgid "Default OTR Settings"
-msgstr "Alapértelmezett OTR-beállítások"
+msgstr "Alapértelmezett OTR beállítások"
 
-#: ../gtk-ui.c:625
+#: ../gtk-ui.c:703
+msgid "OTR UI Options"
+msgstr "OTR megjelenési beállítások"
+
+#: ../gtk-ui.c:726
 msgid "Screenname"
 msgstr "Kijelzett név"
 
-#: ../gtk-ui.c:626
+#: ../gtk-ui.c:727
 msgid "Status"
 msgstr "Állapot"
 
-#: ../gtk-ui.c:627
+#: ../gtk-ui.c:728
 msgid "Verified"
 msgstr "Ellenőrzött"
 
-#: ../gtk-ui.c:628
+#: ../gtk-ui.c:729
 msgid "Fingerprint"
 msgstr "Ujjlenyomat"
 
-#: ../gtk-ui.c:629
+#: ../gtk-ui.c:730
 msgid "Account"
 msgstr "Felhasználó"
 
-#: ../gtk-ui.c:665
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "Bizalmas kapcsolat kezdeményezése"
 
-#: ../gtk-ui.c:673
+#: ../gtk-ui.c:774
 msgid "End private connection"
 msgstr "Bizalmas kapcsolat befejezése"
 
-#: ../gtk-ui.c:689
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "Ujjlenyomat törlése"
 
-#: ../gtk-ui.c:738
+#: ../gtk-ui.c:841
 msgid "Config"
 msgstr "Beállítás"
 
-#: ../gtk-ui.c:740
+#: ../gtk-ui.c:843
 msgid "Known fingerprints"
 msgstr "Ismert ujjlenyomatok"
 
-#: ../gtk-ui.c:838 ../otr-plugin.c:584
+#: ../gtk-ui.c:941 ../otr-plugin.c:606
 msgid "OTR Settings"
 msgstr "OTR-beállítások"
 
 #. Set the title
-#: ../gtk-ui.c:856
+#: ../gtk-ui.c:959
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "%s OTR-beállításai"
 
 #. Make the cascaded checkboxes
-#: ../gtk-ui.c:873
+#: ../gtk-ui.c:976
 msgid "Use default OTR settings for this buddy"
 msgstr "Alapértelmezett OTR-beállítások használata ezen partnerhez"
 
-#: ../otr-plugin.c:113
+#: ../otr-plugin.c:114
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "Jelenleg nincsen kapcsolódva %s (%s) felhasználó."
 
-#: ../otr-plugin.c:117
+#: ../otr-plugin.c:118
 msgid "Not connected"
 msgstr "Kapcsolat nélkül"
 
-#: ../otr-plugin.c:161
+#: ../otr-plugin.c:162
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "Állománynevek összeállítása közben elfogyott a memória.\n"
 
-#: ../otr-plugin.c:167
+#: ../otr-plugin.c:168
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "Nem írható a személyeskulcs-állomány.\n"
 
-#: ../otr-plugin.c:210
+#: ../otr-plugin.c:211
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "Ismeretlen felhasználó: %s (%s)."
 
-#: ../otr-plugin.c:214
+#: ../otr-plugin.c:215
 msgid "Unknown account"
 msgstr "Ismeretlen felhasználó"
 
-#: ../otr-plugin.c:960
+#: ../otr-plugin.c:983
 msgid "Off-the-Record Messaging"
 msgstr "Bizalmas üzenetküldés"
 
-#: ../otr-plugin.c:961
+#: ../otr-plugin.c:984
 msgid "Provides private and secure conversations"
 msgstr "Bizalmas és biztonságos beszélgetéseket tesz lehetővé"
 
-#: ../otr-plugin.c:962
+#: ../otr-plugin.c:985
 msgid ""
 "Preserves the privacy of IM communications by providing encryption, "
 "authentication, deniability, and perfect forward secrecy."
@@ -520,12 +633,35 @@ msgstr ""
 "Biztosítja az azonnali üzenetek adatbiztonságát titkosítás, hitelesítés, "
 "bizonyíthatatlanság és megfelelő utólagos titkosság nyújtásával."
 
-#: ../ui.c:108
+#: ../ui.c:109
 #, c-format
 msgid "Account %s (%s) could not be found"
 msgstr "%s (%s) felhasználó nem található"
 
-#: ../ui.c:112
+#: ../ui.c:113
 msgid "Account not found"
 msgstr "A felhasználó nem található"
 
+#~ msgid "_More..."
+#~ msgstr "_Tovább…"
+
+#~ msgid "Advanced..."
+#~ msgstr "Haladó…"
+
+#~ msgid ""
+#~ "If your buddy uses multiple IM accounts or multiple computers, you may "
+#~ "have to authenticate multiple times.  However, as long as they use an "
+#~ "account and computer that you've seen before, you don't need to "
+#~ "authenticate each individual conversation."
+#~ msgstr ""
+#~ "Ha partnere több azonnali üzenetküldő felhasználót vagy számítógépet "
+#~ "használ, lehetséges, hogy több alkalommal is hitelesíteni kell. Azonban "
+#~ "amíg azonos számítógépet és felhasználót használ, a hitelesítés "
+#~ "megismétlése nem szükséges."
+
+#~ msgid "Click here for more information about authentication in OTR."
+#~ msgstr ""
+#~ "Kattintson ide további információért az OTR hitelesítési módszeréről."
+
+#~ msgid "Enter a secret known only to %s and yourself.\n"
+#~ msgstr "Adjon meg egy titkot, amelyet csak ön és %s ismer.\n"

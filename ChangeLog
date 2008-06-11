@@ -1,3 +1,11 @@
+2008-06-11
+
+	* gtk-dialog.c: A small change to aid in i18n from Őry Máté
+	<orymate@gmail.com>
+
+	* po/hu.po: Updated Hungarian translation from Őry Máté
+	<orymate@gmail.com>
+
 2008-05-30
 
 	* gtk-dialog.c: The new toolbar OTR button now uses the standard

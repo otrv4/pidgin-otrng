@@ -911,7 +911,7 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
     GtkWidget *proglabel;
     GtkWidget *bar;
     GtkWidget *img = NULL;
-    char *label_text;
+    char *label_text, *label_pat;
     const char *icon_name = NULL;
     PurpleConversation *conv;
     SMPData *smp_data;
@@ -923,7 +923,9 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 
     dialog = gtk_dialog_new_with_buttons(
 	    context->smstate->received_question ?
+            /* Translators: you are asked to authenticate yourself */
 	    _("Authenticating to Buddy") :
+            /* Translators: you asked your buddy to authenticate him/herself */
 	    _("Authenticating Buddy"),
 	    parent, 0, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 	    GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
@@ -949,10 +951,12 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 
     gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
 
-    label_text = g_strdup_printf(
-	       "<span weight=\"bold\" size=\"larger\">%s %s</span>\n",
-	       context->smstate->received_question ? _("Authenticating to")
-	       : _("Authenticating"), context->username);
+    label_pat = g_strdup_printf("<span weight=\"bold\" size=\"larger\">"
+	    "%s</span>\n", context->smstate->received_question ?
+		   _("Authenticating to %s") :
+		   _("Authenticating %s"));
+    label_text = g_strdup_printf(label_pat, context->username);
+    g_free(label_pat);
 
     label = gtk_label_new(NULL);
 
@@ -1438,9 +1442,15 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 
     hbox = gtk_hbox_new(FALSE, 0);
     combo = gtk_combo_box_new_text();
+    /* Translators: the following four messages should give alternative sentences.
+       The user selects the first or second message in a combo box;
+      the third message, a new line, a fingerprint, a new line, and 
+      the fourth message will follow it. */
     gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("I have not"));
+    /* 2nd message */
     gtk_combo_box_append_text(GTK_COMBO_BOX(combo), _("I have"));
     gtk_combo_box_set_active(GTK_COMBO_BOX(combo), verified);
+    /* 3rd message */
     label = gtk_label_new(_(" verified that this is in fact the correct"));
     gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -1450,6 +1460,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 	    G_CALLBACK(vrfy_fingerprint_changed), vfd);
 
     hbox = gtk_hbox_new(FALSE, 0);
+    /* 4th message */
     labelt = g_strdup_printf(_("fingerprint for %s."),
 	    vfd->username);
     label = gtk_label_new(labelt);
