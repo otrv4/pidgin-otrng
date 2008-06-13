@@ -5,6 +5,10 @@
 
 	* README: Updated, ready for release of 3.2.0.
 
+	* dialogs.h: Remove unused FINGERPRINT_HELPURL.
+
+	* gtk-dialog.c: Remove dead (#if 0) code.
+
 2008-06-11
 
 	* gtk-dialog.c: A small change to aid in i18n from Őry Máté

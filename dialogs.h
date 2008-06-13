@@ -31,7 +31,6 @@
 /* The various help URLs */
 #define BASE_HELPURL "http://otr-help.cypherpunks.ca/" PIDGIN_OTR_VERSION "/"
 #define AUTHENTICATE_HELPURL  BASE_HELPURL "authenticate.php"
-#define FINGERPRINT_HELPURL   BASE_HELPURL "fingerprint.php"
 #define SESSIONID_HELPURL     BASE_HELPURL "sessionid.php"
 #define UNVERIFIED_HELPURL    BASE_HELPURL "unverified.php"
 #define LEVELS_HELPURL        BASE_HELPURL "levels.php"

@@ -424,42 +424,6 @@ static GtkWidget *create_dialog(GtkWindow *parent,
     return dialog;
 }
 
-#if 0
-/* Adds a "What's this?" expander to a vbox, containing { some "whatsthis"
- * markup (displayed in a GtkLabel) and a "More..." expander, containing
- * { some "more" markup (displayed in a GtkIMHTML) } }. */
-static void add_whatsthis_more(GtkWidget *vbox, const char *whatsthismarkup,
-	const char *moremarkup)
-{
-    GtkWidget *expander;
-    GtkWidget *scrl;
-    GtkWidget *imh;
-    GdkFont *font;
-    char *alltext;
-
-    expander = gtk_expander_new_with_mnemonic(_("_What's this?"));
-    gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, FALSE, 0);
-    scrl = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_add(GTK_CONTAINER(expander), scrl);
-
-    imh = gtk_imhtml_new(NULL, NULL);
-    pidgin_setup_imhtml(imh);
-    alltext = g_strdup_printf("%s\n\n%s", whatsthismarkup, moremarkup);
-    gtk_imhtml_append_text(GTK_IMHTML(imh), alltext, GTK_IMHTML_NO_SCROLL);
-    g_free(alltext);
-
-    gtk_container_add(GTK_CONTAINER(scrl), imh);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrl),
-	    GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-    /* This is a deprecated API, but mucking with PangoFontDescriptions
-     * is (a) complicated, and (b) not fully supported by older versions
-     * of libpango, which some people may have. */
-    font = gtk_style_get_font(imh->style);
-    gtk_widget_set_size_request(scrl, -1, 10 * (font->ascent + font->descent));
-}
-#endif
-
 static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 	ConnContext *context, AuthSignalData *auth_opt_data, char *question) {
     GtkWidget *question_entry;
@@ -1088,29 +1052,6 @@ static void otrg_gtk_dialog_private_key_wait_done(OtrgDialogWaitHandle handle)
     free(handle);
 }
 
-#if 0
-static void add_unk_fingerprint_expander(GtkWidget *vbox, void *data)
-{
-    char *moremarkup = g_strdup_printf(
-	    "%s\n\n%s\n\n<a href=\"%s\">%s%s</a>",
-	    __("If your buddy has more than one IM account, or uses more than "
-	    "one computer, he may have multiple fingerprints."),
-	    __("However, the only way an imposter could duplicate one of your "
-	    "buddy's fingerprints is by stealing information from his "
-	    "computer."),
-	    FINGERPRINT_HELPURL, __("?lang=en"),
-	    __("Click here for more information about fingerprints."));
-
-    add_whatsthis_more(vbox,
-	    __("A <b>fingerprint</b> is a unique identifier that you should "
-	    "use to authenticate your buddy.  Right-click on the OTR button "
-	    "in your buddy's conversation window, and choose \"Verify "
-	    "fingerprint\"."), moremarkup);
-
-    g_free(moremarkup);
-}
-#endif
-
 /* Inform the user that an unknown fingerprint was received. */
 static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 	const char *accountname, const char *protocol, const char *who,
@@ -1289,71 +1230,6 @@ static void dialog_update_label(ConnContext *context)
     dialog_update_label_conv(conv, level);
 }
 
-#if 0
-/* Add the help text for the "view session id" dialog. */
-static void add_sessid_expander(GtkWidget *vbox, void *data)
-{
-    char *moremarkup = g_strdup_printf(
-	    "%s\n\n%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-	    __("To verify the session id, contact your buddy via some "
-	    "<i>other</i> authenticated channel, such as the telephone "
-	    "or GPG-signed email.  Each of you should tell your bold "
-	    "half of the above session id to the other "
-	    "(your buddy will have the same session id as you, but with the "
-	    "other half bold)."),
-	    __("If everything matches up, then <i>the "
-	    "current conversation</i> between your computer and your buddy's "
-	    "computer is private."),
-	    __("<b>Note:</b> You will probably never have to do this.  You "
-	    "should normally use the \"Verify fingerprint\" functionality "
-	    "instead."),
-	    SESSIONID_HELPURL, _("?lang=en"),
-	    __("Click here for more information about the secure session id."));
-
-    add_whatsthis_more(vbox,
-	    __("You can use this <b>secure session id</b> to double-check "
-	    "the privacy of <i>this one conversation</i>."), moremarkup);
-
-    g_free(moremarkup);
-}
-
-static GtkWidget* otrg_gtk_dialog_view_sessionid(ConnContext *context)
-{
-    GtkWidget *dialog;
-    unsigned char *sessionid;
-    char sess1[21], sess2[21];
-    char *primary = g_strdup_printf(__("Private connection with %s "
-	    "established."), context->username);
-    char *secondary;
-    int i;
-    OtrlSessionIdHalf whichhalf = context->sessionid_half;
-    size_t idhalflen = (context->sessionid_len) / 2;
-
-    /* Make a human-readable version of the sessionid (in two parts) */
-    sessionid = context->sessionid;
-    for(i=0;i<idhalflen;++i) sprintf(sess1+(2*i), "%02x", sessionid[i]);
-    for(i=0;i<idhalflen;++i) sprintf(sess2+(2*i), "%02x",
-	    sessionid[i+idhalflen]);
-    
-    secondary = g_strdup_printf("%s\n"
-	    "<span %s>%s</span> <span %s>%s</span>\n",
-	    __("Secure session id:"),
-	    whichhalf == OTRL_SESSIONID_FIRST_HALF_BOLD ?
-		    "weight=\"bold\"" : "", sess1,
-	    whichhalf == OTRL_SESSIONID_SECOND_HALF_BOLD ?
-		    "weight=\"bold\"" : "", sess2);
-
-    dialog = create_dialog(PURPLE_NOTIFY_MSG_INFO,
-	    __("Private connection established"), primary, secondary, 1, NULL,
-	    add_sessid_expander, NULL);
-
-    g_free(primary);
-    g_free(secondary);
-
-    return dialog;
-}
-#endif
-
 struct vrfy_fingerprint_data {
     Fingerprint *fprint;   /* You can use this pointer right away, but
 			      you can't rely on it sticking around for a
@@ -1432,9 +1308,6 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
     struct vrfy_fingerprint_data *vfd = data;
     char *labelt;
     int verified = 0;
-#if 0
-    char *moremarkup;
-#endif
 
     if (vfd->fprint->trust && vfd->fprint->trust[0]) {
 	verified = 1;
@@ -1470,30 +1343,6 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
     
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-
-#if 0
-    moremarkup = g_strdup_printf(
-	    "%s\n\n%s\n\n%s\n\n%s\n\n<a href=\"%s%s\">%s</a>",
-	    _("To verify the fingerprint, contact your buddy via some "
-	    "<i>other</i> authenticated channel, such as the telephone "
-	    "or GPG-signed email.  Each of you should tell your fingerprint "
-	    "to the other."),
-	    _("If everything matches up, you should indicate in the above "
-	    "dialog that you <b>have</b> verified the fingerprint."),
-	    _("If your buddy has more than one IM account, or uses more than "
-	    "one computer, he may have multiple fingerprints."),
-	    _("However, the only way an imposter could duplicate one of your "
-	    "buddy's fingerprints is by stealing information from her/his "
-	    "computer."),
-	    FINGERPRINT_HELPURL, _("?lang=en"),
-	    _("Click here for more information about fingerprints."));
-
-    add_whatsthis_more(vbox,
-	    _("A <b>fingerprint</b> is a unique identifier that you should "
-	    "use to authenticate your buddy."), moremarkup);
-    g_free(moremarkup);
-#endif
-
 }
 
 static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
@@ -1820,19 +1669,6 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
     otrg_plugin_send_default_query_conv(conv);
 }
 
-#if 0
-static void view_sessionid(GtkWidget *widget, gpointer data)
-{
-    PurpleConversation *conv = data;
-    ConnContext *context = otrg_plugin_conv_to_context(conv);
-
-    if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
-	return;
-
-    otrg_gtk_dialog_view_sessionid(context);
-}
-#endif
-
 /* Called when SMP verification option selected from menu */
 static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
@@ -1844,19 +1680,6 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
 
     otrg_gtk_dialog_socialist_millionaires(context, NULL, FALSE);
 }
-
-#if 0
-static void verify_fingerprint(GtkWidget *widget, gpointer data)
-{
-    PurpleConversation *conv = data;
-    ConnContext *context = otrg_plugin_conv_to_context(conv);
-
-    if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
-	return;
-
-    otrg_gtk_dialog_verify_fingerprint(context->active_fingerprint);
-}
-#endif
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data)
 {
