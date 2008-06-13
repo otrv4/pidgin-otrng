@@ -1,3 +1,10 @@
+2008-06-13
+
+	* po/de.po: Updated German translation from Michael Meier
+	<mail@code.mmsources.de>
+
+	* README: Updated, ready for release of 3.2.0.
+
 2008-06-11
 
 	* gtk-dialog.c: A small change to aid in i18n from Őry Máté

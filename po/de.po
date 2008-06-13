@@ -4,12 +4,11 @@
 # This file is distributed under the same license as the pidgin-otr package.
 # Michael Meier <michael.meier@mmsources.de>, 2008.
 #
-#: ../gtk-dialog.c:557 ../gtk-dialog.c:649
 msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 3.2.0-de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-29 17:46+0200\n"
+"POT-Creation-Date: 2008-06-12 00:34+0200\n"
 "PO-Revision-Date: 2008-05-28 09:12+0200\n"
 "Last-Translator: Michael Meier <michael.meier@mmsources.de>\n"
 "Language-Team: Michael Meier <michael.meier@mmsources.de>\n"
@@ -17,78 +16,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gtk-dialog.c:434 ../gtk-dialog.c:2023 ../gtk-dialog.c:2483
-msgid "_What's this?"
-msgstr "_Was ist das?"
-
-#: ../gtk-dialog.c:445
-msgid "_More..."
-msgstr "_Mehr..."
-
-#: ../gtk-dialog.c:479
-#, c-format
-msgid ""
-"%s wishes to authenticate you. Your buddy has chosen a question for you to "
-"answer.\n"
-msgstr ""
-"%s wünscht, sie zu authentifizieren. Ihr Buddy hat folgende Frage zur "
-"Beantwortung gewählt.\n"
-
-#: ../gtk-dialog.c:482
-#, c-format
-msgid "Enter a question only %s and yourself can answer.\n"
-msgstr "Geben Sie eine Frage ein, die nur Sie und %s beantworten können.\n"
-
-#: ../gtk-dialog.c:497
-msgid "This is the question asked by your buddy:"
-msgstr "Diese Frage wurde von Ihrem Buddy gestellt:"
-
-#: ../gtk-dialog.c:531 ../gtk-dialog.c:655
-msgid "This buddy is already authenticated."
-msgstr "Dieser Buddy wurde bereits authentifiziert."
-
-#: ../gtk-dialog.c:543
-msgid "Enter secret answer here (case sensitive):"
-msgstr "Geheime Antwort hier eingeben: (Groß-/Kleinschreibung relevant)"
-
-#: ../gtk-dialog.c:578
-msgid ""
-"Your buddy is attempting to determine if he or she is really talking to you, "
-"or if it's someone pretending to be you.  Your buddy has asked a question, "
-"indicated above.  To authenticate to your buddy, enter the answer and click "
-"OK."
-msgstr ""
-"Ihr Buddy versucht festzustellen, ob er wirklich mit Ihnen spricht oder "
-"jemandem, der sich als Sie ausgibt. Er hat dazu die oben angegebene Frage "
-"gestellt. Um Ihren Buddy zu authentifizieren, geben Sie die Antwort ein und "
-"klicken Sie OK."
-
-#: ../gtk-dialog.c:583 ../gtk-dialog.c:599 ../gtk-dialog.c:679
-msgid ""
-"If your buddy uses multiple IM accounts or multiple computers, you may have "
-"to authenticate multiple times.  However, as long as he or she uses an "
-"account and computer that you've seen before, you don't need to authenticate "
-"each individual conversation."
-msgstr ""
-"Sollte Ihr Buddy verschiedene IM-Konten oder verschiedene Computer "
-"verwenden, müssen Sie die Authentifizierung möglicherweise mehrmals "
-"durchführen. Ansonsten ist es nicht erforderlich, die Authentifizierung für "
-"jede einzelne Unterhaltung durchzuführen."
-
-#. The UNVERIFIED_HELPURL actually contains help info for all statuses
-#: ../gtk-dialog.c:588 ../gtk-dialog.c:604 ../gtk-dialog.c:684
-#: ../gtk-dialog.c:1188 ../gtk-dialog.c:1192 ../gtk-dialog.c:1316
-#: ../gtk-dialog.c:1484 ../gtk-dialog.c:1656 ../gtk-dialog.c:1759
-#: ../gtk-dialog.c:1850 ../gtk-dialog.c:2293
+#: ../gtk-dialog.c:291 ../gtk-dialog.c:1144 ../gtk-dialog.c:1148
+#: ../gtk-dialog.c:1310 ../gtk-dialog.c:1488 ../gtk-dialog.c:1669
+#: ../gtk-dialog.c:1772 ../gtk-dialog.c:1863 ../gtk-dialog.c:2309
 msgid "?lang=en"
 msgstr "?lang=de"
 
-#: ../gtk-dialog.c:589 ../gtk-dialog.c:605 ../gtk-dialog.c:685
-msgid "Click here for more information about authentication in OTR."
-msgstr "Hier klicken, um mehr Informationen über Authentifizierung in OTR zu "
-"erhalten."
+#: ../gtk-dialog.c:440 ../gtk-dialog.c:2043 ../gtk-dialog.c:2517
+msgid "_What's this?"
+msgstr "_Was ist das?"
 
-#: ../gtk-dialog.c:594
+#: ../gtk-dialog.c:475
+msgid ""
+"Your buddy is attempting to determine if he or she is really talking to you, "
+"or if it's someone pretending to be you.  Your buddy has asked a question, "
+"indicated below.  To authenticate to your buddy, enter the answer and click "
+"OK."
+msgstr ""
+"Ihr Buddy versucht festzustellen, ob er wirklich mit Ihnen spricht oder "
+"jemandem, der sich als Sie ausgibt. Er hat dazu die unten angegebene Frage "
+"gestellt. Um Ihren Buddy zu authentifizieren, geben Sie die Antwort ein und "
+"klicken Sie OK."
+
+#: ../gtk-dialog.c:482
 msgid ""
 "To authenticate using a question, pick a question whose answer is known only "
 "to you and your buddy.  Enter this question and this answer, then wait for "
@@ -101,20 +51,23 @@ msgstr ""
 "Antworten nicht übereinstimmen, haben Sie es möglicherweise mit einem "
 "Hochstapler zu tun."
 
-#: ../gtk-dialog.c:610 ../gtk-dialog.c:689
-msgid ""
-"Authenticating a buddy helps ensure that the person you are talking to is "
-"who he or she claims to be."
-msgstr ""
-"Einen Buddy zu authentifizieren hilft sicherzustellen, dass die Person, mit "
-"der Sie sprechen die ist, die sie zu sein behauptet."
+#: ../gtk-dialog.c:500
+msgid "This is the question asked by your buddy:"
+msgstr "Diese Frage wurde von Ihrem Buddy gestellt:"
 
-#: ../gtk-dialog.c:626
-#, c-format
-msgid "Enter a secret known only to %s and yourself.\n"
-msgstr "Geben Sie eine Passphrase ein, die nur %s und Ihnen bekannt ist.\n"
+#: ../gtk-dialog.c:503
+msgid "Enter question here:"
+msgstr "Frage hier eingeben:"
 
-#: ../gtk-dialog.c:675
+#: ../gtk-dialog.c:534 ../gtk-dialog.c:618
+msgid "This buddy is already authenticated."
+msgstr "Dieser Buddy wurde bereits authentifiziert."
+
+#: ../gtk-dialog.c:546
+msgid "Enter secret answer here (case sensitive):"
+msgstr "Geheime Antwort hier eingeben: (Groß-/Kleinschreibung relevant)"
+
+#: ../gtk-dialog.c:587
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
@@ -126,17 +79,40 @@ msgstr ""
 "nicht übereinstimmen, haben Sie es möglicherweise mit einem Hochstapler zu "
 "tun."
 
-#: ../gtk-dialog.c:713 ../gtk-dialog.c:1514
+#: ../gtk-dialog.c:601
+msgid "Enter secret here:"
+msgstr "Geheime Passphrase hier eingeben"
+
+#: ../gtk-dialog.c:652 ../gtk-dialog.c:1477 ../gtk-dialog.c:1530
+msgid ""
+"To verify the fingerprint, contact your buddy via some <i>other</i> "
+"authenticated channel, such as the telephone or GPG-signed email.  Each of "
+"you should tell your fingerprint to the other."
+msgstr ""
+"Um den Fingerprint zu verifizieren, kontaktieren Sie Ihren Buddy über einen "
+"<i>anderen</i> sicheren Kanal, zum Beispiel persönlich, per GPG-"
+"verschlüsselter E-Mail oder telefonisch. Sie sollten Sich gegenseitig Ihre "
+"Fingerprints mitteilen."
+
+#: ../gtk-dialog.c:656 ../gtk-dialog.c:1481 ../gtk-dialog.c:1534
+msgid ""
+"If everything matches up, you should indicate in the above dialog that you "
+"<b>have</b> verified the fingerprint."
+msgstr ""
+"Wenn alles übereinstimmt, sollten Sie im obigen Dialog angeben, dass Sie den "
+"Fingerprint </b>tatsächlich</b> verifiziert haben."
+
+#: ../gtk-dialog.c:667 ../gtk-dialog.c:1519
 msgid "[none]"
 msgstr "[keiner]"
 
-#: ../gtk-dialog.c:720 ../gtk-dialog.c:1076 ../gtk-dialog.c:1521
-#: ../gtk-dialog.c:1564 ../gtk-ui.c:181 ../otr-plugin.c:116
+#: ../gtk-dialog.c:674 ../gtk-dialog.c:1032 ../gtk-dialog.c:1526
+#: ../gtk-dialog.c:1577 ../gtk-ui.c:181 ../otr-plugin.c:116
 #: ../otr-plugin.c:213 ../ui.c:111
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../gtk-dialog.c:721 ../gtk-dialog.c:1522
+#: ../gtk-dialog.c:675
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -151,62 +127,78 @@ msgstr ""
 "Angegebener Fingerprint für %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:769
-msgid "Authentication Options"
-msgstr "Authentifizierungsoptionen"
+#: ../gtk-dialog.c:727
+msgid "How would you like to authenticate your buddy?"
+msgstr "Wie möchten Sie Ihren Buddy authentifizieren?"
 
-#: ../gtk-dialog.c:781
-msgid "Authenticate by posing a question only your buddy will know"
-msgstr "Authentifizierung über eine Frage, deren Antwort nur Ihr Buddy kennt"
+#: ../gtk-dialog.c:736
+msgid "Question and answer"
+msgstr "Frage und Antwort"
 
-#: ../gtk-dialog.c:783
-msgid "Authenticate each other using a predetermined shared secret phrase"
-msgstr "Authentifizierung über eine vorher abgesprochene geheime Passphrase"
+#: ../gtk-dialog.c:739
+msgid "Shared secret"
+msgstr "Gemeinsam bekannte Passphrase"
+
+#: ../gtk-dialog.c:742
+msgid "Manual fingerprint verification"
+msgstr "Manueller Fingerprint-Vergleich"
 
 #: ../gtk-dialog.c:785
-msgid "Authenticate by verifying your buddy's fingerprint (Advanced)"
-msgstr "Authentifizierung über den Fingerprint Ihres Buddys (Fortgeschritten)"
+msgid "_Authenticate"
+msgstr "_Authentifizieren"
 
-#: ../gtk-dialog.c:974
+#: ../gtk-dialog.c:818
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who he or she claims to be."
+msgstr ""
+"Einen Buddy zu authentifizieren hilft sicherzustellen, dass die Person, mit "
+"der Sie sprechen die ist, die sie zu sein behauptet."
+
+#. Translators: you are asked to authenticate yourself
+#: ../gtk-dialog.c:927
 msgid "Authenticating to Buddy"
 msgstr "Authentifiziere gegenüber Buddy"
 
-#: ../gtk-dialog.c:975
+#. Translators: you asked your buddy to authenticate him/herself
+#: ../gtk-dialog.c:929
 msgid "Authenticating Buddy"
 msgstr "Authentifiziere Buddy"
 
-#: ../gtk-dialog.c:1002
-msgid "Authenticating to"
-msgstr "Authentifiziere gegenüber"
+#: ../gtk-dialog.c:956
+#, c-format
+msgid "Authenticating to %s"
+msgstr "Authentifiziere gegenüber %s"
 
-#: ../gtk-dialog.c:1003
-msgid "Authenticating"
-msgstr "Authentifiziere"
+#: ../gtk-dialog.c:957
+#, c-format
+msgid "Authenticating %s"
+msgstr "Authentifiziere %s"
 
-#: ../gtk-dialog.c:1034
+#: ../gtk-dialog.c:990
 msgid "Waiting for buddy..."
 msgstr "Warte auf Buddy..."
 
-#: ../gtk-dialog.c:1067
+#: ../gtk-dialog.c:1023
 msgid "Generating private key"
 msgstr "Generiere privaten Schlüssel"
 
-#: ../gtk-dialog.c:1068
+#: ../gtk-dialog.c:1024
 msgid "Please wait"
 msgstr "Bitte warten"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1079
+#: ../gtk-dialog.c:1035
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "Generiere privaten Schlüssel für %s (%s)..."
 
-#: ../gtk-dialog.c:1124
+#: ../gtk-dialog.c:1080
 #, c-format
 msgid "%s Done."
 msgstr "%s Fertig."
 
-#: ../gtk-dialog.c:1186
+#: ../gtk-dialog.c:1142
 #, c-format
 msgid ""
 "%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
@@ -215,7 +207,7 @@ msgstr ""
 "%s kontaktiert Sie von einem unbekannten Computer aus. Sie sollten diesen "
 "Buddy <a href=\"%s%s\">authentifizieren</a>."
 
-#: ../gtk-dialog.c:1190
+#: ../gtk-dialog.c:1146
 #, c-format
 msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
@@ -224,78 +216,70 @@ msgstr ""
 "%s wurde noch nicht authentifiziert. Sie sollten diesen Buddy <a href=\"%s%s"
 "\">authentifizieren</a>."
 
-#: ../gtk-dialog.c:1237 ../gtk-dialog.c:2008 ../gtk-dialog.c:2288
-#: ../gtk-ui.c:82
+#: ../gtk-dialog.c:1209 ../gtk-dialog.c:1240 ../gtk-dialog.c:2030
+#: ../gtk-dialog.c:2305 ../gtk-ui.c:82
 msgid "Finished"
 msgstr "Beendet"
 
-#: ../gtk-dialog.c:1238 ../gtk-dialog.c:2005 ../gtk-dialog.c:2285
-#: ../gtk-ui.c:81
+#: ../gtk-dialog.c:1210 ../gtk-dialog.c:1241 ../gtk-dialog.c:2027
+#: ../gtk-dialog.c:2302 ../gtk-ui.c:81
 msgid "Private"
 msgstr "Privat"
 
-#: ../gtk-dialog.c:1239 ../gtk-dialog.c:2002 ../gtk-dialog.c:2282
-#: ../gtk-ui.c:80
+#: ../gtk-dialog.c:1211 ../gtk-dialog.c:1242 ../gtk-dialog.c:2024
+#: ../gtk-dialog.c:2299 ../gtk-ui.c:80
 msgid "Unverified"
 msgstr "Unverifiziert"
 
-#: ../gtk-dialog.c:1240 ../gtk-ui.c:79
+#: ../gtk-dialog.c:1212 ../gtk-dialog.c:1243 ../gtk-ui.c:79
 msgid "Not private"
 msgstr "Nicht privat"
 
-#: ../gtk-dialog.c:1243
+#: ../gtk-dialog.c:1215
 msgid "Start a private conversation"
 msgstr "Private Unterhaltung starten"
 
-#: ../gtk-dialog.c:1244
+#: ../gtk-dialog.c:1216
 msgid "Refresh the private conversation"
 msgstr "Private Unterhaltung aktualisieren"
 
-#: ../gtk-dialog.c:1249 ../gtk-dialog.c:1954 ../gtk-dialog.c:2053
+#: ../gtk-dialog.c:1221 ../gtk-dialog.c:1979 ../gtk-dialog.c:2074
 msgid "Start _private conversation"
 msgstr "_Private Unterhaltung starten"
 
-#: ../gtk-dialog.c:1250 ../gtk-dialog.c:1955
+#: ../gtk-dialog.c:1222 ../gtk-dialog.c:1980
 msgid "Refresh _private conversation"
 msgstr "_Private Unterhaltung aktualisieren"
 
+#: ../gtk-dialog.c:1246
+msgid "OTR"
+msgstr "OTR"
+
+#. Translators: the following four messages should give alternative sentences.
+#. The user selects the first or second message in a combo box;
+#. the third message, a new line, a fingerprint, a new line, and
+#. the fourth message will follow it.
 #: ../gtk-dialog.c:1449
 msgid "I have not"
 msgstr "Ich habe nicht"
 
-#: ../gtk-dialog.c:1450
+#. 2nd message
+#: ../gtk-dialog.c:1451
 msgid "I have"
 msgstr "Ich habe"
 
-#: ../gtk-dialog.c:1452
+#. 3rd message
+#: ../gtk-dialog.c:1454
 msgid " verified that this is in fact the correct"
 msgstr " überprüft, dass dies tatsächlich der richtige"
 
-#: ../gtk-dialog.c:1461
+#. 4th message
+#: ../gtk-dialog.c:1464
 #, c-format
 msgid "fingerprint for %s."
 msgstr "Fingerprint für %s ist."
 
-#: ../gtk-dialog.c:1473
-msgid ""
-"To verify the fingerprint, contact your buddy via some <i>other</i> "
-"authenticated channel, such as the telephone or GPG-signed email.  Each of "
-"you should tell your fingerprint to the other."
-msgstr ""
-"Um den Fingerprint zu verifizieren, kontaktieren Sie Ihren Buddy über einen "
-"<i>anderen</i> sicheren Kanal, zum Beispiel persönlich, per GPG-"
-"verschlüsselter E-Mail oder telefonisch. Sie sollten Sich gegenseitig Ihre "
-"Fingerprints mitteilen."
-
-#: ../gtk-dialog.c:1477
-msgid ""
-"If everything matches up, you should indicate in the above dialog that you "
-"<b>have</b> verified the fingerprint."
-msgstr ""
-"Wenn alles übereinstimmt, sollten Sie im obigen Dialog angeben, dass Sie den "
-"Fingerprint </b>tatsächlich</b> verifiziert haben."
-
-#: ../gtk-dialog.c:1479
+#: ../gtk-dialog.c:1483
 msgid ""
 "If your buddy has more than one IM account, or uses more than one computer, "
 "he may have multiple fingerprints."
@@ -303,7 +287,7 @@ msgstr ""
 "Sollte Ihr Buddy mehr als ein IM-Konto oder mehrere Computer verwenden, kann "
 "er mehr als einen Fingerprint haben."
 
-#: ../gtk-dialog.c:1481
+#: ../gtk-dialog.c:1485
 msgid ""
 "However, the only way an imposter could duplicate one of your buddy's "
 "fingerprints is by stealing information from her/his computer."
@@ -311,11 +295,11 @@ msgstr ""
 "Die einzige Möglichkeit für einen Hochstapler, die Fingerprints Ihres Buddys "
 "zu kopieren ist das Stehlen der Informationen von seinem/ihrem Computer."
 
-#: ../gtk-dialog.c:1485
+#: ../gtk-dialog.c:1489
 msgid "Click here for more information about fingerprints."
 msgstr "Klicken Sie hier für zusätzliche Informationen über Fingerprints."
 
-#: ../gtk-dialog.c:1488
+#: ../gtk-dialog.c:1492
 msgid ""
 "A <b>fingerprint</b> is a unique identifier that you should use to "
 "authenticate your buddy."
@@ -323,38 +307,57 @@ msgstr ""
 "Ein <b>Fingerprint</b> ist ein einmaliges Identifizierungsmerkmal, das Sie "
 "verwenden sollten, um Ihren Buddy zu authentifizieren."
 
-#: ../gtk-dialog.c:1510
+#: ../gtk-dialog.c:1515
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "Fingerprint für %s verifizieren."
 
-#: ../gtk-dialog.c:1527 ../gtk-ui.c:773
+#: ../gtk-dialog.c:1527
+#, c-format
+msgid ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint für Sie, %s (%s):\n"
+"%s\n"
+"\n"
+"Angegebener Fingerprint für %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1540 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "Fingerprint verifizieren"
 
-#: ../gtk-dialog.c:1554
+#: ../gtk-dialog.c:1567
 #, c-format
 msgid "Authentication from %s"
 msgstr "Authentifizierung von %s"
 
-#: ../gtk-dialog.c:1557
+#: ../gtk-dialog.c:1570
 #, c-format
 msgid "Authenticate %s"
 msgstr "%s authentifizieren"
 
-#: ../gtk-dialog.c:1567
+#: ../gtk-dialog.c:1580
 msgid "Authenticate Buddy"
 msgstr "Buddy authentifizieren"
 
-#: ../gtk-dialog.c:1598
+#: ../gtk-dialog.c:1611
 msgid "An error occurred during authentication."
 msgstr "Ein Fehler ist bei der Authentifizierung aufgetreten."
 
-#: ../gtk-dialog.c:1613
+#: ../gtk-dialog.c:1626
 msgid "Authentication successful."
 msgstr "Authentifizierung erfolgreich."
 
-#: ../gtk-dialog.c:1616
+#: ../gtk-dialog.c:1629
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
@@ -362,16 +365,16 @@ msgstr ""
 "Ihr Buddy hat Sie erfolgreich authentifiziert. Unter Umständen möchten Sie "
 "ebenfalls eine Frage stellen um Ihren Buddy zu authentifizieren."
 
-#: ../gtk-dialog.c:1622
+#: ../gtk-dialog.c:1635
 msgid "Authentication failed."
 msgstr "Authentifizierung fehlgeschlagen."
 
-#: ../gtk-dialog.c:1650
+#: ../gtk-dialog.c:1663
 #, c-format
 msgid "Private conversation with %s started.%s"
 msgstr "Private Unterhaltung mit %s begonnen.%s"
 
-#: ../gtk-dialog.c:1654
+#: ../gtk-dialog.c:1667
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
 msgstr ""
@@ -379,21 +382,21 @@ msgstr ""
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1662
+#: ../gtk-dialog.c:1675
 #, c-format
 msgid "Not private conversation with %s started.%s"
 msgstr "Nicht private Unterhaltung mit %s begonnen.%s"
 
-#: ../gtk-dialog.c:1668 ../gtk-dialog.c:1772
+#: ../gtk-dialog.c:1681 ../gtk-dialog.c:1785
 msgid "  Warning: using old protocol version 1."
 msgstr "  Warnung: Verwende veraltete Protokollversion 1."
 
-#: ../gtk-dialog.c:1688
+#: ../gtk-dialog.c:1701
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Private Unterhaltung mit %s abgebrochen."
 
-#: ../gtk-dialog.c:1725
+#: ../gtk-dialog.c:1738
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
@@ -401,12 +404,12 @@ msgstr ""
 "%s hat seine/ihre private Unterhaltung mit Ihnen beendet. Sie sollten "
 "dasselbe tun."
 
-#: ../gtk-dialog.c:1751
+#: ../gtk-dialog.c:1764
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "Private Unterhaltung mit %s erfolgreich aktualisiert.%s"
 
-#: ../gtk-dialog.c:1756
+#: ../gtk-dialog.c:1769
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
@@ -417,26 +420,26 @@ msgstr ""
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1765
+#: ../gtk-dialog.c:1778
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "Nicht private Unterhaltung mit %s erfolgreich aktualisiert.%s"
 
-#: ../gtk-dialog.c:1797
+#: ../gtk-dialog.c:1810
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "Versuche, die private Unterhaltung mit %s zu aktualisieren..."
 
-#: ../gtk-dialog.c:1799
+#: ../gtk-dialog.c:1812
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "Versuche, eine private Unterhaltung mit %s zu beginnen..."
 
-#: ../gtk-dialog.c:1999 ../gtk-dialog.c:2279
+#: ../gtk-dialog.c:2021 ../gtk-dialog.c:2296
 msgid "Not Private"
 msgstr "Nicht privat"
 
-#: ../gtk-dialog.c:2054 ../gtk-dialog.c:2448
+#: ../gtk-dialog.c:2075 ../gtk-dialog.c:2482
 msgid "_End private conversation"
 msgstr "Private Unterhaltung be_enden"
 
@@ -449,11 +452,11 @@ msgstr "Private Unterhaltung be_enden"
 #. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
 #. gtk_widget_show(menuverf);
 #.
-#: ../gtk-dialog.c:2055 ../gtk-dialog.c:2466
+#: ../gtk-dialog.c:2076 ../gtk-dialog.c:2500
 msgid "_Authenticate buddy"
 msgstr "Buddy _authentifizieren"
 
-#: ../gtk-dialog.c:2275
+#: ../gtk-dialog.c:2292
 #, c-format
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
@@ -461,13 +464,13 @@ msgid ""
 msgstr ""
 "Der Status der aktuellen Unterhaltung ist jetzt: <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2430
+#: ../gtk-dialog.c:2455
 msgid "OTR:"
-msgstr ""
+msgstr "OTR:"
 
-#: ../gtk-dialog.c:2442
+#: ../gtk-dialog.c:2475
 msgid "OTR Messaging"
-msgstr ""
+msgstr "OTR Messaging"
 
 #: ../gtk-ui.c:102
 #, c-format
@@ -512,82 +515,86 @@ msgstr "Privaten Nachrichtenversand erzwingen"
 msgid "Don't log OTR conversations"
 msgstr "OTR-Unterhaltungen nicht speichern"
 
-#: ../gtk-ui.c:453
+#: ../gtk-ui.c:454
 msgid "Show OTR button"
 msgstr "OTR-Button anzeigen"
 
-#: ../gtk-ui.c:592
+#: ../gtk-ui.c:457
+msgid "Show OTR button in toolbar"
+msgstr "OTR-Button in Symbolleiste anzeigen"
+
+#: ../gtk-ui.c:601
 msgid "My private keys"
 msgstr "Meine privaten Schlüssel"
 
-#: ../gtk-ui.c:601
+#: ../gtk-ui.c:610
 msgid "Key for account:"
 msgstr "Schlüssel für Konto:"
 
-#: ../gtk-ui.c:626
+#: ../gtk-ui.c:635
 msgid "Generate"
 msgstr "Generieren"
 
-#: ../gtk-ui.c:667
+#: ../gtk-ui.c:676
 msgid "Default OTR Settings"
 msgstr "Standard OTR-Einstellungen"
 
-#: ../gtk-ui.c:694
+#: ../gtk-ui.c:703
 msgid "OTR UI Options"
 msgstr "OTR-Erscheinungsbild"
 
-#: ../gtk-ui.c:717
+#: ../gtk-ui.c:726
 msgid "Screenname"
 msgstr "Spitzname"
 
-#: ../gtk-ui.c:718
+#: ../gtk-ui.c:727
 msgid "Status"
 msgstr "Status"
 
-#: ../gtk-ui.c:719
+#: ../gtk-ui.c:728
 msgid "Verified"
 msgstr "Verifiziert"
 
-#: ../gtk-ui.c:720
+#: ../gtk-ui.c:729
 msgid "Fingerprint"
 msgstr "Fingerprint"
 
-#: ../gtk-ui.c:721
+#: ../gtk-ui.c:730
 msgid "Account"
 msgstr "Konto"
 
-#: ../gtk-ui.c:757
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "Private Unterhaltung starten"
 
-#: ../gtk-ui.c:765
+#: ../gtk-ui.c:774
 msgid "End private connection"
 msgstr "Private Unterhaltung beenden"
 
-#: ../gtk-ui.c:781
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "Fingerprint vergessen"
 
-#: ../gtk-ui.c:832
+#: ../gtk-ui.c:841
 msgid "Config"
 msgstr "Konfiguration"
 
-#: ../gtk-ui.c:834
+#: ../gtk-ui.c:843
 msgid "Known fingerprints"
 msgstr "Bekannte Fingerprints"
 
-#: ../gtk-ui.c:932 ../otr-plugin.c:606
+#: ../gtk-ui.c:941 ../otr-plugin.c:606
 msgid "OTR Settings"
 msgstr "OTR-Einstellungen"
 
 #. Set the title
-#: ../gtk-ui.c:950
+#: ../gtk-ui.c:959
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "OTR-Einstellungen für %s"
 
 #. Make the cascaded checkboxes
-#: ../gtk-ui.c:967
+#: ../gtk-ui.c:976
 msgid "Use default OTR settings for this buddy"
 msgstr "Standard OTR-Einstellungen für diesen Buddy verwenden"
 
@@ -621,7 +628,7 @@ msgstr "Unbekanntes Konto"
 
 #: ../otr-plugin.c:983
 msgid "Off-the-Record Messaging"
-msgstr ""
+msgstr "Off-the-Record Messaging"
 
 #: ../otr-plugin.c:984
 msgid "Provides private and secure conversations"
@@ -643,9 +650,3 @@ msgstr "Konto %s (%s) konnte nicht gefunden werden"
 #: ../ui.c:113
 msgid "Account not found"
 msgstr "Konto nicht gefunden"
-
-#~ msgid "Advanced..."
-#~ msgstr "Erweitert..."
-
-#~ msgid "Enter secret here"
-#~ msgstr "Geheime Passphrase hier eingeben"
