@@ -1,3 +1,15 @@
+2008-06-15
+
+	* gtk-dialog.c: Don't try to destroy the submenu when we've
+	already destroyed the menu.  Linux doesn't complain about this,
+	but Windows does.
+
+	* packaging/windows/pidgin-otr.msi: Bump version number.
+
+	* Makefile.mingw: Add tooltipmenu.o to link line.
+
+	* Release 3.2.0.
+
 2008-06-13
 
 	* po/de.po: Updated German translation from Michael Meier

@@ -1956,7 +1956,6 @@ static void otr_add_top_otr_menu(PurpleConversation *conv) {
 
 
     menu_list = g_list_append(menu_list, topmenuitem);
-    menu_list = g_list_append(menu_list, topmenu);
 
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 }
@@ -2082,7 +2081,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
         
         menu_list = g_hash_table_lookup ( otr_win_menus, win );
         menu_list = g_list_append(menu_list, tooltip_menu);
-        menu_list = g_list_append(menu_list, menu);
         
         g_hash_table_replace ( otr_win_menus, win, menu_list );
         

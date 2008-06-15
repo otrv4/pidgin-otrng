@@ -55,7 +55,7 @@ override CFLAGS += -g -O2 -Wall -I$(PIDGIN_HEADERS) -I$(PURPLE_HEADERS) \
 all: $(TARGET)
 	$(MAKE) -C po -f Makefile.mingw
 
-$(TARGET): otr-plugin.o ui.o dialogs.o gtk-ui.o gtk-dialog.o
+$(TARGET): otr-plugin.o ui.o dialogs.o gtk-ui.o gtk-dialog.o tooltipmenu.o
 	$(CC) -g -shared $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 clean:

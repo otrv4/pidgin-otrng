@@ -3,6 +3,7 @@
 ;
 ; known issue. installer induced uninstaller abortion causes overwrite
 ; by installer without uninstall.
+; v3.2.0   - New source version.
 ; v3.1.0   - New source version.  Install and uninstall i18n files.
 ; v3.0.0   - Version for pidgin-2.0.0
 ; v3.0.0   - Bump version number.
@@ -24,7 +25,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "3.1.0-1"
+!define PRODUCT_VERSION "3.2.0-1"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
