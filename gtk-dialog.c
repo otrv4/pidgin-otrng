@@ -1194,6 +1194,11 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
 		    NULL : conv);
 
+    /* Use any non-NULL value for "unauthenticated", NULL for
+     * "authenticated" */
+    purple_conversation_set_data(conv, "otr-authenticated",
+	    (level == TRUST_PRIVATE) ? conv : NULL);
+
     /* Use any non-NULL value for "finished", NULL for "not finished" */
     purple_conversation_set_data(conv, "otr-finished",
 	    level == TRUST_FINISHED ? conv : NULL);
@@ -1794,6 +1799,8 @@ static int otr_get_menu_insert_pos(PurpleConversation *conv) {
 
 static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query, GtkWidget *end, GtkWidget *smp) {
     int insecure = purple_conversation_get_data(conv, "otr-private") ? 0 : 1;
+    int authen = purple_conversation_get_data(conv, "otr-authenticated") ?
+	1 : 0;
     int finished = purple_conversation_get_data(conv, "otr-finished") ? 1 : 0;
 
     GtkWidget * label = gtk_bin_get_child(GTK_BIN(query));
@@ -1801,6 +1808,12 @@ static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query, GtkW
     gtk_label_set_markup_with_mnemonic(GTK_LABEL(label),
         insecure ? _("Start _private conversation") :
         _("Refresh _private conversation"));
+
+    label = gtk_bin_get_child(GTK_BIN(smp));
+
+    gtk_label_set_markup_with_mnemonic(GTK_LABEL(label),
+        (!insecure && authen) ? _("Re_authenticate buddy") :
+        _("_Authenticate buddy"));
 
     gtk_widget_set_sensitive(GTK_WIDGET(end), !insecure || finished);
     gtk_widget_set_sensitive(GTK_WIDGET(smp), !insecure);
@@ -2160,6 +2173,7 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     g_hash_table_remove(conv->data, "otr-icon");
     g_hash_table_remove(conv->data, "otr-menu");
     g_hash_table_remove(conv->data, "otr-private");
+    g_hash_table_remove(conv->data, "otr-authenticated");
     g_hash_table_remove(conv->data, "otr-finished");
 #ifdef OLD_OTR_BUTTON
     g_hash_table_remove(conv->data, "otr-icontext");

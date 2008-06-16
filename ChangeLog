@@ -1,3 +1,8 @@
+2008-06-16
+
+	* gtk-dialog.c: Make the menu item say "Reauthenticate buddy"
+	when the buddy is already authenticated.
+
 2008-06-15
 
 	* gtk-dialog.c: Don't try to destroy the submenu when we've
