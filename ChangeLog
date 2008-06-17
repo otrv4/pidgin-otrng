@@ -5,6 +5,9 @@
 	end up mode 0600.  Based on a patch from Caspar Clemens Mierau
 	<damokles@ubuntu.com>.
 
+	* po/de.po: Updated German translation from Michael Meier
+	<mail@code.mmsources.de>.
+
 2008-06-16
 
 	* gtk-dialog.c: Make the menu item say "Reauthenticate buddy"
