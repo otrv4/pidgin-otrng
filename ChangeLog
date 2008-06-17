@@ -1,3 +1,10 @@
+2008-06-17
+
+	* otr-plugin.c: Except on WIN32, set the umask to 0077 before
+	creating the otr.* files in the purple directory so that they
+	end up mode 0600.  Based on a patch from Caspar Clemens Mierau
+	<damokles@ubuntu.com>.
+
 2008-06-16
 
 	* gtk-dialog.c: Make the menu item say "Reauthenticate buddy"

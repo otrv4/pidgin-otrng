@@ -155,6 +155,9 @@ void otrg_plugin_create_privkey(const char *accountname,
 	const char *protocol)
 {
     OtrgDialogWaitHandle waithandle;
+#ifndef WIN32
+    mode_t mask;
+#endif  /* WIN32 */
     FILE *privf;
 
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
@@ -162,7 +165,13 @@ void otrg_plugin_create_privkey(const char *accountname,
 	fprintf(stderr, _("Out of memory building filenames!\n"));
 	return;
     }
+#ifndef WIN32
+    mask = umask (0077);
+#endif  /* WIN32 */
     privf = g_fopen(privkeyfile, "w+b");
+#ifndef WIN32
+    umask (mask);
+#endif  /* WIN32 */
     g_free(privkeyfile);
     if (!privf) {
 	fprintf(stderr, _("Could not write private key file\n"));
@@ -619,9 +628,18 @@ void otrg_plugin_disconnect(ConnContext *context)
 /* Write the fingerprints to disk. */
 void otrg_plugin_write_fingerprints(void)
 {
+#ifndef WIN32
+    mode_t mask;
+#endif  /* WIN32 */
     FILE *storef;
     gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
+#ifndef WIN32
+    mask = umask (0077);
+#endif  /* WIN32 */
     storef = g_fopen(storefile, "wb");
+#ifndef WIN32
+    umask (mask);
+#endif  /* WIN32 */
     g_free(storefile);
     if (!storef) return;
     otrl_privkey_write_fingerprints_FILEp(otrg_plugin_userstate, storef);
