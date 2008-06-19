@@ -1,3 +1,8 @@
+2008-06-19
+
+	* Makefile.static: Forgot to add tooltipmenu.o to
+	Makefile.static.  Fixed.
+
 2008-06-17
 
 	* otr-plugin.c: Except on WIN32, set the umask to 0077 before
