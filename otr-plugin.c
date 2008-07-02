@@ -337,6 +337,25 @@ static void handle_smp_event(void *opdata, OtrlSMPEvent smp_event,
     }   
 }
 
+#ifdef DUMP_RECEIVED_SYMKEY
+static void dump_data(const unsigned char *d, size_t l)
+{
+    size_t i;
+    for (i=0;i<l;++i) printf("%02x", d[i]);
+}
+
+static void received_symkey_cb(void *opdata, ConnContext *context,
+	unsigned int use, const unsigned  char *usedata,
+	size_t usedatalen, const unsigned char *symkey)
+{
+    printf("Received symkey use: %08x\nKey: ", use);
+    dump_data(symkey, OTRL_EXTRAKEY_BYTES);
+    printf("\nUsedata: ");
+    dump_data(usedata, usedatalen);
+    printf("\n\n");
+}
+#endif
+
 static OtrlMessageAppOps ui_ops = {
     policy_cb,
     create_privkey_cb,
@@ -356,7 +375,11 @@ static OtrlMessageAppOps ui_ops = {
     max_message_size_cb,
     NULL,                   /* account_name */
     NULL,                   /* account_name_free */
+#ifdef DUMP_RECEIVED_SYMKEY
+    received_symkey_cb,
+#else
     NULL,		    /* received_symkey */
+#endif
     handle_smp_event
 };
 
