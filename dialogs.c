@@ -153,9 +153,10 @@ void otrg_dialog_socialist_millionaires_q(ConnContext *context,
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(ConnContext *context, double progress_level)
+void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
+	double progress_level)
 {
-    ui_ops->update_smp(context, progress_level);
+    ui_ops->update_smp(context, smp_event, progress_level);
 }
 
 /* Call this when a context transitions to ENCRYPTED. */

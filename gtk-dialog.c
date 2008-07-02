@@ -1441,7 +1441,7 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
  * protocol.  Progress_level is a percentage, from 0.0 (aborted) to
  * 1.0 (complete).  Any other value represents an intermediate state. */
 static void otrg_gtk_dialog_update_smp(ConnContext *context,
-	double progress_level)
+	OtrlSMPEvent smp_event, double progress_level)
 {
     PurpleConversation *conv = otrg_plugin_context_to_conv(context, 0);
     GtkProgressBar *bar;
@@ -1473,7 +1473,7 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
 
-        if (context->smstate->sm_prog_state == OTRL_SMP_PROG_SUCCEEDED) {
+        if (smp_event == OTRL_SMPEVENT_SUCCESS) {
 	    if (context->active_fingerprint->trust &&
 		    context->active_fingerprint->trust[0]) {
 		gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),

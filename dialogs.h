@@ -62,7 +62,8 @@ typedef struct {
     void (*socialist_millionaires)(ConnContext *context, char *question,
 	    gboolean responder);
 
-    void (*update_smp)(ConnContext *context, double progress_level);
+    void (*update_smp)(ConnContext *context, OtrlSMPEvent smp_event,
+	    double progress_level);
 
     void (*connected)(ConnContext *context);
 
@@ -146,7 +147,8 @@ void otrg_dialog_socialist_millionaires_q(ConnContext *context,
 	char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(ConnContext *context, double progress_level);
+void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
+	double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */
 void otrg_dialog_connected(ConnContext *context);

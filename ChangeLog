@@ -1,3 +1,11 @@
+2008-07-02
+
+	* dialogs.c:
+	* dialogs.h:
+	* gtk-dialog.c:
+	* otr-plugin.c: Use the new SMP event callback instead of
+	handling the SMP state machine ourselves.
+
 2008-06-19
 
 	* Makefile.static: Forgot to add tooltipmenu.o to

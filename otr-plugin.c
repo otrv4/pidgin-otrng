@@ -308,6 +308,35 @@ static int max_message_size_cb(void *opdata, ConnContext *context)
         return *((int*)lookup_result);
 }
 
+static void handle_smp_event(void *opdata, OtrlSMPEvent smp_event, 
+        ConnContext *context, unsigned short progress_percent,
+	char *question)
+{
+    if (!context) return;
+    switch (smp_event) 
+    {
+        case OTRL_SMPEVENT_ASK_FOR_SECRET :
+            otrg_dialog_socialist_millionaires(context);
+            break;
+        case OTRL_SMPEVENT_ASK_FOR_ANSWER :
+            otrg_dialog_socialist_millionaires_q(context, question);
+            break;
+        case OTRL_SMPEVENT_CHEATED :  
+            otrg_plugin_abort_smp(context);
+	    /* FALLTHROUGH */
+        case OTRL_SMPEVENT_IN_PROGRESS :
+        case OTRL_SMPEVENT_SUCCESS : 
+        case OTRL_SMPEVENT_FAILURE :  
+        case OTRL_SMPEVENT_ABORT :  
+            otrg_dialog_update_smp(context,
+		    smp_event, ((gdouble)progress_percent)/100.0);
+            break;
+        case OTRL_SMPEVENT_ERROR :  
+            otrg_plugin_abort_smp(context);
+            break;
+    }   
+}
+
 static OtrlMessageAppOps ui_ops = {
     policy_cb,
     create_privkey_cb,
@@ -326,7 +355,9 @@ static OtrlMessageAppOps ui_ops = {
     log_message_cb,
     max_message_size_cb,
     NULL,                   /* account_name */
-    NULL                    /* account_name_free */
+    NULL,                   /* account_name_free */
+    NULL,		    /* received_symkey */
+    handle_smp_event
 };
 
 static void process_sending_im(PurpleAccount *account, char *who,
@@ -440,8 +471,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     gboolean res;
     const char *accountname;
     const char *protocol;
-    ConnContext *context;
-    NextExpectedSMP nextMsg;
 
     if (!who || !*who || !message || !*message)
         return 0;
@@ -469,75 +498,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	/* Notify the user that the other side disconnected. */
 	otrg_dialog_finished(accountname, protocol, username);
 	otrg_ui_update_keylist();
-    }
-
-    /* Keep track of our current progress in the Socialist Millionaires'
-     * Protocol. */
-    context = otrl_context_find(otrg_plugin_userstate, username,
-	    accountname, protocol, 0, NULL, NULL, NULL);
-    if (context) {
-	nextMsg = context->smstate->nextExpected;
-
-	if (context->smstate->sm_prog_state == OTRL_SMP_PROG_CHEATED) {
-	    otrg_plugin_abort_smp(context);
-	    otrg_dialog_update_smp(context, 0.0);
-	    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-	    context->smstate->sm_prog_state = OTRL_SMP_PROG_OK;
-	} else {
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1Q);
-	    if (tlv) {
-		if (nextMsg != OTRL_SMP_EXPECT1)
-		    otrg_plugin_abort_smp(context);
-		else {
-		    char *question = (char *)tlv->data;
-		    char *eoq = memchr(question, '\0', tlv->len);
-		    if (eoq) {
-			otrg_dialog_socialist_millionaires_q(context,
-				question);
-		    }
-		}
-	    }
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP1);
-	    if (tlv) {
-		if (nextMsg != OTRL_SMP_EXPECT1)
-		    otrg_plugin_abort_smp(context);
-		else {
-		    otrg_dialog_socialist_millionaires(context);
-		}
-	    }
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP2);
-	    if (tlv) {
-		if (nextMsg != OTRL_SMP_EXPECT2)
-		    otrg_plugin_abort_smp(context);
-		else {
-		    otrg_dialog_update_smp(context, 0.6);
-		    context->smstate->nextExpected = OTRL_SMP_EXPECT4;
-		}
-	    }
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP3);
-	    if (tlv) {
-		if (nextMsg != OTRL_SMP_EXPECT3)
-		    otrg_plugin_abort_smp(context);
-		else {
-		    otrg_dialog_update_smp(context, 1.0);
-		    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-		}
-	    }
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP4);
-	    if (tlv) {
-		if (nextMsg != OTRL_SMP_EXPECT4)
-		    otrg_plugin_abort_smp(context);
-		else {
-		    otrg_dialog_update_smp(context, 1.0);
-		    context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-		}
-	    }
-	    tlv = otrl_tlv_find(tlvs, OTRL_TLV_SMP_ABORT);
-	    if (tlv) {
-		otrg_dialog_update_smp(context, 0.0);
-		context->smstate->nextExpected = OTRL_SMP_EXPECT1;
-	    }
-	}
     }
 
     otrl_tlv_free(tlvs);
