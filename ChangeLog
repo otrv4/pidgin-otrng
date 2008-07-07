@@ -1,3 +1,8 @@
+2008-07-07
+
+	* gtk-conv.c: Don't delete the OTR menus if a non-foreground
+	conversation window is closed.
+
 2008-07-02
 
 	* dialogs.c:

@@ -2187,6 +2187,12 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     otrg_gtk_dialog_free_smp_data(conv);
 
     gtkconv = PIDGIN_CONVERSATION ( conv );
+
+    /* Only delete the OTR menus if we're the active conversation */
+    if (gtkconv != pidgin_conv_window_get_active_gtkconv(gtkconv->win)) {
+	return;
+    }
+
     win = pidgin_conv_get_window ( gtkconv );
     menu_list = g_hash_table_lookup ( otr_win_menus, win );
     iter = menu_list;
