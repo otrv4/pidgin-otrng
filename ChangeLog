@@ -1,3 +1,9 @@
+2008-07-10
+
+	* otr-plugin.c: Use /dev/urandom to generate keys instead of
+	/dev/random.  [Really: on non-Win32, call
+	gcry_control(GCRYCTL_ENABLE_QUICK_RANDOM, 0); before OTRL_INIT;.]
+
 2008-07-07
 
 	* gtk-conv.c: Don't delete the OTR menus if a non-foreground

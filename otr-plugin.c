@@ -973,6 +973,11 @@ __init_plugin(PurplePlugin *plugin)
     otrg_dialog_set_ui_ops(otrg_gtk_dialog_get_ui_ops());
 #endif
 
+#ifndef WIN32
+    /* Make key generation use /dev/urandom instead of /dev/random */
+    gcry_control(GCRYCTL_ENABLE_QUICK_RANDOM, 0);
+#endif
+
     /* Initialize the OTR library */
     OTRL_INIT;
 
