@@ -104,9 +104,11 @@ void otrg_dialog_notify_info(const char *accountname, const char *protocol,
  * username conversation.  Return 0 on success, non-0 on error (in which
  * case the message will be displayed inline as a received message). */
 int otrg_dialog_display_otr_message( const char *accountname,
-	const char *protocol, const char *username, const char *msg)
+	const char *protocol, const char *username, const char *msg,
+	int force_create)
 {
-    return ui_ops->display_otr_message(accountname, protocol, username, msg);
+    return ui_ops->display_otr_message(accountname, protocol, username, msg,
+					force_create);
 }
 
 /* Put up a Please Wait dialog.  This dialog can not be cancelled.

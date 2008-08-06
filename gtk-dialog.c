@@ -1017,16 +1017,14 @@ static OtrgDialogWaitHandle otrg_gtk_dialog_private_key_wait_start(
 }
 
 static int otrg_gtk_dialog_display_otr_message(const char *accountname,
-	const char *protocol, const char *username, const char *msg)
+	const char *protocol, const char *username, const char *msg,
+	int force_create)
 {
     /* See if there's a conversation window we can put this in. */
-    PurpleAccount *account;
     PurpleConversation *conv;
 
-    account = purple_accounts_find(accountname, protocol);
-    if (!account) return -1;
-
-    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username, account);
+    conv = otrg_plugin_userinfo_to_conv(accountname, protocol, username,
+		force_create);
     if (!conv) return -1;
 
     purple_conversation_write(conv, NULL, msg, PURPLE_MESSAGE_SYSTEM, time(NULL));

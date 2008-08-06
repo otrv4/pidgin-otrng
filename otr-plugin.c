@@ -254,7 +254,7 @@ static int display_otr_message_cb(void *opdata, const char *accountname,
 	const char *protocol, const char *username, const char *msg)
 {
     return otrg_dialog_display_otr_message(accountname, protocol,
-	    username, msg);
+	    username, msg, 0);
 }
 
 static void update_context_list_cb(void *opdata)

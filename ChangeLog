@@ -1,3 +1,11 @@
+2008-08-07
+
+	* otr-plugin.c:
+	* dialogs.h:
+	* dialogs.c:
+	* gtk-dialog.c: Add a force_create parameter to
+	display_otr_message.
+
 2008-07-10
 
 	* otr-plugin.c: Use /dev/urandom to generate keys instead of
