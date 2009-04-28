@@ -1,7 +1,21 @@
+2009-03-18
+
+	* po/sv.po: Swedish translation from Daniel Nylander
+	<po@danielnylander.se>
+
+2009-01-18
+
+	* po/pl.po: Polish translation from Paweł Czochański
+	<czochanski@gmail.com>
+
 2008-09-24
 
 	* po/it.po: Italian translation from Vincenzo Reale
 	<smart2128@baslug.org>.
+
+2008-08-15
+
+	* otr-plugin.c: Willy Lew's updates to reflect libotr 4.0.0 API
 
 2008-08-07
 

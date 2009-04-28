@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce configure.
 
-AC_INIT(pidgin-otr, 3.2.0)
+AC_INIT(pidgin-otr, 4.0.0)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -24,7 +24,7 @@ GETTEXT_PACKAGE=pidgin-otr
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
 
-ALL_LINGUAS="ar de es fr hu it nl ru sk"
+ALL_LINGUAS="ar de es fr hu it pl nl ru sk sv"
 AM_GLIB_GNU_GETTEXT
 
 AC_OUTPUT([Makefile po/Makefile.in])

@@ -1,7 +1,8 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2008  Ian Goldberg, Rob Smits,
- *                           Chris Alexander, Nikita Borisov
+ *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *                           Chris Alexander, Willy Lew,
+ *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -122,6 +123,48 @@ void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
     serv_send_im(connection, recipient, message, 0);
 }
 
+/* Display a notification message for a particular accountname /
+ * protocol / username conversation. */
+static void notify(void *opdata, OtrlNotifyLevel level,
+        const char *accountname, const char *protocol, const char *username,
+        const char *title, const char *primary, const char *secondary)
+{
+    PurpleNotifyMsgType purplelevel = PURPLE_NOTIFY_MSG_ERROR;
+
+    switch (level) {
+        case OTRL_NOTIFY_ERROR:
+            purplelevel = PURPLE_NOTIFY_MSG_ERROR;
+            break;
+        case OTRL_NOTIFY_WARNING:
+            purplelevel = PURPLE_NOTIFY_MSG_WARNING;
+            break;
+        case OTRL_NOTIFY_INFO:
+            purplelevel = PURPLE_NOTIFY_MSG_INFO;
+            break;
+    }
+
+    otrg_dialog_notify_message(purplelevel, accountname, protocol,
+            username, title, primary, secondary);
+}
+
+/* Display an OTR control message for a particular accountname /
+ * protocol / username conversation.  If force_create is non-zero and
+ * if the corresponding conversation window is not present, a new
+ * conversation window will be created and the message will be displayed
+ * there. Returns 0 if message is successfully displayed. */
+static int display_otr_message(void *opdata, const char *accountname,
+        const char *protocol, const char *username, const char *msg,
+        int force_create)
+{
+    return otrg_dialog_display_otr_message(accountname, protocol,
+            username, msg, force_create);
+}
+
+static void log_message(void *opdata, const char *message)
+{
+    purple_debug_info("otr", message);
+}
+
 static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
 {
     PurpleAccount *account;
@@ -135,19 +178,6 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
 
     otrg_ui_get_prefs(&prefs, account, context->username);
     return prefs.policy;
-}
-
-static const char *protocol_name_cb(void *opdata, const char *protocol)
-{
-    PurplePlugin *p = purple_find_prpl(protocol);
-    if (!p) return NULL;
-    return p->info->name;
-}
-
-static void protocol_name_free_cb(void *opdata, const char *protocol_name)
-{
-    /* Do nothing, since we didn't actually allocate any memory in
-     * protocol_name_cb. */
 }
 
 /* Generate a private key for the given accountname/protocol */
@@ -228,35 +258,6 @@ static void inject_message_cb(void *opdata, const char *accountname,
     otrg_plugin_inject_message(account, recipient, message);
 }
 
-static void notify_cb(void *opdata, OtrlNotifyLevel level,
-	const char *accountname, const char *protocol, const char *username,
-	const char *title, const char *primary, const char *secondary)
-{
-    PurpleNotifyMsgType purplelevel = PURPLE_NOTIFY_MSG_ERROR;
-
-    switch (level) {
-	case OTRL_NOTIFY_ERROR:
-	    purplelevel = PURPLE_NOTIFY_MSG_ERROR;
-	    break;
-	case OTRL_NOTIFY_WARNING:
-	    purplelevel = PURPLE_NOTIFY_MSG_WARNING;
-	    break;
-	case OTRL_NOTIFY_INFO:
-	    purplelevel = PURPLE_NOTIFY_MSG_INFO;
-	    break;
-    }
-
-    otrg_dialog_notify_message(purplelevel, accountname, protocol,
-	    username, title, primary, secondary);
-}
-
-static int display_otr_message_cb(void *opdata, const char *accountname,
-	const char *protocol, const char *username, const char *msg)
-{
-    return otrg_dialog_display_otr_message(accountname, protocol,
-	    username, msg, 0);
-}
-
 static void update_context_list_cb(void *opdata)
 {
     otrg_ui_update_keylist();
@@ -294,11 +295,6 @@ static void still_secure_cb(void *opdata, ConnContext *context, int is_reply)
     }
 }
 
-static void log_message_cb(void *opdata, const char *message)
-{
-    purple_debug_info("otr", message);
-}
-
 static int max_message_size_cb(void *opdata, ConnContext *context)
 {
     void* lookup_result = g_hash_table_lookup(mms_table, context->protocol);
@@ -308,33 +304,286 @@ static int max_message_size_cb(void *opdata, ConnContext *context)
         return *((int*)lookup_result);
 }
 
-static void handle_smp_event(void *opdata, OtrlSMPEvent smp_event, 
+static const char* otr_error_message_cb(void *opdata, ConnContext *context,
+        OtrlErrorCode err_code)
+{
+    char *err_msg = NULL;
+    switch (err_code)
+    {
+    case OTRL_ERRCODE_NONE :
+	break;
+    case OTRL_ERRCODE_ENCRYPTION_ERROR :
+        err_msg = g_strdup(_("Error occurred encrypting message."));
+        break;
+    case OTRL_ERRCODE_MSG_NOT_IN_PRIVATE :
+        if (context) {
+            err_msg = g_strdup_printf(_("You sent encrypted data to %s, who"
+                " wasn't expecting it."), context->accountname);
+        }
+        break;
+    case OTRL_ERRCODE_MSG_UNREADABLE :
+        err_msg = g_strdup(_("You transmitted an unreadable encrypted message."));
+        break;
+    case OTRL_ERRCODE_MSG_MALFORMED :
+        err_msg = g_strdup(_("You transmitted a malformed data message."));
+        break;
+    }
+    return err_msg;
+}
+
+static void otr_error_message_free_cb(void *opdata, const char *err_msg)
+{
+    if (err_msg) g_free((char*)err_msg);
+}
+
+static const char *resent_msg_prefix_cb(void *opdata, ConnContext *context)
+{
+	return g_strdup(_("[resent]"));
+}
+
+static void resent_msg_prefix_free_cb(void *opdata, const char *prefix)
+{
+	if (prefix) g_free((char*)prefix);
+}
+
+static void handle_smp_event_cb(void *opdata, OtrlSMPEvent smp_event,
         ConnContext *context, unsigned short progress_percent,
 	char *question)
 {
     if (!context) return;
-    switch (smp_event) 
+    switch (smp_event)
     {
+        case OTRL_SMPEVENT_NONE :
+	    break;
         case OTRL_SMPEVENT_ASK_FOR_SECRET :
             otrg_dialog_socialist_millionaires(context);
             break;
         case OTRL_SMPEVENT_ASK_FOR_ANSWER :
             otrg_dialog_socialist_millionaires_q(context, question);
             break;
-        case OTRL_SMPEVENT_CHEATED :  
+        case OTRL_SMPEVENT_CHEATED :
             otrg_plugin_abort_smp(context);
 	    /* FALLTHROUGH */
         case OTRL_SMPEVENT_IN_PROGRESS :
-        case OTRL_SMPEVENT_SUCCESS : 
-        case OTRL_SMPEVENT_FAILURE :  
-        case OTRL_SMPEVENT_ABORT :  
+        case OTRL_SMPEVENT_SUCCESS :
+        case OTRL_SMPEVENT_FAILURE :
+        case OTRL_SMPEVENT_ABORT :
             otrg_dialog_update_smp(context,
 		    smp_event, ((gdouble)progress_percent)/100.0);
             break;
-        case OTRL_SMPEVENT_ERROR :  
+        case OTRL_SMPEVENT_ERROR :
             otrg_plugin_abort_smp(context);
             break;
-    }   
+    }
+}
+
+static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
+        ConnContext *context, const char* message, gcry_error_t err)
+{
+    if (!context) return;
+    char *buf;
+    const char *format;
+
+    switch (msg_event)
+    {
+        case OTRL_MSGEVENT_NONE:
+	    break;
+        case OTRL_MSGEVENT_ENCRYPTION_REQUIRED:
+            if (display_otr_message(opdata, context->accountname,
+                    context->protocol, context->username, _("Attempting to start a "
+                    "private conversation..."), 1)) {
+                format = _("You attempted to send an "
+                "unencrypted message to %s");
+                buf = malloc(strlen(format) +
+                    strlen(context->username) - 1);
+                if (buf) {
+                    sprintf(buf, format, context->username);
+                    notify(opdata, OTRL_NOTIFY_WARNING, context->accountname,
+                        context->protocol, context->username, _("OTR Policy Violation"),
+                        buf,
+                        _("Unencrypted messages to this recipient are "
+                        "not allowed.  Attempting to start a private "
+                        "conversation.\n\nYour message will be "
+                        "retransmitted when the private conversation "
+                        "starts."));
+                    free(buf);
+                }
+            }
+            break;
+        case OTRL_MSGEVENT_ENCRYPTION_ERROR:
+            if (display_otr_message(opdata, context->accountname,
+                context->protocol, context->username, _("An error occurred when "
+                "encrypting your message.  The message was not sent."), 1)) {
+                notify(opdata, OTRL_NOTIFY_ERROR,
+                    context->accountname, context->protocol, context->username,
+                    _("Error encrypting message"),
+                    _("An error occurred when encrypting your message"),
+                    _("The message was not sent."));
+            }
+            break;
+        case OTRL_MSGEVENT_CONNECTION_ENDED:
+            if (display_otr_message(opdata, context->accountname,
+                context->protocol, context->username, _("Your message was not sent.  "
+                "Either end your private conversation, or restart it."), 1)) {
+                format = _("%s has already closed his/her private "
+                    "connection to you");
+                buf = malloc(strlen(format) + strlen(context->username) - 1);
+                if (buf) {
+                    sprintf(buf, format, context->username);
+                    notify(opdata, OTRL_NOTIFY_ERROR,
+                        context->accountname, context->protocol, context->username,
+                        _("Private connection closed"), buf,
+                        _("Your message was not sent.  Either close your "
+                        "private connection to him, or refresh it."));
+                    free(buf);
+                }
+            }
+            break;
+        case OTRL_MSGEVENT_SETUP_ERROR:
+            if (!err) {
+                err = GPG_ERR_INV_VALUE;
+            }
+            format = _("Error setting up private conversation: %s");
+            const char *strerr;
+
+            switch(gcry_err_code(err)) {
+                case GPG_ERR_INV_VALUE:
+                    strerr = _("Malformed message received");
+                    break;
+                default:
+                    strerr = gcry_strerror(err);
+                    break;
+            }
+            buf = malloc(strlen(format) + strlen(strerr) - 1);
+            if (buf) {
+                sprintf(buf, format, strerr);
+            }
+            if (display_otr_message(opdata, context->accountname,
+                    context->protocol, context->username, buf, 1)) {
+                notify(opdata, OTRL_NOTIFY_ERROR, context->accountname,
+                    context->protocol, context->username, "OTR error",
+                    buf, NULL);
+            }
+            free(buf);
+            break;
+        case OTRL_MSGEVENT_MSG_REFLECTED:
+            if (display_otr_message(opdata,
+                context->accountname, context->protocol,
+                context->username,
+                _("We are receiving our own OTR messages.  "
+                "You are either trying to talk to yourself, "
+                "or someone is reflecting your messages back "
+                "at you."), 1))  {
+                notify(opdata, OTRL_NOTIFY_ERROR,
+                    context->accountname, context->protocol,
+                    context->username, "OTR Error",
+                    _("We are receiving our own OTR messages."),
+                    _("You are either trying to talk to yourself, "
+                    "or someone is reflecting your messages back "
+                    "at you."));
+            }
+            break;
+        case OTRL_MSGEVENT_MSG_RESENT:
+            format = _("<b>The last message to %s was resent.</b>");
+            buf = malloc(strlen(format) +
+                strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                display_otr_message(opdata, context->accountname,
+                        context->protocol, context->username, buf, 1);
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
+            format = _("<b>The encrypted message received from %s is "
+                "unreadable, as you are not currently communicating "
+                "privately.</b>");
+            buf = malloc(strlen(format) +
+                strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                display_otr_message(opdata, context->accountname,
+                        context->protocol, context->username, buf, 1);
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
+            format = _("We received an unreadable "
+                "encrypted message from %s.");
+            buf = malloc(strlen(format) + strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                if (display_otr_message(opdata,
+                    context->accountname, context->protocol,
+                    context->username, buf, 1)) {
+                    notify(opdata, OTRL_NOTIFY_ERROR,
+                        context->accountname, context->protocol,
+                        context->username, "OTR Error", buf, NULL);
+                }
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
+            format =  _("We received a malformed data "
+                "message from %s.");
+            buf = malloc(strlen(format) + strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                if (display_otr_message(opdata,
+                    context->accountname, context->protocol,
+                    context->username, buf, 1)) {
+                    notify(opdata, OTRL_NOTIFY_ERROR,
+                        context->accountname, context->protocol,
+                        context->username, "OTR Error", buf, NULL);
+                }
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_LOG_HEARTBEAT_RCVD:
+            format = _("Heartbeat received from %s.\n");
+            buf = malloc(strlen(format) + strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                log_message(opdata, buf);
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_LOG_HEARTBEAT_SENT:
+            format = _("Heartbeat sent to %s.\n");
+            buf = malloc(strlen(format) + strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                log_message(opdata, buf);
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_GENERAL_ERR:
+            display_otr_message(opdata, context->accountname,
+                    context->protocol, context->username, message, 1);
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
+            format = _("<b>The following message received "
+                "from %s was <i>not</i> encrypted: [</b>%s<b>]</b>");
+            buf = malloc(strlen(format) + strlen(context->username)
+                + strlen(message) - 3);
+                /* Remove "%s%s", add username + message + '\0' */
+            if (buf) {
+                sprintf(buf, format, context->username, message);
+                display_otr_message(opdata, context->accountname,
+                    context->protocol, context->username, buf, 1);
+                free(buf);
+            }
+            break;
+        case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
+            format = _("Unrecognized OTR message received from %s.\n");
+            buf = malloc(strlen(format) + strlen(context->username) - 1);
+            if (buf) {
+                sprintf(buf, format, context->username);
+                log_message(opdata, buf);
+                free(buf);
+            }
+            break;
+    }
 }
 
 #ifdef DUMP_RECEIVED_SYMKEY
@@ -361,17 +610,12 @@ static OtrlMessageAppOps ui_ops = {
     create_privkey_cb,
     is_logged_in_cb,
     inject_message_cb,
-    notify_cb,
-    display_otr_message_cb,
     update_context_list_cb,
-    protocol_name_cb,
-    protocol_name_free_cb,
     confirm_fingerprint_cb,
     write_fingerprints_cb,
     gone_secure_cb,
     gone_insecure_cb,
     still_secure_cb,
-    log_message_cb,
     max_message_size_cb,
     NULL,                   /* account_name */
     NULL,                   /* account_name_free */
@@ -380,7 +624,12 @@ static OtrlMessageAppOps ui_ops = {
 #else
     NULL,		    /* received_symkey */
 #endif
-    handle_smp_event
+    otr_error_message_cb,
+    otr_error_message_free_cb,
+    resent_msg_prefix_cb,
+    resent_msg_prefix_free_cb,
+    handle_smp_event_cb,
+    handle_msg_event_cb
 };
 
 static void process_sending_im(PurpleAccount *account, char *who,
@@ -398,26 +647,17 @@ static void process_sending_im(PurpleAccount *account, char *who,
     username = strdup(purple_normalize(account, who));
 
     err = otrl_message_sending(otrg_plugin_userstate, &ui_ops, NULL,
-	    accountname, protocol, username, *message, NULL, &newmessage,
-	    NULL, NULL);
+	    accountname, protocol, username, message, NULL, &newmessage,
+	    OTRL_FRAGMENT_SEND_ALL_BUT_LAST, NULL, NULL, NULL, NULL);
 
-    if (err && newmessage == NULL) {
-	/* Be *sure* not to send out plaintext */
-	char *ourm = strdup("");
-	free(*message);
-	*message = ourm;
-    } else if (newmessage) {
-	/* Fragment the message if necessary, and send all but the last
-	 * fragment over the network.  Pidgin will send the last
-	 * fragment for us. */
-	ConnContext *context = otrl_context_find(otrg_plugin_userstate,
-		username, accountname, protocol, 0, NULL, NULL, NULL);
-	free(*message);
-	*message = NULL;
-	err = otrl_message_fragment_and_send(&ui_ops, NULL, context,
-		newmessage, OTRL_FRAGMENT_SEND_ALL_BUT_LAST, message);
-	otrl_message_free(newmessage);
+    if (err) {
+    	/* Do not send out plain text */
+    	char *ourm = strdup("");
+    	free(*message);
+    	*message = ourm;
     }
+
+	otrl_message_free(newmessage);
     free(username);
 }
 
@@ -473,18 +713,18 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     const char *username, *accountname;
     char *msg;
     OtrgUiPrefs prefs;
-    
+
     account = purple_conversation_get_account(conv);
     accountname = purple_account_get_username(account);
     username = purple_conversation_get_name(conv);
-    
+
     otrg_ui_get_prefs(&prefs, account, username);
     msg = otrl_proto_default_query_msg(accountname, prefs.policy);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv2?");
     free(msg);
 }
 
-static gboolean process_receiving_im(PurpleAccount *account, char **who, 
+static gboolean process_receiving_im(PurpleAccount *account, char **who,
         char **message, int *flags, void *m)
 {
     char *newmessage = NULL;
@@ -504,7 +744,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     res = otrl_message_receiving(otrg_plugin_userstate, &ui_ops, NULL,
 	    accountname, protocol, username, *message,
-	    &newmessage, &tlvs, NULL, NULL);
+	    &newmessage, &tlvs, NULL, NULL, NULL, NULL);
 
     if (newmessage) {
 	char *ourm = malloc(strlen(newmessage) + 1);
@@ -742,7 +982,7 @@ static void mms_read_FILEp(FILE *mmsf, GHashTable *ght)
 	if (!eol) eol = strchr(mms, '\n');
 	if (!eol) continue;
 	*eol = '\0';
-	
+
 	prot_in_table = strdup(protocol);
 	mms_in_table = malloc(sizeof(int));
 	*mms_in_table = atoi(mms);
@@ -950,7 +1190,7 @@ static PurplePluginInfo info =
 	NULL,                                             /* description    */
 	                                                  /* author         */
 	"Ian Goldberg, Rob Smits,\n"
-	    "\t\t\tChris Alexander, Nikita Borisov\n"
+	    "\t\t\tChris Alexander, Willy Lew, Nikita Borisov\n"
 	    "\t\t\t<otr@cypherpunks.ca>",
 	"http://otr.cypherpunks.ca/",                     /* homepage       */
 
