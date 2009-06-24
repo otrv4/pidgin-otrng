@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: pidgin-otr 3.1.0.fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-07-24 15:47-0400\n"
-"PO-Revision-Date: 2007-07-28 10_07-0400\n"
+"PO-Revision-Date: 2009-06-23 18:33+0200\n"
 "Last-Translator: Joel Reardon <jreardon@cs.uwaterloo.ca>\n"
 "Language-Team: Joel Reardon <jreardon@cs.uwaterloo.ca>\n"
 "MIME-Version: 1.0\n"
@@ -134,7 +134,7 @@ msgstr "Privé"
 
 #: ../gtk-dialog.c:1367 ../gtk-ui.c:74
 msgid "Unverified"
-msgstr "Non-verifié"
+msgstr "Non-vérifié"
 
 #: ../gtk-dialog.c:1368 ../gtk-ui.c:73
 msgid "Not private"
@@ -166,7 +166,7 @@ msgstr "J'ai"
 
 #: ../gtk-dialog.c:1558
 msgid " verified that this is in fact the correct"
-msgstr " verifié que c'est en effet la propre"
+msgstr " vérifié que c'est en effet la propre"
 
 #: ../gtk-dialog.c:1567
 #, c-format
@@ -186,8 +186,7 @@ msgstr "Pour vérifier l'empreinte, contactez votre contact par un <i>autre</i> 
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
-msgstr "Si les empreintes sont identiques, vous devriez indiquer en haut que "
-"vous <b>avez</b> verifié l'empreinte."
+msgstr "Si les empreintes sont identiques, vous devriez indiquer en haut que vous <b>avez</b> vérifié l'empreinte."
 
 #: ../gtk-dialog.c:1585
 msgid ""
@@ -277,7 +276,7 @@ msgstr "Une conversation privée avec %s a commencé.%s"
 #: ../gtk-dialog.c:1748
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
-msgstr "Une Conversation <a href=\"%s%s\">non-verifiée</a> avec %%s a commencé.%%s"
+msgstr "Une Conversation <a href=\"%s%s\">non-vérifiée</a> avec %%s a commencé.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
@@ -311,7 +310,7 @@ msgstr "La conversation privée avec %s a été rafraîchie avec succès.%s"
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
-msgstr "La conversation <a href=\"%s%s\">non-verifiée</a> avec %%s a été rafraîchie avec succès.%%s"
+msgstr "La conversation <a href=\"%s%s\">non-vérifiée</a> avec %%s a été rafraîchie avec succès.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
