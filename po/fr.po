@@ -553,12 +553,12 @@ msgstr "Non connecté"
 #: ../otr-plugin.c:162
 #, c-format
 msgid "Out of memory building filenames!\n"
-msgstr "Manque de mémoire lors de la construction des noms de fichiers !"
+msgstr "Manque de mémoire lors de la construction des noms de fichiers !\n"
 
 #: ../otr-plugin.c:168
 #, c-format
 msgid "Could not write private key file\n"
-msgstr "Échec lors de l'écriture du fichier des clés privées"
+msgstr "Échec lors de l'écriture du fichier des clés privées\n"
 
 #: ../otr-plugin.c:211
 #, c-format
