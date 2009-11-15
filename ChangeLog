@@ -1,3 +1,9 @@
+2009-11-14
+
+	* gtk-dialog.c (add_to_vbox_verify_fingerprint): Make
+	the fingerprints in the manual authentication dialog
+	selectable (but not selected by default).
+
 2009-08-24
 
 	* po/fr.po: Fixed \n errors

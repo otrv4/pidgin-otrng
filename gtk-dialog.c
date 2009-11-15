@@ -644,7 +644,11 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox, ConnContext *context
     label = gtk_label_new(NULL);
     
     gtk_label_set_markup(GTK_LABEL(label), label_text);
-    gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+    /* Make the label containing the fingerprints selectable, but
+     * not auto-selected. */
+    gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+    g_object_set(label, "can-focus", FALSE, NULL);
+
     g_free(label_text);
     gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
