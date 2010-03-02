@@ -1,3 +1,8 @@
+2010-03-02
+
+	* po/vi.po: Vietnamese translation from Lyndon Johnson
+	<lyndon.johnson58@gmail.com>
+
 2009-11-14
 
 	* gtk-dialog.c (add_to_vbox_verify_fingerprint): Make

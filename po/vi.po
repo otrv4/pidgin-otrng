@@ -1,0 +1,591 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pidgin-otr 3.2.0.vi\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-11 22:16+0100\n"
+"PO-Revision-Date: 2010-03-02 22:30+0930\n"
+"Last-Translator: Lyndon Johnson <lyndon.johnson58@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../gtk-dialog.c:291
+#: ../gtk-dialog.c:1085
+#: ../gtk-dialog.c:1089
+#: ../gtk-dialog.c:1518
+#: ../gtk-dialog.c:1621
+#: ../gtk-dialog.c:1686
+#: ../gtk-dialog.c:2130
+msgid "?lang=en"
+msgstr "?lang=vi"
+
+#: ../gtk-dialog.c:439
+msgid "Your buddy is attempting to determine if he or she is really talking to you, or if it's someone pretending to be you.  Your buddy has asked a question, indicated below.  To authenticate to your buddy, enter the answer and click OK."
+msgstr "Bạn chát của bạn đang thử xác định nếu họ đang nói chuyện với bạn, hoặc nếu ai đó đang giả là bạn. Bạn chát của bạn có một câu hỏi được cho thấy bên dưới. Để chứng minh với bạn chát của bạn, hảy bỏ vào câu trả lời và nhấn OK."
+
+#: ../gtk-dialog.c:446
+msgid "To authenticate using a question, pick a question whose answer is known only to you and your buddy.  Enter this question and this answer, then wait for your buddy to enter the answer too.  If the answers don't match, then you may be talking to an imposter."
+msgstr "Để chứng thật bằng cách dùng một câu hỏi, hãy chọn một câu hỏi mà chỉ bạn và bạn chát của bạn biết câu trả lời. Hãy nhập vào câu hỏi và câu trả lời này, rồi chờ cho bạn chát nhập câu trả lời luôn. Nếu câu trả lời không trùng hợp, thì bạn có thể đang nói chuyện với một người mạo nhận."
+
+#: ../gtk-dialog.c:464
+msgid "This is the question asked by your buddy:"
+msgstr "Đây là câu hỏi để hỏi bạn chát của bạn:"
+
+#: ../gtk-dialog.c:467
+msgid "Enter question here:"
+msgstr "Nhập câu hỏi vào đây:"
+
+#: ../gtk-dialog.c:498
+#: ../gtk-dialog.c:582
+msgid "This buddy is already authenticated."
+msgstr "Bạn chát này đả được chứng thật rồi."
+
+#: ../gtk-dialog.c:510
+msgid "Enter secret answer here (case sensitive):"
+msgstr "Nhập vào câu trả lời bí mật ở đây (so sánh chữ hoa/thường):"
+
+#: ../gtk-dialog.c:551
+msgid "To authenticate, pick a secret known only to you and your buddy.  Enter this secret, then wait for your buddy to enter it too.  If the secrets don't match, then you may be talking to an imposter."
+msgstr "Để chứng thật, hãy chọn một bí mật mà chỉ bạn và bạn chát của bạn biết mà thôi. Nhập bí mật vào, rồi chờ cho bạn chát trả lời. Nếu những điều bí mật không trùng hợp, thì bạn đang có thể nói chuyện với một người giả mạo."
+
+#: ../gtk-dialog.c:565
+msgid "Enter secret here:"
+msgstr "Nhập bí mật ở đây:"
+
+#: ../gtk-dialog.c:616
+#: ../gtk-dialog.c:1379
+msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authenticated channel, such as the telephone or GPG-signed email.  Each of you should tell your fingerprint to the other."
+msgstr "Để kiểm chứng dấu tay, hãy liên lạc bạn chát của bạn qua vài <i>other</i> đường dây đã được chứng thật, như là điện thoại hoặc thư điện bảo mật (GPG-signed email). Mỗi người nên nói dấu tay của mình cho người kia. "
+
+#: ../gtk-dialog.c:620
+#: ../gtk-dialog.c:1383
+msgid "If everything matches up, you should indicate in the above dialog that you <b>have</b> verified the fingerprint."
+msgstr "Nếu mọi thứ đều phù hợp, bạn nên ra dấu trong cuộc đối thoại bên trên rằng bạn <b>have</b> đã kiểm chứng dấu tay."
+
+#: ../gtk-dialog.c:631
+#: ../gtk-dialog.c:1368
+msgid "[none]"
+msgstr "[none]"
+
+#: ../gtk-dialog.c:638
+#: ../gtk-dialog.c:996
+#: ../gtk-dialog.c:1375
+#: ../gtk-dialog.c:1426
+#: ../gtk-ui.c:181
+#: ../otr-plugin.c:116
+#: ../otr-plugin.c:213
+#: ../ui.c:111
+msgid "Unknown"
+msgstr "Không rõ"
+
+#: ../gtk-dialog.c:639
+#, c-format
+msgid ""
+"Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"Dấu tay cho bạn, %s (%s):\n"
+"%s\n"
+"\n"
+"Dấu tay có ý xấu cho %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:691
+msgid "How would you like to authenticate your buddy?"
+msgstr "Bạn mong muốn chứng thật bạn chát của bạn như thế nào? "
+
+#: ../gtk-dialog.c:700
+msgid "Question and answer"
+msgstr "Câu hỏi và trả lời"
+
+#: ../gtk-dialog.c:703
+msgid "Shared secret"
+msgstr "Bí mật chung"
+
+#: ../gtk-dialog.c:706
+msgid "Manual fingerprint verification"
+msgstr "Chứng thật dấu tay tự làm"
+
+#: ../gtk-dialog.c:749
+msgid "_Authenticate"
+msgstr "_Chứng thật"
+
+#: ../gtk-dialog.c:782
+msgid "Authenticating a buddy helps ensure that the person you are talking to is who he or she claims to be."
+msgstr "Sự chứng thật một bạn chát giúp bảo đảm rằng người bạn đang nói chuyện đúng là người tự xưng họ là ai."
+
+#. Translators: you are asked to authenticate yourself
+#: ../gtk-dialog.c:891
+msgid "Authenticating to Buddy"
+msgstr "Chứng thật tới bạn chát"
+
+#. Translators: you asked your buddy to authenticate him/herself
+#: ../gtk-dialog.c:893
+msgid "Authenticating Buddy"
+msgstr "Chứng thật bạn chát"
+
+#: ../gtk-dialog.c:920
+#, c-format
+msgid "Authenticating to %s"
+msgstr "Chứng thật tới %s"
+
+#: ../gtk-dialog.c:921
+#, c-format
+msgid "Authenticating %s"
+msgstr "Chứng thật %s"
+
+#: ../gtk-dialog.c:954
+msgid "Waiting for buddy..."
+msgstr "Đang chờ bạn chát ..."
+
+#: ../gtk-dialog.c:987
+msgid "Generating private key"
+msgstr "Đang tạo ra chìa khoá riêng"
+
+#: ../gtk-dialog.c:988
+msgid "Please wait"
+msgstr "Vui lòng chờ"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:999
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "Đang tạo ra chìa khóa riêng cho %s (%s)..."
+
+#: ../gtk-dialog.c:1044
+#, c-format
+msgid "%s Done."
+msgstr "%s Đã làm xong."
+
+#: ../gtk-dialog.c:1083
+#, c-format
+msgid "%s is contacting you from an unrecognized computer.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "%s đang liên lạc bạn từ một máy điện toán không được thừa nhận. Bạn nên <a href=\"%s%s\">chứng thật</a> bạn chát này."
+
+#: ../gtk-dialog.c:1087
+#, c-format
+msgid "%s has not been authenticated yet.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "%s chưa được chứng thật. Bạn nên <a href=\"%s%s\">chứng thật</a> bạn chát này."
+
+#: ../gtk-dialog.c:1150
+#: ../gtk-dialog.c:1181
+#: ../gtk-dialog.c:1853
+#: ../gtk-dialog.c:2126
+#: ../gtk-ui.c:82
+msgid "Finished"
+msgstr "Đã xong"
+
+#: ../gtk-dialog.c:1151
+#: ../gtk-dialog.c:1182
+#: ../gtk-dialog.c:1850
+#: ../gtk-dialog.c:2123
+#: ../gtk-ui.c:81
+msgid "Private"
+msgstr "Riêng tư"
+
+#: ../gtk-dialog.c:1152
+#: ../gtk-dialog.c:1183
+#: ../gtk-dialog.c:1847
+#: ../gtk-dialog.c:2120
+#: ../gtk-ui.c:80
+msgid "Unverified"
+msgstr "Chưa được kiểm chứng"
+
+#: ../gtk-dialog.c:1153
+#: ../gtk-dialog.c:1184
+#: ../gtk-ui.c:79
+msgid "Not private"
+msgstr "Không riêng tư"
+
+#: ../gtk-dialog.c:1156
+msgid "Start a private conversation"
+msgstr "Bắt đầu một cuộc đàm thoại riêng tư"
+
+#: ../gtk-dialog.c:1157
+msgid "Refresh the private conversation"
+msgstr "Cập nhật một cuộc đàm thoại riêng tư"
+
+#: ../gtk-dialog.c:1162
+#: ../gtk-dialog.c:1802
+#: ../gtk-dialog.c:1897
+msgid "Start _private conversation"
+msgstr "Bắt đầu cuộc đàm thoại _riêng tư"
+
+#: ../gtk-dialog.c:1163
+#: ../gtk-dialog.c:1803
+msgid "Refresh _private conversation"
+msgstr "Cập nhật cuộc đàm thoại _riêng tư"
+
+#: ../gtk-dialog.c:1187
+msgid "OTR"
+msgstr "Không được ghi lại"
+
+#. Translators: the following four messages should give alternative sentences.
+#. The user selects the first or second message in a combo box;
+#. the third message, a new line, a fingerprint, a new line, and
+#. the fourth message will follow it.
+#: ../gtk-dialog.c:1322
+msgid "I have not"
+msgstr "Tôi đã không"
+
+#. 2nd message
+#: ../gtk-dialog.c:1324
+msgid "I have"
+msgstr "Tôi đã"
+
+#. 3rd message
+#: ../gtk-dialog.c:1327
+msgid " verified that this is in fact the correct"
+msgstr " kiểm chứng rằng điều này trên thực tế là đúng"
+
+#. 4th message
+#: ../gtk-dialog.c:1337
+#, c-format
+msgid "fingerprint for %s."
+msgstr "dấu tay cho %s."
+
+#: ../gtk-dialog.c:1364
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "Kiểm chứng dấu tay cho %s"
+
+#: ../gtk-dialog.c:1376
+#, c-format
+msgid ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Dấu tay cho bạn, %s (%s):\n"
+"%s\n"
+"\n"
+"Dấu tay có ý xấu cho %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1389
+#: ../gtk-ui.c:782
+msgid "Verify fingerprint"
+msgstr "Kiểm chứng dấu tay"
+
+#: ../gtk-dialog.c:1416
+#, c-format
+msgid "Authentication from %s"
+msgstr "Chứng thật từ %s"
+
+#: ../gtk-dialog.c:1419
+#, c-format
+msgid "Authenticate %s"
+msgstr "Chứng thật %s"
+
+#: ../gtk-dialog.c:1429
+msgid "Authenticate Buddy"
+msgstr "Chứng thật người bạn"
+
+#: ../gtk-dialog.c:1460
+msgid "An error occurred during authentication."
+msgstr "Một lỗi đã xảy ra trong lúc chứng thật."
+
+#: ../gtk-dialog.c:1475
+msgid "Authentication successful."
+msgstr "Chứng thật thàng công."
+
+#: ../gtk-dialog.c:1478
+msgid "Your buddy has successfully authenticated you.  You may want to authenticate your buddy as well by asking your own question."
+msgstr "Bạn chát của bạn đã chứng thật bạn thành công. Bạn cũng có thể muốn chứng thật bạn chát của bạn bằng cách hỏi câu hỏi riêng của bạn."
+
+#: ../gtk-dialog.c:1484
+msgid "Authentication failed."
+msgstr "Chứng thật thất bại."
+
+#: ../gtk-dialog.c:1512
+#, c-format
+msgid "Private conversation with %s started.%s"
+msgstr "Đàm thoại riêng với %s đã bắt đầu.%s"
+
+#: ../gtk-dialog.c:1516
+#, c-format
+msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s"
+msgstr "<a href=\"%s%s\">Cuộc đàm thoại</a> chưa được kiểm chứng với %%s đã bắt đầu.%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1524
+#, c-format
+msgid "Not private conversation with %s started.%s"
+msgstr "Cuộc đàm thoại chung với %s đã bắt đầu.%s"
+
+#: ../gtk-dialog.c:1530
+#: ../gtk-dialog.c:1634
+msgid "  Warning: using old protocol version 1."
+msgstr "Cảnh báo: đang dùng giao thức phiên bản 1."
+
+#: ../gtk-dialog.c:1550
+#, c-format
+msgid "Private conversation with %s lost."
+msgstr "Đàm thoại riêng với %s đã mất."
+
+#: ../gtk-dialog.c:1587
+#, c-format
+msgid "%s has ended his/her private conversation with you; you should do the same."
+msgstr "%s đã kết thúc cuộc đàm thoại của anh ấy hay cô ấy với bạn; bạn cũng nên làm như vậy. "
+
+#: ../gtk-dialog.c:1613
+#, c-format
+msgid "Successfully refreshed the private conversation with %s.%s"
+msgstr "Đã cập nhật thành công cuộc đàm thoại riêng với %s.%s"
+
+#: ../gtk-dialog.c:1618
+#, c-format
+msgid "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with %%s.%%s"
+msgstr "Đã cập nhật thành công <a href=\"%s%s\">cuộc đàm thoại</a> chưa được kiểm chứng với %%s.%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1627
+#, c-format
+msgid "Successfully refreshed the not private conversation with %s.%s"
+msgstr "Đã cập nhật thành công cuộc đàm thoại chung với %s.%s"
+
+#: ../gtk-dialog.c:1659
+#, c-format
+msgid "Attempting to refresh the private conversation with %s..."
+msgstr "Đang thử cập nhật cuộc đàm thoại riêng với %s..."
+
+#: ../gtk-dialog.c:1661
+#, c-format
+msgid "Attempting to start a private conversation with %s..."
+msgstr "Đang thử bắt đầu cuộc đàm thoại riêng với %s..."
+
+#: ../gtk-dialog.c:1844
+#: ../gtk-dialog.c:2117
+msgid "Not Private"
+msgstr "Không riêng tư"
+
+#: ../gtk-dialog.c:1866
+#: ../gtk-dialog.c:2338
+msgid "_What's this?"
+msgstr "_Đây lài gì đây?"
+
+#: ../gtk-dialog.c:1898
+#: ../gtk-dialog.c:2303
+msgid "_End private conversation"
+msgstr "_Kết thúc cuộc đàm thoại riêng tư"
+
+#.
+#. * Don't show the Verify fingerprint menu option any more.  You can
+#. * still get to the dialog through Authenticate connection ->
+#. * Advanced...
+#. *
+#. menuverf = gtk_menu_item_new_with_mnemonic(_("_Verify fingerprint"));
+#. gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
+#. gtk_widget_show(menuverf);
+#.
+#: ../gtk-dialog.c:1899
+#: ../gtk-dialog.c:2321
+msgid "_Authenticate buddy"
+msgstr "_Chứng thật người bạn"
+
+#: ../gtk-dialog.c:2113
+#, c-format
+msgid "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</a>"
+msgstr "Trạng thái riêng tư của cuộc đàm thoại hiện tại bây giờ là: <a href=\"%s%s\">%s</a>"
+
+#: ../gtk-dialog.c:2276
+msgid "OTR:"
+msgstr "Không được ghi lại:"
+
+#: ../gtk-dialog.c:2296
+msgid "OTR Messaging"
+msgstr "Thông điệp Không được ghi lại"
+
+#: ../gtk-ui.c:102
+#, c-format
+msgid "Fingerprint: %.80s"
+msgstr "Dấu tay: %.80s"
+
+#: ../gtk-ui.c:106
+#, c-format
+msgid "No key present"
+msgstr "Không có chìa khoá hiện tại"
+
+#: ../gtk-ui.c:111
+#, c-format
+msgid "No account available"
+msgstr "Không có sẵn tài khoản"
+
+#: ../gtk-ui.c:171
+msgid "Unused"
+msgstr "Không sử dụng"
+
+#: ../gtk-ui.c:177
+msgid "Yes"
+msgstr "Có"
+
+#: ../gtk-ui.c:177
+msgid "No"
+msgstr "Không"
+
+#: ../gtk-ui.c:403
+msgid "Enable private messaging"
+msgstr "Cho phép thông điệp riêng tư"
+
+#: ../gtk-ui.c:405
+msgid "Automatically initiate private messaging"
+msgstr "Bắt đầu thông điệp riêng tư "
+
+#: ../gtk-ui.c:407
+msgid "Require private messaging"
+msgstr "Đòi hỏi thông điệp riêng tư"
+
+#: ../gtk-ui.c:410
+msgid "Don't log OTR conversations"
+msgstr "Đừng ghi lưu những đàm thoại OTR "
+
+#: ../gtk-ui.c:454
+msgid "Show OTR button"
+msgstr "Chỉ nút OTR"
+
+#: ../gtk-ui.c:457
+msgid "Show OTR button in toolbar"
+msgstr "Hiện nút OTR trên thanh công cụ "
+
+#: ../gtk-ui.c:601
+msgid "My private keys"
+msgstr "Những chìa khóa riêng của tôi"
+
+#: ../gtk-ui.c:610
+msgid "Key for account:"
+msgstr "Chìa khóa cho tài khỏan"
+
+#: ../gtk-ui.c:635
+msgid "Generate"
+msgstr "Tạo ra"
+
+#: ../gtk-ui.c:676
+msgid "Default OTR Settings"
+msgstr "Những thiết lập OTR mặc định"
+
+#: ../gtk-ui.c:703
+msgid "OTR UI Options"
+msgstr "Tuỳ chọn OTR UI"
+
+#: ../gtk-ui.c:726
+msgid "Screenname"
+msgstr "Tên màn hình"
+
+#: ../gtk-ui.c:727
+msgid "Status"
+msgstr "Trạng thái"
+
+#: ../gtk-ui.c:728
+msgid "Verified"
+msgstr "Đã được kiểm chứng"
+
+#: ../gtk-ui.c:729
+msgid "Fingerprint"
+msgstr "Dấu tay"
+
+#: ../gtk-ui.c:730
+msgid "Account"
+msgstr "Tài Khoản"
+
+#: ../gtk-ui.c:766
+msgid "Start private connection"
+msgstr "Bắt đầu kết nối riêng tư"
+
+#: ../gtk-ui.c:774
+msgid "End private connection"
+msgstr "Kết thúc kết nối riêng tư"
+
+#: ../gtk-ui.c:790
+msgid "Forget fingerprint"
+msgstr "Quên dấu tay"
+
+#: ../gtk-ui.c:841
+msgid "Config"
+msgstr "Cấu hình"
+
+#: ../gtk-ui.c:843
+msgid "Known fingerprints"
+msgstr "Những dấu tay đã biết"
+
+#: ../gtk-ui.c:941
+#: ../otr-plugin.c:606
+msgid "OTR Settings"
+msgstr "Những thiết lập OTR"
+
+#. Set the title
+#: ../gtk-ui.c:959
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "Những thiết lập OTR cho %s"
+
+#. Make the cascaded checkboxes
+#: ../gtk-ui.c:976
+msgid "Use default OTR settings for this buddy"
+msgstr "Dùng những thiết lập OTR mặc định cho bạn chát này"
+
+#: ../otr-plugin.c:114
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "Hiện tại bạn không được kết nối tới tài khoản %s(%s)."
+
+#: ../otr-plugin.c:118
+msgid "Not connected"
+msgstr "Không được kết nối"
+
+#: ../otr-plugin.c:162
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "Hết bộ nhớ để tạo ra những tập tin!\n"
+
+#: ../otr-plugin.c:168
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "Không thể viết vào tập tin chìa khóa riêng\n"
+
+#: ../otr-plugin.c:211
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "Tài khoản không rõ %s (%s)."
+
+#: ../otr-plugin.c:215
+msgid "Unknown account"
+msgstr "Tài khoản không rõ"
+
+#: ../otr-plugin.c:983
+msgid "Off-the-Record Messaging"
+msgstr "Thông điệp Không được ghi lại"
+
+#: ../otr-plugin.c:984
+msgid "Provides private and secure conversations"
+msgstr "Cung cấp những cuộc đàm thoại riêng tư và bảo mật"
+
+#: ../otr-plugin.c:985
+msgid "Preserves the privacy of IM communications by providing encryption, authentication, deniability, and perfect forward secrecy."
+msgstr "Bảo tồn sự riêng tư của nhừng thông tin IM do cung cấp mật mã, sự chứng thật, khả năng từ chối, và bí mật hoàn hảo."
+
+#: ../ui.c:109
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "Tài khoản %s(%s) không thể tìm thấy được"
+
+#: ../ui.c:113
+msgid "Account not found"
+msgstr "Tài khoản không tìm thấy được"
+
