@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
@@ -57,13 +57,13 @@ typedef struct _TooltipMenu                          TooltipMenu;
 typedef struct _TooltipMenuClass             TooltipMenuClass;
 
 struct _TooltipMenu {
-        GtkMenuItem gparent;                                    /**< The parent instance */
-        GtkWidget *tray;                                                /**< The tray */
-        GtkTooltips *tooltips;                                  /**< Tooltips */
+	GtkMenuItem gparent;                                    /**< The parent instance */
+	GtkWidget *tray;                                                /**< The tray */
+	GtkTooltips *tooltips;                                  /**< Tooltips */
 };
 
 struct _TooltipMenuClass {
-        GtkMenuItemClass gparent;                               /**< The parent class */
+	GtkMenuItemClass gparent;                               /**< The parent class */
 };
 
 G_BEGIN_DECLS

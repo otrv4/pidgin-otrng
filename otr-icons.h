@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
@@ -32,9 +32,9 @@
 #pragma align 4 (not_private_pixbuf)
 #endif
 #ifdef __GNUC__
-static const guint8 not_private_pixbuf[] __attribute__ ((__aligned__ (4))) = 
+static const guint8 not_private_pixbuf[] __attribute__ ((__aligned__ (4))) =
 #else
-static const guint8 not_private_pixbuf[] = 
+static const guint8 not_private_pixbuf[] =
 #endif
 { ""
   /* Pixbuf magic (0x47646b50) */
@@ -153,9 +153,9 @@ static const char not_private_png[] =
 #pragma align 4 (unverified_pixbuf)
 #endif
 #ifdef __GNUC__
-static const guint8 unverified_pixbuf[] __attribute__ ((__aligned__ (4))) = 
+static const guint8 unverified_pixbuf[] __attribute__ ((__aligned__ (4))) =
 #else
-static const guint8 unverified_pixbuf[] = 
+static const guint8 unverified_pixbuf[] =
 #endif
 { ""
   /* Pixbuf magic (0x47646b50) */
@@ -270,9 +270,9 @@ static const char unverified_png[] =
 #pragma align 4 (private_pixbuf)
 #endif
 #ifdef __GNUC__
-static const guint8 private_pixbuf[] __attribute__ ((__aligned__ (4))) = 
+static const guint8 private_pixbuf[] __attribute__ ((__aligned__ (4))) =
 #else
-static const guint8 private_pixbuf[] = 
+static const guint8 private_pixbuf[] =
 #endif
 { ""
   /* Pixbuf magic (0x47646b50) */
@@ -387,9 +387,9 @@ static const char private_png[] =
 #pragma align 4 (finished_pixbuf)
 #endif
 #ifdef __GNUC__
-static const guint8 finished_pixbuf[] __attribute__ ((__aligned__ (4))) = 
+static const guint8 finished_pixbuf[] __attribute__ ((__aligned__ (4))) =
 #else
-static const guint8 finished_pixbuf[] = 
+static const guint8 finished_pixbuf[] =
 #endif
 { ""
   /* Pixbuf magic (0x47646b50) */

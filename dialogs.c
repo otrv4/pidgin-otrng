@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
@@ -109,7 +109,7 @@ int otrg_dialog_display_otr_message( const char *accountname,
 	int force_create)
 {
     return ui_ops->display_otr_message(accountname, protocol, username, msg,
-					force_create);
+	    force_create);
 }
 
 /* Put up a Please Wait dialog.  This dialog can not be cancelled.

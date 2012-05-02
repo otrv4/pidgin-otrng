@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
@@ -99,52 +99,59 @@ void otrg_ui_connect_connection(ConnContext *context)
     /* Send an OTR Query to the other side. */
     PurpleAccount *account;
     char *msg;
-	
+
     /* Don't do this if we're already ENCRYPTED */
     if (context == NULL || context->msgstate == OTRL_MSGSTATE_ENCRYPTED)
 	return;
-	
+
     account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) {
 	PurplePlugin *p = purple_find_prpl(context->protocol);
 	msg = g_strdup_printf(_("Account %s (%s) could not be found"),
-		  context->accountname,
-		  (p && p->info->name) ? p->info->name : _("Unknown"));
+		context->accountname,
+		(p && p->info->name) ? p->info->name : _("Unknown"));
 	otrg_dialog_notify_error(context->accountname, context->protocol,
 		context->username, _("Account not found"), msg, NULL);
 	g_free(msg);
 	return;
     }
-    otrg_plugin_send_default_query(context, account);	
+    otrg_plugin_send_default_query(context, account);
 }
 
 /* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(ConnContext *context)
 {
-    /* Don't do anything with PLAINTEXT fingerprints */
-    if (context == NULL || context->msgstate == OTRL_MSGSTATE_PLAINTEXT)
+
+    if (context == NULL)
 	return;
-		
+
     otrg_plugin_disconnect(context);
-    otrg_dialog_disconnected(context);	
+    otrg_dialog_disconnected(context);
 }
 
 /* Forget a fingerprint */
 void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
 {
     ConnContext *context;
-	
+    ConnContext *context_iter;
+
     if (fingerprint == NULL) return;
 
     /* Don't do anything with the active fingerprint if we're in the
      * ENCRYPTED state. */
     context = fingerprint->context;
-    if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-	    context->active_fingerprint == fingerprint) return;
-	
+
+    for (context_iter = context->m_context;
+	    context_iter && context_iter->m_context == context->m_context;
+	    context_iter = context_iter->next) {
+
+	if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
+		context_iter->active_fingerprint == fingerprint) return;
+    }
+
     otrl_context_forget_fingerprint(fingerprint, 1);
     otrg_plugin_write_fingerprints();
-	
+
     otrg_ui_update_keylist();
 }
 
@@ -164,7 +171,7 @@ void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
     const char *proto = purple_account_get_protocol_id(account);
     if (!otrg_plugin_proto_supports_otr(proto)) {
 	prefsp->policy = OTRL_POLICY_NEVER;
-	prefsp->avoid_logging_otr = FALSE;
+	prefsp->avoid_logging_otr = TRUE;
 	prefsp->show_otr_button = FALSE;
 	return;
     }
@@ -175,6 +182,6 @@ void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
     }
     /* If we've got no other way to get the prefs, use sensible defaults */
     prefsp->policy = OTRL_POLICY_DEFAULT;
-    prefsp->avoid_logging_otr = FALSE;
+    prefsp->avoid_logging_otr = TRUE;
     prefsp->show_otr_button = FALSE;
 }

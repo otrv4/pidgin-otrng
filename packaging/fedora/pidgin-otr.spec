@@ -1,19 +1,20 @@
 Summary: Off-The-Record Messaging plugin for pidgin
 Name: pidgin-otr
-Version: 3.1.0
+Version: 4.0.0
 Release: 1%{?dist}
 Source: http://otr.cypherpunks.ca/%{name}-%{version}.tar.gz
 Url: http://otr.cypherpunks.ca/
-License: GPL
+License: GPLv2
 Group: Applications/Internet
 Provides: gaim-otr = %{version}
 Obsoletes: gaim-otr
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires: pidgin >= 2.0.0, libotr >= 3.1.0
-BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0, libgpg-error-devel, pidgin-devel >= 2.0.0, libotr-devel >= 3.1.0, libpurple-devel 
+Requires: pidgin >= 2.0.0, libotr >= 4.0.0
+BuildRequires: glib2-devel, gtk2-devel, libgcrypt-devel >= 1.2.0
+BuildRequires: libgpg-error-devel, pidgin-devel >= 2.0.0
+BuildRequires: libotr-devel >= 4.0.0, perl(XML::Parser), gettext
 
 %description 
-
 This is a pidgin plugin which implements Off-the-Record (OTR) Messaging.
 It is known to work (at least) under the Linux and Windows versions of
 pidgin (2.x).
@@ -22,6 +23,11 @@ pidgin (2.x).
 %setup -q
 
 %build
+if [ \! -f configure ]; then
+	echo "Building from pre-release"
+	intltoolize --force --copy
+	autoreconf -s -i
+fi
 
 %configure 
 make %{?_smp_mflags} all
@@ -44,6 +50,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pidgin/pidgin-otr.so
 
 %changelog
+* Thu Jun 11 2009 Paul Wouters <paul@xelerance.com> - 4.0.0-1
+- Upgraded to 4.0.0.
+- Updated buildrequires
+- Fix license tag
+
 * Thu Jul 26 2007 Paul Wouters <paul@cypherpunks.ca> 3.1.0-preview2
 - Added locale support to spec file
 - Upgraded to current version

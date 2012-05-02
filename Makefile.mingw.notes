@@ -1,0 +1,40 @@
+Here are some rough notes that might help you create a pidgin-otr Win32 build on
+a Linux system with mingw32. These have been tested on Ubuntu 11.04.
+
+I am listing packages and their build instructions in the order they should be
+built. Good luck!
+
+libgpg-error-1.0:
+  (before configure)
+  HOST_CC=gcc
+  DLLTOOL=i586-mingw32msvc-dlltool 
+  AS=i586-mingw32msvc-as
+  export HOST_CC DLLTOOL AS
+  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc 
+  make
+  sudo make install
+
+gcrypt-1.2.1:
+  w32root=i586-mingw32msvc ./autogen.sh --build-w32
+  Then append #undef HAVE_GETTIMEOFDAY  to libgcrypt config.h
+  Apply windows slow random fix (patch on otr website, listed as "Note that if you're compiling from source on win32...")
+  make
+  sudo make install
+  
+libotr:
+  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc --with-libgcrypt-prefix=/usr/i586-mingw32msvc
+  make
+  sudo make install
+
+pidgin-otr:
+  You will need: Pidgin source code distributable, Pidgin Win32 distributable, and an "all-in-one bundle" of the GTK+ stack 2.14.7 or greater (e.g., gtk+-bundle_2.24.10-20120208_win32.zip).
+  In Makefile.mingw, specify the location of PIDGIN_HEADERS, PURPLE_HEADERS, GTK_WIN32_BUNDLE, and PIDGIN_WIN32_LIBS
+  Ensure either pkg-config will correctly resolve all the dependencies for glib-2.0 and gtk+-2.0 (there is a README in the GTK+ bundle about this), or uncomment (and perhaps revise) the hardcoded list of includes for GTK_HDRS
+  make -f Makefile.mingw
+
+nsis:
+  sudo apt-get install nsis
+  Locate the "nsisunz" plugin (a google search for "nsisunz.zip" should be sufficient)
+  Extract the DLL to /usr/local/share/nsis/Plugins (yes it's a DLL extension, but it will still work for GNU/Linux nsis)
+  make -f Makefile.mingw installer     <-- This should now build the nsis installer
+

@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2009  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
@@ -53,8 +53,8 @@
  * Enums
  *****************************************************************************/
 enum {
-        PROP_ZERO = 0,
-        PROP_BOX
+	PROP_ZERO = 0,
+	PROP_BOX
 };
 
 /******************************************************************************
@@ -88,69 +88,69 @@ tooltip_menu_deselect(GtkItem *item) {
  *****************************************************************************/
 static void
 tooltip_menu_get_property(GObject *obj, guint param_id, GValue *value,
-                                                                GParamSpec *pspec)
+								GParamSpec *pspec)
 {
-        TooltipMenu *tooltip_menu = TOOLTIP_MENU(obj);
+	TooltipMenu *tooltip_menu = TOOLTIP_MENU(obj);
 
-        switch(param_id) {
-                case PROP_BOX:
-                        g_value_set_object(value, tooltip_menu_get_box(tooltip_menu));
-                        break;
-                default:
-                        G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
-                        break;
-        }
+	switch(param_id) {
+		case PROP_BOX:
+			g_value_set_object(value, tooltip_menu_get_box(tooltip_menu));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(obj, param_id, pspec);
+			break;
+	}
 }
 
 static void
 tooltip_menu_finalize(GObject *obj) {
 #if 0
-        /* This _might_ be leaking, but I have a sneaking suspicion that the widget is
-         * getting destroyed in GtkContainer's finalize function.  But if were are
-         * leaking here, be sure to figure out why this causes a crash.
-         *      -- Gary
-         */
-        TooltipMenu *tray = TOOLTIP_MENU(obj);
+	/* This _might_ be leaking, but I have a sneaking suspicion that the widget is
+	 * getting destroyed in GtkContainer's finalize function.  But if were are
+	 * leaking here, be sure to figure out why this causes a crash.
+	 *      -- Gary
+	 */
+	TooltipMenu *tray = TOOLTIP_MENU(obj);
 
-        if(GTK_IS_WIDGET(tray->tray))
-                gtk_widget_destroy(GTK_WIDGET(tray->tray));
+	if(GTK_IS_WIDGET(tray->tray))
+		gtk_widget_destroy(GTK_WIDGET(tray->tray));
 #endif
 
-        G_OBJECT_CLASS(parent_class)->finalize(obj);
+	G_OBJECT_CLASS(parent_class)->finalize(obj);
 }
 
 static void
 tooltip_menu_class_init(TooltipMenuClass *klass) {
-        GObjectClass *object_class = G_OBJECT_CLASS(klass);
-        GParamSpec *pspec;
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	GParamSpec *pspec;
 
-        parent_class = g_type_class_peek_parent(klass);
+	parent_class = g_type_class_peek_parent(klass);
 
-        object_class->finalize = tooltip_menu_finalize;
-        object_class->get_property = tooltip_menu_get_property;
+	object_class->finalize = tooltip_menu_finalize;
+	object_class->get_property = tooltip_menu_get_property;
 
-        pspec = g_param_spec_object("box", "The box",
+	pspec = g_param_spec_object("box", "The box",
 		"The box",
 		GTK_TYPE_BOX,
 		G_PARAM_READABLE);
-        g_object_class_install_property(object_class, PROP_BOX, pspec);
+	g_object_class_install_property(object_class, PROP_BOX, pspec);
 }
 
 static void
 tooltip_menu_init(TooltipMenu *tooltip_menu) {
-        GtkWidget *widget = GTK_WIDGET(tooltip_menu);
-        gtk_menu_item_set_right_justified(GTK_MENU_ITEM(tooltip_menu), TRUE);
+	GtkWidget *widget = GTK_WIDGET(tooltip_menu);
+	gtk_menu_item_set_right_justified(GTK_MENU_ITEM(tooltip_menu), TRUE);
 
-        if(!GTK_IS_WIDGET(tooltip_menu->tray))
-                tooltip_menu->tray = gtk_hbox_new(FALSE, 0);
+	if(!GTK_IS_WIDGET(tooltip_menu->tray))
+		tooltip_menu->tray = gtk_hbox_new(FALSE, 0);
 
-        tooltip_menu->tooltips = gtk_tooltips_new();
+	tooltip_menu->tooltips = gtk_tooltips_new();
 
-        gtk_widget_set_size_request(widget, -1, -1);
+	gtk_widget_set_size_request(widget, -1, -1);
 
-        gtk_container_add(GTK_CONTAINER(tooltip_menu), tooltip_menu->tray);
+	gtk_container_add(GTK_CONTAINER(tooltip_menu), tooltip_menu->tray);
 
-        gtk_widget_show(tooltip_menu->tray);
+	gtk_widget_show(tooltip_menu->tray);
 }
 
 /******************************************************************************
@@ -158,96 +158,96 @@ tooltip_menu_init(TooltipMenu *tooltip_menu) {
  *****************************************************************************/
 GType
 tooltip_menu_get_gtype(void) {
-        static GType type = 0;
+	static GType type = 0;
 
-        if(type == 0) {
-                static const GTypeInfo info = {
-                        sizeof(TooltipMenuClass),
-                        NULL,
-                        NULL,
-                        (GClassInitFunc)tooltip_menu_class_init,
-                        NULL,
-                        NULL,
-                        sizeof(TooltipMenu),
-                        0,
-                        (GInstanceInitFunc)tooltip_menu_init,
-                        NULL
-                };
+	if(type == 0) {
+		static const GTypeInfo info = {
+			sizeof(TooltipMenuClass),
+			NULL,
+			NULL,
+			(GClassInitFunc)tooltip_menu_class_init,
+			NULL,
+			NULL,
+			sizeof(TooltipMenu),
+			0,
+			(GInstanceInitFunc)tooltip_menu_init,
+			NULL
+		};
 
-                type = g_type_register_static(GTK_TYPE_MENU_ITEM,
-                                                                          "TooltipMenu",
-                                                                          &info, 0);
-        }
+		type = g_type_register_static(GTK_TYPE_MENU_ITEM,
+									  "TooltipMenu",
+									  &info, 0);
+	}
 
-        return type;
+	return type;
 }
 
 GtkWidget *
 tooltip_menu_new() {
-        return g_object_new(TYPE_TOOLTIP_MENU, NULL);
+	return g_object_new(TYPE_TOOLTIP_MENU, NULL);
 }
 
 GtkWidget *
 tooltip_menu_get_box(TooltipMenu *tooltip_menu) {
-        g_return_val_if_fail(IS_TOOLTIP_MENU(tooltip_menu), NULL);
-        return tooltip_menu->tray;
+	g_return_val_if_fail(IS_TOOLTIP_MENU(tooltip_menu), NULL);
+	return tooltip_menu->tray;
 }
 
 static void
 tooltip_menu_add(TooltipMenu *tooltip_menu, GtkWidget *widget,
-                                           const char *tooltip, gboolean prepend)
+					   const char *tooltip, gboolean prepend)
 {
-        g_return_if_fail(IS_TOOLTIP_MENU(tooltip_menu));
-        g_return_if_fail(GTK_IS_WIDGET(widget));
+	g_return_if_fail(IS_TOOLTIP_MENU(tooltip_menu));
+	g_return_if_fail(GTK_IS_WIDGET(widget));
 
-        if (GTK_WIDGET_NO_WINDOW(widget))
-        {
-                GtkWidget *event;
+	if (GTK_WIDGET_NO_WINDOW(widget))
+	{
+		GtkWidget *event;
 
-                event = gtk_event_box_new();
-                gtk_container_add(GTK_CONTAINER(event), widget);
-                gtk_widget_show(event);
-                widget = event;
-        }
+		event = gtk_event_box_new();
+		gtk_container_add(GTK_CONTAINER(event), widget);
+		gtk_widget_show(event);
+		widget = event;
+	}
 
-        tooltip_menu_set_tooltip(tooltip_menu, widget, tooltip);
+	tooltip_menu_set_tooltip(tooltip_menu, widget, tooltip);
 
-        if (prepend)
-                gtk_box_pack_start(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
-        else
-                gtk_box_pack_end(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
+	if (prepend)
+		gtk_box_pack_start(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
+	else
+		gtk_box_pack_end(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
 }
 
 void
 tooltip_menu_append(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip)
 {
-        tooltip_menu_add(tooltip_menu, widget, tooltip, FALSE);
+	tooltip_menu_add(tooltip_menu, widget, tooltip, FALSE);
 }
 
 void
 tooltip_menu_prepend(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip)
 {
-        tooltip_menu_add(tooltip_menu, widget, tooltip, TRUE);
+	tooltip_menu_add(tooltip_menu, widget, tooltip, TRUE);
 }
 
 void
 tooltip_menu_set_tooltip(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip)
 {
-        if (!tooltip_menu->tooltips)
-                return;
+	if (!tooltip_menu->tooltips)
+		return;
 
-        /* Should we check whether widget is a child of tooltip_menu? */
+	/* Should we check whether widget is a child of tooltip_menu? */
 
-        /*
-         * If the widget does not have it's own window, then it
-         * must have automatically been added to an event box
-         * when it was added to the menu tray.  If this is the
-         * case, we want to set the tooltip on the widget's parent,
-         * not on the widget itself.
-         */
-        if (GTK_WIDGET_NO_WINDOW(widget))
-                widget = widget->parent;
+	/*
+	 * If the widget does not have it's own window, then it
+	 * must have automatically been added to an event box
+	 * when it was added to the menu tray.  If this is the
+	 * case, we want to set the tooltip on the widget's parent,
+	 * not on the widget itself.
+	 */
+	if (GTK_WIDGET_NO_WINDOW(widget))
+		widget = widget->parent;
 
-        gtk_tooltips_set_tip(tooltip_menu->tooltips, widget, tooltip, NULL);
+	gtk_tooltips_set_tip(tooltip_menu->tooltips, widget, tooltip, NULL);
 }
 

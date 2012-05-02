@@ -1,3 +1,14 @@
+2012-04-30
+
+	* gtk-dialog.c:
+	* gtk-ui.c: 
+	* otr-plugin.c:
+	* otr-plugin.h:
+	* ui.c: More changes for instance tags. Some logging-
+	related changes too (output whether pidgin is logging,
+	change default not to log otr conversations). -- Rob
+	Smits
+
 2010-03-02
 
 	* po/vi.po: Vietnamese translation from Lyndon Johnson
@@ -8,6 +19,13 @@
 	* gtk-dialog.c (add_to_vbox_verify_fingerprint): Make
 	the fingerprints in the manual authentication dialog
 	selectable (but not selected by default).
+
+2009-06-11
+
+	* gtk-dialog.c:
+	* otr-plugin.c:
+	* otr-plugin.h: Initial instance tags implementation
+	from Lisa Du
 
 2009-08-24
 

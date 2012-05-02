@@ -3,6 +3,7 @@
 ;
 ; known issue. installer induced uninstaller abortion causes overwrite
 ; by installer without uninstall.
+; v4.0.0   - New source version.
 ; v3.2.0   - New source version.
 ; v3.1.0   - New source version.  Install and uninstall i18n files.
 ; v3.0.0   - Version for pidgin-2.0.0
@@ -25,7 +26,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "3.2.0-1"
+!define PRODUCT_VERSION "4.0.0-0"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -42,7 +43,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "c:\otr\COPYING.txt"
+!insertmacro MUI_PAGE_LICENSE "../../../libotr/COPYING"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -81,29 +82,29 @@ Section "MainSection" SEC01
 
     SetOutPath "$PidginDir\locale"
     SetOverwrite on
-    ; What the next line means is to recursively search c:\otr\locale
+    ; What the next line means is to recursively search /usr/share/locale
     ; and install all files under there named pidgin-otr.mo
-    File /r "c:\otr\locale\pidgin-otr.mo"
+    File /r "/usr/share/locale/pidgin-otr.mo"
 
     SetOutPath "$INSTDIR"
     SetOverwrite on
-    File "c:\otr\pidgin-otr.dll"
+    File "../../win32_export/pidgin-otr.dll"
     ; move to pidgin plugin directory, check if not busy (pidgin is running)
     call CopyDLL
     ; hard part is done, do the rest now.
     SetOverwrite on	  
-    File "c:\otr\README.Toolkit.txt"
-    File "c:\otr\README.txt"
-    File "c:\otr\Protocol-v2.html"
-    File "c:\otr\COPYING.txt"
-    File "c:\otr\COPYING.LIB.txt"
-    File "c:\otr\otr_mackey.exe"
-    File "c:\otr\otr_modify.exe"
-    File "c:\otr\otr_parse.exe"
-    File "c:\otr\otr_readforge.exe"
-    File "c:\otr\otr_remac.exe"
-    File "c:\otr\otr_sesskeys.exe"
-    File "c:\otr\pidgin-otr.nsi"
+    File "../../win32_export/README.Toolkit.txt"
+    File "../../win32_export/README.txt"
+    File "../../win32_export/COPYING.txt"
+    File "../../win32_export/COPYING.LIB.txt"
+    File "../../win32_export/Protocol-v2.html"
+    File "../../win32_export/otr_mackey.exe"
+    File "../../win32_export/otr_modify.exe"
+    File "../../win32_export/otr_parse.exe"
+    File "../../win32_export/otr_readforge.exe"
+    File "../../win32_export/otr_remac.exe"
+    File "../../win32_export/otr_sesskeys.exe"
+    File "pidgin-otr.nsi"
 SectionEnd
 
 Section -AdditionalIcons
