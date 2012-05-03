@@ -898,8 +898,8 @@ otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
 {
     otrl_instag_t selected_instance;
 
-    if (!g_hash_table_lookup_extended(conv->data, "otr-ui_selected_ctx", NULL,
-	    (void**)&selected_instance)) {
+    if (!conv || !g_hash_table_lookup_extended(conv->data,
+	    "otr-ui_selected_ctx", NULL, (void**)&selected_instance)) {
 	selected_instance = default_val;
     }
 
