@@ -248,7 +248,7 @@ void otrg_plugin_create_instag(const char *accountname,
 	return;
     }
 
-    /* Generate the key */
+    /* Generate the instag */
     otrl_instag_generate_FILEp(otrg_plugin_userstate, instagf,
 	    accountname, protocol);
     fclose(instagf);
