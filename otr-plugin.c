@@ -431,15 +431,11 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
     if (!context) return;
     char *buf;
     const char *format;
-    OtrlMessageEvent last_msg_event;
+    OtrlMessageEvent * last_msg_event;
     gboolean value_existed;
 
     conv = otrg_plugin_context_to_conv(context, 1);
-    value_existed = g_hash_table_lookup_extended(conv->data,
-	    "otr-last_msg_event", NULL, (void**)&last_msg_event);
-
-    purple_conversation_set_data(conv, "otr-last_msg_event",
-	    (gpointer)msg_event);
+    last_msg_event = g_hash_table_lookup(conv->data, "otr-last_msg_event");
 
     switch (msg_event)
     {
@@ -646,11 +642,11 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	    }
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_FOR_OTHER_INSTANCE:
-	    if (value_existed && last_msg_event == msg_event) {
+	    if (value_existed && *last_msg_event == msg_event) {
 		break;
 	    }
 	    format = _("%s has sent a message intended for a different session."
-		    "If you are logged in multiple times, another session may "
+		    " If you are logged in multiple times, another session may "
 		    "have received the message.");
 	    buf = malloc(strlen(format) + strlen(context->username) - 1);
 	    if (buf) {
@@ -661,6 +657,8 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	    }
 	    break;
     }
+
+    *last_msg_event = msg_event;
 }
 
 #ifdef DUMP_RECEIVED_SYMKEY
@@ -878,6 +876,8 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
     const char *accountname, *proto;
     ConnContext *context;
 
+    if (!conv) return NULL;
+
     account = purple_conversation_get_account(conv);
     accountname = purple_account_get_username(account);
     proto = purple_account_get_protocol_id(account);
@@ -896,14 +896,14 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
 	otrl_instag_t default_val)
 {
-    otrl_instag_t selected_instance;
+    otrl_instag_t * selected_instance;
 
-    if (!conv || !g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (void**)&selected_instance)) {
-	selected_instance = default_val;
+    if (!conv || !conv->data || !g_hash_table_lookup_extended(conv->data,
+	    "otr-ui_selected_ctx", NULL, (gpointer*)&selected_instance)) {
+	return default_val;
     }
 
-    return selected_instance;
+    return *selected_instance;
 }
 
 /* Given a PurpleConversation, return the selected ConnContext */
@@ -921,10 +921,20 @@ ConnContext* otrg_plugin_conv_to_selected_context(PurpleConversation *conv,
 
 static void process_conv_create(PurpleConversation *conv, void *data)
 {
+    otrl_instag_t * selected_instance;
+    OtrlMessageEvent * msg_event;
     if (!conv) return;
 
+    selected_instance = g_malloc(sizeof(otrl_instag_t));
+    *selected_instance = OTRL_INSTAG_BEST;
     purple_conversation_set_data(conv, "otr-ui_selected_ctx",
-	    (gpointer)OTRL_INSTAG_BEST);
+	    (gpointer)selected_instance);
+
+    msg_event = g_malloc(sizeof(OtrlMessageEvent));
+    *msg_event = -1;
+    purple_conversation_set_data(conv, "otr-last_msg_event",
+	    (gpointer)msg_event);
+
     otrg_dialog_new_conv(conv);
 }
 
@@ -950,7 +960,21 @@ static void process_conv_updated(PurpleConversation *conv,
 
 static void process_conv_destroyed(PurpleConversation *conv)
 {
+    otrl_instag_t * selected_instance =
+	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
+    OtrlMessageEvent * msg_event =
+	    purple_conversation_get_data(conv, "otr-last_msg_event");
+
+    if (selected_instance) {
+	g_free(selected_instance);
+    }
+
+    if (msg_event) {
+	g_free(msg_event);
+    }
+
     g_hash_table_remove(conv->data, "otr-ui_selected_ctx");
+    g_hash_table_remove(conv->data, "otr-last_msg_event");
 }
 
 static void process_connection_change(PurpleConnection *conn, void *data)

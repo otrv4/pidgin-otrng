@@ -114,26 +114,26 @@ typedef struct {
 } ConvOrContext;
 
 gint get_new_instance_index(PurpleConversation *conv) {
-    gint max_index = (gint) purple_conversation_get_data(conv, "otr-max_idx");
-    max_index++;
-    purple_conversation_set_data(conv, "otr-max_idx", (gpointer) max_index);
-    return max_index;
+    gint * max_index = (gint *)
+	    purple_conversation_get_data(conv, "otr-max_idx");
+    *max_index = (*max_index) + 1;
+    return *max_index;
 }
 
 gint get_context_instance_to_index(PurpleConversation *conv,
 	ConnContext *context) {
     GHashTable * conv_to_idx_map =
 	    purple_conversation_get_data(conv, "otr-conv_to_idx");
-    gint index = 0;
-    gpointer key = NULL;
+    gint * index = 0;
 
-    if (!g_hash_table_lookup_extended(conv_to_idx_map, context, &key,
-	    (void**)&index)) {
-	index = get_new_instance_index(conv);
+    if (!g_hash_table_lookup_extended(conv_to_idx_map, context, NULL,
+	    (gpointer *)&index)) {
+	index = g_malloc(sizeof(gint));
+	*index = get_new_instance_index(conv);
 	g_hash_table_replace(conv_to_idx_map, context, (gpointer)index);
     }
 
-    return index;
+    return *index;
 }
 
 static void close_progress_window(SMPData *smp_data)
@@ -1577,7 +1577,7 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     char *format_buf;
     TrustLevel level;
     OtrgUiPrefs prefs;
-    gboolean is_multi_inst;
+    gboolean * is_multi_inst;
 
     conv = otrg_plugin_context_to_conv(context, TRUE);
     level = otrg_plugin_context_to_trust(context);
@@ -1622,16 +1622,15 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 
     dialog_update_label(context);
 
-    is_multi_inst = (gboolean) purple_conversation_get_data(conv,
+    is_multi_inst = (gboolean *) purple_conversation_get_data(conv,
 	    "otr-conv_multi_instances");
 
-    if (is_multi_inst) {
-	gboolean have_warned_instances = (gboolean)
+    if (*is_multi_inst) {
+	gboolean * have_warned_instances = (gboolean *)
 		purple_conversation_get_data(conv, "otr-warned_instances");
 
-	if (!have_warned_instances) {
-	    purple_conversation_set_data(conv, "otr-warned_instances",
-		    (gpointer)1);
+	if (!*have_warned_instances) {
+	    *have_warned_instances = TRUE;
 	    otrg_gtk_dialog_display_otr_message(context->accountname,
 		    context->protocol, context->username,
 		    _("Your buddy is logged in multiple times and OTR has "
@@ -2247,7 +2246,7 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	    "otr-select_recent");
     gboolean value = gtk_check_menu_item_get_active(
 	    GTK_CHECK_MENU_ITEM(widget));
-    otrl_instag_t selected_instance = (otrl_instag_t)
+    otrl_instag_t * selected_instance = (otrl_instag_t *)
 	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
     ConnContext * context = NULL;
     ConnContext * recent_context = NULL;
@@ -2256,9 +2255,7 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = !value;
 
 	if (value) {
-	    selected_instance = OTRL_INSTAG_BEST;
-	    purple_conversation_set_data(conv, "otr-ui_selected_ctx",
-		    (gpointer)selected_instance);
+	    *selected_instance = OTRL_INSTAG_BEST;
 	    context = (ConnContext *) otrg_plugin_conv_to_selected_context(conv,
 		    1);
 
@@ -2284,9 +2281,7 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	GTK_CHECK_MENU_ITEM(select_best)->active = !value;
 
 	if (value) {
-	    selected_instance = OTRL_INSTAG_RECENT_RECEIVED;
-	    purple_conversation_set_data(conv, "otr-ui_selected_ctx",
-		    (gpointer)selected_instance);
+	    *selected_instance = OTRL_INSTAG_RECENT_RECEIVED;
 	}
     }
 
@@ -2300,12 +2295,10 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data) {
     PurpleConversation * conv = otrg_plugin_context_to_conv(context, 1);
     ConnContext *recent_context = (ConnContext *) otrg_plugin_conv_to_context(
 	    conv, (otrl_instag_t)OTRL_INSTAG_RECENT_RECEIVED, 0);
-    otrl_instag_t selected_instance = (otrl_instag_t)
+    otrl_instag_t * selected_instance = (otrl_instag_t *)
 	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
 
-    selected_instance = context->their_instance;
-    purple_conversation_set_data(conv, "otr-ui_selected_ctx",
-	    (gpointer)selected_instance);
+    *selected_instance = context->their_instance;
 
     unselect_meta_ctx(conv);
 
@@ -2334,15 +2327,16 @@ static void build_meta_instance_submenu( PurpleConversation *conv,
 	    _("Send to most secure"));
     GtkWidget *select_recent = gtk_check_menu_item_new_with_label(
 	    _("Send to most recent"));
-    otrl_instag_t selected_instance;
+    otrl_instag_t * selected_instance;
     gboolean selected_existed = g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (void**)&selected_instance);
+	    "otr-ui_selected_ctx", NULL, (gpointer*)&selected_instance);
 
     if (selected_existed) {
-	if (selected_instance == OTRL_INSTAG_BEST) {
+
+	if (*selected_instance == OTRL_INSTAG_BEST) {
 	    GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
 	    GTK_CHECK_MENU_ITEM(select_best)->active = 1;
-	} else if (selected_instance == OTRL_INSTAG_RECENT_RECEIVED) {
+	} else if (*selected_instance == OTRL_INSTAG_RECENT_RECEIVED) {
 	    GTK_CHECK_MENU_ITEM(select_recent)->active = 1;
 	    GTK_CHECK_MENU_ITEM(select_best)->active = 0;
 	} else {
@@ -2380,7 +2374,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
     GtkWidget * tooltip_menu;
     gchar *tooltip_text;
     PurpleAccount *account;
-    otrl_instag_t instance;
+    otrl_instag_t * instance;
     gboolean selection_exists = 0;
     ConnContext * context = instances->data;
     TrustLevel level = TRUST_NOT_PRIVATE;
@@ -2394,13 +2388,13 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 
     conv = otrg_plugin_context_to_conv(context, 0);
     selection_exists = g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (void**)&instance);
+	    "otr-ui_selected_ctx", NULL, (gpointer*)&instance);
 
     /* Find the selected or default instance */
     if (selection_exists) {
 	context = otrl_context_find(otrg_plugin_userstate,
 		context->username, context->accountname, context->protocol,
-		instance, 0, NULL, NULL, NULL);
+		*instance, 0, NULL, NULL, NULL);
     } else {
 	context = otrl_context_find(otrg_plugin_userstate,
 		context->username, context->accountname, context->protocol,
@@ -2454,7 +2448,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 
 	build_otr_menu(curr_convctx, instance_submenu, level);
 
-	if (!selection_exists || instance != curr_context->their_instance) {
+	if (!selection_exists || *instance != curr_context->their_instance) {
 	    GtkWidget *select_ctx = gtk_menu_item_new_with_label(_("Select"));
 	    GtkWidget *menusep = gtk_separator_menu_item_new();
 
@@ -2468,7 +2462,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 		    select_ctx);
 	    gtk_widget_show(select_ctx);
 	} else if (selection_exists && 
-		instance == curr_context->their_instance) {
+		*instance == curr_context->their_instance) {
 	    GtkWidget *selected_ctx =
 		    gtk_menu_item_new_with_label(_("Selected"));
 	    GtkWidget *menusep = gtk_separator_menu_item_new();
@@ -2666,6 +2660,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	char * username = NULL;
 	const char * accountname = NULL;
 	int num_contexts = 0;
+	gboolean * is_multi_instance;
 
 	currentConv = list_iter->data;
 
@@ -2683,6 +2678,10 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	}
 
 	num_contexts = g_list_length(contexts);
+
+	is_multi_instance = purple_conversation_get_data(currentConv,
+		    "otr-conv_multi_instances");
+	*is_multi_instance = FALSE;
 
 	if (num_contexts > 1) {
 	    /* We will need the master context */
@@ -2741,8 +2740,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 
 	} else {
 	    /* Multi-instances */
-	    purple_conversation_set_data(currentConv,
-		    "otr-conv_multi_instances", (gpointer)1);
+	    *is_multi_instance = TRUE;
 	    otr_add_buddy_instances_top_menu(gtkconv, contexts, active_conv,
 		    currentContext->username, currentContext->accountname,
 		    &pos);
@@ -2831,7 +2829,10 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     GList * iter;
     GHashTable * conv_or_ctx_map;
     GHashTable * conv_to_idx_map;
-
+    gint * max_instance_idx;
+    gboolean * is_conv_multi_instance;
+    gboolean * have_warned_instances;
+    otrl_instag_t * last_received_instance;
 
     if (menu) gtk_object_destroy(GTK_OBJECT(menu));
 
@@ -2840,6 +2841,29 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
 
     conv_to_idx_map = purple_conversation_get_data(conv, "otr-conv_to_idx");
     g_hash_table_destroy(conv_to_idx_map);
+
+    max_instance_idx = purple_conversation_get_data(conv, "otr-max_idx");
+    if (max_instance_idx) {
+	g_free(max_instance_idx);
+    }
+
+    is_conv_multi_instance = purple_conversation_get_data(conv,
+	    "otr-conv_multi_instances");
+    if (is_conv_multi_instance) {
+	g_free(is_conv_multi_instance);
+    }
+
+    have_warned_instances = purple_conversation_get_data(conv,
+	    "otr-warned_instances");
+    if (have_warned_instances) {
+	g_free(have_warned_instances);
+    }
+
+    last_received_instance = purple_conversation_get_data(conv,
+	    "otr-last_received_ctx");
+    if (last_received_instance) {
+	g_free(last_received_instance);
+    }
 
     g_hash_table_remove(conv->data, "otr-label");
     g_hash_table_remove(conv->data, "otr-button");
@@ -2919,6 +2943,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     GHashTable * conv_or_ctx_map;
     GHashTable * ctx_to_idx_map;
 
+    gint * max_instance_idx;
+    gboolean * is_conv_multi_instance;
+    gboolean * have_warned_instances;
+    otrl_instag_t * last_received_instance;
+
     /* Do nothing if this isn't an IM conversation */
     if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) return;
 
@@ -2960,10 +2989,29 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 	    free);
     purple_conversation_set_data(conv, "otr-convorctx", conv_or_ctx_map);
 
-    ctx_to_idx_map = g_hash_table_new(g_direct_hash, g_direct_equal);
+    ctx_to_idx_map = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL,
+	    g_free);
     purple_conversation_set_data(conv, "otr-conv_to_idx", ctx_to_idx_map);
 
-    purple_conversation_set_data(conv, "otr-max_idx", (gpointer) 0);
+    max_instance_idx = g_malloc(sizeof(gint));
+    *max_instance_idx = 0;
+    purple_conversation_set_data(conv, "otr-max_idx",
+	    (gpointer)max_instance_idx);
+
+    is_conv_multi_instance = g_malloc(sizeof(gboolean));
+    *is_conv_multi_instance = FALSE;
+    purple_conversation_set_data(conv, "otr-conv_multi_instances",
+	    (gpointer)is_conv_multi_instance);
+
+    have_warned_instances = g_malloc(sizeof(gboolean));
+    *have_warned_instances = FALSE;
+    purple_conversation_set_data(conv, "otr-warned_instances",
+	    (gpointer)have_warned_instances);
+
+    last_received_instance = g_malloc(sizeof(otrl_instag_t));
+    *last_received_instance = OTRL_INSTAG_BEST; /* cannot be received */
+    purple_conversation_set_data(conv, "otr-last_received_ctx",
+	    (gpointer)last_received_instance);
 
     /* Make the button */
     button = gtk_button_new();
@@ -3241,22 +3289,28 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 static gboolean check_incoming_instance_change(PurpleAccount *account,
 	char *sender, char *message, PurpleConversation *conv,
 	PurpleMessageFlags flags) {
-    otrl_instag_t last_received_instance;
+    otrl_instag_t * last_received_instance;
     otrl_instag_t selected_instance;
-    gboolean have_received = 0;
+    gboolean have_received = FALSE;
     ConnContext *received_context = NULL;
     ConnContext *current_out = NULL;
 
-
-    if (!conv) {
+    if (!conv || !conv->data) {
 	return 0;
     }
 
     selected_instance = otrg_plugin_conv_to_selected_instag(conv, 0);
     current_out = otrg_plugin_conv_to_selected_context(conv, 0);
 
-    have_received = g_hash_table_lookup_extended(conv->data,
-	    "otr-last_received_ctx", NULL, (void**)&last_received_instance);
+    last_received_instance = g_hash_table_lookup(conv->data,
+	    "otr-last_received_ctx");
+
+    if (last_received_instance &&
+	    (*last_received_instance == OTRL_INSTAG_MASTER || 
+	    *last_received_instance >= OTRL_MIN_VALID_INSTAG)) {
+	have_received = TRUE;
+    }
+
     received_context = (ConnContext *) otrg_plugin_conv_to_context(conv,
 	    (otrl_instag_t)OTRL_INSTAG_RECENT_RECEIVED, 0);
 
@@ -3265,16 +3319,14 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
     }
 
     if (have_received &&
-	    last_received_instance != received_context->their_instance &&
+	    *last_received_instance != received_context->their_instance &&
 	    selected_instance != OTRL_INSTAG_MASTER &&
-	    selected_instance <= 0xFF) {
+	    selected_instance < OTRL_MIN_VALID_INSTAG) {
 	dialog_update_label_conv(conv,
 		otrg_plugin_context_to_trust(current_out));
     }
 
-    last_received_instance = received_context->their_instance;
-    purple_conversation_set_data(conv, "otr-last_received_ctx",
-	    (gpointer)last_received_instance);
+    *last_received_instance = received_context->their_instance;
 
     return 0;
 }
