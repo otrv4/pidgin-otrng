@@ -111,7 +111,7 @@ prepare_win32_export: all
 		COPYING.txt COPYING.LIB.txt README.txt; \
 
 installer: prepare_win32_export
-	makensis packaging/windows/pidgin-otr-rob.nsi
+	makensis packaging/windows/pidgin-otr.nsi
 	rm -rf win32_export
 
 ## Package up all the pieces needed to build the installer
