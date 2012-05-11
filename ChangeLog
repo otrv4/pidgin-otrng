@@ -1,3 +1,15 @@
+2012-05-11
+
+	* otr-plugin.c: Added annoying warnings to prepare for
+	win32 build.
+
+2012-05-10
+
+	* gtk-dialog.c:
+	* otr-plugin.c: Avoiding storing values in g_hash_tables.
+	Doing this improperly created issues in 64-bit
+	environments.
+
 2012-04-30
 
 	* gtk-dialog.c:
