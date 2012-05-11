@@ -76,6 +76,11 @@
 #include <glib.h>
 #include "gtk-ui.h"
 #include "gtk-dialog.h"
+
+#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+#include "gtkblist.h"
+#endif
+
 #endif
 
 /* If we're using glib on Windows, we need to use g_fopen to open files.
@@ -1219,6 +1224,11 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     FILE *privf;
     FILE *storef;
     FILE *instagf;
+#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+    GtkWidget *dialog;
+    GtkWidget *dialog_text;
+    PidginBuddyList *blist;
+#endif
 
     if (!privkeyfile || !storefile || !instagfile) {
 	g_free(privkeyfile);
@@ -1226,6 +1236,52 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	g_free(instagfile);
 	return 0;
     }
+
+#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+    blist = pidgin_blist_get_default_gtk_blist();
+
+    if (time(NULL) > 1356998400) /* 2013-01-01 */ {
+	dialog = gtk_dialog_new_with_buttons ("OTR PLUGIN V4.0 BETA",
+		GTK_WINDOW(blist->window),
+		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+	dialog_text = gtk_label_new(NULL);
+	gtk_widget_set_size_request(dialog_text, 350, 100);
+	gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+	gtk_label_set_text(GTK_LABEL(dialog_text), "This beta copy of the "
+		"Off-the-Record Messaging v4.0 Pidgin plugin has expired as of "
+		"2013-01-01. Please look for an updated release at "
+		"www.cypherpunks.ca/otr.");
+	gtk_widget_show(dialog_text);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text,
+		TRUE, TRUE, 0);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+
+	g_free(privkeyfile);
+	g_free(storefile);
+	g_free(instagfile);
+	return 0;
+    }
+
+
+    dialog = gtk_dialog_new_with_buttons ("OTR PLUGIN V4.0 BETA",
+	    GTK_WINDOW(blist->window),
+	    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	    GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+    dialog_text = gtk_label_new(NULL);
+    gtk_widget_set_size_request(dialog_text, 350, 100);
+    gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+    gtk_label_set_text(GTK_LABEL(dialog_text), "You have enabled a beta "
+	    "version of the Off-the-Record Messaging v4.0 Pidgin plugin. "
+	    "This version is intended for testing purposes only and is not "
+	    "for general purpose use.");
+    gtk_widget_show(dialog_text);
+    gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text,
+	    TRUE, TRUE, 0);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+#endif
 
     privf = g_fopen(privkeyfile, "rb");
     storef = g_fopen(storefile, "rb");
