@@ -432,7 +432,6 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
     char *buf;
     const char *format;
     OtrlMessageEvent * last_msg_event;
-    gboolean value_existed;
 
     conv = otrg_plugin_context_to_conv(context, 1);
     last_msg_event = g_hash_table_lookup(conv->data, "otr-last_msg_event");
@@ -642,7 +641,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	    }
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_FOR_OTHER_INSTANCE:
-	    if (value_existed && *last_msg_event == msg_event) {
+	    if (*last_msg_event == msg_event) {
 		break;
 	    }
 	    format = _("%s has sent a message intended for a different session."
