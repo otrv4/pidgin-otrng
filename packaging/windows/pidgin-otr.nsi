@@ -43,7 +43,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "../../../libotr/COPYING"
+!insertmacro MUI_PAGE_LICENSE "../../win32_export/COPYING.txt"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -84,7 +84,7 @@ Section "MainSection" SEC01
     SetOverwrite on
     ; What the next line means is to recursively search /usr/share/locale
     ; and install all files under there named pidgin-otr.mo
-    File /r "/usr/share/locale/pidgin-otr.mo"
+    File /r "../../win32_export/locale/pidgin-otr.mo"
 
     SetOutPath "$INSTDIR"
     SetOverwrite on
@@ -97,7 +97,7 @@ Section "MainSection" SEC01
     File "../../win32_export/README.txt"
     File "../../win32_export/COPYING.txt"
     File "../../win32_export/COPYING.LIB.txt"
-    File "../../win32_export/Protocol-v2.html"
+    File "../../win32_export/Protocol-v3.html"
     File "../../win32_export/otr_mackey.exe"
     File "../../win32_export/otr_modify.exe"
     File "../../win32_export/otr_parse.exe"
@@ -136,7 +136,7 @@ Section Uninstall
   Delete "$INSTDIR\pidgin-otr-uninst.exe"
   Delete "$INSTDIR\README.Toolkit.txt"
   Delete "$INSTDIR\README.txt"
-  Delete "$INSTDIR\Protocol-v2.txt"
+  Delete "$INSTDIR\Protocol-v3.html"
   Delete "$INSTDIR\COPYING.txt"
   Delete "$INSTDIR\COPYING.LIB.txt"
   Delete "$INSTDIR\otr_mackey.exe"

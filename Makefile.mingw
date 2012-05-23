@@ -93,7 +93,7 @@ prepare_win32_export: all
 		otr_readforge.exe  otr_sesskeys.exe; do \
 			cp -a $(LIBOTRBINDIR)/$$f win32_export/; done
 	cp -a $(LIBOTRSRCDIR)/README win32_export/README.Toolkit.txt
-	cp -a $(LIBOTRSRCDIR)/Protocol-v2.html win32_export/Protocol-v2.html
+	cp -a $(LIBOTRSRCDIR)/Protocol-v3.html win32_export/Protocol-v3.html
 	cp -a $(LIBOTRSRCDIR)/COPYING win32_export/COPYING.txt
 	cp -a $(LIBOTRSRCDIR)/COPYING.LIB win32_export/COPYING.LIB.txt
 	cp -a $(TARGET) win32_export/
@@ -104,11 +104,10 @@ prepare_win32_export: all
 		mkdir -p win32_export/locale/$$l/LC_MESSAGES; \
 		cp -a $$i win32_export/locale/$$l/LC_MESSAGES/pidgin-otr.mo; \
 	done
-	cp -a po/*.gmo win32_export/
 	cd win32_export; \
 	i586-mingw32msvc-strip *.exe *.dll; \
-	perl -pi -e 's/$$/\r/' README.Toolkit.txt Protocol-v2.html \
-		COPYING.txt COPYING.LIB.txt README.txt; \
+	perl -pi -e 's/$$/\r/' README.Toolkit.txt Protocol-v3.html \
+		COPYING.txt COPYING.LIB.txt README.txt;
 
 installer: prepare_win32_export
 	makensis packaging/windows/pidgin-otr.nsi
@@ -116,9 +115,9 @@ installer: prepare_win32_export
 
 ## Package up all the pieces needed to build the installer
 zip: prepare_win32_export
-	rm -f ../$(ZIPFILE); \
-	zip -r ../$(ZIPFILE) README.txt \
-		README.Toolkit.txt Protocol-v2.html COPYING.txt \
-		COPYING.LIB.txt *.exe *.dll *.nsi locale
+	rm -f $(ZIPFILE)
+	cd win32_export; \
+	zip -r $(ZIPFILE) ./*; \
+	mv $(ZIPFILE) ../;
 	rm -rf win32_export
 
