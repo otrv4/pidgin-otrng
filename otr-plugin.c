@@ -238,7 +238,6 @@ static void create_privkey_cb(void *opdata, const char *accountname,
 void otrg_plugin_create_instag(const char *accountname,
 	const char *protocol)
 {
-    OtrgDialogWaitHandle waithandle;
     FILE *instagf;
 
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
@@ -915,7 +914,6 @@ ConnContext* otrg_plugin_conv_to_selected_context(PurpleConversation *conv,
 	int force_create)
 {
     otrl_instag_t selected_instance;
-    ConnContext *result = NULL;
 
     selected_instance = otrg_plugin_conv_to_selected_instag(conv,
 	    OTRL_INSTAG_BEST);

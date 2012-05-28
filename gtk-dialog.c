@@ -1779,7 +1779,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
     ConvOrContext *convctx = data;
     PurpleConversation *conv;
-    ConnContext *context;
+    ConnContext *context = NULL;
 
     if (convctx->convctx_type == convctx_conv) {
 	conv = convctx->conv;
@@ -1804,7 +1804,7 @@ static void menu_whatsthis(GtkWidget *widget, gpointer data)
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
 {
     PurpleConversation *conv;
-    ConnContext *context;
+    ConnContext *context = NULL;
     ConvOrContext *convctx = data;
 
     if (convctx->convctx_type == convctx_conv) {
@@ -2263,13 +2263,12 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 		    OTRL_INSTAG_RECENT_RECEIVED, 0);
 	    if (context != recent_context) {
 		gchar *buf = g_strdup_printf(_("Warning: The selected outgoing "
-			"OTR session %u (%x) is not the most recently active "
-			"one %u (%x). Your buddy may not receive your messages."
+			"OTR session (%u) is not the most recently active "
+			"one (%u). Your buddy may not receive your messages."
 			" Use the icon menu above to select a different "
-			"outgoing session."), get_context_instance_to_index(
-			conv, context), context->their_instance,
-			get_context_instance_to_index(conv, recent_context),
-			recent_context->their_instance);
+			"outgoing session."),
+			get_context_instance_to_index(conv, context),
+			get_context_instance_to_index(conv, recent_context));
 		otrg_gtk_dialog_display_otr_message(context->accountname,
 			context->protocol, context->username, buf, 0);
 		g_free(buf);
@@ -2307,13 +2306,11 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data) {
 
     if (context != recent_context) {
 	gchar *buf = g_strdup_printf(_("Warning: The selected outgoing OTR "
-		"session %u (%x) is not the most recently active one %u (%x). "
+		"session (%u) is not the most recently active one (%u). "
 		"Your buddy may not receive your messages. Use the icon menu "
 		"above to select a different outgoing session."),
 		get_context_instance_to_index(conv, context),
-		context->their_instance,
-		get_context_instance_to_index(conv, recent_context),
-		recent_context->their_instance);
+		get_context_instance_to_index(conv, recent_context));
 	otrg_gtk_dialog_display_otr_message(context->accountname,
 		context->protocol, context->username, buf, 0);
 	g_free(buf);
@@ -2373,7 +2370,6 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
     GtkWidget *menu_image;
     GtkWidget * tooltip_menu;
     gchar *tooltip_text;
-    PurpleAccount *account;
     otrl_instag_t * instance;
     gboolean selection_exists = 0;
     ConnContext * context = instances->data;
@@ -2382,7 +2378,6 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
     PurpleConversation * conv = NULL;
     ConvOrContext convctx;
     GList * menu_list;
-    guint num_active_instances = g_list_length(instances);
 
     menu = gtk_menu_new();
 
@@ -2432,8 +2427,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 
 	instance_i = get_context_instance_to_index(conv, curr_context);
 
-	g_snprintf(text, 35, _("Session %u (%x)"), instance_i,
-		curr_context->their_instance);
+	g_snprintf(text, 35, _("Session %u"), instance_i);
 
 	instance_menu_item = gtk_image_menu_item_new_with_label(text);
 	instance_submenu = gtk_menu_new();
@@ -2527,11 +2521,10 @@ static void otr_add_buddy_top_menu(PidginConversation *gtkconv, ConvOrContext
     GtkWidget *menu;
     GtkWidget *menu_image;
     TrustLevel level;
-    ConnContext *context;
+    ConnContext *context = NULL;
     GList * menu_list;
     GtkWidget * tooltip_menu;
     gchar *tooltip_text;
-    PurpleAccount *account;
     GtkWidget *select_ctx = NULL;
 
     if (convctx->convctx_type == convctx_ctx) {
@@ -2609,7 +2602,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
     /* First determine how many contexts are associated with each conv */
     for (list_iter = g_list_last ( full_buddy_list ); list_iter != NULL;
 	    list_iter = list_iter->prev) {
-	int numContexts = 0;
 	PurpleAccount *account;
 	char *username;
 	const char *accountname, *proto;
@@ -2762,8 +2754,6 @@ static void otr_check_conv_status_change( PurpleConversation *conv) {
     TrustLevel current_level = TRUST_NOT_PRIVATE;
     ConnContext *context = otrg_plugin_conv_to_context(conv,
 	    OTRL_INSTAG_RECENT, 0);
-    otrl_instag_t last_received_instance;
-    gboolean have_received = 0;
 
     int *previous_level;
     char *buf;
@@ -2826,7 +2816,6 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
 	    "otr-menu");
     PidginConversation *gtkconv;
     PidginWindow *win;
-    GList * iter;
     GHashTable * conv_or_ctx_map;
     GHashTable * conv_to_idx_map;
     gint * max_instance_idx;
