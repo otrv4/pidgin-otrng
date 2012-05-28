@@ -1,0 +1,220 @@
+html, body, form, fieldset {
+margin: 0;
+padding: 0;
+}
+
+body {
+font: 12px Verdana, Arial, Helvetica, sans-serif;
+background: #fff url(baseimg/bg_body.png) top left repeat-x;
+text-align: left;
+margin: 10px 50px;
+line-height: 160%;
+}
+
+a:link, a:visited, a:active	{
+text-decoration: none; 
+padding-bottom: 1px;
+color: #838716;
+background: transparent url(baseimg/bg_a.png) bottom left repeat-x;
+}
+ 
+a:hover {
+text-decoration: none;color:#999;
+background: none;
+} 
+
+h1 {
+font: 25px Georgia, Times, "Times New Roman", serif;
+}
+
+h2 {
+font: bold 18px Verdana, Arial, Helvetica, sans-serif;
+color: #444;
+background: transparent url(baseimg/bg_h2.png) bottom left repeat-x;
+letter-spacing: 1px;
+}
+
+h2 a, h2 a:hover {
+color: #444;
+}
+
+ul li {
+list-style-type: none;
+background: transparent url(baseimg/list_arrow.png) left center no-repeat;
+}
+
+li {
+padding-left: 1em;
+}
+
+/* ----------------------------------------            -----------------------------------------------------------*/
+#title {
+border-bottom: 1px solid #e6e6e6;
+}
+
+#title a {
+color: #000;
+background: none;
+}
+
+#nav {
+text-align: center;
+}
+
+#nav ul li {
+list-style-type: none;
+display: inline;
+}
+
+#nav ul {
+padding: 5px 0;
+margin: 0;
+background-color: #f7f7f7;
+}
+
+#nav li {
+background: none;
+padding: 0;
+}
+
+#nav li a {
+padding: 5px 15px;
+margin: 0;
+background-color: #fff;
+border-bottom: 3px solid #d5d5d5;
+font-weight: bold;
+}
+
+#otr {
+border: 1px solid #e6e6e6;
+border-width: 0 0 3px 0;
+padding: 1em 2em;
+background-color: #f7f7f7;
+}
+
+#otr dt {
+padding-left: 15px;
+background: transparent url(baseimg/dt_arrow.png) center left no-repeat;
+color: #333;
+font: bold 14px Georgia, Times, "Times New Roman", serif;
+margin: 10px 0 5px 0;
+}
+
+#otr dd {
+margin-left: 15px;
+}
+
+#news dt, #downloads dt, #faqs dt {
+font-weight: bold;
+color: #444;
+}
+
+#news, #press {
+background: #fff;
+}
+
+#news dd, #downloads dd, #faqs dd {
+margin: 5px 0 10px 0;
+}
+
+#news ul, #press ul {
+padding: 0;
+margin-left: 10px;
+}
+
+#press li {
+padding: 5px 15px;
+}
+
+#news dl {
+margin-left: 60px;
+padding-left: 15px;
+border-left: 3px solid #d5d5d5;
+}
+
+p.date {
+clear: left;
+width: 50px;
+float: left;
+margin: 0;
+font: bold 14px Trebuchet, "Trebuchet MS", Verdana, sans-serif;
+color: #444;
+text-align: right;
+}
+
+p.news_more {
+background: transparent url(baseimg/list_arrow.png) left center no-repeat;
+margin-top: 0 !important;
+margin-top: 10px;
+padding-left: 10px;
+text-align: left;
+}
+
+p.notice {
+border: 1px solid #ae1c1c;
+padding: 2px 10px;
+font-size: 10px;
+line-height: 140%;
+}
+
+#downloads, #mailing_lists, #documentation, #faqs, #footer {
+margin-top: 30px;
+}
+
+#downloads dd, #faqs dd {
+margin-left: 10px;
+}
+
+.download {
+width: 30%;
+float: left;
+
+margin-left: 4.5%;
+}
+
+.download_left {
+margin-left: 0;
+}
+
+.download h3 {
+margin: 0 0 15px 0;
+font: bold 15px Verdana, Arial, Helvetica, sans-serif;
+border-bottom: 2px solid #666;
+padding: 2px 0;
+color: #666;
+}
+
+.download ul {
+margin-left: 0;
+padding-left: 0;
+}
+
+.download li {
+padding: 5px 15px;
+}
+
+p.readme {
+background: transparent url(baseimg/bg_readme.png) center left no-repeat;
+padding: 2px 2px 2px 20px;
+letter-spacing: 1px;
+}
+
+#documentation ul {
+margin-left: 0;
+padding-left: 10px;
+}
+
+#documentation li {
+padding: 2px 15px;
+}
+
+#documentation h4 {
+font: bold 13px Verdana, Arial, Helvetica, sans-serif;
+color: #444;
+}
+
+#footer {
+padding: 10px 0 25px 0;
+background: transparent url(baseimg/bg_h2.png) left top repeat-x;
+font-weight: bold;
+}
