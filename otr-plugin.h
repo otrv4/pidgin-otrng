@@ -40,11 +40,12 @@ extern PurplePlugin *otrg_plugin_handle;
 
 extern OtrlUserState otrg_plugin_userstate;
 
-/* Given a PurpleConversation, return the selected ConnContext */
+/* Given a PurpleConversation, return the ConnContext corresponding to the
+ * selected instance tag. */
 ConnContext* otrg_plugin_conv_to_selected_context(PurpleConversation *conv,
 	int force_create);
 
-/* Given a PurpleConversation, return the selected instag */
+/* Given a PurpleConversation, return the selected instag. */
 otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
 	otrl_instag_t default_value);
 
@@ -104,10 +105,6 @@ PurpleConversation *otrg_plugin_userinfo_to_conv(const char *accountname,
 PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
 	int force_create);
 
-/* Cause the "msg-received" signal to be emitted with the given message
- * payload. This causes the message to pop-up in the notification area when the
- * user has the libnotify plugin enabled. */
-void otrg_emit_msg_received(ConnContext *context, const char* message);
 
 typedef enum {
     TRUST_NOT_PRIVATE,

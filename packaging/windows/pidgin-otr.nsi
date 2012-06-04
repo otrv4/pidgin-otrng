@@ -137,6 +137,7 @@ Section Uninstall
   Delete "$INSTDIR\README.Toolkit.txt"
   Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\Protocol-v3.html"
+  Delete "$INSTDIR\Protocol-v2.html" ;Left behind by v3.2.0 uninstaller
   Delete "$INSTDIR\COPYING.txt"
   Delete "$INSTDIR\COPYING.LIB.txt"
   Delete "$INSTDIR\otr_mackey.exe"

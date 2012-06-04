@@ -77,7 +77,9 @@
 #include "gtk-ui.h"
 #include "gtk-dialog.h"
 
-#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+#define BETA_DIALOG 1
+
+#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
 #include "gtkblist.h"
 #endif
 
@@ -158,13 +160,19 @@ static void notify(void *opdata, OtrlNotifyLevel level,
  * protocol / username conversation.  If force_create is non-zero and
  * if the corresponding conversation window is not present, a new
  * conversation window will be created and the message will be displayed
- * there. Returns 0 if message is successfully displayed. */
-static int display_otr_message(void *opdata, const char *accountname,
+ * there. If the message cannot be displayed, try notify() instead and
+ * return 1. Otherwise return 0 if message is successfully displayed. */
+static int display_otr_message_or_notify(void *opdata, const char *accountname,
 	const char *protocol, const char *username, const char *msg,
-	int force_create)
+	int force_create, OtrlNotifyLevel level, const char *title,
+	const char *primary, const char *secondary)
 {
-    return otrg_dialog_display_otr_message(accountname, protocol,
-	    username, msg, force_create);
+    if (otrg_dialog_display_otr_message(accountname, protocol,
+	    username, msg, force_create)) {
+	notify(opdata, level, accountname, protocol, username, title, primary,
+		secondary);
+	return 1;
+    } else return 0;
 }
 
 static void log_message(void *opdata, const char *message)
@@ -417,7 +425,9 @@ static void handle_smp_event_cb(void *opdata, OtrlSMPEvent smp_event,
     }
 }
 
-void otrg_emit_msg_received(ConnContext *context, const char* message) {
+/* Treat this event like other incoming messages. This allows message
+ * notification events to get properly triggered. */
+static void emit_msg_received(ConnContext *context, const char* message) {
     PurpleConversation *conv = otrg_plugin_userinfo_to_conv(
 	    context->accountname, context->protocol, context->username, 1);
     PurpleMessageFlags flags = PURPLE_MESSAGE_RECV | PURPLE_MESSAGE_SYSTEM
@@ -432,10 +442,10 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	ConnContext *context, const char* message, gcry_error_t err)
 {
     PurpleConversation *conv = NULL;
-    if (!context) return;
-    char *buf;
-    const char *format;
+    gchar *buf;
     OtrlMessageEvent * last_msg_event;
+
+    if (!context) return;
 
     conv = otrg_plugin_context_to_conv(context, 1);
     last_msg_event = g_hash_table_lookup(conv->data, "otr-last_msg_event");
@@ -445,219 +455,149 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	case OTRL_MSGEVENT_NONE:
 	    break;
 	case OTRL_MSGEVENT_ENCRYPTION_REQUIRED:
-	    if (display_otr_message(opdata, context->accountname,
+	    buf = g_strdup_printf(_("You attempted to send an "
+		    "unencrypted message to %s"), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, _("Attempting to"
-		    " start a private conversation..."), 1)) {
-		format = _("You attempted to send an "
-		"unencrypted message to %s");
-		buf = malloc(strlen(format) +
-			strlen(context->username) - 1);
-		if (buf) {
-		    sprintf(buf, format, context->username);
-		    notify(opdata, OTRL_NOTIFY_WARNING, context->accountname,
-			    context->protocol, context->username, _("OTR Policy"
-			    " Violation"), buf,
-			    _("Unencrypted messages to this recipient are "
-			    "not allowed.  Attempting to start a private "
-			    "conversation.\n\nYour message will be "
-			    "retransmitted when the private conversation "
-			    "starts."));
-		    free(buf);
-		}
-	    }
+		    " start a private conversation..."), 1, OTRL_NOTIFY_WARNING,
+		    _("OTR Policy Violation"), buf,
+		    _("Unencrypted messages to this recipient are "
+		    "not allowed.  Attempting to start a private "
+		    "conversation.\n\nYour message will be "
+		    "retransmitted when the private conversation "
+		    "starts."));
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_ENCRYPTION_ERROR:
-	    if (display_otr_message(opdata, context->accountname,
+	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, _("An error occurred "
-		    "when encrypting your message.  The message was not sent."
-		    ), 1)) {
-		notify(opdata, OTRL_NOTIFY_ERROR,
-			context->accountname, context->protocol,
-			context->username,
-			_("Error encrypting message"),
-			_("An error occurred when encrypting your message"),
-			_("The message was not sent."));
-	    }
+		    "when encrypting your message.  The message was not sent.")
+		    , 1, OTRL_NOTIFY_ERROR, _("Error encrypting message"),
+		    _("An error occurred when encrypting your message"),
+		    _("The message was not sent."));
 	    break;
 	case OTRL_MSGEVENT_CONNECTION_ENDED:
-	    if (display_otr_message(opdata, context->accountname,
+	    buf = g_strdup_printf(_("%s has already closed his/her private "
+			"connection to you"), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, _("Your message"
 		    "was not sent.  Either end your private conversation, "
-		    "or restart it."), 1)) {
-		format = _("%s has already closed his/her private "
-			"connection to you");
-		buf = malloc(strlen(format) + strlen(context->username) - 1);
-		if (buf) {
-		    sprintf(buf, format, context->username);
-		    notify(opdata, OTRL_NOTIFY_ERROR,
-			    context->accountname, context->protocol,
-			    context->username,
-			    _("Private connection closed"), buf,
-			    _("Your message was not sent.  Either close your "
-			    "private connection to him, or refresh it."));
-		    free(buf);
-		}
-	    }
+		    "or restart it."), 1, OTRL_NOTIFY_ERROR,
+		    _("Private connection closed"), buf,
+		    _("Your message was not sent.  Either close your "
+		    "private connection to him, or refresh it."));
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_SETUP_ERROR:
-	    if (!err) {
-		err = GPG_ERR_INV_VALUE;
-	    }
-	    format = _("Error setting up private conversation: %s");
-	    const char *strerr;
-
 	    switch(gcry_err_code(err)) {
 		case GPG_ERR_INV_VALUE:
-		    strerr = _("Malformed message received");
+		    buf = g_strdup(_("Error setting up private "
+			    "conversation: Malformed message received"));
 		    break;
 		default:
-		    strerr = gcry_strerror(err);
+		    buf = g_strdup_printf(_("Error setting up private "
+			    "conversation: %s"), gcry_strerror(err));
 		    break;
 	    }
-	    buf = malloc(strlen(format) + strlen(strerr) - 1);
-	    if (buf) {
-		sprintf(buf, format, strerr);
-	    }
-	    if (display_otr_message(opdata, context->accountname,
-		    context->protocol, context->username, buf, 1)) {
-		notify(opdata, OTRL_NOTIFY_ERROR, context->accountname,
-			context->protocol, context->username, "OTR error",
-			buf, NULL);
-	    }
-	    free(buf);
+
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_MSG_REFLECTED:
-	    if (display_otr_message(opdata,
+	    display_otr_message_or_notify(opdata,
 		    context->accountname, context->protocol,
 		    context->username,
 		    _("We are receiving our own OTR messages.  "
 		    "You are either trying to talk to yourself, "
 		    "or someone is reflecting your messages back "
-		    "at you."), 1))  {
-		notify(opdata, OTRL_NOTIFY_ERROR,
-			context->accountname, context->protocol,
-			context->username, "OTR Error",
-			_("We are receiving our own OTR messages."),
-			_("You are either trying to talk to yourself, "
-			"or someone is reflecting your messages back "
-			"at you."));
-	    }
+		    "at you."), 1, OTRL_NOTIFY_ERROR,
+		    "OTR Error", _("We are receiving our own OTR messages."),
+		    _("You are either trying to talk to yourself, "
+		    "or someone is reflecting your messages back "
+		    "at you."));
 	    break;
 	case OTRL_MSGEVENT_MSG_RESENT:
-	    format = _("<b>The last message to %s was resent.</b>");
-	    buf = malloc(strlen(format) +
-		    strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		display_otr_message(opdata, context->accountname,
-			context->protocol, context->username, buf, 1);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("<b>The last message to %s was resent."
+		    "</b>"), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_INFO, _("Message resent"), buf, NULL);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
-	    format = _("<b>The encrypted message received from %s is "
-		    "unreadable, as you are not currently communicating "
-		    "privately.</b>");
-	    buf = malloc(strlen(format) +
-		    strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		display_otr_message(opdata, context->accountname,
-			context->protocol, context->username, buf, 1);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("<b>The encrypted message received from "
+		    "%s is unreadable, as you are not currently communicating "
+		    "privately.</b>"), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_INFO, _("Unreadable message"), buf, NULL);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
-	    format = _("We received an unreadable "
-		    "encrypted message from %s.");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		if (display_otr_message(opdata,
-			context->accountname, context->protocol,
-			context->username, buf, 1)) {
-		    notify(opdata, OTRL_NOTIFY_ERROR,
-			    context->accountname, context->protocol,
-			    context->username, "OTR Error", buf, NULL);
-		}
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("We received an unreadable "
+		    "encrypted message from %s."), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
-	    format =  _("We received a malformed data "
-		    "message from %s.");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		if (display_otr_message(opdata,
-			context->accountname, context->protocol,
-			context->username, buf, 1)) {
-		    notify(opdata, OTRL_NOTIFY_ERROR,
-			    context->accountname, context->protocol,
-			    context->username, "OTR Error", buf, NULL);
-		}
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("We received a malformed data "
+		    "message from %s."), context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_LOG_HEARTBEAT_RCVD:
-	    format = _("Heartbeat received from %s.\n");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		log_message(opdata, buf);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("Heartbeat received from %s.\n"),
+		    context->username);
+	    log_message(opdata, buf);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_LOG_HEARTBEAT_SENT:
-	    format = _("Heartbeat sent to %s.\n");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		log_message(opdata, buf);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("Heartbeat sent to %s.\n"),
+		    context->username);
+	    log_message(opdata, buf);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_GENERAL_ERR:
-	    display_otr_message(opdata, context->accountname,
-		    context->protocol, context->username, message, 1);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, message, 1,
+		    OTRL_NOTIFY_ERROR, "OTR Error", message, NULL);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
-	    format = _("<b>The following message received "
-		    "from %s was <i>not</i> encrypted: [</b>%s<b>]</b>");
-	    buf = malloc(strlen(format) + strlen(context->username)
-		    + strlen(message) - 3);
-		/* Remove "%s%s", add username + message + '\0' */
-	    if (buf) {
-		sprintf(buf, format, context->username, message);
-		display_otr_message(opdata, context->accountname,
-			context->protocol, context->username, buf, 1);
-		otrg_emit_msg_received(context, buf);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("<b>The following message received "
+		    "from %s was <i>not</i> encrypted: [</b>%s<b>]</b>"),
+		    context->username, message);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_INFO, _("Received unencrypted message"),
+		    buf, NULL);
+	    emit_msg_received(context, buf);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
-	    format = _("Unrecognized OTR message received from %s.\n");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		log_message(opdata, buf);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("Unrecognized OTR message received "
+		    "from %s.\n"), context->username);
+	    log_message(opdata, buf);
+	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_FOR_OTHER_INSTANCE:
 	    if (*last_msg_event == msg_event) {
 		break;
 	    }
-	    format = _("%s has sent a message intended for a different session."
-		    " If you are logged in multiple times, another session may "
-		    "have received the message.");
-	    buf = malloc(strlen(format) + strlen(context->username) - 1);
-	    if (buf) {
-		sprintf(buf, format, context->username);
-		display_otr_message(opdata, context->accountname,
-			context->protocol, context->username, buf, 1);
-		free(buf);
-	    }
+	    buf = g_strdup_printf(_("%s has sent a message intended for a "
+		    "different session. If you are logged in multiple times, "
+		    "another session may have received the message."),
+		    context->username);
+	    display_otr_message_or_notify(opdata, context->accountname,
+		    context->protocol, context->username, buf, 1,
+		    OTRL_NOTIFY_INFO, _("Received message for a different "
+		    "session"), buf, NULL);
+	    g_free(buf);
 	    break;
     }
 
@@ -709,12 +649,10 @@ static OtrlMessageAppOps ui_ops = {
     handle_smp_event_cb,
     handle_msg_event_cb,
     create_instag_cb,
-    NULL, /* convert_data */
-    NULL /* convert_data_free */
+    NULL,		    /* convert_data */
+    NULL		    /* convert_data_free */
 };
 
-otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
-	otrl_instag_t default_value);
 
 static void process_sending_im(PurpleAccount *account, char *who,
 	char **message, void *m)
@@ -899,10 +837,16 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
 	otrl_instag_t default_val)
 {
-    otrl_instag_t * selected_instance;
+    otrl_instag_t *selected_instance;
 
-    if (!conv || !conv->data || !g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (gpointer*)&selected_instance)) {
+    if (!conv || !conv->data) {
+	return default_val;
+    }
+
+    selected_instance = purple_conversation_get_data(conv,
+	    "otr-ui_selected_ctx");
+
+    if (!selected_instance) {
 	return default_val;
     }
 
@@ -927,13 +871,15 @@ static void process_conv_create(PurpleConversation *conv, void *data)
     OtrlMessageEvent * msg_event;
     if (!conv) return;
 
+    /* If this malloc fails (or the others below), trouble will be
+     * unavoidable. */
     selected_instance = g_malloc(sizeof(otrl_instag_t));
     *selected_instance = OTRL_INSTAG_BEST;
     purple_conversation_set_data(conv, "otr-ui_selected_ctx",
 	    (gpointer)selected_instance);
 
     msg_event = g_malloc(sizeof(OtrlMessageEvent));
-    *msg_event = -1;
+    *msg_event = OTRL_MSGEVENT_NONE;
     purple_conversation_set_data(conv, "otr-last_msg_event",
 	    (gpointer)msg_event);
 
@@ -1222,7 +1168,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     FILE *privf;
     FILE *storef;
     FILE *instagf;
-#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
     GtkWidget *dialog;
     GtkWidget *dialog_text;
     PidginBuddyList *blist;
@@ -1235,21 +1181,21 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	return 0;
     }
 
-#if defined WIN32 && defined USING_GTK /* Only for win32 beta */
+#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
     blist = pidgin_blist_get_default_gtk_blist();
 
     if (time(NULL) > 1356998400) /* 2013-01-01 */ {
-	dialog = gtk_dialog_new_with_buttons ("OTR PLUGIN V4.0 BETA",
+	dialog = gtk_dialog_new_with_buttons (_("OTR PLUGIN V4.0 BETA"),
 		GTK_WINDOW(blist->window),
 		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
 	dialog_text = gtk_label_new(NULL);
 	gtk_widget_set_size_request(dialog_text, 350, 100);
 	gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
-	gtk_label_set_text(GTK_LABEL(dialog_text), "This beta copy of the "
+	gtk_label_set_text(GTK_LABEL(dialog_text), _("This beta copy of the "
 		"Off-the-Record Messaging v4.0 Pidgin plugin has expired as of "
 		"2013-01-01. Please look for an updated release at "
-		"www.cypherpunks.ca/otr.");
+		"http://otr.cypherpunks.ca."));
 	gtk_widget_show(dialog_text);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text,
 		TRUE, TRUE, 0);
@@ -1263,17 +1209,17 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     }
 
 
-    dialog = gtk_dialog_new_with_buttons ("OTR PLUGIN V4.0 BETA",
+    dialog = gtk_dialog_new_with_buttons (_("OTR PLUGIN V4.0 BETA"),
 	    GTK_WINDOW(blist->window),
 	    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 	    GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
     dialog_text = gtk_label_new(NULL);
     gtk_widget_set_size_request(dialog_text, 350, 100);
     gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
-    gtk_label_set_text(GTK_LABEL(dialog_text), "You have enabled a beta "
+    gtk_label_set_text(GTK_LABEL(dialog_text), _("You have enabled a beta "
 	    "version of the Off-the-Record Messaging v4.0 Pidgin plugin. "
 	    "This version is intended for testing purposes only and is not "
-	    "for general purpose use.");
+	    "for general purpose use."));
     gtk_widget_show(dialog_text);
     gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text,
 	    TRUE, TRUE, 0);
@@ -1417,8 +1363,8 @@ static PurplePluginInfo info =
 	NULL,                                             /* description    */
 							  /* author         */
 	"Ian Goldberg, Rob Smits,\n"
-	    "\t\t\tChris Alexander, Willy Lew, Nikita Borisov\n"
-	    "\t\t\t<otr@cypherpunks.ca>",
+	    "\t\t\tChris Alexander, Willy Lew, Lisa Du,\n"
+	    "\t\t\tNikita Borisov <otr@cypherpunks.ca>",
 	"http://otr.cypherpunks.ca/",                     /* homepage       */
 
 	otr_plugin_load,                                  /* load           */
