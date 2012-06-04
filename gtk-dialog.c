@@ -1175,82 +1175,31 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
     GtkWidget *label;
     GtkWidget *icon;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *icontext;
-#endif
     GtkWidget *button;
     GtkWidget *menu;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *menuquery;
-    GtkWidget *menuend;
-    GtkWidget *menuquerylabel;
-    GtkWidget *menuview;
-    GtkWidget *menuverf;
-    GtkWidget *menusmp;
-#else
     ConvOrContext *convctx;
     GHashTable * conv_or_ctx_map;
-#endif
+    char *markup;
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     label = purple_conversation_get_data(conv, "otr-label");
     icon = purple_conversation_get_data(conv, "otr-icon");
     button = purple_conversation_get_data(conv, "otr-button");
     menu = purple_conversation_get_data(conv, "otr-menu");
-#ifdef OLD_OTR_BUTTON
-    icontext = purple_conversation_get_data(conv, "otr-icontext");
-    menuquery = purple_conversation_get_data(conv, "otr-menuquery");
-    menuquerylabel = gtk_bin_get_child(GTK_BIN(menuquery));
-    menuend = purple_conversation_get_data(conv, "otr-menuend");
-    menuview = purple_conversation_get_data(conv, "otr-menuview");
-    menuverf = purple_conversation_get_data(conv, "otr-menuverf");
-    menusmp = purple_conversation_get_data(conv, "otr-menusmp");
-#endif
 
-    /* Set the button's icon, label and tooltip. */
-#ifdef OLD_OTR_BUTTON
     otr_icon(icon, level, 1);
-    gtk_label_set_text(GTK_LABEL(label),
+    markup = g_strdup_printf(" <span color=\"%s\">%s</span>",
+	    level == TRUST_FINISHED ? "#000000" :
+	    level == TRUST_PRIVATE ? "#00a000" :
+	    level == TRUST_UNVERIFIED ? "#a06000" :
+	    "#ff0000",
 	    level == TRUST_FINISHED ? _("Finished") :
 	    level == TRUST_PRIVATE ? _("Private") :
 	    level == TRUST_UNVERIFIED ? _("Unverified") :
 	    _("Not private"));
-    gtk_tooltips_set_tip(gtkconv->tooltips, button,
-	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
-		    _("Start a private conversation") :
-		    _("Refresh the private conversation"), NULL);
+    gtk_label_set_markup(GTK_LABEL(label), markup);
+    g_free(markup);
+    gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
 
-    /* Set the menu item label for the OTR Query item. */
-    gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
-	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
-		    _("Start _private conversation") :
-		    _("Refresh _private conversation"));
-
-    /* Sensitize the menu items as appropriate. */
-    gtk_widget_set_sensitive(GTK_WIDGET(menuend), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuview), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE
-	    && level != TRUST_FINISHED);
-#else
-    {
-	char *markup;
-
-	otr_icon(icon, level, 1);
-	markup = g_strdup_printf(" <span color=\"%s\">%s</span>",
-		level == TRUST_FINISHED ? "#000000" :
-		level == TRUST_PRIVATE ? "#00a000" :
-		level == TRUST_UNVERIFIED ? "#a06000" :
-		"#ff0000",
-		level == TRUST_FINISHED ? _("Finished") :
-		level == TRUST_PRIVATE ? _("Private") :
-		level == TRUST_UNVERIFIED ? _("Unverified") :
-		_("Not private"));
-	gtk_label_set_markup(GTK_LABEL(label), markup);
-	g_free(markup);
-	gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
-    }
-
-#endif
 
     /* Use any non-NULL value for "private", NULL for "not private" */
     purple_conversation_set_data(conv, "otr-private",
@@ -1266,8 +1215,6 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     purple_conversation_set_data(conv, "otr-finished",
 	    level == TRUST_FINISHED ? conv : NULL);
 
-#ifdef OLD_OTR_BUTTON
-#else
     conv_or_ctx_map = purple_conversation_get_data(conv, "otr-convorctx");
     convctx = g_hash_table_lookup(conv_or_ctx_map, conv);
 
@@ -1281,7 +1228,6 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     build_otr_menu(convctx, menu, level);
     otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
 	    level);
-#endif
 
     conv = gtkconv->active_conv;
     otr_check_conv_status_change(conv);
@@ -1829,16 +1775,6 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 {
     PurpleConversation *conv = data;
 
-#ifdef OLD_OTR_BUTTON
-    if ((event->button == 3) && (event->type == GDK_BUTTON_PRESS)) {
-	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
-	if (menu) {
-	    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-		    3, event->time);
-	    return TRUE;
-	}
-    }
-#else
     /* Any button will do */
     if (event->type == GDK_BUTTON_PRESS) {
 	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
@@ -1848,7 +1784,7 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 	    return TRUE;
 	}
     }
-#endif
+
     return FALSE;
 }
 
@@ -2886,15 +2822,6 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     g_hash_table_remove(conv->data, "otr-warned_instances");
     g_hash_table_remove(conv->data, "otr-last_received_ctx");
 
-#ifdef OLD_OTR_BUTTON
-    g_hash_table_remove(conv->data, "otr-icontext");
-    g_hash_table_remove(conv->data, "otr-menuquery");
-    g_hash_table_remove(conv->data, "otr-menuend");
-    g_hash_table_remove(conv->data, "otr-menuview");
-    g_hash_table_remove(conv->data, "otr-menuverf");
-    g_hash_table_remove(conv->data, "otr-menusmp");
-#endif
-
     otrg_gtk_dialog_free_smp_data(conv);
 
     gtkconv = PIDGIN_CONVERSATION ( conv );
@@ -2921,22 +2848,9 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     GtkWidget *button;
     GtkWidget *label;
     GtkWidget *bwbox;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *bvbox;
-    GtkWidget *iconbox;
-    GtkWidget *icontext;
-    GtkWidget *menuquery;
-    GtkWidget *menuend;
-    GtkWidget *menusep;
-    /*
-    GtkWidget *menuview;
-    GtkWidget *menuverf;
-    */
-    GtkWidget *menusmp;
-    GtkWidget *whatsthis;
-#else
+
     ConvOrContext *convctx;
-#endif
+
     GtkWidget *icon;
     GtkWidget *menu;
 
@@ -2960,11 +2874,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     name = purple_conversation_get_name(conv);
     otrg_ui_get_prefs(&prefs, account, name);
 
-#ifdef OLD_OTR_BUTTON
-    bbox = gtkconv->lower_hbox;
-#else
     bbox = gtkconv->toolbar;
-#endif
 
     context = otrg_plugin_conv_to_selected_context(conv, 0);
 
@@ -3025,27 +2935,12 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
     }
 
-#ifdef OLD_OTR_BUTTON
-    bwbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(button), bwbox);
-    bvbox = gtk_vbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(bwbox), bvbox, TRUE, FALSE, 0);
-    iconbox = gtk_hbox_new(FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(bvbox), iconbox, FALSE, FALSE, 0);
-    label = gtk_label_new(NULL);
-    gtk_box_pack_start(GTK_BOX(bvbox), label, FALSE, FALSE, 0);
-    icontext = gtk_label_new(_("OTR:"));
-    gtk_box_pack_start(GTK_BOX(iconbox), icontext, FALSE, FALSE, 0);
-    icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
-    gtk_box_pack_start(GTK_BOX(iconbox), icon, TRUE, FALSE, 0);
-#else
     bwbox = gtk_hbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(button), bwbox);
     icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
     gtk_box_pack_start(GTK_BOX(bwbox), icon, TRUE, FALSE, 0);
     label = gtk_label_new(NULL);
     gtk_box_pack_start(GTK_BOX(bwbox), label, FALSE, FALSE, 0);
-#endif
 
     if (prefs.show_otr_button) {
 	gtk_widget_show_all(button);
@@ -3056,50 +2951,6 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     menu = gtk_menu_new();
     gtk_menu_set_title(GTK_MENU(menu), _("OTR Messaging"));
 
-#ifdef OLD_OTR_BUTTON
-    menuquery = gtk_menu_item_new_with_mnemonic("");
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuquery);
-    gtk_widget_show(menuquery);
-
-    menuend = gtk_menu_item_new_with_mnemonic(_("_End private conversation"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuend);
-    gtk_widget_show(menuend);
-
-    menusep = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
-    gtk_widget_show(menusep);
-
-    /*
-     * Don't show the Verify fingerprint menu option any more.  You can
-     * still get to the dialog through Authenticate connection ->
-     * Advanced...
-     *
-    menuverf = gtk_menu_item_new_with_mnemonic(_("_Verify fingerprint"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
-    gtk_widget_show(menuverf);
-    */
-
-    menusmp = gtk_menu_item_new_with_mnemonic(_("_Authenticate buddy"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusmp);
-    gtk_widget_show(menusmp);
-
-    /*
-     * Don't show the View secure session id menu option any more.  It's
-     * not really useful at all.
-     *
-    menuview = gtk_menu_item_new_with_mnemonic(_("View _secure session id"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuview);
-    gtk_widget_show(menuview);
-    */
-
-    menusep = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
-    gtk_widget_show(menusep);
-
-    whatsthis = gtk_menu_item_new_with_mnemonic(_("_What's this?"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
-    gtk_widget_show(whatsthis);
-#else
     convctx = malloc(sizeof(ConvOrContext));
     convctx->convctx_type = convctx_conv;
     convctx->conv = conv;
@@ -3107,42 +2958,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     build_otr_menu(convctx, menu, TRUST_NOT_PRIVATE);
     otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
 	    TRUST_NOT_PRIVATE);
-#endif
 
     purple_conversation_set_data(conv, "otr-label", label);
     purple_conversation_set_data(conv, "otr-button", button);
     purple_conversation_set_data(conv, "otr-icon", icon);
     purple_conversation_set_data(conv, "otr-menu", menu);
-#ifdef OLD_OTR_BUTTON
-    purple_conversation_set_data(conv, "otr-icontext", icontext);
-
-    purple_conversation_set_data(conv, "otr-menuquery", menuquery);
-    purple_conversation_set_data(conv, "otr-menuend", menuend);
-    /*
-    purple_conversation_set_data(conv, "otr-menuview", menuview);
-    purple_conversation_set_data(conv, "otr-menuverf", menuverf);
-    */
-
-    purple_conversation_set_data(conv, "otr-menusmp", menusmp);
-    gtk_signal_connect(GTK_OBJECT(menuquery), "activate",
-	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
-    gtk_signal_connect(GTK_OBJECT(menuend), "activate",
-	    GTK_SIGNAL_FUNC(menu_end_private_conversation), conv);
-    /*
-    gtk_signal_connect(GTK_OBJECT(menuverf), "activate",
-	    GTK_SIGNAL_FUNC(verify_fingerprint), conv);
-    */
-    gtk_signal_connect(GTK_OBJECT(menusmp), "activate",
-	    GTK_SIGNAL_FUNC(socialist_millionaires), conv);
-    /*
-    gtk_signal_connect(GTK_OBJECT(menuview), "activate",
-	    GTK_SIGNAL_FUNC(view_sessionid), conv);
-    */
-    gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
-	    GTK_SIGNAL_FUNC(menu_whatsthis), conv);
-    gtk_signal_connect(GTK_OBJECT(button), "clicked",
-	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
-#endif
     g_signal_connect(G_OBJECT(button), "button-press-event",
 	    G_CALLBACK(button_pressed), conv);
 

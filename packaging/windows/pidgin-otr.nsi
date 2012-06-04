@@ -26,7 +26,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "4.0.0-0"
+!define PRODUCT_VERSION "4.0.0-0-BETA1"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
