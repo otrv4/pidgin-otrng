@@ -317,7 +317,7 @@ static void clist_unselected(GtkWidget *widget, gint row, gint column,
 }
 
 /* For a given fingerprint, find the master context that the fingerprint is
- * pointing to, iterate through it and all its childdren.
+ * pointing to, iterate through it and all its children.
  * Of the contexts that are using this fingerprint, return a value that
  * corresponds to the "best" trust level among these.
  */

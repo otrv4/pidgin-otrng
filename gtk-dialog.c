@@ -2299,7 +2299,7 @@ static void build_meta_instance_submenu( PurpleConversation *conv,
 
 /* Build an OTR buddy menu (where the root menu item is an icon corresponding
  * to the conversation status) for a conversation that has multiple instances.
- * The ConnContexts are given in the GList "instances." Keep track of the
+ * The ConnContexts are given in the GList "instances". Keep track of the
  * position this menu was inserted in the "pos" argument. "active_conv"
  * corresponds to whether this conversation is the active PurpleConversation
  * for this PidginConversation pane.
@@ -2844,13 +2844,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 {
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     ConnContext *context;
+    ConvOrContext *convctx;
     GtkWidget *bbox;
     GtkWidget *button;
     GtkWidget *label;
     GtkWidget *bwbox;
-
-    ConvOrContext *convctx;
-
     GtkWidget *icon;
     GtkWidget *menu;
 

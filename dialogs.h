@@ -35,7 +35,7 @@
 #define SESSIONID_HELPURL     BASE_HELPURL "sessionid.php"
 #define UNVERIFIED_HELPURL    BASE_HELPURL "unverified.php"
 #define LEVELS_HELPURL        BASE_HELPURL "levels.php"
-#define SESSIONS_HELPURL        BASE_HELPURL "sessions.php"
+#define SESSIONS_HELPURL      BASE_HELPURL "sessions.php"
 
 
 typedef struct s_OtrgDialogWait *OtrgDialogWaitHandle;

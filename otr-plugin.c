@@ -77,9 +77,10 @@
 #include "gtk-ui.h"
 #include "gtk-dialog.h"
 
+/* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 1
 
-#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
+#if BETA_DIALOG && defined USING_GTK /* Only for beta */
 #include "gtkblist.h"
 #endif
 
@@ -471,8 +472,8 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	case OTRL_MSGEVENT_ENCRYPTION_ERROR:
 	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, _("An error occurred "
-		    "when encrypting your message.  The message was not sent.")
-		    , 1, OTRL_NOTIFY_ERROR, _("Error encrypting message"),
+		    "when encrypting your message.  The message was not sent."),
+		    1, OTRL_NOTIFY_ERROR, _("Error encrypting message"),
 		    _("An error occurred when encrypting your message"),
 		    _("The message was not sent."));
 	    break;
@@ -489,6 +490,9 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_SETUP_ERROR:
+	    if (!err) {
+		err = GPG_ERR_INV_VALUE;
+	    }
 	    switch(gcry_err_code(err)) {
 		case GPG_ERR_INV_VALUE:
 		    buf = g_strdup(_("Error setting up private "
@@ -502,7 +506,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 
 	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, buf, 1,
-		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+		    OTRL_NOTIFY_ERROR, _("OTR Error"), buf, NULL);
 	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_MSG_REFLECTED:
@@ -513,7 +517,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 		    "You are either trying to talk to yourself, "
 		    "or someone is reflecting your messages back "
 		    "at you."), 1, OTRL_NOTIFY_ERROR,
-		    "OTR Error", _("We are receiving our own OTR messages."),
+		    _("OTR Error"), _("We are receiving our own OTR messages."),
 		    _("You are either trying to talk to yourself, "
 		    "or someone is reflecting your messages back "
 		    "at you."));
@@ -540,7 +544,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 		    "encrypted message from %s."), context->username);
 	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, buf, 1,
-		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+		    OTRL_NOTIFY_ERROR, _("OTR Error"), buf, NULL);
 	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
@@ -548,7 +552,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 		    "message from %s."), context->username);
 	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, buf, 1,
-		    OTRL_NOTIFY_ERROR, "OTR Error", buf, NULL);
+		    OTRL_NOTIFY_ERROR, _("OTR Error"), buf, NULL);
 	    g_free(buf);
 	    break;
 	case OTRL_MSGEVENT_LOG_HEARTBEAT_RCVD:
@@ -566,7 +570,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	case OTRL_MSGEVENT_RCVDMSG_GENERAL_ERR:
 	    display_otr_message_or_notify(opdata, context->accountname,
 		    context->protocol, context->username, message, 1,
-		    OTRL_NOTIFY_ERROR, "OTR Error", message, NULL);
+		    OTRL_NOTIFY_ERROR, _("OTR Error"), message, NULL);
 	    break;
 	case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
 	    buf = g_strdup_printf(_("<b>The following message received "
@@ -871,7 +875,7 @@ static void process_conv_create(PurpleConversation *conv, void *data)
     OtrlMessageEvent * msg_event;
     if (!conv) return;
 
-    /* If this malloc fails (or the others below), trouble will be
+    /* If this malloc fails (or the other below), trouble will be
      * unavoidable. */
     selected_instance = g_malloc(sizeof(otrl_instag_t));
     *selected_instance = OTRL_INSTAG_BEST;
@@ -1168,7 +1172,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     FILE *privf;
     FILE *storef;
     FILE *instagf;
-#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
+#if BETA_DIALOG && defined USING_GTK /* Only for beta */
     GtkWidget *dialog;
     GtkWidget *dialog_text;
     PidginBuddyList *blist;
@@ -1182,11 +1186,11 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	return 0;
     }
 
-#if defined BETA_DIALOG && defined USING_GTK /* Only for beta */
+#if BETA_DIALOG && defined USING_GTK /* Only for beta */
     blist = pidgin_blist_get_default_gtk_blist();
 
     if (time(NULL) > 1356998400) /* 2013-01-01 */ {
-	buf = g_strdup_printf(_("OTR PLUGIN V%s"), PIDGIN_OTR_VERSION);
+	buf = g_strdup_printf(_("OTR PLUGIN v%s"), PIDGIN_OTR_VERSION);
 	dialog = gtk_dialog_new_with_buttons (buf,
 		GTK_WINDOW(blist->window),
 		GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1198,7 +1202,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	buf = g_strdup_printf(_("This beta copy of the "
 		"Off-the-Record Messaging v%s Pidgin plugin has expired as of "
 		"2013-01-01. Please look for an updated release at "
-		"http://otr.cypherpunks.ca."), PIDGIN_OTR_VERSION);
+		"http://otr.cypherpunks.ca/"), PIDGIN_OTR_VERSION);
 	gtk_label_set_text(GTK_LABEL(dialog_text), buf);
 	gtk_widget_show(dialog_text);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text,
@@ -1213,7 +1217,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	return 0;
     }
 
-    buf = g_strdup_printf(_("OTR PLUGIN V%s"), PIDGIN_OTR_VERSION);
+    buf = g_strdup_printf(_("OTR PLUGIN v%s"), PIDGIN_OTR_VERSION);
     dialog = gtk_dialog_new_with_buttons (buf,
 	    GTK_WINDOW(blist->window),
 	    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,

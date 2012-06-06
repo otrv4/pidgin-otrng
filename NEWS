@@ -1,3 +1,30 @@
+June 2012:
+
+- The plugin now supports multiple OTR conversations with the same
+  buddy who is logged in at multiple locations. In this case, a new
+  OTR menu will appear, which allows you to select which session an
+  outgoing message is indended for. Note that concurrent SMP
+  authentications with the same buddy who is logged in multiple times
+  is not supported (starting a second authentication will end the
+  first).
+- During a private conversation with a buddy, an incoming unencrypted
+  message will now trigger the regular incoming message notifications.
+  In Pidgin this includes showing the message in the top-right
+  notification area, if it is normally configured to do so.
+- New Italian, Swedish, Polish and Vietnamese translations. Updates to
+  the French translation.
+- When a private conversation begins, the plugin will indicate whether
+  Pidgin is configured to log the conversation.
+- By default, OTR conversations will not be logged by Pidgin.
+- Fingerprints in the manual authentication dialog are now selectable
+- The plugin will no longer delete the OTR menus if a non-foreground
+  conversation window is closed.
+- Except on WIN32, the plugin will now set the umask to 0077 before
+  creating the otr.* files in the purple directory so that they end up
+  mode 0600. 
+- The menu item now says "Reauthenticate buddy" when the buddy is
+  already authenticated.
+
 28 May 2008:
 
 - The functionality of the OTR button has now moved to a menu.  There's
