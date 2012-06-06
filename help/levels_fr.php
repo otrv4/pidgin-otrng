@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
 <body><h1>Messagerie Off-the-Record</h1>
+<?php include('helpnav.php'); ?>
 <h2>Niveaux de confidentialité</h2>
 <p>Une conversation peut avoir quatre <b>niveaux de confidentialité</b> différents&nbsp;:</p>
 <dl>

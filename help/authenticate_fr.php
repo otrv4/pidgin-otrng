@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
 <body><h1>Messagerie Off-the-Record</h1>
+<?php include('helpnav.php'); ?>
 <h2>Authentification</h2>
 <p>Vous avez probablement déjà reçu des emails de gens prétendant être
 une banque, une agence de crédit, ou un expatrié nigérien. Sur

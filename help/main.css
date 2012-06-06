@@ -218,3 +218,17 @@ padding: 10px 0 25px 0;
 background: transparent url(baseimg/bg_h2.png) left top repeat-x;
 font-weight: bold;
 }
+
+.helpnav ul li {
+display:inline
+}
+
+.helpnav {
+border-bottom: solid;
+border-width: 1px;
+color: black
+}
+
+.helpnav ul {
+margin-left: -50px
+}

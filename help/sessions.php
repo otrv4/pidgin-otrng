@@ -3,6 +3,7 @@
 <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
 <body><h1>Off-the-Record Messaging</h1>
+<?php include('helpnav.php'); ?>
 <h2>Multiple Sessions</h2>
 <p>With versions of OTR earlier than 4.0.0, if you tried to start a private
 conversation with a buddy who is logged into the same account at multiple

@@ -3,6 +3,7 @@
 <link rel="stylesheet" type="text/css" href="main.css" />
 </head>
 <body><h1>Off-the-Record Messaging</h1>
+<?php include('helpnav.php'); ?>
 <h2>Fingerprints</h2>
 <p>You've probably received email from people pretending to be banks, credit
 agencies, even wealthy Nigerian expatriates.  People lie about who they
