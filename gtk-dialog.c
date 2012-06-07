@@ -2590,6 +2590,8 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	    }
 	}
 
+	g_free(username);
+
 	g_hash_table_insert(conv_to_context_map,
 		currentConv, (gpointer) contexts);
 
