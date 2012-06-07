@@ -1,4 +1,6 @@
-<?php $lang = isset($_REQUEST['lang']) ? htmlspecialchars($_REQUEST['lang']) : "en";?>
+<?php
+$lang = ((isset($_REQUEST['lang']) && preg_match('/^[a-z][a-z]$/', $_REQUEST['lang']) > 0) ? $_REQUEST['lang'] : 'en');
+?>
 
 <div class="helpnav">
 <ul>
