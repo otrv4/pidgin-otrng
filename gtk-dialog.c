@@ -2120,7 +2120,8 @@ static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
 	buds = purple_find_buddies ( gtkconv->active_conv->account,
 		gtkconv->active_conv->name );
 
-	if ( buds == NULL) {  /* buddy not on list */
+	if ( buds == NULL
+		&& !g_list_find(conv_list, conv)) {  /* buddy not on list */
 	    conv_list = g_list_prepend ( conv_list, conv);
 	} else  {
 	    for ( l = buds; l != NULL; l = l->next ) {
@@ -2149,7 +2150,8 @@ static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
 
 			    pres_list = g_list_prepend ( pres_list, presence );
 
-			    if (currentConv != NULL) {
+			    if (currentConv != NULL &&
+				    !g_list_find(conv_list, currentConv)) {
 				conv_list = g_list_prepend ( conv_list,
 					currentConv );
 			    }
@@ -2183,12 +2185,13 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	    "otr-select_best");
     GtkWidget *select_recent = (GtkWidget *) purple_conversation_get_data(conv,
 	    "otr-select_recent");
-    gboolean value = gtk_check_menu_item_get_active(
-	    GTK_CHECK_MENU_ITEM(widget));
+    gboolean value = FALSE;
     otrl_instag_t * selected_instance = (otrl_instag_t *)
 	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
     ConnContext * context = NULL;
     ConnContext * recent_context = NULL;
+
+    value = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
 
     if (widget == select_best) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = !value;
@@ -2226,6 +2229,7 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
     if (!context) context = (ConnContext *)
 	    otrg_plugin_conv_to_selected_context(conv, 1);
 
+    pidgin_conv_switch_active_conversation(conv);
     dialog_update_label(context);
 }
 
@@ -2557,6 +2561,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	PurpleAccount *account;
 	char *username;
 	const char *accountname, *proto;
+	GList * contexts = NULL;
 
 	currentConv = list_iter->data;
 
@@ -2573,7 +2578,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	proto = purple_account_get_protocol_id(account);
 	username = g_strdup(purple_normalize(account,
 		purple_conversation_get_name(currentConv)));
-	GList * contexts = NULL;
 
 	for (currentContext = otrg_plugin_userstate->context_root;
 		currentContext != NULL;
