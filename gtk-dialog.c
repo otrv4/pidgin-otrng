@@ -113,27 +113,26 @@ typedef struct {
     ConnContext *context;
 } ConvOrContext;
 
-gint get_new_instance_index(PurpleConversation *conv) {
+static gint get_new_instance_index(PurpleConversation *conv) {
     gint * max_index = (gint *)
 	    purple_conversation_get_data(conv, "otr-max_idx");
     *max_index = (*max_index) + 1;
     return *max_index;
 }
 
-gint get_context_instance_to_index(PurpleConversation *conv,
+static gint get_context_instance_to_index(PurpleConversation *conv,
 	ConnContext *context) {
     GHashTable * conv_to_idx_map =
 	    purple_conversation_get_data(conv, "otr-conv_to_idx");
-    gint * index = 0;
+    gpointer index = NULL;
 
-    if (!g_hash_table_lookup_extended(conv_to_idx_map, context, NULL,
-	    (gpointer *)&index)) {
+    if (!g_hash_table_lookup_extended(conv_to_idx_map, context, NULL, &index)) {
 	index = g_malloc(sizeof(gint));
-	*index = get_new_instance_index(conv);
-	g_hash_table_replace(conv_to_idx_map, context, (gpointer)index);
+	*(gint *)index = get_new_instance_index(conv);
+	g_hash_table_replace(conv_to_idx_map, context, index);
     }
 
-    return *index;
+    return *(gint *)index;
 }
 
 static void close_progress_window(SMPData *smp_data)
@@ -771,6 +770,8 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
     close_progress_window(smp_data);
 
+    /* If you start SMP authentication on a different context, it
+     * will kill any existing SMP */
     if (smp_data->their_instance != context->their_instance) {
 	otrg_gtk_dialog_free_smp_data(conv);
 	otrg_gtk_dialog_add_smp_data(conv);
@@ -1174,82 +1175,31 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
     GtkWidget *label;
     GtkWidget *icon;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *icontext;
-#endif
     GtkWidget *button;
     GtkWidget *menu;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *menuquery;
-    GtkWidget *menuend;
-    GtkWidget *menuquerylabel;
-    GtkWidget *menuview;
-    GtkWidget *menuverf;
-    GtkWidget *menusmp;
-#else
     ConvOrContext *convctx;
     GHashTable * conv_or_ctx_map;
-#endif
+    char *markup;
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     label = purple_conversation_get_data(conv, "otr-label");
     icon = purple_conversation_get_data(conv, "otr-icon");
     button = purple_conversation_get_data(conv, "otr-button");
     menu = purple_conversation_get_data(conv, "otr-menu");
-#ifdef OLD_OTR_BUTTON
-    icontext = purple_conversation_get_data(conv, "otr-icontext");
-    menuquery = purple_conversation_get_data(conv, "otr-menuquery");
-    menuquerylabel = gtk_bin_get_child(GTK_BIN(menuquery));
-    menuend = purple_conversation_get_data(conv, "otr-menuend");
-    menuview = purple_conversation_get_data(conv, "otr-menuview");
-    menuverf = purple_conversation_get_data(conv, "otr-menuverf");
-    menusmp = purple_conversation_get_data(conv, "otr-menusmp");
-#endif
 
-    /* Set the button's icon, label and tooltip. */
-#ifdef OLD_OTR_BUTTON
     otr_icon(icon, level, 1);
-    gtk_label_set_text(GTK_LABEL(label),
+    markup = g_strdup_printf(" <span color=\"%s\">%s</span>",
+	    level == TRUST_FINISHED ? "#000000" :
+	    level == TRUST_PRIVATE ? "#00a000" :
+	    level == TRUST_UNVERIFIED ? "#a06000" :
+	    "#ff0000",
 	    level == TRUST_FINISHED ? _("Finished") :
 	    level == TRUST_PRIVATE ? _("Private") :
 	    level == TRUST_UNVERIFIED ? _("Unverified") :
 	    _("Not private"));
-    gtk_tooltips_set_tip(gtkconv->tooltips, button,
-	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
-		    _("Start a private conversation") :
-		    _("Refresh the private conversation"), NULL);
+    gtk_label_set_markup(GTK_LABEL(label), markup);
+    g_free(markup);
+    gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
 
-    /* Set the menu item label for the OTR Query item. */
-    gtk_label_set_markup_with_mnemonic(GTK_LABEL(menuquerylabel),
-	    (level == TRUST_NOT_PRIVATE || level == TRUST_FINISHED) ?
-		    _("Start _private conversation") :
-		    _("Refresh _private conversation"));
-
-    /* Sensitize the menu items as appropriate. */
-    gtk_widget_set_sensitive(GTK_WIDGET(menuend), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuview), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menuverf), level != TRUST_NOT_PRIVATE);
-    gtk_widget_set_sensitive(GTK_WIDGET(menusmp), level != TRUST_NOT_PRIVATE
-	    && level != TRUST_FINISHED);
-#else
-    {
-	char *markup;
-
-	otr_icon(icon, level, 1);
-	markup = g_strdup_printf(" <span color=\"%s\">%s</span>",
-		level == TRUST_FINISHED ? "#000000" :
-		level == TRUST_PRIVATE ? "#00a000" :
-		level == TRUST_UNVERIFIED ? "#a06000" :
-		"#ff0000",
-		level == TRUST_FINISHED ? _("Finished") :
-		level == TRUST_PRIVATE ? _("Private") :
-		level == TRUST_UNVERIFIED ? _("Unverified") :
-		_("Not private"));
-	gtk_label_set_markup(GTK_LABEL(label), markup);
-	g_free(markup);
-	gtk_tooltips_set_tip(gtkconv->tooltips, button, _("OTR"), NULL);
-    }
-
-#endif
 
     /* Use any non-NULL value for "private", NULL for "not private" */
     purple_conversation_set_data(conv, "otr-private",
@@ -1265,8 +1215,6 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     purple_conversation_set_data(conv, "otr-finished",
 	    level == TRUST_FINISHED ? conv : NULL);
 
-#ifdef OLD_OTR_BUTTON
-#else
     conv_or_ctx_map = purple_conversation_get_data(conv, "otr-convorctx");
     convctx = g_hash_table_lookup(conv_or_ctx_map, conv);
 
@@ -1280,7 +1228,6 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     build_otr_menu(convctx, menu, level);
     otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
 	    level);
-#endif
 
     conv = gtkconv->active_conv;
     otr_check_conv_status_change(conv);
@@ -1612,7 +1559,7 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 		context->protocol_version == 1 ? _("  Warning: using old "
 		"protocol version 1.") : "", conv->logging ?
 		_("  Your client is logging this conversation.") :
-		_("   Your client is not logging this conversation."));
+		_("  Your client is not logging this conversation."));
 
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
@@ -1631,11 +1578,13 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
 
 	if (!*have_warned_instances) {
 	    *have_warned_instances = TRUE;
+	    buf = g_strdup_printf(_("Your buddy is logged in multiple times and"
+		    " OTR has established <a href=\"%s%s\">multiple sessions"
+		    "</a>. Use the icon menu above if you wish to select the "
+		    "outgoing session."), SESSIONS_HELPURL, _("?lang=en"));
 	    otrg_gtk_dialog_display_otr_message(context->accountname,
-		    context->protocol, context->username,
-		    _("Your buddy is logged in multiple times and OTR has "
-		    "established multiple sessions. Use the icon menu above if "
-		    "you wish to select the outgoing session."), 0);
+		    context->protocol, context->username, buf, 0);
+	    g_free(buf);
 	}
     }
 }
@@ -1826,16 +1775,6 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 {
     PurpleConversation *conv = data;
 
-#ifdef OLD_OTR_BUTTON
-    if ((event->button == 3) && (event->type == GDK_BUTTON_PRESS)) {
-	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
-	if (menu) {
-	    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-		    3, event->time);
-	    return TRUE;
-	}
-    }
-#else
     /* Any button will do */
     if (event->type == GDK_BUTTON_PRESS) {
 	GtkWidget *menu = purple_conversation_get_data(conv, "otr-menu");
@@ -1845,7 +1784,7 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 	    return TRUE;
 	}
     }
-#endif
+
     return FALSE;
 }
 
@@ -1874,7 +1813,7 @@ static void otr_refresh_otr_buttons(PurpleConversation *conv) {
 }
 
 /* Menu has been destroyed -- let's remove it from the menu_list
-   so that it won't be destroyed again                           */
+ * so that it won't be destroyed again. */
 static void otr_menu_destroy(GtkWidget *widget, gpointer pdata) {
     PidginWindow *win = (PidginWindow *) pdata ;
     GtkWidget *top_menu = widget;
@@ -2181,7 +2120,8 @@ static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
 	buds = purple_find_buddies ( gtkconv->active_conv->account,
 		gtkconv->active_conv->name );
 
-	if ( buds == NULL) {  /* buddy not on list */
+	if ( buds == NULL
+		&& !g_list_find(conv_list, conv)) {  /* buddy not on list */
 	    conv_list = g_list_prepend ( conv_list, conv);
 	} else  {
 	    for ( l = buds; l != NULL; l = l->next ) {
@@ -2210,7 +2150,8 @@ static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
 
 			    pres_list = g_list_prepend ( pres_list, presence );
 
-			    if (currentConv != NULL) {
+			    if (currentConv != NULL &&
+				    !g_list_find(conv_list, currentConv)) {
 				conv_list = g_list_prepend ( conv_list,
 					currentConv );
 			    }
@@ -2244,12 +2185,13 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	    "otr-select_best");
     GtkWidget *select_recent = (GtkWidget *) purple_conversation_get_data(conv,
 	    "otr-select_recent");
-    gboolean value = gtk_check_menu_item_get_active(
-	    GTK_CHECK_MENU_ITEM(widget));
+    gboolean value = FALSE;
     otrl_instag_t * selected_instance = (otrl_instag_t *)
 	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
     ConnContext * context = NULL;
     ConnContext * recent_context = NULL;
+
+    value = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
 
     if (widget == select_best) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = !value;
@@ -2286,25 +2228,30 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 
     if (!context) context = (ConnContext *)
 	    otrg_plugin_conv_to_selected_context(conv, 1);
+
+    pidgin_conv_switch_active_conversation(conv);
     dialog_update_label(context);
 }
 
 static void select_menu_ctx(GtkWidget *widget, gpointer data) {
     ConnContext *context = (ConnContext *) data;
-    PurpleConversation * conv = otrg_plugin_context_to_conv(context, 1);
+    PurpleConversation *conv = otrg_plugin_context_to_conv(context, 1);
     ConnContext *recent_context = (ConnContext *) otrg_plugin_conv_to_context(
 	    conv, (otrl_instag_t)OTRL_INSTAG_RECENT_RECEIVED, 0);
-    otrl_instag_t * selected_instance = (otrl_instag_t *)
+    otrl_instag_t *selected_instance = (otrl_instag_t *)
 	    purple_conversation_get_data(conv, "otr-ui_selected_ctx");
+    gboolean *is_multi_instance = purple_conversation_get_data(conv,
+		    "otr-conv_multi_instances");
 
-    *selected_instance = context->their_instance;
-
-    unselect_meta_ctx(conv);
+    if (*is_multi_instance) {
+	*selected_instance = context->their_instance;
+	unselect_meta_ctx(conv);
+    }
 
     pidgin_conv_switch_active_conversation(conv);
     dialog_update_label(context);
 
-    if (context != recent_context) {
+    if (*is_multi_instance && context != recent_context) {
 	gchar *buf = g_strdup_printf(_("Warning: The selected outgoing OTR "
 		"session (%u) is not the most recently active one (%u). "
 		"Your buddy may not receive your messages. Use the icon menu "
@@ -2324,25 +2271,18 @@ static void build_meta_instance_submenu( PurpleConversation *conv,
 	    _("Send to most secure"));
     GtkWidget *select_recent = gtk_check_menu_item_new_with_label(
 	    _("Send to most recent"));
-    otrl_instag_t * selected_instance;
-    gboolean selected_existed = g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (gpointer*)&selected_instance);
+    otrl_instag_t * selected_instance = purple_conversation_get_data(conv,
+	    "otr-ui_selected_ctx");
 
-    if (selected_existed) {
-
-	if (*selected_instance == OTRL_INSTAG_BEST) {
-	    GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
-	    GTK_CHECK_MENU_ITEM(select_best)->active = 1;
-	} else if (*selected_instance == OTRL_INSTAG_RECENT_RECEIVED) {
-	    GTK_CHECK_MENU_ITEM(select_recent)->active = 1;
-	    GTK_CHECK_MENU_ITEM(select_best)->active = 0;
-	} else {
-	    GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
-	    GTK_CHECK_MENU_ITEM(select_best)->active = 0;
-	}
-    } else {
+    if (*selected_instance == OTRL_INSTAG_BEST) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
 	GTK_CHECK_MENU_ITEM(select_best)->active = 1;
+    } else if (*selected_instance == OTRL_INSTAG_RECENT_RECEIVED) {
+	GTK_CHECK_MENU_ITEM(select_recent)->active = 1;
+	GTK_CHECK_MENU_ITEM(select_best)->active = 0;
+    } else {
+	GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
+	GTK_CHECK_MENU_ITEM(select_best)->active = 0;
     }
 
     purple_conversation_set_data(conv, "otr-select_best", select_best);
@@ -2361,9 +2301,16 @@ static void build_meta_instance_submenu( PurpleConversation *conv,
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), select_recent);
 }
 
-static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
-		*instances, gboolean active_conv, char *username, const char
-		*accountname, int *pos) {
+/* Build an OTR buddy menu (where the root menu item is an icon corresponding
+ * to the conversation status) for a conversation that has multiple instances.
+ * The ConnContexts are given in the GList "instances". Keep track of the
+ * position this menu was inserted in the "pos" argument. "active_conv"
+ * corresponds to whether this conversation is the active PurpleConversation
+ * for this PidginConversation pane.
+ */
+static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
+		GList *instances, gboolean active_conv, const char *username,
+		const char *accountname, int *pos) {
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
     GtkWidget *menu_bar = win->menu.menubar;
     GtkWidget *menu;
@@ -2403,7 +2350,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
     for (; instances; instances = instances->next) {
 	GtkWidget *instance_menu_item;
 	GtkWidget *instance_submenu;
-	gchar text[35] ;
+	gchar* text;
 	ConnContext *curr_context = instances->data;
 	ConvOrContext * curr_convctx = g_hash_table_lookup(conv_or_ctx_map,
 		curr_context);
@@ -2411,7 +2358,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 		context->their_instance);
 	gint instance_i = -1;
 
-	if (curr_context->their_instance == OTRL_INSTAG_MASTER &&
+	if (curr_context->m_context == curr_context &&
 		curr_context->msgstate == OTRL_MSGSTATE_PLAINTEXT) {
 	    continue;
 	}
@@ -2427,7 +2374,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 
 	instance_i = get_context_instance_to_index(conv, curr_context);
 
-	g_snprintf(text, 35, _("Session %u"), instance_i);
+	text = g_strdup_printf(_("Session %u"), instance_i);
 
 	instance_menu_item = gtk_image_menu_item_new_with_label(text);
 	instance_submenu = gtk_menu_new();
@@ -2441,6 +2388,8 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
 		GTK_IMAGE_MENU_ITEM(instance_menu_item), 1);
 
 	build_otr_menu(curr_convctx, instance_submenu, level);
+
+	g_free(text);
 
 	if (!selection_exists || *instance != curr_context->their_instance) {
 	    GtkWidget *select_ctx = gtk_menu_item_new_with_label(_("Select"));
@@ -2513,9 +2462,16 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 }
 
-static void otr_add_buddy_top_menu(PidginConversation *gtkconv, ConvOrContext
-	*convctx, gboolean active_conv, char *username, const char
-	*accountname, int *pos) {
+/* Build an OTR buddy menu (where the root menu item is an icon corresponding
+ * to the conversation status) for a conversation that does not have multiple
+ * instances. A pre-allocated ConvOrContext is given. Keep track of the
+ * position this menu was inserted in the "pos" argument. "active_conv"
+ * corresponds to whether this conversation is the active PurpleConversation
+ * for this PidginConversation pane.
+ */
+static void otr_add_buddy_top_menu(PidginConversation *gtkconv,
+	ConvOrContext *convctx, gboolean active_conv, const char *username,
+	const char *accountname, int *pos) {
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
     GtkWidget *menu_bar = win->menu.menubar;
     GtkWidget *menu;
@@ -2605,6 +2561,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	PurpleAccount *account;
 	char *username;
 	const char *accountname, *proto;
+	GList * contexts = NULL;
 
 	currentConv = list_iter->data;
 
@@ -2621,7 +2578,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	proto = purple_account_get_protocol_id(account);
 	username = g_strdup(purple_normalize(account,
 		purple_conversation_get_name(currentConv)));
-	GList * contexts = NULL;
 
 	for (currentContext = otrg_plugin_userstate->context_root;
 		currentContext != NULL;
@@ -2633,6 +2589,8 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 		contexts = g_list_append(contexts, currentContext);
 	    }
 	}
+
+	g_free(username);
 
 	g_hash_table_insert(conv_to_context_map,
 		currentConv, (gpointer) contexts);
@@ -2710,7 +2668,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 	    contexts_iter = contexts;
 	    currentContext = contexts_iter->data;
 
-	    while (currentContext->their_instance == OTRL_INSTAG_MASTER &&
+	    while (currentContext->m_context == currentContext &&
 		    contexts_iter->next != NULL) {
 		contexts_iter = contexts_iter->next;
 		currentContext = contexts_iter->data;
@@ -2868,17 +2826,7 @@ static void conversation_destroyed(PurpleConversation *conv, void *data)
     g_hash_table_remove(conv->data, "otr-max_idx");
     g_hash_table_remove(conv->data, "otr-conv_multi_instances");
     g_hash_table_remove(conv->data, "otr-warned_instances");
-    g_hash_table_remove(conv->data, "otr-last_msg_event");
     g_hash_table_remove(conv->data, "otr-last_received_ctx");
-
-#ifdef OLD_OTR_BUTTON
-    g_hash_table_remove(conv->data, "otr-icontext");
-    g_hash_table_remove(conv->data, "otr-menuquery");
-    g_hash_table_remove(conv->data, "otr-menuend");
-    g_hash_table_remove(conv->data, "otr-menuview");
-    g_hash_table_remove(conv->data, "otr-menuverf");
-    g_hash_table_remove(conv->data, "otr-menusmp");
-#endif
 
     otrg_gtk_dialog_free_smp_data(conv);
 
@@ -2902,26 +2850,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 {
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     ConnContext *context;
+    ConvOrContext *convctx;
     GtkWidget *bbox;
     GtkWidget *button;
     GtkWidget *label;
     GtkWidget *bwbox;
-#ifdef OLD_OTR_BUTTON
-    GtkWidget *bvbox;
-    GtkWidget *iconbox;
-    GtkWidget *icontext;
-    GtkWidget *menuquery;
-    GtkWidget *menuend;
-    GtkWidget *menusep;
-    /*
-    GtkWidget *menuview;
-    GtkWidget *menuverf;
-    */
-    GtkWidget *menusmp;
-    GtkWidget *whatsthis;
-#else
-    ConvOrContext *convctx;
-#endif
     GtkWidget *icon;
     GtkWidget *menu;
 
@@ -2945,11 +2878,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     name = purple_conversation_get_name(conv);
     otrg_ui_get_prefs(&prefs, account, name);
 
-#ifdef OLD_OTR_BUTTON
-    bbox = gtkconv->lower_hbox;
-#else
     bbox = gtkconv->toolbar;
-#endif
 
     context = otrg_plugin_conv_to_selected_context(conv, 0);
 
@@ -3010,27 +2939,12 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 	gtk_box_pack_start(GTK_BOX(bbox), button, FALSE, FALSE, 0);
     }
 
-#ifdef OLD_OTR_BUTTON
-    bwbox = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(button), bwbox);
-    bvbox = gtk_vbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(bwbox), bvbox, TRUE, FALSE, 0);
-    iconbox = gtk_hbox_new(FALSE, 3);
-    gtk_box_pack_start(GTK_BOX(bvbox), iconbox, FALSE, FALSE, 0);
-    label = gtk_label_new(NULL);
-    gtk_box_pack_start(GTK_BOX(bvbox), label, FALSE, FALSE, 0);
-    icontext = gtk_label_new(_("OTR:"));
-    gtk_box_pack_start(GTK_BOX(iconbox), icontext, FALSE, FALSE, 0);
-    icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
-    gtk_box_pack_start(GTK_BOX(iconbox), icon, TRUE, FALSE, 0);
-#else
     bwbox = gtk_hbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(button), bwbox);
     icon = otr_icon(NULL, TRUST_NOT_PRIVATE, 1);
     gtk_box_pack_start(GTK_BOX(bwbox), icon, TRUE, FALSE, 0);
     label = gtk_label_new(NULL);
     gtk_box_pack_start(GTK_BOX(bwbox), label, FALSE, FALSE, 0);
-#endif
 
     if (prefs.show_otr_button) {
 	gtk_widget_show_all(button);
@@ -3041,50 +2955,6 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     menu = gtk_menu_new();
     gtk_menu_set_title(GTK_MENU(menu), _("OTR Messaging"));
 
-#ifdef OLD_OTR_BUTTON
-    menuquery = gtk_menu_item_new_with_mnemonic("");
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuquery);
-    gtk_widget_show(menuquery);
-
-    menuend = gtk_menu_item_new_with_mnemonic(_("_End private conversation"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuend);
-    gtk_widget_show(menuend);
-
-    menusep = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
-    gtk_widget_show(menusep);
-
-    /*
-     * Don't show the Verify fingerprint menu option any more.  You can
-     * still get to the dialog through Authenticate connection ->
-     * Advanced...
-     *
-    menuverf = gtk_menu_item_new_with_mnemonic(_("_Verify fingerprint"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuverf);
-    gtk_widget_show(menuverf);
-    */
-
-    menusmp = gtk_menu_item_new_with_mnemonic(_("_Authenticate buddy"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusmp);
-    gtk_widget_show(menusmp);
-
-    /*
-     * Don't show the View secure session id menu option any more.  It's
-     * not really useful at all.
-     *
-    menuview = gtk_menu_item_new_with_mnemonic(_("View _secure session id"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuview);
-    gtk_widget_show(menuview);
-    */
-
-    menusep = gtk_separator_menu_item_new();
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep);
-    gtk_widget_show(menusep);
-
-    whatsthis = gtk_menu_item_new_with_mnemonic(_("_What's this?"));
-    gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
-    gtk_widget_show(whatsthis);
-#else
     convctx = malloc(sizeof(ConvOrContext));
     convctx->convctx_type = convctx_conv;
     convctx->conv = conv;
@@ -3092,42 +2962,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     build_otr_menu(convctx, menu, TRUST_NOT_PRIVATE);
     otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
 	    TRUST_NOT_PRIVATE);
-#endif
 
     purple_conversation_set_data(conv, "otr-label", label);
     purple_conversation_set_data(conv, "otr-button", button);
     purple_conversation_set_data(conv, "otr-icon", icon);
     purple_conversation_set_data(conv, "otr-menu", menu);
-#ifdef OLD_OTR_BUTTON
-    purple_conversation_set_data(conv, "otr-icontext", icontext);
-
-    purple_conversation_set_data(conv, "otr-menuquery", menuquery);
-    purple_conversation_set_data(conv, "otr-menuend", menuend);
-    /*
-    purple_conversation_set_data(conv, "otr-menuview", menuview);
-    purple_conversation_set_data(conv, "otr-menuverf", menuverf);
-    */
-
-    purple_conversation_set_data(conv, "otr-menusmp", menusmp);
-    gtk_signal_connect(GTK_OBJECT(menuquery), "activate",
-	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
-    gtk_signal_connect(GTK_OBJECT(menuend), "activate",
-	    GTK_SIGNAL_FUNC(menu_end_private_conversation), conv);
-    /*
-    gtk_signal_connect(GTK_OBJECT(menuverf), "activate",
-	    GTK_SIGNAL_FUNC(verify_fingerprint), conv);
-    */
-    gtk_signal_connect(GTK_OBJECT(menusmp), "activate",
-	    GTK_SIGNAL_FUNC(socialist_millionaires), conv);
-    /*
-    gtk_signal_connect(GTK_OBJECT(menuview), "activate",
-	    GTK_SIGNAL_FUNC(view_sessionid), conv);
-    */
-    gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
-	    GTK_SIGNAL_FUNC(menu_whatsthis), conv);
-    gtk_signal_connect(GTK_OBJECT(button), "clicked",
-	    GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
-#endif
     g_signal_connect(G_OBJECT(button), "button-press-event",
 	    G_CALLBACK(button_pressed), conv);
 
@@ -3294,8 +3133,7 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
     last_received_instance = g_hash_table_lookup(conv->data,
 	    "otr-last_received_ctx");
 
-    if (last_received_instance &&
-	    (*last_received_instance == OTRL_INSTAG_MASTER || 
+    if ((*last_received_instance == OTRL_INSTAG_MASTER || 
 	    *last_received_instance >= OTRL_MIN_VALID_INSTAG)) {
 	have_received = TRUE;
     }

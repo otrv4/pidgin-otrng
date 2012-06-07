@@ -165,7 +165,7 @@ static void otrg_gtk_ui_update_keylist(void)
 	PurplePlugin *p;
 	char *proto_name;
 
-	if (context->their_instance != OTRL_INSTAG_MASTER) continue;
+	if (context->m_context != context) continue;
 
 	fingerprint = context->fingerprint_root.next;
 	/* If there's no fingerprint, don't add it to the known
@@ -291,6 +291,7 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
 		    forget_sensitive = 0;
 		}
 		else if (context_iter->msgstate == OTRL_MSGSTATE_FINISHED) {
+		    disconnect_sensitive = 1;
 		    connect_sensitive = 1;
 		}
 		else if (context_iter->msgstate == OTRL_MSGSTATE_PLAINTEXT) {
@@ -315,6 +316,11 @@ static void clist_unselected(GtkWidget *widget, gint row, gint column,
     clist_all_unselected();
 }
 
+/* For a given fingerprint, find the master context that the fingerprint is
+ * pointing to, iterate through it and all its children.
+ * Of the contexts that are using this fingerprint, return a value that
+ * corresponds to the "best" trust level among these.
+ */
 static int fngsortval(Fingerprint *f)
 {
     int result = 200;
@@ -514,12 +520,8 @@ static void otroptions_clicked_cb(GtkButton *button,
 static void create_otroptions_buttons(struct otroptionsdata *oo,
 	GtkWidget *vbox)
 {
-#ifdef OLD_OTR_BUTTON
-    oo->showotrbutton = gtk_check_button_new_with_label(_("Show OTR button"));
-#else
     oo->showotrbutton = gtk_check_button_new_with_label(
 	    _("Show OTR button in toolbar"));
-#endif
 
     gtk_box_pack_start(GTK_BOX(vbox), oo->showotrbutton, FALSE, FALSE, 0);
 
@@ -621,11 +623,7 @@ static void otrg_gtk_ui_global_options_load(gboolean *showotrbuttonp)
     if (purple_prefs_exists("/OTR/showotrbutton")) {
 	*showotrbuttonp = purple_prefs_get_bool("/OTR/showotrbutton");
     } else {
-#ifdef OLD_OTR_BUTTON
-	*showotrbuttonp = FALSE;
-#else
 	*showotrbuttonp = TRUE;
-#endif
     }
 }
 

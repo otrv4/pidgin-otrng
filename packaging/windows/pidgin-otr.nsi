@@ -26,7 +26,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "4.0.0-0"
+!define PRODUCT_VERSION "4.0.0-0-beta1"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -137,6 +137,7 @@ Section Uninstall
   Delete "$INSTDIR\README.Toolkit.txt"
   Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\Protocol-v3.html"
+  Delete "$INSTDIR\Protocol-v2.html" ;Left behind by v3.2.0 uninstaller
   Delete "$INSTDIR\COPYING.txt"
   Delete "$INSTDIR\COPYING.LIB.txt"
   Delete "$INSTDIR\otr_mackey.exe"

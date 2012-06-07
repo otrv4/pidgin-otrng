@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce configure.
 
-AC_INIT(pidgin-otr, 4.0.0)
+AC_INIT(pidgin-otr, 4.0.0-beta1)
 
 AM_CONFIG_HEADER(config.h)
 

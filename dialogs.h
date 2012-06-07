@@ -35,6 +35,8 @@
 #define SESSIONID_HELPURL     BASE_HELPURL "sessionid.php"
 #define UNVERIFIED_HELPURL    BASE_HELPURL "unverified.php"
 #define LEVELS_HELPURL        BASE_HELPURL "levels.php"
+#define SESSIONS_HELPURL      BASE_HELPURL "sessions.php"
+
 
 typedef struct s_OtrgDialogWait *OtrgDialogWaitHandle;
 
@@ -119,7 +121,7 @@ void otrg_dialog_notify_info(const char *accountname, const char *protocol,
 /* Display an OTR control message for the given accountname / protocol /
  * username conversation.  Return 0 on success, non-0 on error (in which
  * case the message will be displayed inline as a received message). */
-int otrg_dialog_display_otr_message( const char *accountname,
+int otrg_dialog_display_otr_message(const char *accountname,
 	const char *protocol, const char *username, const char *msg,
 	int force_create);
 
