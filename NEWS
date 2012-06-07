@@ -1,11 +1,11 @@
-June 2012:
+7 Jun 2012:
 
 - The plugin now supports multiple OTR conversations with the same
   buddy who is logged in at multiple locations. In this case, a new
   OTR menu will appear, which allows you to select which session an
   outgoing message is indended for. Note that concurrent SMP
   authentications with the same buddy who is logged in multiple times
-  is not supported (starting a second authentication will end the
+  is not yet supported (starting a second authentication will end the
   first).
 - During a private conversation with a buddy, an incoming unencrypted
   message will now trigger the regular incoming message notifications.
@@ -24,6 +24,7 @@ June 2012:
   mode 0600. 
 - The menu item now says "Reauthenticate buddy" when the buddy is
   already authenticated.
+- Release 4.0.0-beta1
 
 28 May 2008:
 
