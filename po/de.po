@@ -5,17 +5,16 @@
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 # Marc Ester <marc.aurel.ester@googlemail.com>, 2012
 # Michael Meier <michael.meier@mmsources.de>, 2008.
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pidgin-otr 4.0.0.XX\n"
+"Project-Id-Version: pidgin-otr 4.0.0.de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-14 09:45-0400\n"
 "PO-Revision-Date: 2012-06-17 12:33+0200\n"
 "Last-Translator: Marc Ester <marc.aurel.ester@googlemail.com>\n"
 "Language-Team: Marc Ester <marc.aurel.ester@googlemail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
@@ -338,20 +337,21 @@ msgstr "Authentifizierung fehlgeschlagen."
 #: ../gtk-dialog.c:1541
 #, c-format
 msgid "Private conversation with %s started.%s%s"
-msgstr "Private Unterhaltung mit %s begonnen.%s"
+msgstr "Private Unterhaltung mit %s begonnen.%s%s"
 
 #: ../gtk-dialog.c:1545
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
 msgstr ""
-"Nicht <a href=\"%s%s\">verifizierte</a> Unterhaltung mit %%s begonnen.%%s"
+"Nicht <a href=\"%s%s\">verifizierte</a> Unterhaltung mit %%s "
+"begonnen.%%s%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
 #: ../gtk-dialog.c:1553
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
-msgstr "Nicht private Unterhaltung mit %s begonnen.%s"
+msgstr "Nicht private Unterhaltung mit %s begonnen.%s%s"
 
 #: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
 msgid "  Warning: using old protocol version 1."
@@ -359,11 +359,11 @@ msgstr "  Warnung: Verwende veraltete Protokollversion 1."
 
 #: ../gtk-dialog.c:1561
 msgid "  Your client is logging this conversation."
-msgstr "Ihr Client speichert diese Unterhaltung"
+msgstr "  Ihr Client speichert diese Unterhaltung."
 
 #: ../gtk-dialog.c:1562
 msgid "  Your client is not logging this conversation."
-msgstr "Ihr Client speichert diese Unterhaltung nicht"
+msgstr "  Ihr Client speichert diese Unterhaltung nicht."
 
 #: ../gtk-dialog.c:1581
 #, c-format
@@ -422,7 +422,7 @@ msgstr "Versuche, eine private Unterhaltung mit %s zu beginnen..."
 
 #: ../gtk-dialog.c:1899 ../gtk-dialog.c:2026
 msgid "Start _private conversation"
-msgstr "_Private Unterhaltung starten "
+msgstr "_Private Unterhaltung starten"
 
 #: ../gtk-dialog.c:1900
 msgid "Refresh _private conversation"
@@ -458,7 +458,7 @@ msgstr ""
 "Warnung: Die gewählte ausgehende OTR Session (%u) ist nicht "
 "die kürzlich aktive (%u). Dein Buddy wird die Nachricht eventuell nicht "
 "erhalten. Nutzen Sie das obere Symbol Menü um eine ausgehende Session "
-"zu wählen"
+"zu wählen."
 
 #: ../gtk-dialog.c:2271
 msgid "Send to most secure"
@@ -618,7 +618,7 @@ msgstr "Standard OTR-Einstellungen für diesen Buddy verwenden"
 #: ../otr-plugin.c:125
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
-msgstr "Sie sind momentan nicht mit Konto %s verbunden(%s)."
+msgstr "Sie sind momentan nicht mit Konto %s (%s) verbunden."
 
 #: ../otr-plugin.c:129
 msgid "Not connected"
@@ -650,21 +650,21 @@ msgstr "Ein Fehler ist beim verschlüsseln der Nachtricht aufgetreten"
 #: ../otr-plugin.c:368
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
-msgstr "Sie haben %s eine verschlüsselte Nachricht geschickt,"
+msgstr "Sie haben %s eine verschlüsselte Nachricht geschickt, "
 "welche er nicht erwartet hat"
 
 #: ../otr-plugin.c:374
 msgid "You transmitted an unreadable encrypted message."
-msgstr "Sie haben eine unlesbare verschlüsselte Nachricht"
-"verschickt"
+msgstr "Sie haben eine unlesbare verschlüsselte Nachricht "
+"verschickt."
 
 #: ../otr-plugin.c:377
 msgid "You transmitted a malformed data message."
-msgstr "Sie haben fehlerhaften Nachrichten Inhalt versendet"
+msgstr "Sie haben fehlerhaften Nachrichten Inhalt versendet."
 
 #: ../otr-plugin.c:390
 msgid "[resent]"
-msgstr "nochmal senden"
+msgstr "[nochmal senden]"
 
 #: ../otr-plugin.c:459
 #, c-format
@@ -686,7 +686,7 @@ msgid ""
 "\n"
 "Your message will be retransmitted when the private conversation starts."
 msgstr ""
-"Unverschlüsselte Nachrichten an diesen Empfänger sind nicht erlaubt."
+"Unverschlüsselte Nachrichten an diesen Empfänger sind nicht erlaubt. "
 "Versuche eine private Unterhaltung zu starten.\n"
 "\n"
 "Ihre Nachricht wird nochmal gesendet, wenn die private Unterhaltung beginnt."
@@ -697,7 +697,6 @@ msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr ""
 "Es ist ein Fehler beim verschlüsseln ihrer Nachricht aufgetreten."
-"
 
 #: ../otr-plugin.c:476
 msgid "Error encrypting message"
@@ -705,11 +704,11 @@ msgstr "Fehler beim verschlüsseln der Nachricht"
 
 #: ../otr-plugin.c:477
 msgid "An error occurred when encrypting your message"
-msgstr "Ein Fehler ist beim verschlüsseln der Nachricht aufgetreten."
+msgstr "Ein Fehler ist beim verschlüsseln der Nachricht aufgetreten"
 
 #: ../otr-plugin.c:478
 msgid "The message was not sent."
-msgstr "Die Nachricht wurden nicht versendet"
+msgstr "Die Nachricht wurden nicht versendet."
 
 #: ../otr-plugin.c:481
 #, c-format
@@ -720,8 +719,8 @@ msgstr "%s hat bereits seine/ihre private Verbindung zu Ihnen beendet"
 msgid ""
 "Your messagewas not sent.  Either end your private conversation, or restart "
 "it."
-msgstr "Ihre Nachricht wurde nicht gesendet. Entweder beenden sie ihre private Unterhaltung"
-"oder Sie schalen sie wieder ein."
+msgstr "Ihre Nachricht wurde nicht gesendet. Entweder beenden sie ihre "
+"private Unterhaltung oder Sie schalen sie wieder ein."
 
 #: ../otr-plugin.c:487
 msgid "Private connection closed"
@@ -731,8 +730,8 @@ msgstr "Private Verbindung geschlossen"
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
-msgstr "Ihre Nachricht wurde nicht gesendet. Entweder beenden sie ihre private Unterhaltung"
-"oder Sie aktualisieren sie."
+msgstr "Ihre Nachricht wurde nicht gesendet. Entweder beenden sie ihre "
+"private Unterhaltung oder Sie aktualisieren sie."
 
 #: ../otr-plugin.c:498
 msgid "Error setting up private conversation: Malformed message received"
@@ -758,7 +757,7 @@ msgstr ""
 
 #: ../otr-plugin.c:520
 msgid "We are receiving our own OTR messages."
-msgstr "Wir empfangen unsere eigene OTR Nachricht"
+msgstr "Wir empfangen unsere eigene OTR Nachricht."
 
 #: ../otr-plugin.c:521
 msgid ""
@@ -766,12 +765,12 @@ msgid ""
 "messages back at you."
 msgstr ""
 "Sie versuchen mit sich selbst zu reden oder jemand schickt ihre Nachrichten"
-"zurück."
+" zurück."
 
 #: ../otr-plugin.c:526
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
-msgstr ""<b>Die letzte Nachricht an &s wurde wieder versendet.</b>""
+msgstr "<b>Die letzte Nachricht an &s wurde wieder versendet.</b>"
 
 #: ../otr-plugin.c:530
 msgid "Message resent"
@@ -793,7 +792,7 @@ msgstr "Unlesbare Nachricht"
 #: ../otr-plugin.c:543
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
-msgstr "Wir haben eine unlesbare verschlüsselte Nachricht von %.""
+msgstr "Wir haben eine unlesbare verschlüsselte Nachricht von %s."
 
 #: ../otr-plugin.c:551
 #, c-format
@@ -834,9 +833,9 @@ msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
 msgstr ""
-"%s hat eine Nachricht gesendet welche für eine andere Session bestimmt war."
-"Wenn Sie mehrfach verbunden sind, hat möglicherweise eine andere Verbindung die"
-"Nachricht erhalten."
+"%s hat eine Nachricht gesendet welche für eine andere Session bestimmt "
+"war. Wenn Sie mehrfach verbunden sind, hat möglicherweise eine andere "
+"Verbindung die Nachricht erhalten."
 
 #: ../otr-plugin.c:602
 msgid "Received message for a different session"
@@ -855,9 +854,9 @@ msgid ""
 "as of 2013-01-01. Please look for an updated release at http://otr."
 "cypherpunks.ca/"
 msgstr ""
-"Diese Beta Version von Off-the-Record Messaging v%s Pidgin Plugin ist abgelaufen"
-"ab dem 01.01.2013. Bitte schauen Sie auf http://otr."cypherpunks.ca nach"
-"einem Update."
+"Diese Beta Version von Off-the-Record Messaging v%s Pidgin Plugin ist "
+"abgelaufen ab dem 01.01.2013. Bitte schauen Sie auf "
+"http://otr.cypherpunks.ca/ nach einem Update."
 
 #: ../otr-plugin.c:1229
 #, c-format
@@ -866,7 +865,7 @@ msgid ""
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
 msgstr ""
-"Sie nutzen eine Beta Version des Off-the-Record Messaging v%s Pidgin Plugins."
+"Sie nutzen eine Beta Version des Off-the-Record Messaging v%s Pidgin Plugins. "
 "Diese Version ist nur für Testzwecke und nicht die allgemeine Nutzung."
 
 #: ../otr-plugin.c:1414
