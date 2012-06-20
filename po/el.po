@@ -1,0 +1,855 @@
+# Off-the-Record Messaging plugin for pidgin.
+# Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
+#	                       Lisa Du, Nikita Borisov
+# This file is distributed under the same license as the pidgin-otr package.
+# Ian Goldberg <otr@cypherpunks.ca>, 2012
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: pidgin-otr 4.0.0.XX\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-14 09:45-0400\n"
+"PO-Revision-Date: 2012-06-20 19:50+2\n"
+"Last-Translator: irregulator@riseup.net\n"
+"Language-Team: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=el_GR.UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
+#: ../gtk-dialog.c:1547 ../gtk-dialog.c:1584 ../gtk-dialog.c:1673
+#: ../gtk-dialog.c:1748 ../gtk-dialog.c:2749
+msgid "?lang=en"
+msgstr "?lang=el"
+
+#: ../gtk-dialog.c:480
+msgid ""
+"Your buddy is attempting to determine if he or she is really talking to you, "
+"or if it's someone pretending to be you.  Your buddy has asked a question, "
+"indicated below.  To authenticate to your buddy, enter the answer and click "
+"OK."
+msgstr "Η επαφή σου προσπαθεί να εξακριβώσει αν μιλάει πραγματικά μαζί σου,"
+"ή πρόκειται για κάποιον που προσποιείται ότι είναι εσύ. Η επαφή σου έκανε την ερώτηση"
+"που φαίνεται παρακάτω. Για να αποδείξεις στην επαφή σου ποιος είσαι,"
+"συμπλήρωσε την απάντηση και πάτα OK."
+
+#: ../gtk-dialog.c:487
+msgid ""
+"To authenticate using a question, pick a question whose answer is known only "
+"to you and your buddy.  Enter this question and this answer, then wait for "
+"your buddy to enter the answer too.  If the answers don't match, then you "
+"may be talking to an imposter."
+msgstr "Για να αυθεντικοποιήσεις την επαφή σου χρησιμοποιώντας μια ερώτηση, διάλεξε μια ερώτηση της οποίας"
+"η απάντηση είναι γνωστή μόνο σε σένα και την επαφή σου. Γράψε αυτή την ερώτηση καθώς και την απάντηση,"
+"και στη συνέχεια περίμενε για την επαφή σου να απαντήσει στην ίδια ερώτηση. Εάν οι απαντήσεις"
+"δεν ταιριάζουν, τότε ίσως να μιλάς με κάποιον απατεώνα."
+
+#: ../gtk-dialog.c:505
+#, c-format
+msgid "This is the question asked by your buddy:"
+msgstr "Η επαφή σου ρώτησε:"
+
+#: ../gtk-dialog.c:508
+#, c-format
+msgid "Enter question here:"
+msgstr "Βάλε μια ερώτηση εδώ:"
+
+#: ../gtk-dialog.c:540 ../gtk-dialog.c:624
+msgid "This buddy is already authenticated."
+msgstr "Η επαφή είναι ήδη αυθεντικοποιημένη."
+
+#: ../gtk-dialog.c:552
+#, c-format
+msgid "Enter secret answer here (case sensitive):"
+msgstr "Γράψτε τη μυστική απάντηση εδώ (τα κεφαλαία θεωρούνται διαφορετικά από τα μικρά γράμματα)"
+
+#: ../gtk-dialog.c:593
+msgid ""
+"To authenticate, pick a secret known only to you and your buddy.  Enter this "
+"secret, then wait for your buddy to enter it too.  If the secrets don't "
+"match, then you may be talking to an imposter."
+msgstr "Για αυθεντικοποίηση, διάλεξε ένα μυστικό γνωστό μόνο σε εσένα"
+"και την επαφή σου. Αφού εισάγεις αυτό το μυστικό, περίμενε να το εισάγει"
+"και η επαφή σου. Αν τα μυστικά δεν ταιριάζουν, τότε ίσως να μιλάς με κάποιον απατεώνα."
+
+#: ../gtk-dialog.c:607
+#, c-format
+msgid "Enter secret here:"
+msgstr "Βάλε το μυστικό εδώ:"
+
+#: ../gtk-dialog.c:657 ../gtk-dialog.c:1408
+msgid ""
+"To verify the fingerprint, contact your buddy via some <i>other</i> "
+"authenticated channel, such as the telephone or GPG-signed email.  Each of "
+"you should tell your fingerprint to the other."
+msgstr "Για να επαληθεύσεις το αποτύπωμα, επικοινώνησε με την επαφή σου μέσω"
+"ενός <i>άλλου</i> αυθεντικοποιημένου καναλιού, όπως το τηλέφωνο ή ένα email με ψηφιακή υπογραφή GPG."
+"Ο καθένας σας θα πρέπει να πει το αποτύπωμά του στον άλλον μέσω αυτού του άλλου καναλιού."
+
+#: ../gtk-dialog.c:661
+msgid ""
+"If everything matches up, you should chose <b>I have</b> in the menu below."
+msgstr "Αν όλα ταιριάζουν, τότε πρέπει να επιλέξεις <b>Έχω επικυρώσει</b> στο παρακάτω μενού."
+
+#: ../gtk-dialog.c:672 ../gtk-dialog.c:1397
+msgid "[none]"
+msgstr "[κανένα]"
+
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1051 ../gtk-dialog.c:1404
+#: ../gtk-dialog.c:1453 ../gtk-ui.c:212 ../otr-plugin.c:127
+#: ../otr-plugin.c:300 ../ui.c:112
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: ../gtk-dialog.c:680
+#, c-format
+msgid ""
+"Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"Αποτύπωμα για σένα, %s (%s):\n"
+"%s\n"
+"\n"
+"Υποτιθέμενο αποτύπωμα για %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:736
+msgid "How would you like to authenticate your buddy?"
+msgstr "Πώς θα ήθελες να αυθεντικοποιήσεις την επαφή σου;"
+
+#: ../gtk-dialog.c:745
+msgid "Question and answer"
+msgstr "Ερώτηση και απάντηση"
+
+#: ../gtk-dialog.c:748
+msgid "Shared secret"
+msgstr "Κοινό μυστικό"
+
+#: ../gtk-dialog.c:751
+msgid "Manual fingerprint verification"
+msgstr "Χειροκίνητη επαλήθευση αποτυπώματος"
+
+#: ../gtk-dialog.c:802
+msgid "_Authenticate"
+msgstr "_Επικύρωσε"
+
+#: ../gtk-dialog.c:836
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who he or she claims to be."
+msgstr "Αυθεντικοποιώντας μια επαφή, επιβεβαιώνεις ότι το πρόσωπο με το"
+"οποίο μιλάς είναι αυτός ή αυτή που ισχυρίζεται ότι είναι."
+
+#. Translators: you are asked to authenticate yourself
+#: ../gtk-dialog.c:946
+msgid "Authenticating to Buddy"
+msgstr "Αυθεντικοποίηση στην επαφή"
+
+#. Translators: you asked your buddy to authenticate him/herself
+#: ../gtk-dialog.c:948
+msgid "Authenticating Buddy"
+msgstr "Αυθεντικοποίηση της επαφής"
+
+#: ../gtk-dialog.c:975
+#, c-format
+msgid "Authenticating to %s"
+msgstr "Αυθεντικοποίηση σε %s"
+
+#: ../gtk-dialog.c:976
+#, c-format
+msgid "Authenticating %s"
+msgstr "Αυθεντικοποίηση επαφής %s"
+
+#: ../gtk-dialog.c:1009
+msgid "Waiting for buddy..."
+msgstr "Περιμένουμε την επαφή..."
+
+#: ../gtk-dialog.c:1042
+msgid "Generating private key"
+msgstr "Δημιουργία ιδιωτικού κλειδιού"
+
+#: ../gtk-dialog.c:1043
+msgid "Please wait"
+msgstr "Παρακαλώ περιμένετε"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1054
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "Δημιουργία ιδιωτικού κλειδιού για %s (%s)..."
+
+#: ../gtk-dialog.c:1099
+#, c-format
+msgid "%s Done."
+msgstr "%s Έγινε."
+
+#: ../gtk-dialog.c:1139
+#, c-format
+msgid ""
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
+"s\">authenticate</a> this buddy."
+msgstr "Η επαφή %s επικοινωνεί μαζί σου από έναν άγνωστο υπολογιστή. Καλό θα ήταν να<a href=\"%s%"
+"s\">αυθεντικοποιήσεις</a> την επαφή."
+
+#: ../gtk-dialog.c:1143
+#, c-format
+msgid ""
+"%s has not been authenticated yet.  You should <a href=\"%s%s"
+"\">authenticate</a> this buddy."
+msgstr "Η επαφή %s δεν έχει επικυρωθεί ακόμα. Καλό θα ήταν να <a href=\"%s%s"
+"\">αυθεντικοποιήσεις</a> την επαφή."
+
+#: ../gtk-dialog.c:1195 ../gtk-dialog.c:1969 ../gtk-dialog.c:2745
+#: ../gtk-ui.c:83
+msgid "Finished"
+msgstr "Τερματισμένη"
+
+#: ../gtk-dialog.c:1196 ../gtk-dialog.c:1966 ../gtk-dialog.c:2742
+#: ../gtk-ui.c:82
+msgid "Private"
+msgstr "Ιδιωτική"
+
+#: ../gtk-dialog.c:1197 ../gtk-dialog.c:1963 ../gtk-dialog.c:2739
+#: ../gtk-ui.c:81
+msgid "Unverified"
+msgstr "Μη επιβεβαιωμένη"
+
+#: ../gtk-dialog.c:1198 ../gtk-ui.c:80
+msgid "Not private"
+msgstr "Μη ιδιωτική"
+
+#: ../gtk-dialog.c:1201
+msgid "OTR"
+msgstr "OTR"
+
+#. Translators: the following four messages should give alternative
+#. * sentences. The user selects the first or second message in a combo box;
+#. * the third message, a new line, a fingerprint, a new line, and
+#. * the fourth message will follow it.
+#: ../gtk-dialog.c:1351
+msgid "I have not"
+msgstr "Δεν έχω"
+
+#. 2nd message
+#: ../gtk-dialog.c:1353
+msgid "I have"
+msgstr "Έχω"
+
+#. 3rd message
+#: ../gtk-dialog.c:1356
+msgid " verified that this is in fact the correct"
+msgstr "επιβεβαιώσει ότι αυτό είναι το σωστό"
+
+#. 4th message
+#: ../gtk-dialog.c:1366
+#, c-format
+msgid "fingerprint for %s."
+msgstr "αποτύπωμα για την επαφή %s"
+
+#: ../gtk-dialog.c:1393
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "Επαλήθευσε το αποτύπωμα για την επαφή %s"
+
+#: ../gtk-dialog.c:1405
+#, c-format
+msgid ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Αποτύπωμα για εσένα, %s (%s):\n"
+"%s\n"
+"\n"
+"Υποτιθέμενο αποτύπωμα για %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1412
+msgid ""
+"If everything matches up, you should indicate in the above dialog that you "
+"<b>have</b> verified the fingerprint."
+msgstr "Αν όλα ταιριάζουν, επέλεξε στο παραπάνω διάλογο ότι"
+"<br>έχεις</b> επαληθεύσει το αποτύπωμα."
+
+#: ../gtk-dialog.c:1418 ../gtk-ui.c:844
+msgid "Verify fingerprint"
+msgstr "Επαλήθευσε το αποτύπωμα"
+
+#: ../gtk-dialog.c:1445
+#, c-format
+msgid "Authentication from %s"
+msgstr "Αυθεντικοποίηση για την επαφή %s"
+
+#: ../gtk-dialog.c:1448
+#, c-format
+msgid "Authenticate %s"
+msgstr "Αυθεντικοποίησε την επαφή %s"
+
+#: ../gtk-dialog.c:1456
+msgid "Authenticate Buddy"
+msgstr "Αυθεντικοποίησε την επαφή"
+
+#: ../gtk-dialog.c:1487
+msgid "An error occurred during authentication."
+msgstr "Ένα σφάλμα προέκυψε κατά την αυθεντικοποίηση."
+
+#: ../gtk-dialog.c:1502
+msgid "Authentication successful."
+msgstr "Αυθεντικοποίηση επιτυχής."
+
+#: ../gtk-dialog.c:1505
+msgid ""
+"Your buddy has successfully authenticated you.  You may want to authenticate "
+"your buddy as well by asking your own question."
+msgstr "Η επαφή σου σε αυθεντικοποίησε επιτυχώς. Ίσως θέλεις να αυθεντικοποιήσεις κι"
+"εσύ την επαφή σου, θέτοντας μια δική σου ερώτηση."
+
+#: ../gtk-dialog.c:1511
+msgid "Authentication failed."
+msgstr "Η αυθεντικοποίηση απέτυχε."
+
+#: ../gtk-dialog.c:1541
+#, c-format
+msgid "Private conversation with %s started.%s%s"
+msgstr "Ξεκίνησε ιδιωτική συνομιλία με την επαφή %s. %s%s"
+
+#: ../gtk-dialog.c:1545
+#, c-format
+msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
+msgstr "Ξεκίνησε <a href=\"%s%s\">μη επιβεβαιωμένη</a> συνομιλία με %%s.%%s%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1553
+#, c-format
+msgid "Not private conversation with %s started.%s%s"
+msgstr "Ξεκίνησε μη ιδιωτική συνομιλία με %s. %s%s"
+
+#: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
+msgid "  Warning: using old protocol version 1."
+msgstr "Προειδοποίηση: χρησιμοποιείται παλιό πρωτόκολλο, έκδοση 1."
+
+#: ../gtk-dialog.c:1561
+msgid "  Your client is logging this conversation."
+msgstr "Η εφαρμογή σου καταγράφει αυτή τη συνομιλία."
+
+#: ../gtk-dialog.c:1562
+msgid "  Your client is not logging this conversation."
+msgstr "Η εφαρμογή σου δε καταγράφει αυτή τη συνομιλία."
+
+#: ../gtk-dialog.c:1581
+#, c-format
+msgid ""
+"Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
+"\">multiple sessions</a>. Use the icon menu above if you wish to select the "
+"outgoing session."
+msgstr ""
+"Η επαφή σου είναι συνδεδεμένη πολλαπλές φορές και το OTR έχει εγκαθιδρύσει <a href=\"%s%s"
+"\">πολλαπλές συνεδρίες</a>. Χρησιμοποίησε το μενού εικονιδίων αν επιθυμείς να επιλέξεις "
+"την εξερχόμενη συνεδρία."
+
+#: ../gtk-dialog.c:1601
+#, c-format
+msgid "Private conversation with %s lost."
+msgstr "Η ιδιωτική συνομιλία με την επαφή %s χάθηκε."
+
+#: ../gtk-dialog.c:1638
+#, c-format
+msgid ""
+"%s has ended his/her private conversation with you; you should do the same."
+msgstr "Η επαφή %s τερμάτισε την ιδιωτική της/του συνομιλία μαζί σου. Θα έπρεπε να κάνεις το ίδιο."
+
+#: ../gtk-dialog.c:1665
+#, c-format
+msgid "Successfully refreshed the private conversation with %s.%s"
+msgstr "Η ιδιωτική συνομιλία με %s ανανεώθηκε επιτυχώς. %s"
+
+#: ../gtk-dialog.c:1670
+#, c-format
+msgid ""
+"Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
+"%%s.%%s"
+msgstr ""
+"H <a href=\"%s%s\">μη επιβεβαιωμένη</a> συνομιλία με την επαφή"
+"%%s, ανανεώθηκε επιτυχώς.%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1679
+#, c-format
+msgid "Successfully refreshed the not private conversation with %s.%s"
+msgstr "Η μη ιδιωτική  συνομιλια με την επαφή %s ανανεώθηκε επιτυχώς.%s"
+
+#: ../gtk-dialog.c:1712
+#, c-format
+msgid "Attempting to refresh the private conversation with %s..."
+msgstr "Προσπαθούμε να ανανεώσουμε την ιδιωτική συνομιλία με %s..."
+
+#: ../gtk-dialog.c:1714
+#, c-format
+msgid "Attempting to start a private conversation with %s..."
+msgstr "Προσπαθούμε να ξεκινήσουμε ιδιωτική συνομιλία με %s..."
+
+#: ../gtk-dialog.c:1899 ../gtk-dialog.c:2026
+msgid "Start _private conversation"
+msgstr "Έναρξη _ιδιωτικής συνομιλίας"
+
+#: ../gtk-dialog.c:1900
+msgid "Refresh _private conversation"
+msgstr "Ανανέωση _ιδιωτικής συνομιλίας"
+
+#: ../gtk-dialog.c:1905
+msgid "Re_authenticate buddy"
+msgstr "Επαν_αυθεντικοποίηση επαφής"
+
+#: ../gtk-dialog.c:1906 ../gtk-dialog.c:2030
+msgid "_Authenticate buddy"
+msgstr "_Αυθεντικοποίηση επαφής"
+
+#: ../gtk-dialog.c:1960 ../gtk-dialog.c:2736
+msgid "Not Private"
+msgstr "Μη ιδιωτική"
+
+#: ../gtk-dialog.c:1982
+msgid "_What's this?"
+msgstr "_Τι είναι αυτό;"
+
+#: ../gtk-dialog.c:2028
+msgid "_End private conversation"
+msgstr "_Τερματισμός ιδιωτικής συνομιλίας"
+
+#: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
+#, c-format
+msgid ""
+"Warning: The selected outgoing OTR session (%u) is not the most recently "
+"active one (%u). Your buddy may not receive your messages. Use the icon menu "
+"above to select a different outgoing session."
+msgstr "Προειδοποίηση: Η επιλεγμένη εξερχόμενη OTR συνεδρία (%u) δεν είναι η πιο πρόσφατα"
+"ενεργή (%u). Η επαφή σου πιθανόν να μην λάβει τα μηνύματά σου. Χρησιμοποίησε τα παραπάνω εικονίδια"
+"για να επιλέξεις μια διαφορετική εξερχόμενη συνεδρία."
+
+#: ../gtk-dialog.c:2271
+msgid "Send to most secure"
+msgstr "Στείλε στις πιο ασφαλείς"
+
+#: ../gtk-dialog.c:2273
+msgid "Send to most recent"
+msgstr "Στείλε στις πιο πρόσφατες"
+
+#: ../gtk-dialog.c:2377
+#, c-format
+msgid "Session %u"
+msgstr "Συνεδρία %u"
+
+#: ../gtk-dialog.c:2395 ../gtk-dialog.c:2506
+msgid "Select"
+msgstr "Επιλογή"
+
+#: ../gtk-dialog.c:2410
+msgid "Selected"
+msgstr "Επιλεγμένη"
+
+#: ../gtk-dialog.c:2731
+#, c-format
+msgid ""
+"The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
+"a>"
+msgstr "Η κατάτασταση ιδιωτικότητας της παρούσας συνομιλίας είναι τώρα :<a href=\"%s%s\">%s</"
+"a>"
+
+#: ../gtk-dialog.c:2956
+msgid "OTR Messaging"
+msgstr "Ανταλλαγή μηνυμάτων OTR"
+
+#: ../gtk-ui.c:103
+#, c-format
+msgid "Fingerprint: %.80s"
+msgstr "Αποτύπωμα: %.80s"
+
+#: ../gtk-ui.c:107
+#, c-format
+msgid "No key present"
+msgstr "Δεν υπάρχει κλειδί"
+
+#: ../gtk-ui.c:112
+#, c-format
+msgid "No account available"
+msgstr "Δεν υπάρχει διαθέσιμος λογαριασμός"
+
+#: ../gtk-ui.c:179
+msgid "Unused"
+msgstr "Αχρησιμοποίητο"
+
+#: ../gtk-ui.c:208
+msgid "Yes"
+msgstr "Ναι"
+
+#: ../gtk-ui.c:208
+msgid "No"
+msgstr "Όχι"
+
+#: ../gtk-ui.c:473
+msgid "Enable private messaging"
+msgstr "Ενεργοποίηση ιδιωτικής ανταλλαγής μηνυμάτων"
+
+#: ../gtk-ui.c:475
+msgid "Automatically initiate private messaging"
+msgstr "Αυτόματη έναρξη ιδιωτικής ανταλλαγής μηνυμάτων"
+
+#: ../gtk-ui.c:477
+msgid "Require private messaging"
+msgstr "Απαίτηση ιδιωτικής ανταλλαγής μηνυμάτων"
+
+#: ../gtk-ui.c:480
+msgid "Don't log OTR conversations"
+msgstr "Μην καταγράφεις τις OTR συνομιλίες"
+
+#: ../gtk-ui.c:524
+msgid "Show OTR button in toolbar"
+msgstr "Εμφάνιση του κουμπιού OTR στη μπάρα εργαλείων"
+
+#: ../gtk-ui.c:663
+msgid "My private keys"
+msgstr "Τα ιδιωτικά μου κλειδιά"
+
+#: ../gtk-ui.c:672
+msgid "Key for account:"
+msgstr "Κλειδί για το λογαριασμό:"
+
+#: ../gtk-ui.c:697
+msgid "Generate"
+msgstr "Δημιουργία"
+
+#: ../gtk-ui.c:738
+msgid "Default OTR Settings"
+msgstr "Προεπιλεγμένες ρυθμίσεις OTR"
+
+#: ../gtk-ui.c:765
+msgid "OTR UI Options"
+msgstr "Επιλογές OTR για τη διεπαφή χρήστη"
+
+#: ../gtk-ui.c:788
+msgid "Screenname"
+msgstr "Όνομα οθόνης"
+
+#: ../gtk-ui.c:789
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: ../gtk-ui.c:790
+msgid "Verified"
+msgstr "Επαληθευμένο"
+
+#: ../gtk-ui.c:791
+msgid "Fingerprint"
+msgstr "Αποτύπωμα"
+
+#: ../gtk-ui.c:792
+msgid "Account"
+msgstr "Λογαριασμός"
+
+#: ../gtk-ui.c:828
+msgid "Start private connection"
+msgstr "Έναρξη ιδιωτικής σύνδεσης"
+
+#: ../gtk-ui.c:836
+msgid "End private connection"
+msgstr "Λήξη ιδιωτικής σύνδεσης"
+
+#: ../gtk-ui.c:852
+msgid "Forget fingerprint"
+msgstr "Ξέχνα το αποτύπωμα"
+
+#: ../gtk-ui.c:903
+msgid "Config"
+msgstr "Ρυθμίσεις"
+
+#: ../gtk-ui.c:905
+msgid "Known fingerprints"
+msgstr "Γνωστά αποτυπώματα"
+
+#: ../gtk-ui.c:1003 ../otr-plugin.c:964
+msgid "OTR Settings"
+msgstr "Ρυθμίσεις OTR"
+
+#. Set the title
+#: ../gtk-ui.c:1021
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "Ρυθμίσεις OTR για %s"
+
+#. Make the cascaded checkboxes
+#: ../gtk-ui.c:1038
+msgid "Use default OTR settings for this buddy"
+msgstr "Χρησιμοποίησε τις προεπιλεγμένες OTR ρυθμίσεις για αυτή την επαφή"
+
+#: ../otr-plugin.c:125
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "Αυτή τη στιγμή δεν είσαι συνδεδεμένος στο λογαριασμό %s (%s)."
+
+#: ../otr-plugin.c:129
+msgid "Not connected"
+msgstr "Αποσυνδεμένοι"
+
+#: ../otr-plugin.c:212 ../otr-plugin.c:254
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "Μη επαρκής μνήμη κατά τη κατασκευή ονομάτων αρχείων!\n"
+
+#: ../otr-plugin.c:224 ../otr-plugin.c:260
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "Δεν ήταν δυνατό να γραφτεί το αρχείο ιδιωτικού κλειδιού\n"
+
+#: ../otr-plugin.c:298
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "Άγνωστος λογαριασμός %s (%s)."
+
+#: ../otr-plugin.c:302
+msgid "Unknown account"
+msgstr "Άγνωστος λογαριασμός"
+
+#: ../otr-plugin.c:364
+msgid "Error occurred encrypting message."
+msgstr "Προέκυψε σφάλμα κατά τη κρυπτογράφηση του μηνύματος."
+
+#: ../otr-plugin.c:368
+#, c-format
+msgid "You sent encrypted data to %s, who wasn't expecting it."
+msgstr "Έστειλες κρυπτογραφημένα δεδομένα στην επαφή %s, η οποία δεν το περιμένε."
+
+#: ../otr-plugin.c:374
+msgid "You transmitted an unreadable encrypted message."
+msgstr "Έστειλες ένα μη αναγνώσιμο κρυπτογραφημένο μήνυμα."
+
+#: ../otr-plugin.c:377
+msgid "You transmitted a malformed data message."
+msgstr "Έστειλες ένα μήνυμα με κακοδιαμορφωμένα δεδομένα."
+
+#: ../otr-plugin.c:390
+msgid "[resent]"
+msgstr "[εστάλη ξανά]"
+
+#: ../otr-plugin.c:459
+#, c-format
+msgid "You attempted to send an unencrypted message to %s"
+msgstr "Προσπάθησες να στείλεις ένα μη κρυπτογραφημένο μήνυμα στην επαφή %s"
+
+#: ../otr-plugin.c:462
+msgid "Attempting to start a private conversation..."
+msgstr "Απόπειρα να ξεκινήσει μια ιδιωτική συνομιλία..."
+
+#: ../otr-plugin.c:464
+msgid "OTR Policy Violation"
+msgstr "Παραβίαση της Πολιτικής του OTR"
+
+#: ../otr-plugin.c:465
+msgid ""
+"Unencrypted messages to this recipient are not allowed.  Attempting to start "
+"a private conversation.\n"
+"\n"
+"Your message will be retransmitted when the private conversation starts."
+msgstr "Δεν επιτρέπονται μη κρυπτογραφημένα μηνύματα προς αυτό τον παραλήπτη. Απόπειρα να ξεκινήσει "
+"μια ιδιωτική συνομιλία.\n"
+"\n"
+"Το μήνυμά σου θα μεταδοθεί ξανά, όταν ξεκινήσει η ιδιωτική συνομιλία."
+
+#: ../otr-plugin.c:474
+msgid ""
+"An error occurred when encrypting your message.  The message was not sent."
+msgstr "Ένα σφάλμα προέκυψε κατά τη κρυπτογράφηση του μηνύματος. Το μήνυμα δεν εστάλη."
+
+#: ../otr-plugin.c:476
+msgid "Error encrypting message"
+msgstr "Σφάλμα στη κρυπτογράφηση του μηνύματος"
+
+#: ../otr-plugin.c:477
+msgid "An error occurred when encrypting your message"
+msgstr "Ένα σφάλμα προέκυψε κατά τη κρυπτογράφηση του μηνύματος"
+
+#: ../otr-plugin.c:478
+msgid "The message was not sent."
+msgstr "Το μήνυμα δεν εστάλη."
+
+#: ../otr-plugin.c:481
+#, c-format
+msgid "%s has already closed his/her private connection to you"
+msgstr "η επαφή %s έχει ήδη κλείσει την ιδιωτική του/της σύνδεση με εσένα"
+
+#: ../otr-plugin.c:484
+msgid ""
+"Your messagewas not sent.  Either end your private conversation, or restart "
+"it."
+msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά. "
+
+#: ../otr-plugin.c:487
+msgid "Private connection closed"
+msgstr "Η ιδιωτική συνομιλία έκλεισε"
+
+#: ../otr-plugin.c:488
+msgid ""
+"Your message was not sent.  Either close your private connection to him, or "
+"refresh it."
+msgstr "Το μήνυμά σου δεν εστάλη. Είτε κλείσε την ιδιωτική συνομιλία με την επαφή, ή ανανέωσέ την."
+
+#: ../otr-plugin.c:498
+msgid "Error setting up private conversation: Malformed message received"
+msgstr "Σφάλμα κατά την εγκαθίδρυση ιδιωτικής συνομιλίας: Κακοδιαμορφωμένο μήνυμα ελήφθη"
+
+#: ../otr-plugin.c:502
+#, c-format
+msgid "Error setting up private conversation: %s"
+msgstr "Σφάλμα κατά την δημιουργία ιδιωτικής συνομιλίας: %s"
+
+#: ../otr-plugin.c:509 ../otr-plugin.c:520 ../otr-plugin.c:547
+#: ../otr-plugin.c:555 ../otr-plugin.c:573
+msgid "OTR Error"
+msgstr "Σφάλμα OTR"
+
+#: ../otr-plugin.c:516
+msgid ""
+"We are receiving our own OTR messages.  You are either trying to talk to "
+"yourself, or someone is reflecting your messages back at you."
+msgstr "Λαμβάνουμε τα δικά μας OTR μηνύματα. Είτε προσπαθείς να μιλήσεις με τον εαυτό σου,"
+" ή κάποιος επιστρέφει τα μηνύματά σου πίσω σε σένα."
+
+#: ../otr-plugin.c:520
+msgid "We are receiving our own OTR messages."
+msgstr "Λαμβάνουμε τα δικά μας OTR μηνύματα."
+
+#: ../otr-plugin.c:521
+msgid ""
+"You are either trying to talk to yourself, or someone is reflecting your "
+"messages back at you."
+msgstr "Είτε προσπαθείς να μιλήσεις με τον εαυτό σου, ή κάποιος επιστρέφει τα μηνύματά σου πίσω σε σένα."
+
+#: ../otr-plugin.c:526
+#, c-format
+msgid "<b>The last message to %s was resent.</b>"
+msgstr "<b>Το τελευταίο μήνυμα προς την επαφή %s εστάλη ξανά.</b>"
+
+#: ../otr-plugin.c:530
+msgid "Message resent"
+msgstr "Το μήνυμα εστάλη ξανά"
+
+#: ../otr-plugin.c:534
+#, c-format
+msgid ""
+"<b>The encrypted message received from %s is unreadable, as you are not "
+"currently communicating privately.</b>"
+msgstr "<b>Το κρυπτογραφημένο μήνυμα που ελήφθη από %s δεν είναι αναγνώσιμο, καθώς "
+"αυτή τη στιγμή δεν επικοινωνείτε ιδιωτικά.</b>"
+
+#: ../otr-plugin.c:539
+msgid "Unreadable message"
+msgstr "Μη αναγνώσιμο μήνυμα"
+
+#: ../otr-plugin.c:543
+#, c-format
+msgid "We received an unreadable encrypted message from %s."
+msgstr "Λάβαμε ένα μη αναγνώσιμο κρυπτογραφημένο μήνυμα από %s."
+
+#: ../otr-plugin.c:551
+#, c-format
+msgid "We received a malformed data message from %s."
+msgstr "Λάβαμε ένα μήνυμα από %s με κακοσχηματισμένα δεδομένα."
+
+#: ../otr-plugin.c:559
+#, c-format
+msgid "Heartbeat received from %s.\n"
+msgstr "Παλμός ελήφθη από %s. \n"
+
+#: ../otr-plugin.c:565
+#, c-format
+msgid "Heartbeat sent to %s.\n"
+msgstr "Παλμός εστάλη σε %s.\n"
+
+#: ../otr-plugin.c:576
+#, c-format
+msgid ""
+"<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
+"s<b>]</b>"
+msgstr "<b>Το ακόλουθο μήνυμα που ελήφθη από %s <i>δεν</i> ήταν κρυπτογραφημένο: [</b>%"
+"s<b>]</b>"
+
+#: ../otr-plugin.c:581
+msgid "Received unencrypted message"
+msgstr "Ελήφθη μη κρυπτογραφημένο μήνυμα"
+
+#: ../otr-plugin.c:587
+#, c-format
+msgid "Unrecognized OTR message received from %s.\n"
+msgstr "Ελήφθη μη αναγνωρίσιμο OTR μήνυμα από %s.\n"
+
+#: ../otr-plugin.c:596
+#, c-format
+msgid ""
+"%s has sent a message intended for a different session. If you are logged in "
+"multiple times, another session may have received the message."
+msgstr "%s έστειλε ένα μήνυμα που προοριζόταν για διαφορετική συνεδρία. Αν είσαι συνδεδεμένος"
+"πολλαπλές φόρες, μια άλλη συνεδρία πιθανόν να έλαβε το μήνυμα."
+
+#: ../otr-plugin.c:602
+msgid "Received message for a different session"
+msgstr "Ελήφθη μήνυμα από διαφορετική συνεδρία"
+
+#. 2013-01-01
+#: ../otr-plugin.c:1193 ../otr-plugin.c:1220
+#, c-format
+msgid "OTR PLUGIN v%s"
+msgstr "ΠΡΟΣΘΕΤΟ OTR v%s"
+
+#: ../otr-plugin.c:1202
+#, c-format
+msgid ""
+"This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
+"as of 2013-01-01. Please look for an updated release at http://otr."
+"cypherpunks.ca/"
+msgstr "Αυτό το αντίγραφο του πρόσθετου Off-the-Record Messaging v%s για Pidgin"
+"έχει λήξει από τις 01-01-2013. Παρακαλούμε αναζητήστε μια ενημερωμένη έκδοση στο"
+"http://otr.cypherpunks.ca/"
+
+#: ../otr-plugin.c:1229
+#, c-format
+msgid ""
+"You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
+"plugin. This version is intended for testing purposes only and is not for "
+"general purpose use."
+msgstr "Έχετε ενεργοποιήσει την beta έκδοση του πρόσθετου Off-the-Record Messaging v%s"
+"για Pidgin. Αυτή η έκδοση προορίζεται για δοκιμαστικούς σκοπούς μόνο και δεν είναι για γενική χρήση."
+
+#: ../otr-plugin.c:1414
+msgid "Off-the-Record Messaging"
+msgstr "Off-the-Record Messaging"
+
+#: ../otr-plugin.c:1415
+msgid "Provides private and secure conversations"
+msgstr "Παρέχει ιδιωτικές και ασφαλείς συνομιλίες"
+
+#: ../otr-plugin.c:1416
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr "Διατηρεί την ιδιωτικότητα των επικοινωνιών άμεσω μηνυμάτων, παρέχοντας"
+"κρυπτογράφηση, αυθεντικοποίηση, δυνατότητα άρνησης, και τέλεια μελλοντική μυστικότητα."
+
+#: ../ui.c:110
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "Ο λογαριασμός %s (%s) δεν ήταν δυνατό να βρεθεί"
+
+#: ../ui.c:114
+msgid "Account not found"
+msgstr "Ο λογαριασμός δε βρέθηκε"
