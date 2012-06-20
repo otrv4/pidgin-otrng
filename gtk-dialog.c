@@ -3133,8 +3133,8 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
     last_received_instance = g_hash_table_lookup(conv->data,
 	    "otr-last_received_ctx");
 
-    if ((*last_received_instance == OTRL_INSTAG_MASTER || 
-	    *last_received_instance >= OTRL_MIN_VALID_INSTAG)) {
+    if (*last_received_instance == OTRL_INSTAG_MASTER || 
+	    *last_received_instance >= OTRL_MIN_VALID_INSTAG) {
 	have_received = TRUE;
     }
 
@@ -3235,8 +3235,8 @@ static void otrg_gtk_dialog_cleanup(void)
 	    PURPLE_CALLBACK(conversation_switched));
 
     purple_signal_disconnect(pidgin_conversations_get_handle(),
-	"conversation-timestamp", otrg_plugin_handle,
-	PURPLE_CALLBACK(conversation_timestamp));
+	    "conversation-timestamp", otrg_plugin_handle,
+	    PURPLE_CALLBACK(conversation_timestamp));
 
     purple_signal_disconnect(purple_conversations_get_handle(),
 	    "deleting-conversation", otrg_plugin_handle,
