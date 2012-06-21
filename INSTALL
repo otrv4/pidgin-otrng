@@ -51,7 +51,7 @@ Use the provided Makefile.mingw:
 
     make -f Makefile.mingw
 
-See Makefile.mingw.notes for a few hints.
+See INSTALL.mingw for a few hints.
 
 INSTALLATION
 

@@ -4,7 +4,11 @@ a Linux system with mingw32. These have been tested on Ubuntu 11.04.
 I am listing packages and their build instructions in the order they should be
 built. Good luck!
 
+mingw:
+  apt-get install mingw32
+
 libgpg-error-1.0:
+  wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.0.tar.gz
   (before configure)
   HOST_CC=gcc
   DLLTOOL=i586-mingw32msvc-dlltool 
@@ -14,10 +18,15 @@ libgpg-error-1.0:
   make
   sudo make install
 
-gcrypt-1.2.1:
-  w32root=i586-mingw32msvc ./autogen.sh --build-w32
+libgcrypt-1.2.1:
+  wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.2.1.tar.gz
+  wget http://www.cypherpunks.ca/otr/rndw32.diff
+  w32root=/usr/i586-mingw32msvc ./autogen.sh --build-w32
   Then append #undef HAVE_GETTIMEOFDAY  to libgcrypt config.h
   Apply windows slow random fix (patch on otr website, listed as "Note that if you're compiling from source on win32...")
+    cd cipher
+    patch -p0 < ../../rndw32.diff
+    cd ..
   make
   sudo make install
   
@@ -27,7 +36,7 @@ libotr:
   sudo make install
 
 pidgin-otr:
-  You will need: Pidgin source code distributable, Pidgin Win32 distributable, and an "all-in-one bundle" of the GTK+ stack 2.14.7 or greater (e.g., gtk+-bundle_2.24.10-20120208_win32.zip).
+  You will need: Pidgin source code distributable, Pidgin Win32 distributable, and an "all-in-one bundle" of the GTK+ stack 2.14.7 or greater (e.g., gtk+-bundle_2.24.10-20120208_win32.zip from http://www.gtk.org/download/win32.php).
   In Makefile.mingw, specify the location of PIDGIN_HEADERS, PURPLE_HEADERS, GTK_WIN32_BUNDLE, and PIDGIN_WIN32_LIBS
   Ensure either pkg-config will correctly resolve all the dependencies for glib-2.0 and gtk+-2.0 (there is a README in the GTK+ bundle about this), or uncomment (and perhaps revise) the hardcoded list of includes for GTK_HDRS
   make -f Makefile.mingw
@@ -35,6 +44,7 @@ pidgin-otr:
 nsis:
   sudo apt-get install nsis
   Locate the "nsisunz" plugin (a google search for "nsisunz.zip" should be sufficient)
-  Extract the DLL to /usr/local/share/nsis/Plugins (yes it's a DLL extension, but it will still work for GNU/Linux nsis)
+  Extract the DLL to /usr/share/nsis/Plugins (yes it's a DLL extension, but it will still work for GNU/Linux nsis)
+  set LIBOTRSRCDIR to the libotr src directory
   make -f Makefile.mingw installer     <-- This should now build the nsis installer
 

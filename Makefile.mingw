@@ -19,16 +19,18 @@ GTK_WIN32_BUNDLE ?= /usr/i586-mingw32msvc/misc/gtk_bundle
 # (i.e. pidgin.dll and libpurple.dll)
 PIDGIN_WIN32_LIBS ?= /usr/i586-mingw32msvc/misc/pidgin_dlls
 
-# If you don't have pkg-config, uncomment the -I lines below
-GTK_HDRS ?= `pkg-config --cflags glib-2.0 gtk+-2.0`
-#GTK_HDRS ?= -I$(GTK_WIN32_BUNDLE)/include/gtk-2.0  \
-# -I$(GTK_WIN32_BUNDLE)/include/glib-2.0 \
-# -I$(GTK_WIN32_BUNDLE)/include/cairo \
-# -I$(GTK_WIN32_BUNDLE)/include/pango-1.0 \
-# -I$(GTK_WIN32_BUNDLE)/include/atk-1.0 \
-# -I$(GTK_WIN32_BUNDLE)/include/gdk-pixbuf-2.0 \
-# -I$(GTK_WIN32_BUNDLE)/lib/glib-2.0/include \
-# -I$(GTK_WIN32_BUNDLE)/lib/gtk-2.0/include
+# If you have a pkg-config that finds the win32 versions, you can use it
+# instead of the -I lines below
+#GTK_HDRS ?= `pkg-config --cflags glib-2.0 gtk+-2.0`
+GTK_HDRS ?= -I$(GTK_WIN32_BUNDLE)/include  \
+ -I$(GTK_WIN32_BUNDLE)/include/gtk-2.0  \
+ -I$(GTK_WIN32_BUNDLE)/include/glib-2.0 \
+ -I$(GTK_WIN32_BUNDLE)/include/cairo \
+ -I$(GTK_WIN32_BUNDLE)/include/pango-1.0 \
+ -I$(GTK_WIN32_BUNDLE)/include/atk-1.0 \
+ -I$(GTK_WIN32_BUNDLE)/include/gdk-pixbuf-2.0 \
+ -I$(GTK_WIN32_BUNDLE)/lib/glib-2.0/include \
+ -I$(GTK_WIN32_BUNDLE)/lib/gtk-2.0/include
 
 
 # The location of the libotr include files.  Note that if, for example,
