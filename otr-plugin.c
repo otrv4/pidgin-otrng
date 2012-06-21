@@ -869,7 +869,7 @@ ConnContext* otrg_plugin_conv_to_selected_context(PurpleConversation *conv,
     return otrg_plugin_conv_to_context(conv, selected_instance, force_create);
 }
 
-static void process_conv_create(PurpleConversation *conv, void *data)
+static void process_conv_create(PurpleConversation *conv)
 {
     otrl_instag_t * selected_instance;
     OtrlMessageEvent * msg_event;
@@ -1285,7 +1285,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     otrg_ui_init();
     otrg_dialog_init();
 
-    purple_conversation_foreach(otrg_dialog_new_conv);
+    purple_conversation_foreach(process_conv_create);
 
     return 1;
 }

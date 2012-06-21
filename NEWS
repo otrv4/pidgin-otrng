@@ -1,3 +1,9 @@
+21 Jun 2012:
+
+- Fixed an issue that happened when enabling the OTR plugin while a
+  conversation is open.
+- Release 4.0.0-beta2
+
 7 Jun 2012:
 
 - The plugin now supports multiple OTR conversations with the same
