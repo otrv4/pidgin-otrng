@@ -651,7 +651,7 @@ msgstr "Ein Fehler ist beim verschlüsseln der Nachtricht aufgetreten"
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr "Sie haben %s eine verschlüsselte Nachricht geschickt, "
-"welche er nicht erwartet hat"
+"welche er nicht erwartet hat."
 
 #: ../otr-plugin.c:374
 msgid "You transmitted an unreadable encrypted message."
@@ -792,7 +792,7 @@ msgstr "Unlesbare Nachricht"
 #: ../otr-plugin.c:543
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
-msgstr "Wir haben eine unlesbare verschlüsselte Nachricht von %s."
+msgstr "Wir haben eine unlesbare verschlüsselte Nachricht von %s erhalten."
 
 #: ../otr-plugin.c:551
 #, c-format
@@ -855,7 +855,7 @@ msgid ""
 "cypherpunks.ca/"
 msgstr ""
 "Diese Beta Version von Off-the-Record Messaging v%s Pidgin Plugin ist "
-"abgelaufen ab dem 01.01.2013. Bitte schauen Sie auf "
+"seit dem 01.01.2013 abgelaufen. Bitte schauen Sie auf "
 "http://otr.cypherpunks.ca/ nach einem Update."
 
 #: ../otr-plugin.c:1229
