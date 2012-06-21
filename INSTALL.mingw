@@ -47,4 +47,5 @@ nsis:
   Extract the DLL to /usr/share/nsis/Plugins (yes it's a DLL extension, but it will still work for GNU/Linux nsis)
   set LIBOTRSRCDIR to the libotr src directory
   make -f Makefile.mingw installer     <-- This should now build the nsis installer
+  make -f Makefile.mingw zip           <-- This should now build the zipfile
 
