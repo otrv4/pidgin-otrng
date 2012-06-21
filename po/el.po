@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-14 09:45-0400\n"
 "PO-Revision-Date: 2012-06-20 19:50+2\n"
-"Last-Translator: irregulator@riseup.net\n"
+"Last-Translator: Alex <irregulator@riseup.net>\n"
 "Language-Team: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -28,9 +28,9 @@ msgid ""
 "or if it's someone pretending to be you.  Your buddy has asked a question, "
 "indicated below.  To authenticate to your buddy, enter the answer and click "
 "OK."
-msgstr "Η επαφή σου προσπαθεί να εξακριβώσει αν μιλάει πραγματικά μαζί σου,"
-"ή πρόκειται για κάποιον που προσποιείται ότι είναι εσύ. Η επαφή σου έκανε την ερώτηση"
-"που φαίνεται παρακάτω. Για να αποδείξεις στην επαφή σου ποιος είσαι,"
+msgstr "Η επαφή σου προσπαθεί να εξακριβώσει αν μιλάει πραγματικά μαζί σου, "
+"ή πρόκειται για κάποιον που προσποιείται ότι είναι εσύ. Η επαφή σου έκανε την ερώτηση "
+"που φαίνεται παρακάτω. Για να αποδείξεις στην επαφή σου ποιος είσαι, "
 "συμπλήρωσε την απάντηση και πάτα OK."
 
 #: ../gtk-dialog.c:487
@@ -39,9 +39,9 @@ msgid ""
 "to you and your buddy.  Enter this question and this answer, then wait for "
 "your buddy to enter the answer too.  If the answers don't match, then you "
 "may be talking to an imposter."
-msgstr "Για να αυθεντικοποιήσεις την επαφή σου χρησιμοποιώντας μια ερώτηση, διάλεξε μια ερώτηση της οποίας"
-"η απάντηση είναι γνωστή μόνο σε σένα και την επαφή σου. Γράψε αυτή την ερώτηση καθώς και την απάντηση,"
-"και στη συνέχεια περίμενε για την επαφή σου να απαντήσει στην ίδια ερώτηση. Εάν οι απαντήσεις"
+msgstr "Για να αυθεντικοποιήσεις την επαφή σου χρησιμοποιώντας μια ερώτηση, διάλεξε μια ερώτηση της οποίας "
+"η απάντηση είναι γνωστή μόνο σε σένα και την επαφή σου. Γράψε αυτή την ερώτηση καθώς και την απάντηση, "
+"και στη συνέχεια περίμενε για την επαφή σου να απαντήσει στην ίδια ερώτηση. Εάν οι απαντήσεις "
 "δεν ταιριάζουν, τότε ίσως να μιλάς με κάποιον απατεώνα."
 
 #: ../gtk-dialog.c:505
@@ -68,8 +68,8 @@ msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
-msgstr "Για αυθεντικοποίηση, διάλεξε ένα μυστικό γνωστό μόνο σε εσένα"
-"και την επαφή σου. Αφού εισάγεις αυτό το μυστικό, περίμενε να το εισάγει"
+msgstr "Για αυθεντικοποίηση, διάλεξε ένα μυστικό γνωστό μόνο σε εσένα "
+"και την επαφή σου. Αφού εισάγεις αυτό το μυστικό, περίμενε να το εισάγει "
 "και η επαφή σου. Αν τα μυστικά δεν ταιριάζουν, τότε ίσως να μιλάς με κάποιον απατεώνα."
 
 #: ../gtk-dialog.c:607
@@ -82,14 +82,14 @@ msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
-msgstr "Για να επαληθεύσεις το αποτύπωμα, επικοινώνησε με την επαφή σου μέσω"
-"ενός <i>άλλου</i> αυθεντικοποιημένου καναλιού, όπως το τηλέφωνο ή ένα email με ψηφιακή υπογραφή GPG."
+msgstr "Για να επαληθεύσεις το αποτύπωμα, επικοινώνησε με την επαφή σου μέσω "
+"ενός <i>άλλου</i> αυθεντικοποιημένου καναλιού, όπως το τηλέφωνο ή ένα email με ψηφιακή υπογραφή GPG. "
 "Ο καθένας σας θα πρέπει να πει το αποτύπωμά του στον άλλον μέσω αυτού του άλλου καναλιού."
 
 #: ../gtk-dialog.c:661
 msgid ""
 "If everything matches up, you should chose <b>I have</b> in the menu below."
-msgstr "Αν όλα ταιριάζουν, τότε πρέπει να επιλέξεις <b>Έχω επικυρώσει</b> στο παρακάτω μενού."
+msgstr "Αν όλα ταιριάζουν, τότε πρέπει να επιλέξεις <b>Έχω επιβεβαιώσει</b> στο παρακάτω μενού."
 
 #: ../gtk-dialog.c:672 ../gtk-dialog.c:1397
 msgid "[none]"
@@ -140,7 +140,7 @@ msgstr "_Επικύρωσε"
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
-msgstr "Αυθεντικοποιώντας μια επαφή, επιβεβαιώνεις ότι το πρόσωπο με το"
+msgstr "Αυθεντικοποιώντας μια επαφή, επιβεβαιώνεις ότι το πρόσωπο με το "
 "οποίο μιλάς είναι αυτός ή αυτή που ισχυρίζεται ότι είναι."
 
 #. Translators: you are asked to authenticate yourself
@@ -277,7 +277,7 @@ msgstr ""
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
-msgstr "Αν όλα ταιριάζουν, επέλεξε στο παραπάνω διάλογο ότι"
+msgstr "Αν όλα ταιριάζουν, επέλεξε στο παραπάνω διάλογο ότι "
 "<br>έχεις</b> επαληθεύσει το αποτύπωμα."
 
 #: ../gtk-dialog.c:1418 ../gtk-ui.c:844
@@ -310,7 +310,7 @@ msgstr "Αυθεντικοποίηση επιτυχής."
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
-msgstr "Η επαφή σου σε αυθεντικοποίησε επιτυχώς. Ίσως θέλεις να αυθεντικοποιήσεις κι"
+msgstr "Η επαφή σου σε αυθεντικοποίησε επιτυχώς. Ίσως θέλεις να αυθεντικοποιήσεις κι "
 "εσύ την επαφή σου, θέτοντας μια δική σου ερώτηση."
 
 #: ../gtk-dialog.c:1511
@@ -371,7 +371,7 @@ msgstr "Η επαφή %s τερμάτισε την ιδιωτική της/το�
 #: ../gtk-dialog.c:1665
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
-msgstr "Η ιδιωτική συνομιλία με %s ανανεώθηκε επιτυχώς.%s"
+msgstr "Η ιδιωτική συνομιλία με %s ανανεώθηκε επιτυχώς. %s"
 
 #: ../gtk-dialog.c:1670
 #, c-format
@@ -379,7 +379,7 @@ msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
 msgstr ""
-"H <a href=\"%s%s\">μη επιβεβαιωμένη</a> συνομιλία με την επαφή"
+"H <a href=\"%s%s\">μη επιβεβαιωμένη</a> συνομιλία με την επαφή "
 "%%s, ανανεώθηκε επιτυχώς.%%s"
 
 #. This last case should never happen, since we know
@@ -433,8 +433,8 @@ msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
 "active one (%u). Your buddy may not receive your messages. Use the icon menu "
 "above to select a different outgoing session."
-msgstr "Προειδοποίηση: Η επιλεγμένη εξερχόμενη OTR συνεδρία (%u) δεν είναι η πιο πρόσφατα"
-"ενεργή (%u). Η επαφή σου πιθανόν να μην λάβει τα μηνύματά σου. Χρησιμοποίησε τα παραπάνω εικονίδια"
+msgstr "Προειδοποίηση: Η επιλεγμένη εξερχόμενη OTR συνεδρία (%u) δεν είναι η πιο πρόσφατα "
+"ενεργή (%u). Η επαφή σου πιθανόν να μην λάβει τα μηνύματά σου. Χρησιμοποίησε τα παραπάνω εικονίδια "
 "για να επιλέξεις μια διαφορετική εξερχόμενη συνεδρία."
 
 #: ../gtk-dialog.c:2271
@@ -463,7 +463,7 @@ msgstr "Επιλεγμένη"
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
-msgstr "Η κατάτασταση ιδιωτικότητας της παρούσας συνομιλίας είναι τώρα :<a href=\"%s%s\">%s</"
+msgstr "Η κατάτασταση ιδιωτικότητας της παρούσας συνομιλίας είναι τώρα: <a href=\"%s%s\">%s</"
 "a>"
 
 #: ../gtk-dialog.c:2956
@@ -691,7 +691,7 @@ msgstr "η επαφή %s έχει ήδη κλείσει την ιδιωτική 
 msgid ""
 "Your messagewas not sent.  Either end your private conversation, or restart "
 "it."
-msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά."
+msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά. "
 
 #: ../otr-plugin.c:487
 msgid "Private connection closed"
@@ -768,7 +768,7 @@ msgstr "Λάβαμε ένα μήνυμα από %s με κακοσχηματισ
 #: ../otr-plugin.c:559
 #, c-format
 msgid "Heartbeat received from %s.\n"
-msgstr "Παλμός ελήφθη από %s.\n"
+msgstr "Παλμός ελήφθη από %s. \n"
 
 #: ../otr-plugin.c:565
 #, c-format
@@ -797,7 +797,7 @@ msgstr "Ελήφθη μη αναγνωρίσιμο OTR μήνυμα από %s.\n
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
-msgstr "%s έστειλε ένα μήνυμα που προοριζόταν για διαφορετική συνεδρία. Αν είσαι συνδεδεμένος"
+msgstr "%s έστειλε ένα μήνυμα που προοριζόταν για διαφορετική συνεδρία. Αν είσαι συνδεδεμένος "
 "πολλαπλές φόρες, μια άλλη συνεδρία πιθανόν να έλαβε το μήνυμα."
 
 #: ../otr-plugin.c:602
@@ -816,8 +816,8 @@ msgid ""
 "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
 "as of 2013-01-01. Please look for an updated release at http://otr."
 "cypherpunks.ca/"
-msgstr "Αυτό το αντίγραφο του πρόσθετου Off-the-Record Messaging v%s για Pidgin"
-"έχει λήξει από τις 01-01-2013. Παρακαλούμε αναζητήστε μια ενημερωμένη έκδοση στο"
+msgstr "Αυτό το αντίγραφο του πρόσθετου Off-the-Record Messaging v%s για Pidgin "
+"έχει λήξει από τις 01-01-2013. Παρακαλούμε αναζητήστε μια ενημερωμένη έκδοση στο "
 "http://otr.cypherpunks.ca/"
 
 #: ../otr-plugin.c:1229
@@ -826,7 +826,7 @@ msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
-msgstr "Έχετε ενεργοποιήσει την beta έκδοση του πρόσθετου Off-the-Record Messaging v%s"
+msgstr "Έχετε ενεργοποιήσει την beta έκδοση του πρόσθετου Off-the-Record Messaging v%s "
 "για Pidgin. Αυτή η έκδοση προορίζεται για δοκιμαστικούς σκοπούς μόνο και δεν είναι για γενική χρήση."
 
 #: ../otr-plugin.c:1414
@@ -841,7 +841,7 @@ msgstr "Παρέχει ιδιωτικές και ασφαλείς συνομιλ
 msgid ""
 "Preserves the privacy of IM communications by providing encryption, "
 "authentication, deniability, and perfect forward secrecy."
-msgstr "Διατηρεί την ιδιωτικότητα των επικοινωνιών άμεσω μηνυμάτων, παρέχοντας"
+msgstr "Διατηρεί την ιδιωτικότητα των επικοινωνιών άμεσω μηνυμάτων, παρέχοντας "
 "κρυπτογράφηση, αυθεντικοποίηση, δυνατότητα άρνησης, και τέλεια μελλοντική μυστικότητα."
 
 #: ../ui.c:110

@@ -1,12 +1,23 @@
 2012-06-21
 
-	* otr-plugin.c: Fixed an issue that happened when
-	enabling the OTR plugin while a conversation is open.
+	* INSTALL.mingw:
+	* Makefile.mingw: Cleaned up instructions for mingw win32
+	cross-compile
+
+	* po/el.po: Updated Greek translation by Alex
+	<irregulator@riseup.net>
+
+2012-06-21
+
+	* otr-plugin.c: Fixed a crash that happened when enabling the
+	OTR plugin while a conversation is open.
+
 	* Release 4.0.0-beta2
 
 2012-06-20
 
-	* po/el.po: Greek translation by <irregulator@riseup.net>
+	* po/el.po: Greek translation by Alex <irregulator@riseup.net>
+
 	* po/zh_CN.po: Simplified Chinese translation by Bisheng Liu
 	<bisheng.liu@uwaterloo.ca>
 
