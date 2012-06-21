@@ -4,17 +4,16 @@
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pidgin-otr 4.0.0.XX\n"
+"Project-Id-Version: pidgin-otr 4.0.0.el\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-14 09:45-0400\n"
 "PO-Revision-Date: 2012-06-20 19:50+2\n"
 "Last-Translator: irregulator@riseup.net\n"
 "Language-Team: el\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=el_GR.UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
@@ -372,7 +371,7 @@ msgstr "Η επαφή %s τερμάτισε την ιδιωτική της/το�
 #: ../gtk-dialog.c:1665
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
-msgstr "Η ιδιωτική συνομιλία με %s ανανεώθηκε επιτυχώς. %s"
+msgstr "Η ιδιωτική συνομιλία με %s ανανεώθηκε επιτυχώς.%s"
 
 #: ../gtk-dialog.c:1670
 #, c-format
@@ -692,7 +691,7 @@ msgstr "η επαφή %s έχει ήδη κλείσει την ιδιωτική 
 msgid ""
 "Your messagewas not sent.  Either end your private conversation, or restart "
 "it."
-msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά. "
+msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά."
 
 #: ../otr-plugin.c:487
 msgid "Private connection closed"
@@ -769,7 +768,7 @@ msgstr "Λάβαμε ένα μήνυμα από %s με κακοσχηματισ
 #: ../otr-plugin.c:559
 #, c-format
 msgid "Heartbeat received from %s.\n"
-msgstr "Παλμός ελήφθη από %s. \n"
+msgstr "Παλμός ελήφθη από %s.\n"
 
 #: ../otr-plugin.c:565
 #, c-format
