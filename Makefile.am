@@ -19,6 +19,6 @@ EXTRA_DIST=		dialogs.h gtk-dialog.h gtk-ui.h otr-plugin.h ui.h \
 			Makefile.mingw packaging/windows/pidgin-otr.nsi \
 			packaging/fedora/pidgin-otr.spec po/Makefile.mingw \
 			po/README intltool-extract.in intltool-merge.in \
-			intltool-update.in Makefile.static
+			intltool-update.in Makefile.static INSTALL.mingw
 
 DISTCLEANFILES=		intltool-extract intltool-merge intltool-update
