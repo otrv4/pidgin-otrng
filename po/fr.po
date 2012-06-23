@@ -124,7 +124,7 @@ msgstr "Vérification manuelle d'empreinte"
 
 #: ../gtk-dialog.c:749
 msgid "_Authenticate"
-msgstr "Authentification %s"
+msgstr "_Authentification"
 
 #: ../gtk-dialog.c:782
 msgid ""

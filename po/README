@@ -5,3 +5,8 @@ intltool-update --pot
 To merge the latest list into an existing translation file fr.po:
 
 intltool-update fr
+
+
+When updating a .po file, check it for sanity:
+
+msgfmt -c --check-accelerators=_ fr.po
