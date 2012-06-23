@@ -770,7 +770,7 @@ msgstr ""
 #: ../otr-plugin.c:526
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
-msgstr "<b>Die letzte Nachricht an &s wurde wieder versendet.</b>"
+msgstr "<b>Die letzte Nachricht an %s wurde wieder versendet.</b>"
 
 #: ../otr-plugin.c:530
 msgid "Message resent"

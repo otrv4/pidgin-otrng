@@ -145,12 +145,12 @@ msgstr "Authentification de votre contact"
 #: ../gtk-dialog.c:920
 #, c-format
 msgid "Authenticating to %s"
-msgstr "Authentification auprès de"
+msgstr "Authentification auprès de %s"
 
 #: ../gtk-dialog.c:921
 #, c-format
 msgid "Authenticating %s"
-msgstr "Authentification de"
+msgstr "Authentification de %s"
 
 #: ../gtk-dialog.c:954
 msgid "Waiting for buddy..."
@@ -270,7 +270,9 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"Votre empreinte, %s (%s):\n"
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Votre empreinte, %s (%s):\n"
 "%s\n"
 "\n"
 "Empreinte prétendue de %s:\n"
@@ -405,7 +407,8 @@ msgstr "_Authentifier le contact"
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
-msgstr "La confidentialité de cette conversation est désormais :"
+msgstr "La confidentialité de cette conversation est désormais: <a "
+"href=\"%s%s\">%s</a>"
 
 #: ../gtk-dialog.c:2276
 msgid "OTR:"
