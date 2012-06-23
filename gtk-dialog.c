@@ -669,7 +669,8 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
     vfd = vrfy_fingerprint_data_new(fprint);
 
-    strcpy(our_hash, _("[none]"));
+    strncpy(our_hash, _("[none]"), 44);
+    our_hash[44] = '\0';
     otrl_privkey_fingerprint(otrg_plugin_userstate, our_hash,
 	    context->accountname, context->protocol);
 
@@ -1394,7 +1395,8 @@ static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
 	    context->username);
     vfd = vrfy_fingerprint_data_new(fprint);
 
-    strcpy(our_hash, _("[none]"));
+    strncpy(our_hash, _("[none]"), 44);
+    our_hash[44] = '\0';
     otrl_privkey_fingerprint(otrg_plugin_userstate, our_hash,
 	    context->accountname, context->protocol);
 
