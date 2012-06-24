@@ -1,10 +1,9 @@
-﻿# Off-the-Record Messaging plugin for pidgin.
+# Off-the-Record Messaging plugin for pidgin.
 # Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
 #	                       Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr at cypherpunks.ca>, 2012
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.es\n"
@@ -14,7 +13,7 @@ msgstr ""
 "Last-Translator: Juan Rodriguez <sevenfactors at gmail dot com>\n"
 "Language-Team: ~Español~ Juan Rodriguez <sevenfactors at gmail dot com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
@@ -45,7 +44,7 @@ msgstr ""
 "Para autenticar mediante una pregunta, escoge una pregunta cuya respuesta " 
 "sea conocida solamente por ti y tú compañero/ra. Ingresa esta pregunta y su "
 "respuesta, ahora espera que tú compañero/ra responda la pregunta. Si las " 
-"respuestas no coinciden, entonces puede ser que estés hablando con un
+"respuestas no coinciden, entonces puede ser que estés hablando con un "
 "impostor."
 
 #: ../gtk-dialog.c:505
@@ -150,7 +149,7 @@ msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
 msgstr ""
-Autentificar a un compañero/ra te asegura que la persona con la que "
+"Autentificar a un compañero/ra te asegura que la persona con la que "
 "supuestamente estas hablando es quien dice ser."
 
 #. Translators: you are asked to authenticate yourself
@@ -253,7 +252,7 @@ msgstr "Yo he"
 #. 3rd message
 #: ../gtk-dialog.c:1356
 msgid " verified that this is in fact the correct"
-msgstr "verificado que en verdad esta es la correcta"
+msgstr " verificado que en verdad esta es la correcta"
 
 #. 4th message
 #: ../gtk-dialog.c:1366
@@ -291,7 +290,7 @@ msgid ""
 "<b>have</b> verified the fingerprint."
 msgstr ""
 "Si todo coincide, tendrás que indicar en el cuadro de diálogo que tu "
-"<b>has</b> verificado la huella digital"
+"<b>has</b> verificado la huella digital."
 
 #: ../gtk-dialog.c:1418 ../gtk-ui.c:844
 msgid "Verify fingerprint"
@@ -313,11 +312,11 @@ msgstr "Autentica a tú Compañero/ra"
 
 #: ../gtk-dialog.c:1487
 msgid "An error occurred during authentication."
-msgstr "A ocurrido un error durante la autenticación"
+msgstr "A ocurrido un error durante la autenticación."
 
 #: ../gtk-dialog.c:1502
 msgid "Authentication successful."
-msgstr "Autenticación exitosa"
+msgstr "Autenticación exitosa."
 
 #: ../gtk-dialog.c:1505
 msgid ""
@@ -329,7 +328,7 @@ msgstr ""
  
 #: ../gtk-dialog.c:1511
 msgid "Authentication failed."
-msgstr "Autenticación fallida"
+msgstr "Autenticación fallida."
 
 #: ../gtk-dialog.c:1541
 #, c-format
@@ -349,17 +348,17 @@ msgid "Not private conversation with %s started.%s%s"
 msgstr "Conversación NO Privada con %s iniciada.%s%s"
 
 #: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
-msgid "Warning: using old protocol version 1."
-msgstr "Cuidado: utilizando el protocolo antiguo version 1."
+msgid "  Warning: using old protocol version 1."
+msgstr "  Cuidado: utilizando el protocolo antiguo version 1."
 
 #: ../gtk-dialog.c:1561
-msgid "Your client is logging this conversation."
-msgstr "Tu cliente de mensajería instantánea está transcribiendo la "
+msgid "  Your client is logging this conversation."
+msgstr "  Tu cliente de mensajería instantánea está transcribiendo la "
 "conversación"
 
 #: ../gtk-dialog.c:1562
-msgid "Your client is not logging this conversation."
-msgstr "Tu cliente de mensajería no está transcribiendo la conversation"
+msgid "  Your client is not logging this conversation."
+msgstr "  Tu cliente de mensajería no está transcribiendo la conversation"
 
 #: ../gtk-dialog.c:1581
 #, c-format
@@ -482,8 +481,8 @@ msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
 msgstr ""
-"El estado de privacidad de la conversación actual ahora es: <a href=\"%s%s\"
-">%s</a>"
+"El estado de privacidad de la conversación actual ahora es: <a href=\"%s%s"
+"\">%s</a>"
 
 #: ../gtk-dialog.c:2956
 msgid "OTR Messaging"
@@ -758,7 +757,7 @@ msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
 msgstr ""
-"O estas tratando de hablar "contigo mismo," o alguien te esta reflejando tus "
+"O estas tratando de hablar contigo mismo, o alguien te esta reflejando tus "
 "mensajes."
 
 #: ../otr-plugin.c:526
@@ -809,7 +808,7 @@ msgid ""
 "<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
 "s<b>]</b>"
 msgstr ""
-"<b>El siguiente mensaje recibido de %s <i>no</i>" esta cifrado: [</b>%s<b>]"
+"<b>El siguiente mensaje recibido de %s <i>no</i> esta cifrado: [</b>%s<b>]"
 "</b>"
 
 #: ../otr-plugin.c:581
