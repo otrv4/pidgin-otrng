@@ -149,8 +149,8 @@ msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
 msgstr ""
-"Autentificar a un compañero/ra te asegura que la persona con la que "
-"supuestamente estas hablando es quien dice ser."
+"Autenticar a un compañero/ra te asegura que la persona con la que "
+"supuestamente estás hablando es quien dice ser."
 
 #. Translators: you are asked to authenticate yourself
 #: ../gtk-dialog.c:946
@@ -358,7 +358,7 @@ msgstr "  Tu cliente de mensajería instantánea está transcribiendo la "
 
 #: ../gtk-dialog.c:1562
 msgid "  Your client is not logging this conversation."
-msgstr "  Tu cliente de mensajería no está transcribiendo la conversation"
+msgstr "  Tu cliente de mensajería no está transcribiendo la conversación."
 
 #: ../gtk-dialog.c:1581
 #, c-format
@@ -808,7 +808,7 @@ msgid ""
 "<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
 "s<b>]</b>"
 msgstr ""
-"<b>El siguiente mensaje recibido de %s <i>no</i> esta cifrado: [</b>%s<b>]"
+"<b>El siguiente mensaje recibido de %s <i>no</i> está cifrado: [</b>%s<b>]"
 "</b>"
 
 #: ../otr-plugin.c:581
