@@ -2319,7 +2319,8 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
     GtkWidget *menu_image;
     GtkWidget * tooltip_menu;
     gchar *tooltip_text;
-    otrl_instag_t * instance;
+    gpointer gp_instance;
+    otrl_instag_t * selected_instance;
     gboolean selection_exists = 0;
     ConnContext * context = instances->data;
     TrustLevel level = TRUST_NOT_PRIVATE;
@@ -2332,13 +2333,14 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 
     conv = otrg_plugin_context_to_conv(context, 0);
     selection_exists = g_hash_table_lookup_extended(conv->data,
-	    "otr-ui_selected_ctx", NULL, (gpointer*)&instance);
+	    "otr-ui_selected_ctx", NULL, &gp_instance);
 
     /* Find the selected or default instance */
     if (selection_exists) {
+	selected_instance = gp_instance;
 	context = otrl_context_find(otrg_plugin_userstate,
 		context->username, context->accountname, context->protocol,
-		*instance, 0, NULL, NULL, NULL);
+		*selected_instance, 0, NULL, NULL, NULL);
     } else {
 	context = otrl_context_find(otrg_plugin_userstate,
 		context->username, context->accountname, context->protocol,
@@ -2393,7 +2395,8 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 
 	g_free(text);
 
-	if (!selection_exists || *instance != curr_context->their_instance) {
+	if (!selection_exists ||
+		*selected_instance != curr_context->their_instance) {
 	    GtkWidget *select_ctx = gtk_menu_item_new_with_label(_("Select"));
 	    GtkWidget *menusep = gtk_separator_menu_item_new();
 
@@ -2407,7 +2410,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 		    select_ctx);
 	    gtk_widget_show(select_ctx);
 	} else if (selection_exists && 
-		*instance == curr_context->their_instance) {
+		*selected_instance == curr_context->their_instance) {
 	    GtkWidget *selected_ctx =
 		    gtk_menu_item_new_with_label(_("Selected"));
 	    GtkWidget *menusep = gtk_separator_menu_item_new();
@@ -2880,6 +2883,11 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     name = purple_conversation_get_name(conv);
     otrg_ui_get_prefs(&prefs, account, name);
 
+    /* OTR is disabled for this buddy */
+    if (prefs.policy == OTRL_POLICY_NEVER) {
+	return;
+    }
+
     bbox = gtkconv->toolbar;
 
     context = otrg_plugin_conv_to_selected_context(conv, 0);
@@ -3134,6 +3142,10 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
 
     last_received_instance = g_hash_table_lookup(conv->data,
 	    "otr-last_received_ctx");
+
+    if (!last_received_instance) {
+	return; /* OTR disabled for this buddy */
+    }
 
     if (*last_received_instance == OTRL_INSTAG_MASTER || 
 	    *last_received_instance >= OTRL_MIN_VALID_INSTAG) {

@@ -890,6 +890,12 @@ static void process_conv_create(PurpleConversation *conv)
     otrg_dialog_new_conv(conv);
 }
 
+/* Wrapper around process_conv_create for callback purposes */
+static void process_conv_create_cb(PurpleConversation *conv, void *data)
+{
+    process_conv_create(conv);
+}
+
 static void process_conv_updated(PurpleConversation *conv,
 	PurpleConvUpdateType type, void *data)
 {
@@ -1272,7 +1278,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     purple_signal_connect(conv_handle, "conversation-updated",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_updated), NULL);
     purple_signal_connect(conv_handle, "conversation-created",
-	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create), NULL);
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create_cb), NULL);
     purple_signal_connect(conv_handle, "deleting-conversation",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_destroyed), NULL);
     purple_signal_connect(conn_handle, "signed-on", otrg_plugin_handle,
@@ -1312,7 +1318,7 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     purple_signal_disconnect(conv_handle, "conversation-updated",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_updated));
     purple_signal_disconnect(conv_handle, "conversation-created",
-	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create));
+	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_create_cb));
     purple_signal_disconnect(conv_handle, "deleting-conversation",
 	    otrg_plugin_handle, PURPLE_CALLBACK(process_conv_destroyed));
     purple_signal_disconnect(conn_handle, "signed-on", otrg_plugin_handle,
