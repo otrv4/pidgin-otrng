@@ -1,11 +1,12 @@
-# Norwegian Nynorsk translations for pidgin-otr package.
-# Copyright (C) 2012 THE pidgin-otr'S COPYRIGHT HOLDER
+# Off-the-Record Messaging plugin for pidgin.
+# Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
+#	                       Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
-# Yngve Spjeld Landro <l10n@landro.net>, 2012.
+# Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pidgin-otr 3.2.1\n"
+"Project-Id-Version: pidgin-otr 4.0.0.nn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-08 22:00+0200\n"
 "PO-Revision-Date: 2012-06-26 22:01+0200\n"
