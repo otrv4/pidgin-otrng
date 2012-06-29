@@ -706,10 +706,9 @@ msgstr "Dit bericht kon niet vestuurd worden"
 msgid "%s has already closed his/her private connection to you"
 msgstr "%s heeft het prive gesprek met jou gestopt."
 
-#. PAUL: you need to add a space in the english text here
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr ""
 "Je bericht is niet verstuurd. Je moet je prive gesprek herstarten of stoppen."

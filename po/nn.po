@@ -704,7 +704,7 @@ msgstr "%s har allereie lukka den private tilkoplinga til deg"
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr ""
 "Meldinga di vart ikkje sendt. Avslutt den private samtalen eller start han "

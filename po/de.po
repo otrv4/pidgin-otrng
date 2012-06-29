@@ -717,7 +717,7 @@ msgstr "%s hat bereits seine/ihre private Verbindung zu Ihnen beendet"
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr "Ihre Nachricht wurde nicht gesendet. Entweder beenden sie ihre "
 "private Unterhaltung oder Sie schalen sie wieder ein."

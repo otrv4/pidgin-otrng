@@ -702,7 +702,7 @@ msgstr "%s 已经关闭了与你的私密连接"
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr ""
 "你的消息没有被发送. 请结束你的当前私密对话，或重启"

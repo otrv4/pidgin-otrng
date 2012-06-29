@@ -683,7 +683,7 @@ msgstr "%s مکالمه محرمانه خود را با شما پایان داد
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr " پیام شما فرستاده نشد. مکالمه محرمانه خود را پایان دهید یا آن را دوباره آغاز کنید."
 

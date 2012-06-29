@@ -689,7 +689,7 @@ msgstr "η επαφή %s έχει ήδη κλείσει την ιδιωτική 
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr "Το μήνυμά σου δεν εστάλη. Είτε τερμάτισε την ιδιωτική συνομιλία με την επαφή, ή ξεκίνα την ξανά. "
 

@@ -481,7 +481,7 @@ static void handle_msg_event_cb(void *opdata, OtrlMessageEvent msg_event,
 	    buf = g_strdup_printf(_("%s has already closed his/her private "
 			"connection to you"), context->username);
 	    display_otr_message_or_notify(opdata, context->accountname,
-		    context->protocol, context->username, _("Your message"
+		    context->protocol, context->username, _("Your message "
 		    "was not sent.  Either end your private conversation, "
 		    "or restart it."), 1, OTRL_NOTIFY_ERROR,
 		    _("Private connection closed"), buf,
