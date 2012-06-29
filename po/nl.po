@@ -4,7 +4,6 @@
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.nl\n"
@@ -14,7 +13,7 @@ msgstr ""
 "Last-Translator: Paul Wouters <paul@cypherpunks.ca>\n"
 "Language-Team: Paul Wouters <paul@cypherpunks.ca>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
@@ -141,7 +140,7 @@ msgstr "Handmatige vingerafdruk verificatie"
 
 #: ../gtk-dialog.c:802
 msgid "_Authenticate"
-msgstr "Authenticeer"
+msgstr "_Authenticeer"
 
 #: ../gtk-dialog.c:836
 msgid ""
@@ -290,7 +289,7 @@ msgid ""
 "<b>have</b> verified the fingerprint."
 msgstr ""
 "Als alles klopt, kun je in het bovenstaande dialoogvenster "
-"aangeven dat je de vingerafdruk hebt <b>geverificeerd</b>.
+"aangeven dat je de vingerafdruk hebt <b>geverificeerd</b>."
 
 #: ../gtk-dialog.c:1418 ../gtk-ui.c:844
 msgid "Verify fingerprint"
@@ -345,7 +344,7 @@ msgstr "<a href=\"%s%s\">Ongeverifieerd</a> gesprek gestart met %%s.%%s%%s"
 #: ../gtk-dialog.c:1553
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
-msgstr "Onbeveiligd gesprek gestart met %s.%s%s""
+msgstr "Onbeveiligd gesprek gestart met %s.%s%s"
 
 #: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
 msgid "  Warning: using old protocol version 1."
@@ -394,7 +393,7 @@ msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
 msgstr ""
-"<a href=\"%s%s\">Ongeverifieerd</a>gesprek met %%s opnieuw tot stand gebracht.%s"
+"<a href=\"%s%s\">Ongeverifieerd</a>gesprek met %%s opnieuw tot stand gebracht.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
@@ -488,7 +487,7 @@ msgstr "OTR Messaging"
 #: ../gtk-ui.c:103
 #, c-format
 msgid "Fingerprint: %.80s"
-msgstr "Vingerafdruk"
+msgstr "Vingerafdruk: %.80s"
 
 #: ../gtk-ui.c:107
 #, c-format
