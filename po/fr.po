@@ -4,7 +4,6 @@
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.fr\n"
@@ -141,7 +140,7 @@ msgstr "Vérification manuelle d'empreinte"
 
 #: ../gtk-dialog.c:802
 msgid "_Authenticate"
-msgstr "Authentifie"
+msgstr "_Authentifie"
 
 #: ../gtk-dialog.c:836
 msgid ""
@@ -275,10 +274,12 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"Votre empreinte, %s (%s) :\n"
+"<small><i>%s %s\n"
+"\n"
+"Votre empreinte, %s (%s):\n"
 "%s\n"
 "\n"
-"Empreinte prétendue de %s :\n"
+"Empreinte prétendue de %s:\n"
 "%s\n"
 
 #: ../gtk-dialog.c:1412
@@ -342,7 +343,7 @@ msgstr "Une conversation <a href=\"%s%s\">non-verifiée</a> avec %%s a commencé
 #: ../gtk-dialog.c:1553
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
-msgstr "Une conversation non-privée avec %s a commencé.%s"
+msgstr "Une conversation non-privée avec %s a commencé.%s%s"
 
 #: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
 msgid "  Warning: using old protocol version 1."
@@ -707,7 +708,7 @@ msgstr "%s a déjà fermé la connexion entre vous deux."
 
 #: ../otr-plugin.c:484
 msgid ""
-"Your messagewas not sent.  Either end your private conversation, or restart "
+"Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr ""
 "Votre message n'a pas été envoyé. Soit mettre fin à votre session ou "
