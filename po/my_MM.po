@@ -1,0 +1,797 @@
+﻿# Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
+#	                       Lisa Du, Nikita Borisov
+# This file is distributed under the same license as the pidgin-otr package.
+# Ian Goldberg <otr@cypherpunks.ca>, 2012
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pidgin-otr 4.0.0.XX\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-14 09:45-0400\n"
+"PO-Revision-Date: 2012-07-01 22:01+0530\n"
+"Last-Translator: Russell Kyaw<russellkyaw@gmail.com>\n"
+"Language-Team: MM L10N Team <mm.l10n.team@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../gtk-dialog.c:332
+#: ../gtk-dialog.c:1141
+#: ../gtk-dialog.c:1145
+#: ../gtk-dialog.c:1547
+#: ../gtk-dialog.c:1584
+#: ../gtk-dialog.c:1673
+#: ../gtk-dialog.c:1748
+#: ../gtk-dialog.c:2749
+msgid "?lang=en"
+msgstr "?lang=XX"
+
+#: ../gtk-dialog.c:480
+msgid "Your buddy is attempting to determine if he or she is really talking to you, or if it's someone pretending to be you.  Your buddy has asked a question, indicated below.  To authenticate to your buddy, enter the answer and click OK."
+msgstr "သင့်မိတ်ဆွေသည် သူခေါ်နေသော သူသည် သင်တကယ် ဟုတ်မဟုတ်၊ (သို့) တစ်စုံတစ်ယောက်သည် သင့်အယောင်ကို ဆောင်မဆောင် စစ်ဆေးရန် ကြိုးစားနေသည်။ သင့်မိတ်ဆွေသည် အောက်ပါအတိုင်း သင့်ကို မေးခွန်း တစ်ပုဒ်​ မေးနေသည်။ သင့်​မိတ်ဆွေကို အတည်ပြုရန်၊ အဖြေကို ရေးထည့်ပြီး ကောင်းပြီ ကို နှိပ်ပါ။"
+
+#: ../gtk-dialog.c:487
+msgid "To authenticate using a question, pick a question whose answer is known only to you and your buddy.  Enter this question and this answer, then wait for your buddy to enter the answer too.  If the answers don't match, then you may be talking to an imposter."
+msgstr "​မေးခွန်း တစ်ပုဒ်ကို အသုံးပြုပြီး အတည်ပြုရန်၊ သင်နှင့် သင့်မိတ်ဆွေတို့ကသာ အဖြေ သိရှိသော မေးခွန်း တစ်ပုဒ်ကို ရွေးပါ။ ဤမေးခွန်းနှင့် အဖြေကို ရေးထည့်ပြီး၊ သင့်မိတ်ဆွေက အဖြေကို ရေးထည့်ရန် စောင့်ဆိုင်းပါ။ အကယ်၍ အဖြေ ကိုက်ညီမှု မရှိပါက၊ သူ့ကို ​အယောင်ဆောင်သူ တစ်ဦးအဖြစ် သတ်မှတ်နိုင်သည်။"
+
+#: ../gtk-dialog.c:505
+#, c-format
+msgid "This is the question asked by your buddy:"
+msgstr "ဤမေးခွန်းသည် သင့်မိတ်ဆွေ မေးသော မေးခွန်း ဖြစ်သည် -"
+
+#: ../gtk-dialog.c:508
+#, c-format
+msgid "Enter question here:"
+msgstr "ဤနေရာ၌ မေးခွန်း ရေးပါ -"
+
+#: ../gtk-dialog.c:540
+#: ../gtk-dialog.c:624
+msgid "This buddy is already authenticated."
+msgstr "သင့် မိတ်ဆွေကို စစ်ဆေး အတည်ပြုလိုက်ပြီ။"
+
+#: ../gtk-dialog.c:552
+#, c-format
+msgid "Enter secret answer here (case sensitive):"
+msgstr "လျှို့ဝှက် အဖြေကို ဤနေရာ၌ ရေးထည့်ပါ (အမှားမခံ) -"
+
+#: ../gtk-dialog.c:593
+msgid "To authenticate, pick a secret known only to you and your buddy.  Enter this secret, then wait for your buddy to enter it too.  If the secrets don't match, then you may be talking to an imposter."
+msgstr "အတည်ပြုနိုင်ရန်၊ သင်နှင့် သင့်မိတ်ဆွေတို့ကသာ သိရှိသော လျှို့ဝှက်ချက် တစ်ခုကို ရွေးပါ။ ဤလျှို့ဝှက်ချက်ကို ရေးပြီးနောက်၊ သင့် မိတ်ဆွေလည်း ၄င်းကို ရေးသည့်အထိ စောင့်ဆိုင်းပါ။ အကယ်၍ လျှို့ဝှက် မကိုက်ညီပါက၊ သူ့အယောင်ဆောင်သော သူကို စကားပြောနေခြင်း ဖြစ်နိုင်သည်။"
+
+#: ../gtk-dialog.c:607
+#, c-format
+msgid "Enter secret here:"
+msgstr "ဤနေရာ၌ လျှို့ဝှက်ချက် ရေးထည့်ရန် -"
+
+#: ../gtk-dialog.c:657
+#: ../gtk-dialog.c:1408
+msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authenticated channel, such as the telephone or GPG-signed email.  Each of you should tell your fingerprint to the other."
+msgstr "လက်ဗွေကို စစ်ဆေး အတည်ပြုရန်၊ သင့် မိတ်ဆွေကို တယ်လီဖုန်း (သို့) GPG-လက်မှတ်ထိုးထား​သော အီးမေးလ် စသည်ဖြင့် စစ်ဆေး အတည်ပြုသော <i>အခြား</i> လမ်းကြောင်း မှတစ်ဆင့် ဆက်သွယ်ပါ။ သင်တို့ တစ်ဦးကို တစ်ဦး မိမိတို့၏ လက်ဗွေကို ပြောပြရမည် ဖြစ်သည်။"
+
+#: ../gtk-dialog.c:661
+msgid "If everything matches up, you should chose <b>I have</b> in the menu below."
+msgstr "အကယ်၍ အားလုံး ကိုက်ညီပါက၊ အောက် မီနူးရှိ <b>ကျွန်တော့်ဆီ ရှိသည်</b> ကို ရွေးပါ။"
+
+#: ../gtk-dialog.c:672
+#: ../gtk-dialog.c:1397
+msgid "[none]"
+msgstr "[ဘာမှမရှိ]"
+
+#: ../gtk-dialog.c:679
+#: ../gtk-dialog.c:1051
+#: ../gtk-dialog.c:1404
+#: ../gtk-dialog.c:1453
+#: ../gtk-ui.c:212
+#: ../otr-plugin.c:127
+#: ../otr-plugin.c:300
+#: ../ui.c:112
+msgid "Unknown"
+msgstr "အမည်မသိ"
+
+#: ../gtk-dialog.c:680
+#, c-format
+msgid ""
+"Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"သင့်အတွက် လက်ဗွေ၊  %s (%s):\n"
+"%s\n"
+"\n"
+"​​အယောင်ဆောင် လက်​ဗွေ ပိုင်ရှင် %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:736
+msgid "How would you like to authenticate your buddy?"
+msgstr "သင့်မိတ်ဆွေကို မည်ကဲ့သို့ စစ်ဆေး အတည်ပြုမည်နည်း?"
+
+#: ../gtk-dialog.c:745
+msgid "Question and answer"
+msgstr "မေးခွန်းနှင့် အ​ဖြေ"
+
+#: ../gtk-dialog.c:748
+msgid "Shared secret"
+msgstr "မျှဝေထားသော လျှို့ဝှက်ချက်"
+
+#: ../gtk-dialog.c:751
+msgid "Manual fingerprint verification"
+msgstr "လက်ဗွေကို ကိုယ်တိုင် အတည်ပြုခြင်း"
+
+#: ../gtk-dialog.c:802
+msgid "_Authenticate"
+msgstr "အတည်ပြုခြင်း (_A)"
+
+#: ../gtk-dialog.c:836
+msgid "Authenticating a buddy helps ensure that the person you are talking to is who he or she claims to be."
+msgstr "မိတ်ဆွေ တစ်ဦးကို စစ်​ဆေး အတည်ပြုခြင်းဖြင့် သင်နှစ် စကားပြောနေသူသည် သင်ရည်ရွယ်ထားသော ပုဂ္ဂိုလ် အမှန် ဖြစ်ကြောင်း သေချာစေသည်။"
+
+#. Translators: you are asked to authenticate yourself
+#: ../gtk-dialog.c:946
+msgid "Authenticating to Buddy"
+msgstr "မိတ်ဆွေကို စစ်ဆေး အတည်ပြုရန်"
+
+#. Translators: you asked your buddy to authenticate him/herself
+#: ../gtk-dialog.c:948
+msgid "Authenticating Buddy"
+msgstr "မိတ်ဆွေကို အတည်ပြုနေသည်"
+
+#: ../gtk-dialog.c:975
+#, c-format
+msgid "Authenticating to %s"
+msgstr "%s ကို အတည်ပြုနေသည်"
+
+#: ../gtk-dialog.c:976
+#, c-format
+msgid "Authenticating %s"
+msgstr "%s ကို အတည်ပြုနေသည်"
+
+#: ../gtk-dialog.c:1009
+msgid "Waiting for buddy..."
+msgstr "မိတ်ဆွေကို စောင့်ဆိုင်းနေသည်..."
+
+#: ../gtk-dialog.c:1042
+msgid "Generating private key"
+msgstr "Private key ကို ထုတ်လုပ်နေသည်"
+
+#: ../gtk-dialog.c:1043
+msgid "Please wait"
+msgstr "ခေတ္တ စောင့်ဆိုင်းပါ"
+
+#. Create the Please Wait... dialog
+#: ../gtk-dialog.c:1054
+#, c-format
+msgid "Generating private key for %s (%s)..."
+msgstr "%s (%s) အတွက် private key ထုတ်လုပ်နေသည်..."
+
+#: ../gtk-dialog.c:1099
+#, c-format
+msgid "%s Done."
+msgstr "%s ကို ပြီးသွားပြီ။"
+
+#: ../gtk-dialog.c:1139
+#, c-format
+msgid "%s is contacting you from an unrecognized computer.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "%s သည် အမည်မသိသော ကွန်ပျူတာမှ သင့်ကို ဆက်သွယ်နေသည်။ ဤမိတ်ဆွေကို <a href=\"%s%s\">စစ်ဆေး အတည်ပြု</a>ပါ။"
+
+#: ../gtk-dialog.c:1143
+#, c-format
+msgid "%s has not been authenticated yet.  You should <a href=\"%s%s\">authenticate</a> this buddy."
+msgstr "%s ကို စစ်ဆေး အတည်ပြုခြင်း မလုပ်သေးပါ။ ဤမိတ်ဆွေကို <a href=\"%s%s\">စစ်ဆေး အတည်ပြု</a> ပါ။"
+
+#: ../gtk-dialog.c:1195
+#: ../gtk-dialog.c:1969
+#: ../gtk-dialog.c:2745
+#: ../gtk-ui.c:83
+msgid "Finished"
+msgstr "အပြီးသတ်ပြီ"
+
+#: ../gtk-dialog.c:1196
+#: ../gtk-dialog.c:1966
+#: ../gtk-dialog.c:2742
+#: ../gtk-ui.c:82
+msgid "Private"
+msgstr "သီးသန့်"
+
+#: ../gtk-dialog.c:1197
+#: ../gtk-dialog.c:1963
+#: ../gtk-dialog.c:2739
+#: ../gtk-ui.c:81
+msgid "Unverified"
+msgstr "အတည်မပြုသေး"
+
+#: ../gtk-dialog.c:1198
+#: ../gtk-ui.c:80
+msgid "Not private"
+msgstr "သီးသန့်မဟုတ်"
+
+#: ../gtk-dialog.c:1201
+msgid "OTR"
+msgstr "OTR"
+
+#. Translators: the following four messages should give alternative
+#. * sentences. The user selects the first or second message in a combo box;
+#. * the third message, a new line, a fingerprint, a new line, and
+#. * the fourth message will follow it.
+#: ../gtk-dialog.c:1351
+msgid "I have not"
+msgstr "ကျွန်တော့်ဆီ မရှိပါ"
+
+#. 2nd message
+#: ../gtk-dialog.c:1353
+msgid "I have"
+msgstr "ကျွန်တော့်ဆီ ရှိသည်"
+
+#. 3rd message
+#: ../gtk-dialog.c:1356
+msgid " verified that this is in fact the correct"
+msgstr "ဤအ​ရာသည် မှန်ကန်ကြောင်း အတည်ပြုသည်"
+
+#. 4th message
+#: ../gtk-dialog.c:1366
+#, c-format
+msgid "fingerprint for %s."
+msgstr "%s အတွက် လက်ဗွေ။"
+
+#: ../gtk-dialog.c:1393
+#, c-format
+msgid "Verify fingerprint for %s"
+msgstr "%s အတွက် လက်ဗွေကို အတည်ပြုပါ"
+
+#: ../gtk-dialog.c:1405
+#, c-format
+msgid ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>Fingerprint for you, %s (%s):\n"
+"%s\n"
+"\n"
+"Purported fingerprint for %s:\n"
+"%s\n"
+msgstr ""
+"<small><i>%s %s\n"
+"\n"
+"</i></small>သင့်အတွက် လက်ဗွေ၊ %s (%s):\n"
+"%s\n"
+"\n"
+"​အယောင်ဆောင် လက်ဗွေပိုင်ရှင် %s:\n"
+"%s\n"
+
+#: ../gtk-dialog.c:1412
+msgid "If everything matches up, you should indicate in the above dialog that you <b>have</b> verified the fingerprint."
+msgstr "အကယ်၍ အရာအားလုံး ကိုက်ညီပါက၊ အထက်ပါ အညွှန်း စာမျက်နှာရှိ လက်ဗွေကို သင် အတည်ပြု<b>လိုက်ပြီ</b>၌ အမှတ်အသား ပြုလိုက်ပါ။"
+
+#: ../gtk-dialog.c:1418
+#: ../gtk-ui.c:844
+msgid "Verify fingerprint"
+msgstr "လက်ဗွေ အတည်ပြုပါ"
+
+#: ../gtk-dialog.c:1445
+#, c-format
+msgid "Authentication from %s"
+msgstr "%s မှ အတည်ပြုချက်"
+
+#: ../gtk-dialog.c:1448
+#, c-format
+msgid "Authenticate %s"
+msgstr "%s ကို အတည်ပြုရန်"
+
+#: ../gtk-dialog.c:1456
+msgid "Authenticate Buddy"
+msgstr "မိတ်ဆွေကို အတည်ပြုရန်"
+
+#: ../gtk-dialog.c:1487
+msgid "An error occurred during authentication."
+msgstr "စစ်ဆေး အတည်ပြုနေစဉ် ချို့ယွင်းချက် တစ်ခု ဖြစ်ပွားခဲ့သည်။"
+
+#: ../gtk-dialog.c:1502
+msgid "Authentication successful."
+msgstr "အတည်ပြုခြင်း အောင်မြင်သည်။"
+
+#: ../gtk-dialog.c:1505
+msgid "Your buddy has successfully authenticated you.  You may want to authenticate your buddy as well by asking your own question."
+msgstr "သင့်မိတ်ဆွေသည် သင့်ကို အောင်မြင်စွာ အတည်ပြုလိုက်ပြီ။ သင့်ကိုယ်တိုင် မေးခွန်းဖြင့်လည်း သင့်မိတ်ဆွေကို စစ်ဆေး အတည်ပြုနိုင်သည်။"
+
+#: ../gtk-dialog.c:1511
+msgid "Authentication failed."
+msgstr "အတည်ပြခြင်း မအောင်မြင်ပါ။"
+
+#: ../gtk-dialog.c:1541
+#, c-format
+msgid "Private conversation with %s started.%s%s"
+msgstr "%s နှင့် သီးသန့် စကားပြောဆိုမှု စတင်သည်။%s%s"
+
+#: ../gtk-dialog.c:1545
+#, c-format
+msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
+msgstr "%%s နှင့် <a href=\"%s%s\">အတည်မပြုရသေး</a>သော စကားပြောဆိုမှု စတင်သည်။%%s%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1553
+#, c-format
+msgid "Not private conversation with %s started.%s%s"
+msgstr "%s နှင့် သီးသန့်မဟုတ်သော စကားပြောဆိုမှု စတင်သည်။%s%s"
+
+#: ../gtk-dialog.c:1559
+#: ../gtk-dialog.c:1686
+msgid "  Warning: using old protocol version 1."
+msgstr "သတိပေးချက် - ပရိုတိုကော ဗားရှင်း အဟောင်း ၁ ကို သုံးစွဲနေသည်။"
+
+#: ../gtk-dialog.c:1561
+msgid "  Your client is logging this conversation."
+msgstr "သင့်မိတ်ဆွေသည် ဤစကားပြောဆိုမှုထဲ ၀င်ရောက်လာ်သည်။"
+
+#: ../gtk-dialog.c:1562
+msgid "  Your client is not logging this conversation."
+msgstr "သင့်မိတ်ဆွေသည် ဤစကားပြောဆိုမှုထဲ ၀င်မ​လာပါ။"
+
+#: ../gtk-dialog.c:1581
+#, c-format
+msgid "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s\">multiple sessions</a>. Use the icon menu above if you wish to select the outgoing session."
+msgstr "သင့်မိတ်ဆွေသည် အကြိမ်ကြမ် ၀င်ရောက်လာပြီး OTR <a href=\"%s%s\">စကား​ပြောမှု အများ</a> ဖန်တီးနေသည်။ စကားပြောဆိုမှု အထွက်ကို ရွေးချယ်လိုပါက အထက်မှ အိုင်ကွန် ​မီနူးကို သုံးစွဲပါ။"
+
+#: ../gtk-dialog.c:1601
+#, c-format
+msgid "Private conversation with %s lost."
+msgstr "%s နှင့် သီးသန့် စကားပြောဆိုမှု ပျက်သွားသည်။"
+
+#: ../gtk-dialog.c:1638
+#, c-format
+msgid "%s has ended his/her private conversation with you; you should do the same."
+msgstr "%s သည် သင်နှင့် သီးသန့် စကားပြောဆိုမှုကို အဆုံးသတ်လိုက်သည်။ အလားတူ သင် ပြုလုပ်ပါ။"
+
+#: ../gtk-dialog.c:1665
+#, c-format
+msgid "Successfully refreshed the private conversation with %s.%s"
+msgstr "%s နှင့် သီးသန့် စ​ကား​ပြောဆိုမှုကို အောင်မြင်စွာ ပြန်ခေါ်လိုက်ပြီ။%s"
+
+#: ../gtk-dialog.c:1670
+#, c-format
+msgid "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with %%s.%%s"
+msgstr "<a href=\"%s%s\">အတည်မပြုသေး</a>သော %%s နှင့် စကားပြောဆိုမှုကို အောင်မြင်စွာ ပြန်ခေါ်လိုက်ပြီ။%%s"
+
+#. This last case should never happen, since we know
+#. * we're in ENCRYPTED.
+#: ../gtk-dialog.c:1679
+#, c-format
+msgid "Successfully refreshed the not private conversation with %s.%s"
+msgstr "%s နှင့် သီးခြား မဟုတ်သော စကားပြောဆိုမှုကို အောင်မြင်စွာ ပြန်ခေါ်လိုက်ပြီ။%s"
+
+#: ../gtk-dialog.c:1712
+#, c-format
+msgid "Attempting to refresh the private conversation with %s..."
+msgstr "%s သီးသန့် စကားပြောဆိုမှုကို ပြန်ခေါ်ရန် ကြိုးစားနေသည်..."
+
+#: ../gtk-dialog.c:1714
+#, c-format
+msgid "Attempting to start a private conversation with %s..."
+msgstr "%s နှင့် သီးသန့် စကားပြောဆိုမှု စတင်ရန် ကြိုးစားနေသည်..."
+
+#: ../gtk-dialog.c:1899
+#: ../gtk-dialog.c:2026
+msgid "Start _private conversation"
+msgstr "သီးသန့် စ​ကားပြောဆိုမှု စတင်ရန် (_p)"
+
+#: ../gtk-dialog.c:1900
+msgid "Refresh _private conversation"
+msgstr "သီးသန့် ​စ​ကားပြောဆိုမှု ပြန်ခေါ်ရန် (_p)"
+
+#: ../gtk-dialog.c:1905
+msgid "Re_authenticate buddy"
+msgstr "မိတ်ဆွေကို ပြန်လည် အတည်ပြုရန် (_a)"
+
+#: ../gtk-dialog.c:1906
+#: ../gtk-dialog.c:2030
+msgid "_Authenticate buddy"
+msgstr "မိတ်ဆွေကို အတည်ပြုရန် (_A)"
+
+#: ../gtk-dialog.c:1960
+#: ../gtk-dialog.c:2736
+msgid "Not Private"
+msgstr "သီးသန့်မဟုတ်"
+
+#: ../gtk-dialog.c:1982
+msgid "_What's this?"
+msgstr "ဒါဘာလဲ? (_W)"
+
+#: ../gtk-dialog.c:2028
+msgid "_End private conversation"
+msgstr "သီးသန့် စကားပြောဆိုမှု အဆုံးသတ်ရန် (_E)"
+
+#: ../gtk-dialog.c:2207
+#: ../gtk-dialog.c:2255
+#, c-format
+msgid "Warning: The selected outgoing OTR session (%u) is not the most recently active one (%u). Your buddy may not receive your messages. Use the icon menu above to select a different outgoing session."
+msgstr "သတိပေးချက် - ရွေးထားသော OTR လိုင်းအထွက် (%u) သည် လက်ရှိ သက်၀င်မှု အရှိဆုံး (%u) မဟုတ်ပါ။ သင့် မိတ်ဆွေသည် သင့် စာတိုပေးပို့ချက်များကို မရရှိပဲ နေနိုင်သည်။ အခြား လိုင်းအထွက်များကို ရွေးရန် အထက်မှ အိုင်ကွန် ​မီနူးကို ​သုံးစွဲပါ။"
+
+#: ../gtk-dialog.c:2271
+msgid "Send to most secure"
+msgstr "လုံခြုံမှု အရှိဆုံးစနစ်ဖြင့် ပေးပို့ရန်"
+
+#: ../gtk-dialog.c:2273
+msgid "Send to most recent"
+msgstr "လက်ငင်း ပေးပို့ပါ"
+
+#: ../gtk-dialog.c:2377
+#, c-format
+msgid "Session %u"
+msgstr "%u လုပ်ဆောင်မှု"
+
+#: ../gtk-dialog.c:2395
+#: ../gtk-dialog.c:2506
+msgid "Select"
+msgstr "ရွေးချယ်ရန်"
+
+#: ../gtk-dialog.c:2410
+msgid "Selected"
+msgstr "ရွေးထားချက်"
+
+#: ../gtk-dialog.c:2731
+#, c-format
+msgid "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</a>"
+msgstr "လက်ရှိ စကားပြောဆိုချက်၏ သီးသန့်ရပ်တည်မှု အနေအထား - <a href=\"%s%s\">%s</a>"
+
+#: ../gtk-dialog.c:2956
+msgid "OTR Messaging"
+msgstr "OTR စာတိုပေးပို့ခြင်း"
+
+#: ../gtk-ui.c:103
+#, c-format
+msgid "Fingerprint: %.80s"
+msgstr "လက်ဗွေ - %.80s"
+
+#: ../gtk-ui.c:107
+#, c-format
+msgid "No key present"
+msgstr "ကီး မရှိပါ"
+
+#: ../gtk-ui.c:112
+#, c-format
+msgid "No account available"
+msgstr "အကောင့် မရှိပါ"
+
+#: ../gtk-ui.c:179
+msgid "Unused"
+msgstr "သုံးစွဲခြင်း မပြုပါ"
+
+#: ../gtk-ui.c:208
+msgid "Yes"
+msgstr "ဟုတ်ကဲ့"
+
+#: ../gtk-ui.c:208
+msgid "No"
+msgstr "မဟုတ်ပါ"
+
+#: ../gtk-ui.c:473
+msgid "Enable private messaging"
+msgstr "သီးသန့် စာပိုပေးပို့ခြင်း စတင်ရန်"
+
+#: ../gtk-ui.c:475
+msgid "Automatically initiate private messaging"
+msgstr "သီးသန့် စာတိုပေးပို့ခြင်းကို အလိုအလျောက် အစပြုရန်"
+
+#: ../gtk-ui.c:477
+msgid "Require private messaging"
+msgstr "သီးသန့် စာတိုပေးပို့ရန် လိုအပ်သည်"
+
+#: ../gtk-ui.c:480
+msgid "Don't log OTR conversations"
+msgstr "OTR စကားပြောဆိုချက်ကို မှတ်တမ်း မတင်ရန်"
+
+#: ../gtk-ui.c:524
+msgid "Show OTR button in toolbar"
+msgstr "OTR ခလုတ်ကို တူးဘား၌ ဖေါ်ပြရန်"
+
+#: ../gtk-ui.c:663
+msgid "My private keys"
+msgstr "ကျွန်တော့် private keys များ"
+
+#: ../gtk-ui.c:672
+msgid "Key for account:"
+msgstr "အကောင့်၌ သုံးသော ကီး -"
+
+#: ../gtk-ui.c:697
+msgid "Generate"
+msgstr "ထုတ်လုပ်ရန်"
+
+#: ../gtk-ui.c:738
+msgid "Default OTR Settings"
+msgstr "ပုံမှန် OTR ချိန်ညှိချက်များ"
+
+#: ../gtk-ui.c:765
+msgid "OTR UI Options"
+msgstr "OTR UI ရွေးစရာများ"
+
+#: ../gtk-ui.c:788
+msgid "Screenname"
+msgstr "မျက်နှာပြင်အမည်"
+
+#: ../gtk-ui.c:789
+msgid "Status"
+msgstr "အနေအထား"
+
+#: ../gtk-ui.c:790
+msgid "Verified"
+msgstr "အတည်ပြုပြီ"
+
+#: ../gtk-ui.c:791
+msgid "Fingerprint"
+msgstr "လက်ဗွေ"
+
+#: ../gtk-ui.c:792
+msgid "Account"
+msgstr "အကောင့်"
+
+#: ../gtk-ui.c:828
+msgid "Start private connection"
+msgstr "သီးသန့် ​စ​ကားပြောဆိုမှု စတင်ရန်"
+
+#: ../gtk-ui.c:836
+msgid "End private connection"
+msgstr "သီးသန့် စကားပြောဆိုမှု အဆုံးသတ်ရန်"
+
+#: ../gtk-ui.c:852
+msgid "Forget fingerprint"
+msgstr "လက်ဗွေ မေ့နေသည်"
+
+#: ../gtk-ui.c:903
+msgid "Config"
+msgstr "ပြုပြင်ဖန်တီးရန်"
+
+#: ../gtk-ui.c:905
+msgid "Known fingerprints"
+msgstr "သိ​ထားသော လက်ဗွေများ"
+
+#: ../gtk-ui.c:1003
+#: ../otr-plugin.c:964
+msgid "OTR Settings"
+msgstr "OTR ချိန်ညှိချက်များ"
+
+#. Set the title
+#: ../gtk-ui.c:1021
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "%s အတွက် OTR ချိန်ညှိချက်များ"
+
+#. Make the cascaded checkboxes
+#: ../gtk-ui.c:1038
+msgid "Use default OTR settings for this buddy"
+msgstr "ဤမိ​တ်ဆွေအတွက် ပုံမှတ် OTR ချိန်ညှိချက်များ သုံးစွဲရန်"
+
+#: ../otr-plugin.c:125
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "သင်သည် လောလောဆယ် အကောင့် %s (%s) နှင့် ဆက်သွယ် မထားပါ။"
+
+#: ../otr-plugin.c:129
+msgid "Not connected"
+msgstr "ဆက်သွယ်မထားပါ"
+
+#: ../otr-plugin.c:212
+#: ../otr-plugin.c:254
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "ဖိုင်အမည် ပြုလုပ်ရာတွင် မှတ်ဉာဏ် ကုန်သွားသည်။\n"
+
+#: ../otr-plugin.c:224
+#: ../otr-plugin.c:260
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "သီးသန့် ကီးဖိုင်ကို ရေးသားခြင်း မပြုနိုင်ပါ\n"
+
+#: ../otr-plugin.c:298
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "အမည်မသိ အကောင့် %s (%s)။"
+
+#: ../otr-plugin.c:302
+msgid "Unknown account"
+msgstr "အမည်မသိ အကောင့်"
+
+#: ../otr-plugin.c:364
+msgid "Error occurred encrypting message."
+msgstr "စာတိုကို စာဝှက်နေစဉ် ချို့ယွင်းချက် ဖြစ်ပေါ်နေသည်။"
+
+#: ../otr-plugin.c:368
+#, c-format
+msgid "You sent encrypted data to %s, who wasn't expecting it."
+msgstr "စာဝှက်ထားသော ဒေတာကို %s ထံ သင် ပေးပို့​ခဲ့သည်၊ ၄င်းကို သူ မျှော်လင့် မထားပါ။"
+
+#: ../otr-plugin.c:374
+msgid "You transmitted an unreadable encrypted message."
+msgstr "သင်သည် ဖတ်ရှု၍ မရသော စာဝှက်ထား​သည့် စာကို ထုတ်လွှင့်နေသည်။"
+
+#: ../otr-plugin.c:377
+msgid "You transmitted a malformed data message."
+msgstr "သင်သည် ပုံပျက်နေသော ဒေတာ စာ တစ်စောင်ကို ထုတ်လွှင့်နေသည်။"
+
+#: ../otr-plugin.c:390
+msgid "[resent]"
+msgstr "[ပြန်လည်ပေးပို့ချက်]"
+
+#: ../otr-plugin.c:459
+#, c-format
+msgid "You attempted to send an unencrypted message to %s"
+msgstr "သင်သည် စာဝှက်မထားသော စာကို %s ထံ ပေးပို့ရန် ကြိုးစားနေသည်"
+
+#: ../otr-plugin.c:462
+msgid "Attempting to start a private conversation..."
+msgstr "သီးသန့် စကားပြောဆိုမှု တစ်ခုကို စတင်ရန် ကြိုးစားနေသည်..."
+
+#: ../otr-plugin.c:464
+msgid "OTR Policy Violation"
+msgstr "OTR မူဝါဒ ချိုးဖေါက်မှု"
+
+#: ../otr-plugin.c:465
+msgid ""
+"Unencrypted messages to this recipient are not allowed.  Attempting to start a private conversation.\n"
+"\n"
+"Your message will be retransmitted when the private conversation starts."
+msgstr ""
+"ဤလက်ခံသူထံ ပေးပို့သော စာဝှက်မထားသော စာတိုများကို ခွင့်မပြုပါ။ သီးသန့် စ​ကားပြောဆိုမှု စတင်ရန် ကြိုးစားနေသည်။\n"
+"\n"
+"သီးသန့် စကားပြောဆိုမှု စတင်သည့်အခါ သင့်စာတိုကို ပြန်လည် ထုတ်လွှင့်ပေးမည်။"
+
+#: ../otr-plugin.c:474
+msgid "An error occurred when encrypting your message.  The message was not sent."
+msgstr "သင့်စာတိုကို စာဝှက်နေစဉ် ချို့ယွင်းချက် တစ်ခု ဖြစ်ပေါ်နေသည်။ ၄င်းစာတိုကို ပေးပို့ခြင်း မပြုပါ။"
+
+#: ../otr-plugin.c:476
+msgid "Error encrypting message"
+msgstr "​စာတို စာဝှက်ခြင်း ချို့ယွင်းချက်"
+
+#: ../otr-plugin.c:477
+msgid "An error occurred when encrypting your message"
+msgstr "သင့်စာတိုကို စာဝှက်နေစဉ် ချို့ယွင်းချက် ဖြစ်ပေါ်နေသည်"
+
+#: ../otr-plugin.c:478
+msgid "The message was not sent."
+msgstr "ဤစာတိုကို ပေးပို့ခြင်း မပြုပါ။"
+
+#: ../otr-plugin.c:481
+#, c-format
+msgid "%s has already closed his/her private connection to you"
+msgstr "%s သည် သင်နှင့် သီးသန့် စကားပြောဆိုမှုကို ပိတ်လိုက်ပြီ"
+
+#: ../otr-plugin.c:484
+msgid "Your message was not sent.  Either end your private conversation, or restart it."
+msgstr "သင့်စာတိုကို ပေးပို့ခြင်း မပြပါ။ သင့် သီးသန့် စကားပြောဆိုမှုကို အဆုံးသတ်ပါ၊ သို့မဟုတ် ၄င်းကို ပြန်ဖွင့်ပါ။"
+
+#: ../otr-plugin.c:487
+msgid "Private connection closed"
+msgstr "သီးသန့် စကားပြောဆိုမှု ပိတ်သွားသည်"
+
+#: ../otr-plugin.c:488
+msgid "Your message was not sent.  Either close your private connection to him, or refresh it."
+msgstr "သင့် စာတိုကို ပေးပို့ခြင်း မပြုပါ။ သူနှင့် သီးသန့် စကားပြောဆိုမှုကို ပိတ်ပါ၊ သို့မဟုတ် ၄င်းကို ပြန်ခေါ်ပါ။"
+
+#: ../otr-plugin.c:498
+msgid "Error setting up private conversation: Malformed message received"
+msgstr "သီးသန့် စကားပြောဆိုမှု တပ်ဆင်ခြင်း ချို့ယွင်းချက် - ပုံပျက်နေသော စာတို ရရှိသည်"
+
+#: ../otr-plugin.c:502
+#, c-format
+msgid "Error setting up private conversation: %s"
+msgstr "သီးသန့် စကားပြောဆိုမှု တပ်ဆင်ခြင်း ချို့ယွင်းချက် - %s"
+
+#: ../otr-plugin.c:509
+#: ../otr-plugin.c:520
+#: ../otr-plugin.c:547
+#: ../otr-plugin.c:555
+#: ../otr-plugin.c:573
+msgid "OTR Error"
+msgstr "OTR ချို့ယွင်းချက်"
+
+#: ../otr-plugin.c:516
+msgid "We are receiving our own OTR messages.  You are either trying to talk to yourself, or someone is reflecting your messages back at you."
+msgstr "ကျွန်တော်တို့သည် ကျွန်ုပ်တို့ ကိုယ်တိုင် ရေးသားသော OTR စာတိုများကို လက်ခံရရှိနေကြသည်။ သင့်ကိုသင် စကားပြောရန် ကြိုးစားနေခြင်း ဖြစ်နိုင်သည်၊ (သို့) တစ်စုံတစ်ယောက်သည် သင့် ​စာတိုများကို သင့်ထံ ပြန်ပို့ခြင်း ဖြစ်နိုင်သည်။"
+
+#: ../otr-plugin.c:520
+msgid "We are receiving our own OTR messages."
+msgstr "ကျွန်တော်တို့သည် ကျွန်ုပ်တို့ ကိုယ်တိုင် ရေးသားသော OTR စာတိုများကို လက်ခံရရှိနေကြသည်။ "
+
+#: ../otr-plugin.c:521
+msgid "You are either trying to talk to yourself, or someone is reflecting your messages back at you."
+msgstr "သင့်ကို သင် စကားပြောရန် ကြိုးစားနေခြင်း ဖြစ်နိုင်သည်၊ (သို့) တစ်စုံတစ်ယောက်သည် သင့် ​စာတိုများကို သင့်ထံ ပြန်ပို့ခြင်း ဖြစ်နိုင်သည်။"
+
+#: ../otr-plugin.c:526
+#, c-format
+msgid "<b>The last message to %s was resent.</b>"
+msgstr "<b>%s ထံ ပေးပို့သော နောက်ဆုံး စာတိုကို ပြန်ပို့လိုက်ပြီ။</b>"
+
+#: ../otr-plugin.c:530
+msgid "Message resent"
+msgstr "ပေးစာ ပြန်ပို့လိုက်ပြီ"
+
+#: ../otr-plugin.c:534
+#, c-format
+msgid "<b>The encrypted message received from %s is unreadable, as you are not currently communicating privately.</b>"
+msgstr "<b>သင်သည် လောလောဆယ် သီးသန့် ဆက်သွယ်ခြင်း မပြုသည့်အတွက်၊ %s ထံမှ ရရှိသော စာဝှက်ထား​သည့် ပေးစာကို ဖတ်ရှု၍ မရနိုင်ပါ။</b>"
+
+#: ../otr-plugin.c:539
+msgid "Unreadable message"
+msgstr "ဖတ်ရှု၍ မရသော ပေးစာ"
+
+#: ../otr-plugin.c:543
+#, c-format
+msgid "We received an unreadable encrypted message from %s."
+msgstr "%s ထံမှ စာဝှက်ထားပြီး ဖတ်ရှု၍ မရသည့် စာတို တစ်စောင်ကို ကျွန်တော်တို့ လက်ခံရရှိသည်။"
+
+#: ../otr-plugin.c:551
+#, c-format
+msgid "We received a malformed data message from %s."
+msgstr "ကျွန်တော်တို့သည် %s ထံမှ ပုံပျက်နေသော ဒေတာ ​စာတို တစ်စောင်ကို လက်ခံရရှိကြသည်။"
+
+#: ../otr-plugin.c:559
+#, c-format
+msgid "Heartbeat received from %s.\n"
+msgstr "%s ထံမှ Heartbeat လက်ခံရရှိသည်။\n"
+
+#: ../otr-plugin.c:565
+#, c-format
+msgid "Heartbeat sent to %s.\n"
+msgstr "%s ထံ Heartbeat ပေးပို့လိုက်သည်။\n"
+
+#: ../otr-plugin.c:576
+#, c-format
+msgid "<b>The following message received from %s was <i>not</i> encrypted: [</b>%s<b>]</b>"
+msgstr "<b>%s ထံမှ အောက်ပါ စာတိုကို စာဝှက်<i>မထား</i>ပါ -[</b>%s<b>]</b>"
+
+#: ../otr-plugin.c:581
+msgid "Received unencrypted message"
+msgstr "စာဝှက်မထားသော စာတို လက်ခံရရှိသည်"
+
+#: ../otr-plugin.c:587
+#, c-format
+msgid "Unrecognized OTR message received from %s.\n"
+msgstr "%s ထံမှ အမည်မသိ OTR စာတို လက်ခံရရှိသည်။\n"
+
+#: ../otr-plugin.c:596
+#, c-format
+msgid "%s has sent a message intended for a different session. If you are logged in multiple times, another session may have received the message."
+msgstr "%s သည် အခြား လုပ်ငန်းအတွက် ရည်ရွယ်သော စာတို တစ်စောင် ပေးပို့ခဲ့သသည်။ အကယ်၍ သင်သည် အကြိမ်ကြမ် ၀င်ရောက်ခဲ့ပါက၊ ၄င်းစာတိုကို အခြား လုပ်ငန်းမှ ရရှိနိုင်သည်။"
+
+#: ../otr-plugin.c:602
+msgid "Received message for a different session"
+msgstr "အခြား နေရာမှ စာတို တစ်စောင် လက်ခံရရှိသည်"
+
+#. 2013-01-01
+#: ../otr-plugin.c:1193
+#: ../otr-plugin.c:1220
+#, c-format
+msgid "OTR PLUGIN v%s"
+msgstr "OTR ပလပ်အင် v%s"
+
+#: ../otr-plugin.c:1202
+#, c-format
+msgid "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired as of 2013-01-01. Please look for an updated release at http://otr.cypherpunks.ca/"
+msgstr "ဤ Off-the-Record စာတိုပေးပို့ခြင်း ဘီတာ ဗားရှင်း v%s ပလပ်အင်သည် 2012-01-01 ကတည်းက သက်တမ်းကုန်ဆုံးခဲ့ပြီ။ မွမ်းမံထားသော ထုတ်ပြန်ချက် တစ်ခုကို http://otr.cypherpunks.ca/ ၌ ရယူပါ။"
+
+#: ../otr-plugin.c:1229
+#, c-format
+msgid "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin plugin. This version is intended for testing purposes only and is not for general purpose use."
+msgstr "သင်သည် Off-the-Record စာတိုပေးပိုခြင်း ဗားရှင်း v%s Pidgin ပလပ်အပ် ဘီတာ ဗားရှင်း တစ်ခုကို သုံးစွဲနေသည်။ ဤဗားရှင်းသည် စမ်းသပ်ရန်သာ ရည်ရွယ်ထားပြီး အထွေထွေ သုံးစွဲရန် ရည်ရွယ်မထားပါ။"
+
+#: ../otr-plugin.c:1414
+msgid "Off-the-Record Messaging"
+msgstr "Off-the-Record စာတိုပေးပိုခြင်း"
+
+#: ../otr-plugin.c:1415
+msgid "Provides private and secure conversations"
+msgstr "သီးသန့်ဖြစ်ပြီး လုံခြုံသော စကားပြောဆိုမှုများ လုပ်ဆောင်ရန်"
+
+#: ../otr-plugin.c:1416
+msgid "Preserves the privacy of IM communications by providing encryption, authentication, deniability, and perfect forward secrecy."
+msgstr "စာဝှက်စနစ်၊ စစ်ဆေး အတည်ပြုခြင်း၊ ငြင်းပယ်နိုင်မှုစနစ်နှင့် ပြည့်စုံသော တစ်ဆင့် ပေးပို့မှု လျှို့ဝှက်ချက်ကို ပံ့ပိုးခြင်းဖြင့် IM ဆက်သွယ်မှု လမ်းကြောင်းများကို ထိန်းသိမ်းပါ။"
+
+#: ../ui.c:110
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "အကောင့် %s (%s) ကို ရှာ​မ​တွေ့ပါ"
+
+#: ../ui.c:114
+msgid "Account not found"
+msgstr "​အကောင့်ကို ရှာမတွေ့ပါ"
+
