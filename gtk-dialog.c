@@ -3144,7 +3144,7 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
 	    "otr-last_received_ctx");
 
     if (!last_received_instance) {
-	return; /* OTR disabled for this buddy */
+	return 0; /* OTR disabled for this buddy */
     }
 
     if (*last_received_instance == OTRL_INSTAG_MASTER || 
