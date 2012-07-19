@@ -642,7 +642,8 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
 
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 	ConnContext *context, SmpResponsePair* smppair) {
-    char our_hash[45], their_hash[45];
+    char our_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN],
+	    their_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
     GtkWidget *label;
     char *label_text;
     struct vrfy_fingerprint_data *vfd;
@@ -1378,7 +1379,8 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
 {
     GtkWidget *dialog;
-    char our_hash[45], their_hash[45];
+    char our_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN],
+	    their_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
     char *primary;
     char *secondary;
     struct vrfy_fingerprint_data *vfd;

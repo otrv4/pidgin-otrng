@@ -93,7 +93,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     char *fingerprint;
 
     if (account) {
-	char fingerprint_buf[45];
+	char fingerprint_buf[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 	accountname = purple_account_get_username(account);
 	protocol = purple_account_get_protocol_id(account);
 	fingerprint = otrl_privkey_fingerprint(otrg_plugin_userstate,
@@ -149,7 +149,7 @@ static void clist_all_unselected(void)
 static void otrg_gtk_ui_update_keylist(void)
 {
     gchar *titles[5];
-    char hash[45];
+    char hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
     ConnContext * context;
     Fingerprint * fingerprint;
     int selected_row = -1;
