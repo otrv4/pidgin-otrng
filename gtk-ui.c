@@ -89,7 +89,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     const char *accountname;
     const char *protocol;
     GtkWidget *fprint = ui_layout.fprint_label;
-    char s[100];
+    char *s = NULL;
     char *fingerprint;
 
     if (account) {
@@ -100,22 +100,25 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 		fingerprint_buf, accountname, protocol);
 
 	if (fingerprint) {
-	    sprintf(s, _("Fingerprint: %.80s"), fingerprint);
+	    s = g_strdup_printf(_("Fingerprint: %.80s"), fingerprint);
 	    if (ui_layout.generate_button)
 		gtk_widget_set_sensitive(ui_layout.generate_button, 0);
 	} else {
-	    sprintf(s, _("No key present"));
+	    s = g_strdup(_("No key present"));
 	    if (ui_layout.generate_button)
 		gtk_widget_set_sensitive(ui_layout.generate_button, 1);
 	}
     } else {
-	sprintf(s, _("No account available"));
+	s = g_strdup(_("No account available"));
 	if (ui_layout.generate_button)
 	    gtk_widget_set_sensitive(ui_layout.generate_button, 0);
     }
     if (fprint) {
-	gtk_label_set_text(GTK_LABEL(fprint), s);
+	gtk_label_set_text(GTK_LABEL(fprint), s ? s : "");
 	gtk_widget_show(fprint);
+    }
+    if (s) {
+	g_free(s);
     }
 }
 
