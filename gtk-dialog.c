@@ -1436,7 +1436,6 @@ static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
 static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
 	char *question, gboolean responder)
 {
-    GtkWidget *dialog;
     char *primary;
     PurplePlugin *p;
     char *proto_name;
@@ -1455,7 +1454,7 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
 
 
-    dialog = create_smp_dialog(_("Authenticate Buddy"),
+    create_smp_dialog(_("Authenticate Buddy"),
 	    primary, context, responder, question);
 
     g_free(primary);
@@ -2010,8 +2009,6 @@ static void build_otr_menu(ConvOrContext *convctx, GtkWidget *menu,
 	TrustLevel level)
 {
     PurpleConversation *conv;
-    PidginConversation *gtkconv;
-    PidginWindow *win;
 
     if (convctx->convctx_type == convctx_conv) {
 	conv = convctx->conv;
@@ -2020,9 +2017,6 @@ static void build_otr_menu(ConvOrContext *convctx, GtkWidget *menu,
     } else {
 	return;
     }
-
-    gtkconv = PIDGIN_CONVERSATION ( conv );
-    win = pidgin_conv_get_window ( gtkconv );
 
     GtkWidget *buddymenuquery = gtk_menu_item_new_with_mnemonic(
 	    _("Start _private conversation"));
@@ -2328,8 +2322,6 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
     PurpleConversation * conv = NULL;
     ConvOrContext convctx;
     GList * menu_list;
-
-    menu = gtk_menu_new();
 
     conv = otrg_plugin_context_to_conv(context, 0);
     selection_exists = g_hash_table_lookup_extended(conv->data,
