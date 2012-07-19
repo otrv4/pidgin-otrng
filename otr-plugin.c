@@ -781,10 +781,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	    &newmessage, &tlvs, NULL, NULL, NULL);
 
     if (newmessage) {
-	char *ourm = malloc(strlen(newmessage) + 1);
-	if (ourm) {
-	    strcpy(ourm, newmessage);
-	}
+	char *ourm = strdup(newmessage);
 	otrl_message_free(newmessage);
 	free(*message);
 	*message = ourm;
