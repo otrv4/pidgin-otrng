@@ -1,3 +1,10 @@
+2012-07-19
+
+	* gtk-dialog.c, gtk-ui.c, otr-plugin.c: Clean up compiler warnings,
+	memory leaks, and a potential buffer overflow from overlong
+	translations.  Thanks to Paul Wouters <pwouters@redhat.com> for
+	the report.
+
 2012-07-03
 
 	* po/de.po: Updates to German translation from Andreas Schlick
