@@ -119,16 +119,15 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
- 
 SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
+	MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer." /SD IDOK 
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
+	MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" /SD IDYES IDYES +2
   Abort
 FunctionEnd
 
@@ -160,7 +159,7 @@ Section Uninstall
 	IfFileExists "$PidginDir\plugins\pidgin-otr.dll" dodelete
   ReadRegStr $PidginDir HKCU Software\Pidgin-otr "pidgindir"
 	IfFileExists "$PidginDir\plugins\pidgin-otr.dll" dodelete
-  MessageBox MB_OK|MB_ICONINFORMATION "Could not find pidgin plugin directory, pidgin-otr.dll not uninstalled!" IDOK ok
+	MessageBox MB_OK|MB_ICONINFORMATION "Could not find pidgin plugin directory, pidgin-otr.dll not uninstalled!" /SD IDOK IDOK ok
 dodelete:
 	Delete "$PidginDir\plugins\pidgin-otr.dll"
 
@@ -178,7 +177,7 @@ dodelete:
 	Pop $0
 	
 	IfFileExists "$PidginDir\plugins\pidgin-otr.dll" 0 +2
-		MessageBox MB_OK|MB_ICONINFORMATION "pidgin-otr.dll is busy. Probably Pidgin is still running. Please delete $PidginDir\plugins\pidgin-otr.dll manually."
+		MessageBox MB_OK|MB_ICONINFORMATION "pidgin-otr.dll is busy. Probably Pidgin is still running. Please delete $PidginDir\plugins\pidgin-otr.dll manually." /SD IDOK
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\pidgin-otr\pidgindir"
@@ -192,11 +191,11 @@ Function GetPidginInstPath
 	IfFileExists "$0\pidgin.exe" cont
 	ReadRegStr $0 HKCU "Software\pidgin" ""
 	IfFileExists "$0\pidgin.exe" cont
-  MessageBox MB_OK|MB_ICONINFORMATION "Failed to find Pidgin installation."
+		MessageBox MB_OK|MB_ICONINFORMATION "Failed to find Pidgin installation." /SD IDOK
 		Abort "Failed to find Pidgin installation. Please install Pidgin first."
 cont:
 	StrCpy $PidginDir $0
-	;MessageBox MB_OK|MB_ICONINFORMATION "Pidgin plugin directory found at $PidginDir\plugins ."
+	;MessageBox MB_OK|MB_ICONINFORMATION "Pidgin plugin directory found at $PidginDir\plugins ." /SD IDOK
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "SOFTWARE\pidgin-otr" "pidgindir" "$PidginDir"
 FunctionEnd
 
@@ -205,21 +204,25 @@ Function UnInstOld
 	  ReadRegStr $0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString"
 		IfFileExists "$0" deinst cont
 	deinst:
-		MessageBox MB_OK|MB_ICONEXCLAMATION  "pidgin-otr was already found on your system and will first be uninstalled"
+		MessageBox MB_OK|MB_ICONEXCLAMATION  "pidgin-otr was already found on your system and will first be uninstalled" /SD IDOK
 		; the uninstaller copies itself to temp and execs itself there, so it can delete 
 		; everything including its own original file location. To prevent the installer and
 		; uninstaller racing you can't simply ExecWait.
 		; We hide the uninstall because otherwise it gets really confusing window-wise
 		;HideWindow
 		  ClearErrors
+		IfSilent olduninstsilent
 			ExecWait '"$0" _?=$INSTDIR'
 			IfErrors 0 cont
-				MessageBox MB_OK|MB_ICONEXCLAMATION  "Uninstall failed or aborted"
+			MessageBox MB_OK|MB_ICONEXCLAMATION  "Uninstall failed or aborted" /SD IDOK
+			Abort "Uninstalling of the previous version gave an error. Install aborted."
+olduninstsilent:
+		ExecWait '"$0" /S _?=$INSTDIR'
+		IfErrors 0 cont
 				Abort "Uninstalling of the previous version gave an error. Install aborted."
-			
 		;BringToFront
 	cont:
-		;MessageBox MB_OK|MB_ICONINFORMATION "No old pidgin-otr found, continuing."
+		;MessageBox MB_OK|MB_ICONINFORMATION "No old pidgin-otr found, continuing." /SD IDOK
 		
 FunctionEnd
 
@@ -236,7 +239,7 @@ Rename "$INSTDIR\pidgin-otr.dll" "$PidginDir\plugins\pidgin-otr.dll"
 IfErrors dllbusy
 	Return
 dllbusy:
-	MessageBox MB_RETRYCANCEL "pidgin-otr.dll is busy. Please close Pidgin (including tray icon) and try again" IDCANCEL cancel
+	MessageBox MB_RETRYCANCEL "pidgin-otr.dll is busy. Please close Pidgin (including tray icon) and try again" /SD IDCANCEL IDCANCEL cancel
 	Delete "$PidginDir\plugins\pidgin-otr.dll"
 	Goto copy
 	Return

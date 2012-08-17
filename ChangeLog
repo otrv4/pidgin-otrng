@@ -1,3 +1,9 @@
+2012-08-16
+
+	* packaging/windows/pidgin-otr.nsi: Modifications to the nsi
+	file to make it work properly in a UI-less setting.  Thanks to
+	Ariel Poliak <ariel.p@hostdime.com> for the patch!
+
 2012-07-19
 
 	* gtk-dialog.c, gtk-ui.c, otr-plugin.c: Clean up compiler warnings,
