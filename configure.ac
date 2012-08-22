@@ -145,6 +145,13 @@ if test x$enable_gcc_hardening != xno; then
     OTR_CHECK_CFLAGS(-Wstack-protector)
     OTR_CHECK_CFLAGS(-fwrapv)
     OTR_CHECK_CFLAGS(--param ssp-buffer-size=1)
+
+    dnl Ian added the next four:
+    OTR_CHECK_CFLAGS(-fno-strict-overflow)
+    OTR_CHECK_CFLAGS(-Wall)
+    OTR_CHECK_CFLAGS(-Wextra -Wno-unused-parameter -Wno-missing-field-initializers)
+    OTR_CHECK_CFLAGS(-Wformat-security)
+
     if test "$bwin32" = "false"; then
        OTR_CHECK_CFLAGS(-fPIE)
        OTR_CHECK_LDFLAGS(-pie, "$all_ldflags_for_check", "$all_libs_for_check")

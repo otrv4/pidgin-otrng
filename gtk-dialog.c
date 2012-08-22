@@ -2316,7 +2316,7 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
     GtkWidget * tooltip_menu;
     gchar *tooltip_text;
     gpointer gp_instance;
-    otrl_instag_t * selected_instance;
+    otrl_instag_t * selected_instance = NULL;
     gboolean selection_exists = 0;
     ConnContext * context = instances->data;
     TrustLevel level = TRUST_NOT_PRIVATE;
@@ -2712,7 +2712,7 @@ static void otr_check_conv_status_change( PurpleConversation *conv) {
     ConnContext *context = otrg_plugin_conv_to_context(conv,
 	    OTRL_INSTAG_RECENT, 0);
 
-    int *previous_level;
+    TrustLevel *previous_level;
     char *buf;
     char *status = "";
 
@@ -3059,7 +3059,7 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
     TrustLevel current_level = TRUST_NOT_PRIVATE;
     ConnContext *context = (ConnContext *) otrg_plugin_conv_to_context(conv,
 	    OTRL_INSTAG_RECENT, 0);
-    int *previous_level;
+    TrustLevel *previous_level;
     int id;
 
 
@@ -3078,7 +3078,7 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
      * level we received corresponds to the active conversation.  */
     if (conv == gtkconv->active_conv) {
 	/* 'free' is handled by the hashtable */
-	int * current_level_ptr = malloc(sizeof(int));
+	TrustLevel * current_level_ptr = malloc(sizeof(TrustLevel));
 	*current_level_ptr = current_level;
 	g_hash_table_replace ( otr_win_status, gtkconv, current_level_ptr );
     }

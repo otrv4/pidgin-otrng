@@ -1,3 +1,17 @@
+2012-08-22
+
+	* configure.ac:
+	* Makefile.mingw: Use gcc and ld hardening flags, where possible.
+	* patches/win32/rndw32.c:
+	* patches/win32/libgcrypt-config.h.patch: Include required win32
+	build patches right here in the source tree
+	* INSTALL.mingw: Be much more thorough in describing how to
+	cross-compile pidgin-otr.dll on Linux
+	* configure.ac:
+	* gtk-dialog.c: Build cleanly with -Wall -Wextra
+	-Wno-unused-parameter -Wno-missing-field-initializers
+	-Wformat-security
+
 2012-08-16
 
 	* packaging/windows/pidgin-otr.nsi: Modifications to the nsi
