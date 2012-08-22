@@ -59,15 +59,21 @@ TARGET = pidgin-otr.dll
 # The target zipfile
 ZIPFILE = pidgin-otr-$(PIDGIN_OTR_VERSION).zip
 
+CC_HARDENING_OPTIONS ?= -fstack-protector-all -fPIE -Wstack-protector -fwrapv --param ssp-buffer-size=1
+# In theory, we'd also like the following:
+# LD_HARDENING_OPTIONS ?= -dynamicbase --nxcompat -pie -z relro -z now
+LD_HARDENING_OPTIONS ?= --dynamicbase --nxcompat -pie
+
 CC = i586-mingw32msvc-gcc
-LDFLAGS = -Wl,--enable-auto-image-base
+LDFLAGS = -Wl,--enable-auto-image-base $(LD_HARDENING_OPTIONS)
 LDLIBS = $(LIBOTRLIBDIR)/libotr.a -L$(GTK_WIN32_BUNDLE)/lib \
 	 -L$(PIDGIN_WIN32_LIBS) -lgtk-win32-2.0 -lglib-2.0 \
 	 -lgdk_pixbuf-2.0 -lgobject-2.0 -lpidgin -llibpurple \
-	 -lgcrypt -lgpg-error -L$(LIBINTLLIBDIR) -lintl
+	 -lgcrypt -lgpg-error -L$(LIBINTLLIBDIR) -lintl -lssp
 
 CC ?= gcc
-override CFLAGS += -g -O2 -Wall $(PIDGIN_HEADERS) $(PURPLE_HEADERS) \
+override CFLAGS += -g -O2 -Wall $(CC_HARDENING_OPTIONS) \
+	$(PIDGIN_HEADERS) $(PURPLE_HEADERS) \
 	$(GTK_HDRS) -I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DPURPLE_PLUGINS \
 	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" \
 	-DPIDGIN_NAME=\"Pidgin\" -I$(LIBINTLINCDIR) -DENABLE_NLS \
