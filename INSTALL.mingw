@@ -36,7 +36,7 @@ libgpg-error-1.0:
   HOST_CC=gcc
   DLLTOOL=i586-mingw32msvc-dlltool
   AS=i586-mingw32msvc-as
-  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1"
+  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
   LDFLAGS="-pie"
   export HOST_CC DLLTOOL AS CFLAGS LDFLAGS
   ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc 
@@ -49,7 +49,7 @@ libgcrypt-1.2.1:
   wget http://www.cypherpunks.ca/otr/rndw32.diff
   tar -xvzf libgcrypt-1.2.1.tar.gz
   cd /tmp/libgcrypt-1.2.1
-  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1"
+  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
   LDFLAGS="-pie"
   export CFLAGS LDFLAGS
   w32root=/usr/i586-mingw32msvc ./autogen.sh --build-w32
