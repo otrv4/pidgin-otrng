@@ -1,0 +1,28 @@
+--- rndw32.c.orig	2003-12-11 10:46:12.000000000 -0500
++++ rndw32.c	2005-01-18 09:45:26.000000000 -0500
+@@ -238,6 +238,8 @@
+ 
+     /* Walk through the local heap */
+     {	HEAPLIST32 hl32;
++	DWORD dwHeapsAdded = 0;
++	const DWORD maxHeapsToAdd = 500;
+ 	hl32.dwSize = sizeof (HEAPLIST32);
+ 	if (pHeap32ListFirst (hSnapshot, &hl32)) {
+ 	    if ( debug_me )
+@@ -254,12 +256,16 @@
+ 		if (pHeap32First (&he32, hl32.th32ProcessID, hl32.th32HeapID)){
+ 		    do {
+ 			(*add) ( &he32, sizeof (he32), requester );
++			if (++dwHeapsAdded == maxHeapsToAdd) {
++			    goto doneheap;
++			}
+ 		    } while (pHeap32Next (&he32));
+ 		}
+ 	    } while (pHeap32ListNext (hSnapshot, &hl32));
+ 	}
+     }
+ 
++doneheap:
+ 
+     /* Walk through all processes */
+     {	PROCESSENTRY32 pe32;
