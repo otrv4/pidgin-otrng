@@ -36,7 +36,9 @@ libgpg-error-1.0:
   HOST_CC=gcc
   DLLTOOL=i586-mingw32msvc-dlltool
   AS=i586-mingw32msvc-as
-  export HOST_CC DLLTOOL AS
+  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1"
+  LDFLAGS="-pie"
+  export HOST_CC DLLTOOL AS CFLAGS LDFLAGS
   ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc 
   make
   sudo make install
@@ -47,6 +49,9 @@ libgcrypt-1.2.1:
   wget http://www.cypherpunks.ca/otr/rndw32.diff
   tar -xvzf libgcrypt-1.2.1.tar.gz
   cd /tmp/libgcrypt-1.2.1
+  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1"
+  LDFLAGS="-pie"
+  export CFLAGS LDFLAGS
   w32root=/usr/i586-mingw32msvc ./autogen.sh --build-w32
   # Apply a basic configuration change patch
   patch -p0 < /path/to/pidgin-otr/patches/win32/libgcrypt-config.h.patch
