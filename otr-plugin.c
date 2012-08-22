@@ -78,7 +78,7 @@
 #include "gtk-dialog.h"
 
 /* Controls a beta warning/expiry dialog */
-#define BETA_DIALOG 1
+#define BETA_DIALOG 0
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
 #include "gtkblist.h"

@@ -1,3 +1,12 @@
+2012-08-24
+
+	* otr-plugin.c: Turn off the beta dialog
+	* README:
+	* INSTALL.mingw:
+	* Makefile.mingw:
+	* packaging/windows/pidgin-otr.nsi:
+	* configure.ac: Change version number to 4.0.0
+
 2012-08-22
 
 	* configure.ac:
