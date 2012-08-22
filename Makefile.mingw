@@ -59,10 +59,14 @@ TARGET = pidgin-otr.dll
 # The target zipfile
 ZIPFILE = pidgin-otr-$(PIDGIN_OTR_VERSION).zip
 
-CC_HARDENING_OPTIONS ?= -fstack-protector-all -fPIE -Wstack-protector -fwrapv --param ssp-buffer-size=1
+# Compiling with -fPIE and linking with -pie causes the plugin to crash
+# on load, so we'll skip those.
+CC_HARDENING_OPTIONS ?= -fstack-protector-all -Wstack-protector -fwrapv \
+	--param ssp-buffer-size=1 -fno-strict-overflow -Wall -Wextra \
+	-Wno-unused-parameter -Wno-missing-field-initializers -Wformat-security
 # In theory, we'd also like the following:
 # LD_HARDENING_OPTIONS ?= -dynamicbase --nxcompat -pie -z relro -z now
-LD_HARDENING_OPTIONS ?= --dynamicbase --nxcompat -pie
+LD_HARDENING_OPTIONS ?= --dynamicbase --nxcompat
 
 CC = i586-mingw32msvc-gcc
 LDFLAGS = -Wl,--enable-auto-image-base $(LD_HARDENING_OPTIONS)
@@ -76,8 +80,9 @@ override CFLAGS += -g -O2 -Wall $(CC_HARDENING_OPTIONS) \
 	$(PIDGIN_HEADERS) $(PURPLE_HEADERS) \
 	$(GTK_HDRS) -I$(LIBOTRINCDIR) $(FPIC) -DUSING_GTK -DPURPLE_PLUGINS \
 	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" \
-	-DPIDGIN_NAME=\"Pidgin\" -I$(LIBINTLINCDIR) -DENABLE_NLS \
+	-I$(LIBINTLINCDIR) -DENABLE_NLS \
 	-DGETTEXT_PACKAGE=\"$(GETTEXT_PACKAGE)\"
+	#-DPIDGIN_NAME=\"Pidgin\" 
  
 all: $(TARGET)
 	$(MAKE) -C po -f Makefile.mingw
