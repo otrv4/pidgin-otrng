@@ -61,6 +61,7 @@ libgcrypt-1.2.1:
   sudo make install
   
 libotr:
+  autoreconf -s -i
   ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc \
               --with-libgcrypt-prefix=/usr/i586-mingw32msvc
   make
