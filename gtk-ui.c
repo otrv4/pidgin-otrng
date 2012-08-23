@@ -138,10 +138,18 @@ static void account_menu_added_removed_cb(PurpleAccount *account, void *data)
 
 static void clist_all_unselected(void)
 {
-    gtk_widget_set_sensitive(ui_layout.connect_button, 0);
-    gtk_widget_set_sensitive(ui_layout.disconnect_button, 0);
-    gtk_widget_set_sensitive(ui_layout.forget_button, 0);
-    gtk_widget_set_sensitive(ui_layout.verify_button, 0);
+    if (ui_layout.connect_button) {
+	gtk_widget_set_sensitive(ui_layout.connect_button, 0);
+    }
+    if (ui_layout.disconnect_button) {
+	gtk_widget_set_sensitive(ui_layout.disconnect_button, 0);
+    }
+    if (ui_layout.forget_button) {
+	gtk_widget_set_sensitive(ui_layout.forget_button, 0);
+    }
+    if (ui_layout.verify_button) {
+	gtk_widget_set_sensitive(ui_layout.verify_button, 0);
+    }
     ui_layout.selected_fprint = NULL;
 }
 
