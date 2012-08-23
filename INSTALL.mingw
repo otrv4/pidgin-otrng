@@ -36,7 +36,7 @@ libgpg-error-1.0:
   HOST_CC=gcc
   DLLTOOL=i586-mingw32msvc-dlltool
   AS=i586-mingw32msvc-as
-  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
+  CFLAGS="-g -O2 -fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
   LDFLAGS="-pie"
   export HOST_CC DLLTOOL AS CFLAGS LDFLAGS
   ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc 
@@ -49,7 +49,7 @@ libgcrypt-1.2.1:
   wget http://www.cypherpunks.ca/otr/rndw32.diff
   tar -xvzf libgcrypt-1.2.1.tar.gz
   cd /tmp/libgcrypt-1.2.1
-  CFLAGS="-fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
+  CFLAGS="-g -O2 -fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
   LDFLAGS="-pie"
   export CFLAGS LDFLAGS
   w32root=/usr/i586-mingw32msvc ./autogen.sh --build-w32
@@ -60,14 +60,6 @@ libgcrypt-1.2.1:
   make
   sudo make install
   
-libotr:
-  autoreconf -s -i
-  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc \
-              --with-libgcrypt-prefix=/usr/i586-mingw32msvc
-  make
-  sudo make install
-
-
 nsis:
   sudo apt-get install nsis
   # Locate the "nsisunz" plugin (a google search for "nsisunz.zip" should be sufficient)
@@ -78,6 +70,14 @@ nsis:
   wget -c http://www.cypherpunks.ca/otr/nsisunz.zip
   unzip nsisunz.zip
   sudo cp /tmp/nsisunz/Release/nsisunz.dll /usr/share/nsis/Plugins/
+
+
+libotr:
+  autoreconf -s -i
+  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc \
+              --with-libgcrypt-prefix=/usr/i586-mingw32msvc
+  make
+  sudo make install
 
 pidgin-otr:
   # You will need: Pidgin source code distributable,
