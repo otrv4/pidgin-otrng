@@ -107,7 +107,7 @@ OtrlUserState otrg_plugin_userstate = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
-GHashTable* mms_table;
+GHashTable* mms_table = NULL;
 
 
 /* Send an IM from the given account to the given recipient.  Display an
@@ -1160,6 +1160,7 @@ static void otrg_init_mms_table()
 static void otrg_free_mms_table()
 {
     g_hash_table_destroy(mms_table);
+    mms_table = NULL;
 }
 
 static gboolean otr_plugin_load(PurplePlugin *handle)
@@ -1301,10 +1302,11 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     void *core_handle = purple_get_core();
 
     /* Clean up all of our state. */
-    otrl_userstate_free(otrg_plugin_userstate);
-    otrg_plugin_userstate = NULL;
 
-    otrg_free_mms_table();
+    purple_conversation_foreach(otrg_dialog_remove_conv);
+
+    otrg_dialog_cleanup();
+    otrg_ui_cleanup();
 
     purple_signal_disconnect(core_handle, "quitting", otrg_plugin_handle,
 	    PURPLE_CALLBACK(process_quitting));
@@ -1325,10 +1327,10 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     purple_signal_disconnect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu));
 
-    purple_conversation_foreach(otrg_dialog_remove_conv);
+    otrl_userstate_free(otrg_plugin_userstate);
+    otrg_plugin_userstate = NULL;
 
-    otrg_dialog_cleanup();
-    otrg_ui_cleanup();
+    otrg_free_mms_table();
 
     return 1;
 }
