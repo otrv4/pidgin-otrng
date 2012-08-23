@@ -543,8 +543,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     }
 
 
-    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
 	    FALSE, 0);
@@ -569,7 +567,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     gtk_entry_set_activates_default(GTK_ENTRY(entry), smppair->responder);
 
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
@@ -627,7 +624,6 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     }
 
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
