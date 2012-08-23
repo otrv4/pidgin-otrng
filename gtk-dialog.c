@@ -2191,7 +2191,9 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = !value;
 
 	if (value) {
-	    *selected_instance = OTRL_INSTAG_BEST;
+	    if (selected_instance) {
+		*selected_instance = OTRL_INSTAG_BEST;
+	    }
 	    context = (ConnContext *) otrg_plugin_conv_to_selected_context(conv,
 		    1);
 
@@ -2215,7 +2217,7 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
     } else if (widget == select_recent) {
 	GTK_CHECK_MENU_ITEM(select_best)->active = !value;
 
-	if (value) {
+	if (value && selected_instance) {
 	    *selected_instance = OTRL_INSTAG_RECENT_RECEIVED;
 	}
     }
@@ -2237,15 +2239,17 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data) {
     gboolean *is_multi_instance = purple_conversation_get_data(conv,
 		    "otr-conv_multi_instances");
 
-    if (*is_multi_instance) {
-	*selected_instance = context->their_instance;
+    if (is_multi_instance && *is_multi_instance) {
+	if (selected_instance) {
+	    *selected_instance = context->their_instance;
+	}
 	unselect_meta_ctx(conv);
     }
 
     pidgin_conv_switch_active_conversation(conv);
     dialog_update_label(context);
 
-    if (*is_multi_instance && context != recent_context) {
+    if (is_multi_instance && *is_multi_instance && context != recent_context) {
 	gchar *buf = g_strdup_printf(_("Warning: The selected outgoing OTR "
 		"session (%u) is not the most recently active one (%u). "
 		"Your buddy may not receive your messages. Use the icon menu "
@@ -2268,7 +2272,7 @@ static void build_meta_instance_submenu( PurpleConversation *conv,
     otrl_instag_t * selected_instance = purple_conversation_get_data(conv,
 	    "otr-ui_selected_ctx");
 
-    if (*selected_instance == OTRL_INSTAG_BEST) {
+    if (!selected_instance || *selected_instance == OTRL_INSTAG_BEST) {
 	GTK_CHECK_MENU_ITEM(select_recent)->active = 0;
 	GTK_CHECK_MENU_ITEM(select_best)->active = 1;
     } else if (*selected_instance == OTRL_INSTAG_RECENT_RECEIVED) {
@@ -2626,7 +2630,9 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 
 	is_multi_instance = purple_conversation_get_data(currentConv,
 		    "otr-conv_multi_instances");
-	*is_multi_instance = FALSE;
+	if (is_multi_instance) {
+	    *is_multi_instance = FALSE;
+	}
 
 	if (num_contexts > 1) {
 	    /* We will need the master context */
