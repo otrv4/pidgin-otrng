@@ -3250,7 +3250,7 @@ static void otrg_gtk_dialog_cleanup(void)
 	    "deleting-conversation", otrg_plugin_handle,
 	    PURPLE_CALLBACK(conversation_destroyed));
 
-    purple_signal_disconnect(pidgin_conversations_get_handle(),
+    purple_signal_disconnect(purple_conversations_get_handle(),
 	    "received-im-msg", otrg_plugin_handle,
 	    PURPLE_CALLBACK(check_incoming_instance_change));
 
