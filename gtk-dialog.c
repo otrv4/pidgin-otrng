@@ -113,7 +113,8 @@ typedef struct {
     ConnContext *context;
 } ConvOrContext;
 
-static gint get_new_instance_index(PurpleConversation *conv) {
+static gint get_new_instance_index(PurpleConversation *conv)
+{
     gint * max_index = (gint *)
 	    purple_conversation_get_data(conv, "otr-max_idx");
     *max_index = (*max_index) + 1;
@@ -697,7 +698,8 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 	    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
 }
 
-static void redraw_auth_vbox(GtkComboBox *combo, void *data) {
+static void redraw_auth_vbox(GtkComboBox *combo, void *data)
+{
     AuthSignalData *auth_data = (AuthSignalData*) data;
 
     GtkWidget *notebook = auth_data ? auth_data->notebook : NULL;
@@ -1790,7 +1792,8 @@ static gboolean button_pressed(GtkWidget *w, GdkEventButton *event,
 static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv);
 
 
-static void otr_refresh_otr_buttons(PurpleConversation *conv) {
+static void otr_refresh_otr_buttons(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
     GList * list_iter = gtkconv->convs;
     PurpleConversation * current_conv;
@@ -1813,7 +1816,8 @@ static void otr_refresh_otr_buttons(PurpleConversation *conv) {
 
 /* Menu has been destroyed -- let's remove it from the menu_list
  * so that it won't be destroyed again. */
-static void otr_menu_destroy(GtkWidget *widget, gpointer pdata) {
+static void otr_menu_destroy(GtkWidget *widget, gpointer pdata)
+{
     PidginWindow *win = (PidginWindow *) pdata ;
     GtkWidget *top_menu = widget;
 
@@ -1822,7 +1826,8 @@ static void otr_menu_destroy(GtkWidget *widget, gpointer pdata) {
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 }
 
-static void otr_clear_win_menu_list(PidginWindow *win) {
+static void otr_clear_win_menu_list(PidginWindow *win)
+{
     GList * head = g_hash_table_lookup ( otr_win_menus, win ); /* menu_list */
     GList * old_head = 0;
 
@@ -1841,14 +1846,16 @@ static void otr_clear_win_menu_list(PidginWindow *win) {
     g_hash_table_replace ( otr_win_menus, win, head );
 }
 
-static void otr_destroy_top_menu_objects(PurpleConversation *conv) {
+static void otr_destroy_top_menu_objects(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
 
     otr_clear_win_menu_list(win);
 }
 
-static int otr_get_menu_insert_pos(PurpleConversation *conv) {
+static int otr_get_menu_insert_pos(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
     GtkWidget *menu_bar = win->menu.menubar;
@@ -2045,7 +2052,8 @@ static void build_otr_menu(ConvOrContext *convctx, GtkWidget *menu,
 
 }
 
-static void otr_add_top_otr_menu(PurpleConversation *conv) {
+static void otr_add_top_otr_menu(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
     PidginWindow *win = pidgin_conv_get_window ( gtkconv );
     GtkWidget *menu_bar = win->menu.menubar;
@@ -2101,7 +2109,8 @@ static void otr_add_top_otr_menu(PurpleConversation *conv) {
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 }
 
-static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
+static GList* otr_get_full_buddy_list(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
 
     GList *pres_list = NULL;
@@ -2163,7 +2172,8 @@ static GList* otr_get_full_buddy_list(PurpleConversation *conv) {
     return conv_list;
 }
 
-static void unselect_meta_ctx(PurpleConversation *conv) {
+static void unselect_meta_ctx(PurpleConversation *conv)
+{
     GtkWidget *select_best = (GtkWidget *) purple_conversation_get_data(conv,
 	    "otr-select_best");
     GtkWidget *select_recent = (GtkWidget *) purple_conversation_get_data(conv,
@@ -2173,7 +2183,8 @@ static void unselect_meta_ctx(PurpleConversation *conv) {
     GTK_CHECK_MENU_ITEM(select_best)->active = 0;
 }
 
-static void select_meta_ctx(GtkWidget *widget, gpointer data) {
+static void select_meta_ctx(GtkWidget *widget, gpointer data)
+{
     PurpleConversation *conv = (PurpleConversation *) data;
     GtkWidget *select_best = (GtkWidget *) purple_conversation_get_data(conv,
 	    "otr-select_best");
@@ -2229,7 +2240,8 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
     dialog_update_label(context);
 }
 
-static void select_menu_ctx(GtkWidget *widget, gpointer data) {
+static void select_menu_ctx(GtkWidget *widget, gpointer data)
+{
     ConnContext *context = (ConnContext *) data;
     PurpleConversation *conv = otrg_plugin_context_to_conv(context, 1);
     ConnContext *recent_context = (ConnContext *) otrg_plugin_conv_to_context(
@@ -2532,7 +2544,8 @@ static void otr_add_buddy_top_menu(PidginConversation *gtkconv,
     g_hash_table_replace ( otr_win_menus, win, menu_list );
 }
 
-static void otr_add_buddy_top_menus(PurpleConversation *conv) {
+static void otr_add_buddy_top_menus(PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION ( conv );
 
     PurpleConversation * currentConv = NULL; /* Auxiliary variables re-used */
@@ -2708,7 +2721,8 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
 }
 
 
-static void otr_check_conv_status_change( PurpleConversation *conv) {
+static void otr_check_conv_status_change( PurpleConversation *conv)
+{
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     TrustLevel current_level = TRUST_NOT_PRIVATE;
     ConnContext *context = otrg_plugin_conv_to_context(conv,
@@ -2760,7 +2774,8 @@ static void otr_check_conv_status_change( PurpleConversation *conv) {
 }
 
 /* If the conversation switches on us */
-static void conversation_switched ( PurpleConversation *conv, void * data ) {
+static void conversation_switched ( PurpleConversation *conv, void * data )
+{
     if ( conv == NULL ) return;
 
     otrg_gtk_dialog_new_purple_conv(conv);
@@ -3046,7 +3061,8 @@ static void otrg_gtk_dialog_resensitize_all(void)
     purple_conversation_foreach(dialog_resensitize);
 }
 
-static void foreach_free_lists(void * key, void * value, void* data) {
+static void foreach_free_lists(void * key, void * value, void* data)
+{
     PidginWindow *win = (PidginWindow *) key;
 
     otr_clear_win_menu_list(win);
