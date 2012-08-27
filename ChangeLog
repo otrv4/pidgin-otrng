@@ -3,6 +3,11 @@
 	* otr-plugin.c: Add a timer_control callback for the last-minute
 	libotr 4 API change.
 
+	* gtk-dialog.c (otrg_gtk_dialog_finished): If one of our buddies
+	ends his/her side of the OTR session, don't automatically change
+	the label on the OTR button on our side to "Finished", since
+	there may be other sessions for the same buddy still in ENCRYPTED.
+
 2012-08-24
 
 	* otr-plugin.c: Turn off the beta dialog

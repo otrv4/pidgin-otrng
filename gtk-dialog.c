@@ -1627,6 +1627,7 @@ static void otrg_gtk_dialog_finished(const char *accountname,
     /* See if there's a conversation window we can put this in. */
     PurpleAccount *account;
     PurpleConversation *conv;
+    ConnContext *context;
     char *buf;
 
     account = purple_accounts_find(accountname, protocol);
@@ -1645,7 +1646,8 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
     g_free(buf);
 
-    dialog_update_label_conv(conv, TRUST_FINISHED);
+    context = otrg_plugin_conv_to_selected_context(conv, 0);
+    dialog_update_label_conv(conv, otrg_plugin_context_to_trust(context));
     close_smp_window(conv);
 }
 
