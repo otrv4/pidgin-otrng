@@ -627,6 +627,30 @@ static void received_symkey_cb(void *opdata, ConnContext *context,
 }
 #endif
 
+static guint otrg_plugin_timerid = 0;
+
+/* Called by the glib main loop, as set up by stop_start_timer */
+static gboolean timer_fired_cb(gpointer data);
+
+/* Stop the timer, if it's currently running.  If interval > 0, start it
+ * to periodically fire every interval seconds. */
+static void stop_start_timer(unsigned int interval) {
+    if (otrg_plugin_timerid) {
+	g_source_remove(otrg_plugin_timerid);
+	otrg_plugin_timerid = 0;
+    }
+    if (interval > 0) {
+	otrg_plugin_timerid = g_timeout_add_seconds(interval,
+		timer_fired_cb, NULL);
+    }
+}
+
+/* Called by libotr */
+static void timer_control_cb(void *opdata, unsigned int interval)
+{
+    stop_start_timer(interval);
+}
+
 static OtrlMessageAppOps ui_ops = {
     policy_cb,
     create_privkey_cb,
@@ -654,9 +678,15 @@ static OtrlMessageAppOps ui_ops = {
     handle_msg_event_cb,
     create_instag_cb,
     NULL,		    /* convert_data */
-    NULL		    /* convert_data_free */
+    NULL,		    /* convert_data_free */
+    timer_control_cb
 };
 
+/* Called by the glib main loop, as set up by stop_start_timer */
+static gboolean timer_fired_cb(gpointer data) {
+    otrl_message_poll(otrg_plugin_userstate, &ui_ops, NULL);
+    return TRUE;
+}
 
 static void process_sending_im(PurpleAccount *account, char *who,
 	char **message, void *m)
@@ -1257,6 +1287,8 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
+    otrg_plugin_timerid = 0;
+
     otrl_privkey_read_FILEp(otrg_plugin_userstate, privf);
     otrl_privkey_read_fingerprints_FILEp(otrg_plugin_userstate, storef,
 	    NULL, NULL);
@@ -1326,6 +1358,9 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
 	    PURPLE_CALLBACK(process_connection_change));
     purple_signal_disconnect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu));
+
+    /* Stop the timer, if necessary */
+    stop_start_timer(0);
 
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
