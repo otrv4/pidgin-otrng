@@ -2898,6 +2898,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 
     /* OTR is disabled for this buddy */
     if (prefs.policy == OTRL_POLICY_NEVER) {
+	otr_destroy_top_menu_objects(conv);
 	return;
     }
 

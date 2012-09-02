@@ -1,3 +1,10 @@
+2012-09-02
+
+	* gtk-dialog.c (otrg_gtk_dialog_new_purple_conv): When switching
+	to a conversation tab for which the user has explicitly disabled
+	OTR, remove the OTR menus from the top menu bar.  Thanks to Greg
+	Troxel <gdt@ir.bbn.com> for reporting the issue.
+
 2012-08-27
 
 	* otr-plugin.c: Add a timer_control callback for the last-minute
