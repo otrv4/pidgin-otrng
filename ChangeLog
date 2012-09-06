@@ -1,3 +1,11 @@
+2012-09-06
+
+	* gtk-dialog.c:
+	* gtk-ui.c:
+	* ui.c:
+	* otr-plugin.c: Compile correctly even if i18n (libintl/gettext)
+	is not available.
+
 2012-09-04
 
 	* README: Release 4.0.0

@@ -56,6 +56,11 @@
 /* internationalisation header */
 #include <glib/gi18n-lib.h>
 
+#else /* ENABLE_NLS */
+
+#define _(x) (x)
+#define N_(x) (x)
+
 #endif /* ENABLE_NLS */
 
 /* libotr headers */
