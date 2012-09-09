@@ -65,8 +65,8 @@ CC_HARDENING_OPTIONS ?= -fstack-protector-all -Wstack-protector -fwrapv \
 	--param ssp-buffer-size=1 -fno-strict-overflow -Wall -Wextra \
 	-Wno-unused-parameter -Wno-missing-field-initializers -Wformat-security
 # In theory, we'd also like the following:
-# LD_HARDENING_OPTIONS ?= -dynamicbase --nxcompat -pie -z relro -z now
-LD_HARDENING_OPTIONS ?= --dynamicbase --nxcompat
+# LD_HARDENING_OPTIONS ?= -Wl,-dynamicbase -Wl,--nxcompat -pie -z relro -z now
+LD_HARDENING_OPTIONS ?= -Wl,--dynamicbase -Wl,--nxcompat
 
 CC = i586-mingw32msvc-gcc
 LDFLAGS = -Wl,--enable-auto-image-base $(LD_HARDENING_OPTIONS)

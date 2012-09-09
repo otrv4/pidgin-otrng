@@ -3,6 +3,7 @@
 ;
 ; known issue. installer induced uninstaller abortion causes overwrite
 ; by installer without uninstall.
+; v4.0.0-1 - Include linker hardening [DEP, ALSR] for Windows build
 ; v4.0.0   - New source version.
 ; v3.2.0   - New source version.
 ; v3.1.0   - New source version.  Install and uninstall i18n files.
@@ -26,7 +27,7 @@
 ; todo: SetBrandingImage
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "pidgin-otr"
-!define PRODUCT_VERSION "4.0.0-0"
+!define PRODUCT_VERSION "4.0.0-1"
 !define PRODUCT_PUBLISHER "Cypherpunks CA"
 !define PRODUCT_WEB_SITE "http://otr.cypherpunks.ca/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

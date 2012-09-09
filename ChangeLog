@@ -1,3 +1,9 @@
+2012-09-09
+
+	* Makefile.mingw: Make ld hardening [DEP, ALSR] work on Windows
+	builds.  Thanks to Daniel Atallah <datallah@pidgin.im>
+	for noticing that it wasn't working before.
+
 2012-09-06
 
 	* gtk-dialog.c:
