@@ -1,3 +1,9 @@
+2013-03-24
+
+	* configure.ac:
+	* po/cs.po: Czech translation from Jaromír Karmazín
+	<blue.beret@seznam.cz>
+
 2012-09-09
 
 	* Makefile.mingw: Make ld hardening [DEP, ALSR] work on Windows
