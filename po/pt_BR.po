@@ -1,6 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Off-the-Record Messaging plugin for pidgin.
+# Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
+# 	                       Lisa Du, Nikita Borisov
+# This file is distributed under the same license as the pidgin-otr package.
 # 
 # Translators:
 # Alexandro Casanova <shorterfire@gmail.com>, 2013
