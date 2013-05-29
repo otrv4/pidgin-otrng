@@ -24,7 +24,7 @@ GETTEXT_PACKAGE=pidgin-otr
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
 
-ALL_LINGUAS="ar cs de el es fa fi fr hu it my_MM nl nn pl ru sk sv vi zh_CN"
+ALL_LINGUAS="ar cs de el es fa fi fr hu it my_MM nl nn pl pt_BR ru sk sv vi zh_CN"
 AM_GLIB_GNU_GETTEXT
 
 dnl 1:flags
