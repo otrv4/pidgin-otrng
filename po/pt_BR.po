@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: pidgin-otr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-27 17:21-0300\n"
-"PO-Revision-Date: 2013-05-29 00:45+0000\n"
+"PO-Revision-Date: 2013-05-29 18:29+0000\n"
 "Last-Translator: Alexandro Casanova <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/pidgin-otr/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgid ""
 " or if it's someone pretending to be you.  Your buddy has asked a question, "
 "indicated below.  To authenticate to your buddy, enter the answer and click "
 "OK."
-msgstr "Seu amigo está tentando determinar se está realmente falando contigo, ou se é alguém fingindo ser você. Seu amigo fez uma pergunta, indicada abaixo. Para autenticar-se pro seu amigo, digite a resposta e clique em OK."
+msgstr "Seu amigo está tentando determinar se está realmente falando contigo, ou se é alguém fingindo ser você. Seu amigo fez uma pergunta, indicada abaixo. Para autenticar-se pro seu amigo, digite a resposta e clique em Autenticar."
 
 #: ../gtk-dialog.c:491
 msgid ""
@@ -226,7 +226,7 @@ msgstr "Eu tenho"
 #. 3rd message
 #: ../gtk-dialog.c:1359
 msgid " verified that this is in fact the correct"
-msgstr " verificado que esta é, de facto, a correcta"
+msgstr " verificado que esta é, de facto, a correta"
 
 #. 4th message
 #: ../gtk-dialog.c:1369
