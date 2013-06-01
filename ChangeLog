@@ -1,3 +1,9 @@
+2013-05-31
+
+	* otr-plugin.c: Add a default max message size for Novell
+	Groupwise.  Patch from Federico Mena Quintero
+	<federico@suse.com>.
+
 2013-05-29
 
 	* configure.ac:
