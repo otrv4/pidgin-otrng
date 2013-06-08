@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: pidgin-otr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-27 17:21-0300\n"
-"PO-Revision-Date: 2013-05-29 18:29+0000\n"
+"PO-Revision-Date: 2013-06-08 04:43+0000\n"
 "Last-Translator: Alexandro Casanova <shorterfire@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/pidgin-otr/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,7 @@ msgid ""
 " to you and your buddy.  Enter this question and this answer, then wait for "
 "your buddy to enter the answer too.  If the answers don't match, then you "
 "may be talking to an imposter."
-msgstr "Para autenticar usando uma pergunta, escolha uma pergunta cuja resposta é conhecida apenas por você e seu amigo.  Digite a pergunta e a resposta e depois esperar que o seu amigo digite a resposta também.  Se as respostas não são iguais, então você pode estar falando com um impostor."
+msgstr "Para autenticar usando uma pergunta, escolha uma pergunta cuja resposta é conhecida apenas por você e seu amigo.  Digite a pergunta e a resposta e depois espere o seu amigo digitar a resposta também.  Se as respostas não são iguais, então você pode estar falando com um impostor."
 
 #: ../gtk-dialog.c:509
 #, c-format
@@ -65,7 +65,7 @@ msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this"
 " secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
-msgstr "Para autenticar, escolher um segredo conhecido apenas por você e seu amigo.  Digite este segredo, em seguida espera ele digita-lo também.  Se os segredos não são iguais, então você pode estar falando com um impostor."
+msgstr "Para autenticar, escolher um segredo conhecido apenas por você e seu amigo.  Digite este segredo, em seguida espere ele digita-lo também.  Se os segredos não são iguais, então você pode estar falando com um impostor."
 
 #: ../gtk-dialog.c:608
 #, c-format
@@ -77,7 +77,7 @@ msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
-msgstr "Para verificar a impressão digital, contacte o seu amigo através de algum <i>outro</i> canal autenticado, tais como telefone ou e-mail assinado por GPG.  Cada um de vocês deve dizer a sua impressão digital para o outro."
+msgstr "Para verificar a impressão digital, contacte o seu amigo através de algum <i>outro</i> canal autenticado, tais como telefone ou e-mail assinado por GPG.  Cada um de vocês devem dizer a sua impressão digital para o outro."
 
 #: ../gtk-dialog.c:662
 msgid ""
@@ -178,7 +178,7 @@ msgstr "%s Feito."
 msgid ""
 "%s is contacting you from an unrecognized computer.  You should <a "
 "href=\"%s%s\">authenticate</a> this buddy."
-msgstr "%s está em contactando você a partir de um computador desconhecido.  Você deve <a href=\"%s%s\">autenticar</a> este amigo."
+msgstr "%s está contactando você a partir de um computador desconhecido.  Você deve <a href=\"%s%s\">autenticar</a> este amigo."
 
 #: ../gtk-dialog.c:1146
 #, c-format
@@ -328,12 +328,12 @@ msgid ""
 "Your buddy is logged in multiple times and OTR has established <a "
 "href=\"%s%s\">multiple sessions</a>. Use the icon menu above if you wish to "
 "select the outgoing session."
-msgstr "Seu amigo está logado múltiplas vezes e o ORT estabeleceu <a href=\"%s%s\">múltiplas sessões</a>. Utilize o ícone do menu acima, se você quiser selecionar outras saída de sessões."
+msgstr "Seu amigo está logado múltiplas vezes e o ORT estabeleceu <a href=\"%s%s\">múltiplas sessões</a>. Utilize o ícone do menu acima, se você quiser selecionar outras saídas de sessões."
 
 #: ../gtk-dialog.c:1605
 #, c-format
 msgid "Private conversation with %s lost."
-msgstr "Conversa privada com %s perdida."
+msgstr "Conversa privada com %s terminou."
 
 #: ../gtk-dialog.c:1643
 #, c-format
@@ -344,26 +344,26 @@ msgstr "%s terminou a conversa privada, você deve fazer o mesmo."
 #: ../gtk-dialog.c:1671
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
-msgstr "A conversa privada foi atualizada com sucesso, com %s.%s"
+msgstr "A conversa privada com %s%s foi atualizada com sucesso."
 
 #: ../gtk-dialog.c:1676
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with"
 " %%s.%%s"
-msgstr "Conversa <a href=\"%s%s\">não verificada</a> foi atualizada com sucesso, com %%s.%%s"
+msgstr "Conversa <a href=\"%s%s\">não verificada</a> com %%s foi atualizada com sucesso.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
 #: ../gtk-dialog.c:1685
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
-msgstr "Conversa não privada foi atualizada com sucesso, com %s.%s"
+msgstr "Conversa não privada com %s foi atualizada com sucesso.%s"
 
 #: ../gtk-dialog.c:1718
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
-msgstr "Tentando atualizar a conversa privada com %s..."
+msgstr "Tentando atualizar conversa privada com %s..."
 
 #: ../gtk-dialog.c:1720
 #, c-format
@@ -533,7 +533,7 @@ msgstr "Terminar conexão privada"
 
 #: ../gtk-ui.c:866
 msgid "Forget fingerprint"
-msgstr "Esquecer impressão digital"
+msgstr "Remover impressão digital"
 
 #: ../gtk-ui.c:917
 msgid "Config"
