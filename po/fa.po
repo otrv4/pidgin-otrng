@@ -81,7 +81,7 @@ msgstr "برای اینکه دوست شما از اثرانگشت الکترون
 
 #: ../gtk-dialog.c:661
 msgid ""
-"If everything matches up, you should chose <b>I have</b> in the menu below."
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "اگر همه چیز صحیح است باید در منوی زیر <b>تایید می‌کنم</b> را انتخاب نمایید."
 
 #: ../gtk-dialog.c:672 ../gtk-dialog.c:1397

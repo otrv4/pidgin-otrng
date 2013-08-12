@@ -95,7 +95,7 @@ msgstr ""
 
 #: ../gtk-dialog.c:662
 msgid ""
-"If everything matches up, you should chose <b>I have</b> in the menu below."
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Pokud se vše shoduje, zvolte <b>Ověřil(a) jsem</b> v nabídce níže."
 
 #: ../gtk-dialog.c:673 ../gtk-dialog.c:1401

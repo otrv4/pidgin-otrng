@@ -69,7 +69,7 @@ msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authe
 msgstr "လက်ဗွေကို စစ်ဆေး အတည်ပြုရန်၊ သင့် မိတ်ဆွေကို တယ်လီဖုန်း (သို့) GPG-လက်မှတ်ထိုးထား​သော အီးမေးလ် စသည်ဖြင့် စစ်ဆေး အတည်ပြုသော <i>အခြား</i> လမ်းကြောင်း မှတစ်ဆင့် ဆက်သွယ်ပါ။ သင်တို့ တစ်ဦးကို တစ်ဦး မိမိတို့၏ လက်ဗွေကို ပြောပြရမည် ဖြစ်သည်။"
 
 #: ../gtk-dialog.c:661
-msgid "If everything matches up, you should chose <b>I have</b> in the menu below."
+msgid "If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "အကယ်၍ အားလုံး ကိုက်ညီပါက၊ အောက် မီနူးရှိ <b>ကျွန်တော့်ဆီ ရှိသည်</b> ကို ရွေးပါ။"
 
 #: ../gtk-dialog.c:672

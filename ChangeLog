@@ -1,3 +1,21 @@
+2013-08-12
+
+	* gtk-dialog.c:
+	* po/cs.po:
+	* po/de.po:
+	* po/el.po:
+	* po/es.po:
+	* po/fa.po:
+	* po/fi.po:
+	* po/fr.po:
+	* po/my_MM.po:
+	* po/nl.po:
+	* po/nn.po:
+	* po/pt_BR.po:
+	* po/zh_CN.po: Fix typo in English UI text (and corresponding
+	msgid in all of the translations).  Thanks to Daniel Kraft
+	<d@domob.eu> for reporting the issue.
+
 2013-07-28
 
 	* packaging/fedora/pidgin-otr.spec: Fedora spec file for 4.x

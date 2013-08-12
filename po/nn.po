@@ -95,7 +95,7 @@ msgstr ""
 
 #: ../gtk-dialog.c:661
 msgid ""
-"If everything matches up, you should chose <b>I have</b> in the menu below."
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Om alt samsvarer, bør du velja <b>Eg har</b> i menyen nedanfor."
 
 #: ../gtk-dialog.c:672 ../gtk-dialog.c:1397

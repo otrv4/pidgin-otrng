@@ -88,7 +88,7 @@ msgstr "Για να επαληθεύσεις το αποτύπωμα, επικο
 
 #: ../gtk-dialog.c:661
 msgid ""
-"If everything matches up, you should chose <b>I have</b> in the menu below."
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Αν όλα ταιριάζουν, τότε πρέπει να επιλέξεις <b>Έχω επιβεβαιώσει</b> στο παρακάτω μενού."
 
 #: ../gtk-dialog.c:672 ../gtk-dialog.c:1397

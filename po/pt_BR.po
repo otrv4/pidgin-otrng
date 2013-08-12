@@ -81,7 +81,7 @@ msgstr "Para verificar a impressão digital, contacte o seu amigo através de al
 
 #: ../gtk-dialog.c:662
 msgid ""
-"If everything matches up, you should chose <b>I have</b> in the menu below."
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Se tudo coincidir, você deve escolher <b>Eu tenho</b>, no menu abaixo."
 
 #: ../gtk-dialog.c:673 ../gtk-dialog.c:1401

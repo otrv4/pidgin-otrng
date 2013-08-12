@@ -72,7 +72,7 @@ msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authe
 msgstr "Jotta varmentaisit sormenjäljen, ota yhteyttä tuttavaasi <i>toisella</i> varmennetulla kanavalla kuten puhelimella tai GPG-allekirjoitetulla sähköpostilla. Kummankin teistä tulisi kertoa sormenjälkensä toisilleen."
 
 #: ../gtk-dialog.c:662
-msgid "If everything matches up, you should chose <b>I have</b> in the menu below."
+msgid "If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Jos kaikki täsmää, valitse <b>Olen</b> alla olevasta valikosta."
 
 #: ../gtk-dialog.c:673
