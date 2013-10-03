@@ -3,7 +3,7 @@ REQUIREMENTS
 To compile the OTR plugin for pidgin, you'll need at least:
  - libgpg-error 1.0  [ftp://ftp.gnupg.org/gcrypt/libgpg-error/]
  - libgcrypt 1.2.0   [ftp://ftp.gnupg.org/gcrypt/libgcrypt/]
- - libotr 3.1.0      [http://otr.cypherpunks.ca/]
+ - libotr 3.1.0      [https://otr.cypherpunks.ca/]
  - glib 2.6          [http://www.gtk.org/download/]
  - gtk+ 2.6          [http://www.gtk.org/download/]
  - pidgin 2.x        [http://pidgin.im/]

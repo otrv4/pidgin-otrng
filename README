@@ -21,7 +21,7 @@ OTR allows you to have private conversations over IM by providing:
      is compromised.
 
 For more information on Off-the-Record Messaging, see
-http://otr.cypherpunks.ca/
+https://otr.cypherpunks.ca/
 
 USAGE
 
@@ -179,7 +179,7 @@ End private conversation
 Authenticate Buddy
 
     For more information on authentication, see
-    http://otr-help.cypherpunks.ca/3.2.0/authenticate.php
+    https://otr-help.cypherpunks.ca/3.2.0/authenticate.php
 
     OTR provides three ways to authenticate your buddy:
 
@@ -329,4 +329,4 @@ Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew, Lisa Du, Nikita Borisov
 <otr@cypherpunks.ca>
 
 For more information on Off-the-Record Messaging, visit
-http://otr.cypherpunks.ca/
+https://otr.cypherpunks.ca/

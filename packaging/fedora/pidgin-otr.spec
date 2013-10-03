@@ -3,8 +3,8 @@ Summary: Off-The-Record Messaging plugin for Pidgin
 Name: pidgin-otr
 Version: 4.0.0
 Release: 1%{?dist}
-Source: http://otr.cypherpunks.ca/%{name}-%{version}.tar.gz
-Url: http://otr.cypherpunks.ca/
+Source: https://otr.cypherpunks.ca/%{name}-%{version}.tar.gz
+Url: https://otr.cypherpunks.ca/
 License: GPLv2
 Group: Applications/Internet
 Provides: gaim-otr = %{version}
