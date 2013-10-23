@@ -429,7 +429,7 @@ msgstr "_Qu'est que c'est ?"
 
 #: ../gtk-dialog.c:2028
 msgid "_End private conversation"
-msgstr " Terminer la conversation privée"
+msgstr "_Terminer la conversation privée"
 
 #: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
 #, c-format
