@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-14 09:45-0400\n"
-"PO-Revision-Date: 2012-06-26 12:00-0400\n"
-"Last-Translator: Paul Hendry <pshendry@uwaterloo.ca>\n"
-"Language-Team: Paul Hendry <pshendry@uwaterloo.ca>\n"
+"PO-Revision-Date: 2013-10-22 00:59+0200\n"
+"Last-Translator: Solveig <pidgin-otr@solveig.org>\n"
+"Language-Team: Solveig <pidgin-otr@solveig.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -116,10 +116,10 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"Votre empreinte, %s (%s):\n"
+"Votre empreinte, %s (%s) :\n"
 "%s\n"
 "\n"
-"Empreinte prétendue pour %s:\n"
+"Empreinte prétendue pour %s :\n"
 "%s\n"
 
 #: ../gtk-dialog.c:736
@@ -140,7 +140,7 @@ msgstr "Vérification manuelle d'empreinte"
 
 #: ../gtk-dialog.c:802
 msgid "_Authenticate"
-msgstr "_Authentifie"
+msgstr "_Authentifier"
 
 #: ../gtk-dialog.c:836
 msgid ""
@@ -250,7 +250,7 @@ msgstr "J'ai"
 #. 3rd message
 #: ../gtk-dialog.c:1356
 msgid " verified that this is in fact the correct"
-msgstr " verifié que c'est en effet"
+msgstr " vérifié que c'est en effet"
 
 #. 4th message
 #: ../gtk-dialog.c:1366
@@ -276,23 +276,21 @@ msgid ""
 msgstr ""
 "<small><i>%s %s\n"
 "\n"
-"Votre empreinte, %s (%s):\n"
+"Votre empreinte, %s (%s) :\n"
 "%s\n"
 "\n"
-"Empreinte prétendue de %s:\n"
+"Empreinte prétendue de %s :\n"
 "%s\n"
 
 #: ../gtk-dialog.c:1412
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
-msgstr ""
+msgstr "Si la vérification est réussie, vous devriez indiquer dans la partie ci-dessus que vous <b>avez</b> vérifié l'empreinte."
 
 #: ../gtk-dialog.c:1418 ../gtk-ui.c:844
 msgid "Verify fingerprint"
-msgstr ""
-"Si les empreintes sont identiques, indiquez que vous <b>avez</b> verifié "
-"l'empreinte."
+msgstr "Vérifier l'empreinte"
 
 #: ../gtk-dialog.c:1445
 #, c-format
@@ -320,9 +318,7 @@ msgstr "Authentification réussie."
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
-msgstr ""
-"Votre contact vous a authentifié avec succès ; Vous devriez l'authentifier "
-"à votre tour en lui posant votre propre question."
+msgstr "Votre contact vous a authentifié avec succès ; Vous devriez l'authentifier à votre tour en lui posant votre propre question."
 
 #: ../gtk-dialog.c:1511
 msgid "Authentication failed."
@@ -363,10 +359,7 @@ msgid ""
 "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
 "\">multiple sessions</a>. Use the icon menu above if you wish to select the "
 "outgoing session."
-msgstr ""
-"Votre contact est connecté plusieurs fois et OTR s'est établi <a href=\"%s%s"
-"\">plusieurs sessions</a>. Utilisez le menu d'icônes si vous désirez sélectionner "
-"la session sortante."
+msgstr "Votre contact est connecté plusieurs fois et OTR s'est établi sur <a href=\"%s%s\">plusieurs sessions</a>. Utilisez le menu d'icônes si vous désirez sélectionner la session sortante."
 
 #: ../gtk-dialog.c:1601
 #, c-format
@@ -377,7 +370,7 @@ msgstr "La conversation privée avec %s est interrompue."
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
-msgstr "%s a arrêté sa conversation privée avec vous ; vous devriez faire de même."
+msgstr "%s a arrêté sa conversation privée avec vous ; vous devriez faire de même."
 
 #: ../gtk-dialog.c:1665
 #, c-format
@@ -420,11 +413,11 @@ msgstr "Rafraîchir la conversation _privée"
 
 #: ../gtk-dialog.c:1905
 msgid "Re_authenticate buddy"
-msgstr ""
+msgstr "Ré-_authentifier le contact"
 
 #: ../gtk-dialog.c:1906 ../gtk-dialog.c:2030
 msgid "_Authenticate buddy"
-msgstr "Ré-_Authentifier contact"
+msgstr "_Authentifier contact"
 
 #: ../gtk-dialog.c:1960 ../gtk-dialog.c:2736
 msgid "Not Private"
@@ -436,7 +429,7 @@ msgstr "_Qu'est que c'est ?"
 
 #: ../gtk-dialog.c:2028
 msgid "_End private conversation"
-msgstr ""
+msgstr " Terminer la conversation privée"
 
 #: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
 #, c-format
@@ -444,11 +437,7 @@ msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
 "active one (%u). Your buddy may not receive your messages. Use the icon menu "
 "above to select a different outgoing session."
-msgstr ""
-"Attention : La session sortante OTR sélectionnée (%u) n'est pas celui qui est "
-"le plus récemment actif (%u). Votre contact ne recevra peut-être pas vos "
-"messages. Utilisez le menu d'icônes ci-dessus pour sélectionner une autre "
-"session sortante."
+msgstr "Attention : La session sortante OTR sélectionnée (%u) n'est pas celle qui est la plus récemment active (%u). Votre contact ne recevra peut-être pas vos messages. Utilisez le menu d'icônes ci-dessus pour sélectionner une autre session sortante."
 
 #: ../gtk-dialog.c:2271
 msgid "Send to most secure"
@@ -487,7 +476,7 @@ msgstr "Messagerie OTR"
 #: ../gtk-ui.c:103
 #, c-format
 msgid "Fingerprint: %.80s"
-msgstr "L'empreinte : %.80s"
+msgstr "Empreinte : %.80s"
 
 #: ../gtk-ui.c:107
 #, c-format
@@ -549,7 +538,7 @@ msgstr "Paramètres d'OTR par défaut"
 
 #: ../gtk-ui.c:765
 msgid "OTR UI Options"
-msgstr "Paramètres d'OTR"
+msgstr "Paramètres graphiques d'OTR"
 
 #: ../gtk-ui.c:788
 msgid "Screenname"
@@ -636,21 +625,20 @@ msgstr "Compte inconnu"
 
 #: ../otr-plugin.c:364
 msgid "Error occurred encrypting message."
-msgstr "Échec lors du cryptage du message."
+msgstr "Échec lors du chiffrement du message."
 
 #: ../otr-plugin.c:368
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
-msgstr "Vous avez envoyé à %s des données cryptés, mail il ou elle ne s'y"
-"attendait pas."
+msgstr "Vous avez envoyé à %s des données chiffrées, mais il ou elle ne s'y attendait pas."
 
 #: ../otr-plugin.c:374
 msgid "You transmitted an unreadable encrypted message."
-msgstr "Vous avez transmi un message crypté illisible."
+msgstr "Vous avez transmis un message chiffré illisible."
 
 #: ../otr-plugin.c:377
 msgid "You transmitted a malformed data message."
-msgstr "Vous avez transmi un message de données malformé."
+msgstr "Vous avez transmis un message de données malformé."
 
 #: ../otr-plugin.c:390
 msgid "[resent]"
@@ -659,7 +647,7 @@ msgstr "[envoyé de nouveau]"
 #: ../otr-plugin.c:459
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
-msgstr "Vous avez tenté d'envoyer à %s un message non-crypté"
+msgstr "Vous avez tenté d'envoyer à %s un message non chiffré"
 
 #: ../otr-plugin.c:462
 msgid "Attempting to start a private conversation..."
@@ -676,26 +664,22 @@ msgid ""
 "\n"
 "Your message will be retransmitted when the private conversation starts."
 msgstr ""
-"L'envoi à ce destinaire de messages non-cryptés est interdit. Création d'une "
-"conversation privée...\n"
+"L'envoi à ce destinaire de messages non chiffrés est interdit. Création d'une conversation privée...\n"
 "\n"
-"Votre message sera transmi de nouveau suite au début de la conversation "
-"privée."
+"Votre message sera retransmis au début de la conversation privée."
 
 #: ../otr-plugin.c:474
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
-msgstr ""
-"Une erreur s'est produite durant le cryptage de votre message. Le message n'a "
-"pas été envoyé."
+msgstr "Une erreur s'est produite durant le chiffrement de votre message. Le message n'a pas été envoyé."
 
 #: ../otr-plugin.c:476
 msgid "Error encrypting message"
-msgstr "Échec lors du cryptage du message"
+msgstr "Échec lors du chiffrement du message"
 
 #: ../otr-plugin.c:477
 msgid "An error occurred when encrypting your message"
-msgstr "Une erreur s'est produite durant le cryptage de votre message"
+msgstr "Une erreur s'est produite durant le chiffrement de votre message"
 
 #: ../otr-plugin.c:478
 msgid "The message was not sent."
@@ -710,29 +694,26 @@ msgstr "%s a déjà fermé la connexion entre vous deux."
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
-msgstr ""
-"Votre message n'a pas été envoyé. Soit mettre fin à votre session ou "
-"redémarrer-le."
+msgstr "Votre message n'a pas été envoyé. Terminez votre conversation privée ou redémarrez-la."
 
 #: ../otr-plugin.c:487
 msgid "Private connection closed"
-msgstr "Connexion privée fermé."
+msgstr "Connexion privée fermée."
 
 #: ../otr-plugin.c:488
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
-msgstr ""
-"Votre message n'a pas été envoyé. Soit mettre fin à votre session ou rafraîchir-le."
+msgstr "Votre message n'a pas été envoyé. Terminez votre conversation privée ou rafraîchissez-la."
 
 #: ../otr-plugin.c:498
 msgid "Error setting up private conversation: Malformed message received"
-msgstr "Échec lors de la mise en place d'une conversation privée : Message malformé reçu."
+msgstr "Échec lors de la mise en place d'une conversation privée : Message malformé reçu."
 
 #: ../otr-plugin.c:502
 #, c-format
 msgid "Error setting up private conversation: %s"
-msgstr "Échec lors de la mise en place d'une conversatation privée : %s"
+msgstr "Échec lors de la mise en place d'une conversatation privée : %s"
 
 #: ../otr-plugin.c:509 ../otr-plugin.c:520 ../otr-plugin.c:547
 #: ../otr-plugin.c:555 ../otr-plugin.c:573
@@ -743,9 +724,7 @@ msgstr "Échec OTR"
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
-msgstr ""
-"Nous reçevons nos propres messages OTR. Soit que vous tentez parler à "
-"vous-même, ou que quelqu'un vous renvoie vos messages."
+msgstr "Nous reçevons nos propres messages OTR. Vous tentez de vous parler à vous-même, ou quelqu'un vous renvoie vos messages."
 
 #: ../otr-plugin.c:520
 msgid "We are receiving our own OTR messages."
@@ -755,8 +734,7 @@ msgstr "Nous reçevons nos propres messages OTR."
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
-msgstr ""
-"Soit que vous tentez parler à vous-même, ou que quelqu'un vous renvoie vos messages."
+msgstr "Vous tentez de vous parler à vous-même, ou quelqu'un vous renvoie vos messages."
 
 #: ../otr-plugin.c:526
 #, c-format
@@ -772,9 +750,7 @@ msgstr "Message envoyé de nouveau"
 msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
 "currently communicating privately.</b>"
-msgstr ""
-"<b>Le message crypté reçu de %s est illisible, puisque vous ne communiquez pas en "
-"privé à présent."
+msgstr "<b>Le message chiffré reçu de %s est illisible, puisque vous ne communiquez pas en privé actuellement."
 
 #: ../otr-plugin.c:539
 msgid "Unreadable message"
@@ -783,7 +759,7 @@ msgstr "Message illisible"
 #: ../otr-plugin.c:543
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
-msgstr "Nous avons reçu de %s un message crypté illisible."
+msgstr "Nous avons reçu de %s un message chiffré illisible."
 
 #: ../otr-plugin.c:551
 #, c-format
@@ -793,24 +769,23 @@ msgstr "Nous avons reçu de %s un message malformé."
 #: ../otr-plugin.c:559
 #, c-format
 msgid "Heartbeat received from %s.\n"
-msgstr "Pulsation reçu de %s.\n"
+msgstr "Pulsation reçue de %s.\n"
 
 #: ../otr-plugin.c:565
 #, c-format
 msgid "Heartbeat sent to %s.\n"
-msgstr "Pulsation envoyé à %s.\n"
+msgstr "Pulsation envoyée à %s.\n"
 
 #: ../otr-plugin.c:576
 #, c-format
 msgid ""
 "<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
 "s<b>]</b>"
-msgstr ""
-"<b>Le message suivant reçu de %s n'a <i>pas</i> été crypté : [</b>%s<b>]</b>"
+msgstr "<b>Le message suivant reçu de %s n'a <i>pas</i> été chiffré : [</b>%s<b>]</b>"
 
 #: ../otr-plugin.c:581
 msgid "Received unencrypted message"
-msgstr "Message non-crypté reçu"
+msgstr "Message non chiffré reçu"
 
 #: ../otr-plugin.c:587
 #, c-format
@@ -822,9 +797,7 @@ msgstr "Message OTR non-reconnu reçu de %s.\n"
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
-msgstr ""
-"%s a envoyé un message destiné à une autre session. Si vous êtez connectés plusieurs "
-"fois, il se peut qu'une autre session a reçu le message."
+msgstr "%s a envoyé un message destiné à une autre session. Si vous êtez connecté plusieurs fois, il se peut qu'une autre session ait reçu le message."
 
 #: ../otr-plugin.c:602
 msgid "Received message for a different session"
@@ -853,10 +826,7 @@ msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
-msgstr ""
-"Vous avez activé une version béta du plugin pour Pidgin Messagerie Confidentielle "
-"'Off-the-Record' v%s. Cette version est conçu uniquement pour la mise en essai et "
-"non pour l'usage général."
+msgstr "Vous avez activé une version béta du plugin pour Pidgin Messagerie Confidentielle 'Off-the-Record' v%s. Cette version est conçue uniquement pour la mise en essai et non pour l'usage général."
 
 #: ../otr-plugin.c:1414
 msgid "Off-the-Record Messaging"
