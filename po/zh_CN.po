@@ -239,12 +239,12 @@ msgstr "OTR"
 #. * the fourth message will follow it.
 #: ../gtk-dialog.c:1351
 msgid "I have not"
-msgstr "我已经"
+msgstr "我还没有"
 
 #. 2nd message
 #: ../gtk-dialog.c:1353
 msgid "I have"
-msgstr "我还没有"
+msgstr "我已经"
 
 #. 3rd message
 #: ../gtk-dialog.c:1356

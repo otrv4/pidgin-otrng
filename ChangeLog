@@ -1,3 +1,8 @@
+2013-11-03
+
+	* po/zh_CN.po: Fix sense of "I have" vs "I have not".  Thanks to
+	Guo Yixuan <culu.gyx@gmail.com> for the report and patch.
+
 2013-10-23
 
 	* po/fr.po: Update to fr translation from Solveig
