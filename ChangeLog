@@ -1,5 +1,7 @@
 2014-10-18
 
+	* README: lists.cypherpunks.ca URLs changed to https://
+
 	* configure.ac:
 	* po/nb_NO.po: New Norwegian Bokmål translation from Allan
 	Nordhøy <comradekingu@gmail.com>
