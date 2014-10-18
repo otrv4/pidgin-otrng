@@ -1,5 +1,11 @@
 2014-10-18
 
+	* README:
+	* INSTALL.mingw:
+	* Makefile.mingw:
+	* packaging/windows/pidgin-otr.nsi:
+	* configure.ac: Change version number to 4.0.1
+
 	* README: lists.cypherpunks.ca URLs changed to https://
 
 	* configure.ac:

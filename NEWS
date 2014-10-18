@@ -1,3 +1,11 @@
+18 Oct 2014:
+
+- Hardened Windows build
+- Fix max message size for Novell Groupwise
+- New Czech, Finnish, Brazilian Portuguese, Norwegian Bokmål
+  translations.  Updated French, Chinese translations.
+- Release 4.0.1
+
 24 Aug 2012:
 
 - Release 4.0.0

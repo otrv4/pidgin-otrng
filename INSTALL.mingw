@@ -116,5 +116,5 @@ pidgin-otr:
 The pidgin-otr plugin is now available in the current working directory -
 inspect it with unzip:
 
-  unzip -l pidgin-otr-4.0.0.zip
+  unzip -l pidgin-otr-4.0.1.zip
 

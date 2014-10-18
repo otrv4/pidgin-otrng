@@ -1,7 +1,7 @@
 WIN32=1
 
 # The version number to put in the plugin info
-PIDGIN_OTR_VERSION = 4.0.0
+PIDGIN_OTR_VERSION = 4.0.1
 
 # Name of the gettext domain
 GETTEXT_PACKAGE = pidgin-otr
