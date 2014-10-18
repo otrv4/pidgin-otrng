@@ -1,3 +1,9 @@
+2014-10-18
+
+	* configure.ac:
+	* po/nb_NO.po: New Norwegian Bokmål translation from Allan
+	Nordhøy <comradekingu@gmail.com>
+
 2013-11-03
 
 	* po/zh_CN.po: Fix sense of "I have" vs "I have not".  Thanks to
