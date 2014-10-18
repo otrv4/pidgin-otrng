@@ -1,6 +1,6 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2014  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Lisa Du, Nikita Borisov
  *                           <otr@cypherpunks.ca>
