@@ -1423,7 +1423,7 @@ static PurplePluginInfo info =
 	"Ian Goldberg, Rob Smits,\n"
 	    "\t\t\tChris Alexander, Willy Lew, Lisa Du,\n"
 	    "\t\t\tNikita Borisov <otr@cypherpunks.ca>",
-	"http://otr.cypherpunks.ca/",                     /* homepage       */
+	"https://otr.cypherpunks.ca/",                    /* homepage       */
 
 	otr_plugin_load,                                  /* load           */
 	otr_plugin_unload,                                /* unload         */
