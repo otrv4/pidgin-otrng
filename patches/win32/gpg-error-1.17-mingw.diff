@@ -1,0 +1,25 @@
+--- build-aux/ltmain.sh.orig	2014-01-10 14:00:06.000000000 +0000
++++ build-aux/ltmain.sh	2014-10-18 19:05:57.464936154 +0100
+@@ -5855,9 +5855,10 @@
+       # -tp=*                Portland pgcc target processor selection
+       # --sysroot=*          for sysroot support
+       # -O*, -flto*, -fwhopr*, -fuse-linker-plugin GCC link-time optimization
++      # -fstack-protector*   stack protector flags for GCC
+       -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*| \
+       -t[45]*|-txscale*|-p|-pg|--coverage|-fprofile-*|-F*|@*|-tp=*|--sysroot=*| \
+-      -O*|-flto*|-fwhopr*|-fuse-linker-plugin)
++      -O*|-flto*|-fwhopr*|-fuse-linker-plugin|-fstack-protector*)
+         func_quote_for_eval "$arg"
+ 	arg="$func_quote_for_eval_result"
+         func_append compile_command " $arg"
+--- src/Makefile.in.orig	2014-10-18 19:24:18.096890273 +0100
++++ src/Makefile.in	2014-10-18 19:24:30.668889749 +0100
+@@ -451,7 +451,7 @@
+ @HAVE_W32_SYSTEM_TRUE@export_symbols = -export-symbols gpg-error.def
+ @HAVE_W32_SYSTEM_TRUE@libgpg_error_la_DEPENDENCIES = $(gpg_error_res) gpg-error.def
+ @HAVE_W32_SYSTEM_FALSE@intllibs = @LTLIBINTL@
+-@HAVE_W32_SYSTEM_TRUE@intllibs = 
++@HAVE_W32_SYSTEM_TRUE@intllibs = @LTLIBINTL@
+ @HAVE_LD_VERSION_SCRIPT_FALSE@libgpg_error_vers_opt = 
+ 
+ #

@@ -1,0 +1,24 @@
+--- ltmain.sh.orig	2014-08-07 16:21:31.000000000 +0100
++++ ltmain.sh	2014-10-18 19:29:30.200877263 +0100
+@@ -5851,9 +5851,10 @@
+       # -tp=*                Portland pgcc target processor selection
+       # --sysroot=*          for sysroot support
+       # -O*, -flto*, -fwhopr*, -fuse-linker-plugin GCC link-time optimization
++      # -fstack-protector*   stack protector flags for GCC
+       -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*| \
+       -t[45]*|-txscale*|-p|-pg|--coverage|-fprofile-*|-F*|@*|-tp=*|--sysroot=*| \
+-      -O*|-flto*|-fwhopr*|-fuse-linker-plugin)
++      -O*|-flto*|-fwhopr*|-fuse-linker-plugin|-fstack-protector*)
+         func_quote_for_eval "$arg"
+ 	arg="$func_quote_for_eval_result"
+         func_append compile_command " $arg"
+--- autogen.sh.orig	2014-10-20 14:05:57.538483259 +0100
++++ autogen.sh	2014-10-20 14:07:56.806478288 +0100
+@@ -140,6 +140,7 @@
+ 
+     $tsdir/configure --enable-maintainer-mode  --prefix=${w32root}  \
+             --host=${host} --build=${build} \
++            --enable-static --disable-shared \
+             --with-gpg-error-prefix=${w32root}
+     exit $?
+ fi

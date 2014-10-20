@@ -1,7 +1,0 @@
---- config.h	2012-08-21 22:03:41.119779064 -0700
-+++ config.h	2012-08-21 22:04:27.999779052 -0700
-@@ -312,3 +312,4 @@
- 
- #define _GCRYPT_IN_LIBGCRYPT 1
- 
-+#undef HAVE_GETTIMEOFDAY
