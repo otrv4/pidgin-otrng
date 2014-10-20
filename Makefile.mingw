@@ -51,7 +51,7 @@ LIBINTLLIBDIR = /usr/i586-mingw32msvc/lib
 LIBOTRBINDIR = /usr/i586-mingw32msvc/bin
 
 # Source location of libotr
-LIBOTRSRCDIR = ../libotr
+LIBOTRSRCDIR = ../libotr-4.1.0
 
 # The target
 TARGET = pidgin-otr.dll
