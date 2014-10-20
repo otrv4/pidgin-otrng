@@ -1,62 +1,89 @@
-Here are some rough notes that might help you create a pidgin-otr Win32 build on
-a Linux system with mingw32. These have been tested on Ubuntu 11.04.
+Here are some rough notes that might help you create a pidgin-otr Win32
+build on a Linux system with mingw32. These have been tested on Ubuntu
+12.04.
 
 tl;dr download and install for files before disconnecting from the internet:
 
- wget -c  ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.0.tar.gz \
-          ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.2.1.tar.gz \
-          https://otr.cypherpunks.ca/rndw32.diff \
+ wget -c  http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz \
+          http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.3.tar.xz \
+          ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.17.tar.gz \
+          https://otr.cypherpunks.ca/gpg-error-1.17-mingw.diff \
+          ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.5.4.tar.gz \
+          https://otr.cypherpunks.ca/gcrypt-1.5.4-mingw.diff \
           http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-bundle_2.24.10-20120208_win32.zip \
-          http://downloads.sourceforge.net/project/pidgin/Pidgin/2.10.6/pidgin-2.10.6.tar.bz2 \
-          http://downloads.sourceforge.net/project/pidgin/Pidgin/2.10.6/pidgin-2.10.6-win32-bin.zip \
+          http://sourceforge.net/projects/pidgin/files/Pidgin/2.10.9/pidgin-2.10.9.tar.bz2 \
+          http://sourceforge.net/projects/pidgin/files/Pidgin/2.10.9/pidgin-2.10.9-win32-bin.zip \
           https://otr.cypherpunks.ca/nsisunz.zip
 
-  apt-get install mingw32 nsis wget unzip tar
+ apt-get install mingw32 nsis
 
 The above files have the following SHA1 values:
 
-  895072c22f5bfd4ac9054d48d62d6c8b2a487098  gtk+-bundle_2.24.10-20120208_win32.zip
-  8627d483e26e73b4cfabb4807ae8423875c37cda  libgcrypt-1.2.1.tar.gz
-  1c91787f208c30a91678ebb2f173308f8fab3d36  libgpg-error-1.0.tar.gz
-  caeeb30321966279285228f9afa088c7f4cace84  nsisunz.zip
-  a0532e7ba2acd205d6a5a4e3624156a980fe3d43  pidgin-2.10.6.tar.bz2
-  e2758a47f911850a2afe7ad3764a383b43e405ba  pidgin-2.10.6-win32-bin.zip
-  7513069475a3717f851867ab5f729f3a871421c0  rndw32.diff
+be7d67e50d72ff067b2c0291311bc283add36965  libiconv-1.14.tar.gz
+5c8e37c5275742b6acc1257e2df9b5d1874c12e3  gettext-0.19.3.tar.xz
+7c47e46a9b3af7fcca78f98ee71f36045bfc680c  libgpg-error-1.17.tar.gz
+b308288c9c277e9685eddf41f3cf7edf11d3821d  gpg-error-1.17-mingw.diff
+71e432e0ae8792076a40c6059667997250abbb9d  libgcrypt-1.5.4.tar.gz
+0c4396fecd2ca796ad167bf6af30d5e5038e7003  gcrypt-1.5.4-mingw.diff
+895072c22f5bfd4ac9054d48d62d6c8b2a487098  gtk+-bundle_2.24.10-20120208_win32.zip
+f3de8fd94dba1f4c98d5402a02430f9f323e665a  pidgin-2.10.9.tar.bz2
+23f330a2280e8f63e3b2c89752919cc3383886fa  pidgin-2.10.9-win32-bin.zip
+caeeb30321966279285228f9afa088c7f4cace84  nsisunz.zip
 
-Packages and their build instructions in the order they should be built. Good luck!
+
+Packages and their build instructions in the order they should be built.
+Good luck!
 
 mingw:
   apt-get install mingw32
 
-libgpg-error-1.0:
-  cd /tmp;
-  wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.0.tar.gz
-  tar -xvzf libgpg-error-1.0.tar.gz
-  # (before configure)
-  HOST_CC=gcc
-  DLLTOOL=i586-mingw32msvc-dlltool
-  AS=i586-mingw32msvc-as
-  CFLAGS="-g -O2 -fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
+
+libiconv-1.14:
+  wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+  tar xzvvf libiconv-1.14.tar.gz
+  cd libiconv-1.14
+  CFLAGS="-g -O2 -fwrapv -fno-strict-overflow"
   LDFLAGS="-pie"
-  export HOST_CC DLLTOOL AS CFLAGS LDFLAGS
-  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc 
+  export CFLAGS LDFLAGS
+  ./configure --enable-static --disable-shared --with-pic --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc
   make
   sudo make install
 
-libgcrypt-1.2.1:
-  cd /tmp;
-  wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.2.1.tar.gz
-  wget https://otr.cypherpunks.ca/rndw32.diff
-  tar -xvzf libgcrypt-1.2.1.tar.gz
-  cd /tmp/libgcrypt-1.2.1
+
+gettext-0.19.3:
+  wget http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.3.tar.xz
+  tar xJvvf gettext-0.19.3.tar.xz
+  cd gettext-0.19.3
+  CFLAGS="-g -O2 -fwrapv -fno-strict-overflow"
+  LDFLAGS="-pie"
+  export CFLAGS LDFLAGS
+  ./configure --enable-static --disable-shared --with-pic --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc
+  make
+  sudo make install
+
+
+libgpg-error-1.17:
+  wget ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-1.17.tar.gz
+  tar xzvvf libgpg-error-1.17.tar.gz
   CFLAGS="-g -O2 -fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
   LDFLAGS="-pie"
   export CFLAGS LDFLAGS
+  cd libgpg-error-1.17
+  patch -p0 < ../gpg-error-1.17-mingw.diff
+  ./configure --enable-static --disable-shared --with-pic --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc
+  cp src/syscfg/lock-obj-pub.mingw32.h src/syscfg/lock-obj-pub.mingw32msvc.h
+  make
+  sudo make install
+
+libgcrypt-1.5.4:
+  wget ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-1.5.4.tar.gz
+  tar xzvvf libgcrypt-1.5.4.tar.gz
+  cd libgcrypt-1.5.4
+  CFLAGS="-g -O2 -fstack-protector-all -Wstack-protector -fwrapv --param ssp-buffer-size=1 -fno-strict-overflow"
+  LDFLAGS="-pie"
+  export CFLAGS LDFLAGS
+  patch -p0 < ../gcrypt-1.5.4-mingw.diff
   w32root=/usr/i586-mingw32msvc ./autogen.sh --build-w32
-  # Apply a basic configuration change patch
-  patch -p0 < /path/to/pidgin-otr/patches/win32/libgcrypt-config.h.patch
-  # Apply windows slow random fix patch
-  patch -p0 < /path/to/pidgin-otr/patches/win32/rndw32.diff
   make
   sudo make install
   
@@ -65,17 +92,19 @@ nsis:
   # Locate the "nsisunz" plugin (a google search for "nsisunz.zip" should be sufficient)
   # Extract the DLL to /usr/share/nsis/Plugins
   # (yes it's a DLL extension, but it will still work for GNU/Linux nsis)
-  # set LIBOTRSRCDIR to the libotr src directory
-  cd /tmp;
   wget -c https://otr.cypherpunks.ca/nsisunz.zip
   unzip nsisunz.zip
-  sudo cp /tmp/nsisunz/Release/nsisunz.dll /usr/share/nsis/Plugins/
+  sudo cp nsisunz/Release/nsisunz.dll /usr/share/nsis/Plugins/
 
 
-libotr:
+libotr-4.1.0:
   autoreconf -s -i
-  ./configure --with-pic --build=`./config.guess` --host=i586-mingw32msvc --prefix=/usr/i586-mingw32msvc \
-              --with-libgcrypt-prefix=/usr/i586-mingw32msvc
+  unset CFLAGS
+  unset LDFLAGS
+  ./configure --with-pic --host=i586-mingw32msvc \
+        --prefix=/usr/i586-mingw32msvc \
+        --enable-static --disable-shared \
+        --with-libgcrypt-prefix=/usr/i586-mingw32msvc
   make
   sudo make install
 
@@ -90,21 +119,17 @@ pidgin-otr:
   # Ensure either pkg-config will correctly resolve all the dependencies for
   # glib-2.0 and gtk+-2.0. There is a README in the GTK+ bundle about this, or
   # uncomment (and perhaps revise) the hardcoded list of includes for GTK_HDRS
-  cd /tmp;
-  wget -c http://prdownloads.sourceforge.net/pidgin/pidgin-2.10.3.tar.bz2
-  wget -c http://downloads.sourceforge.net/project/pidgin/Pidgin/2.10.6/pidgin-2.10.6-win32-bin.zip
-  wget -c http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-bundle_2.24.10-20120208_win32.zip
-  sudo mkdir -p /usr/i586-mingw32msvc/misc/gtk_bundle;
-  cd /usr/i586-mingw32msvc/misc/gtk_bundle;
-  sudo unzip /tmp/gtk+-bundle_2.24.10-20120208_win32.zip
-  cd /tmp;
-  unzip pidgin-2.10.6-win32-bin.zip
+  wget http://sourceforge.net/projects/pidgin/files/Pidgin/2.10.9/pidgin-2.10.9.tar.bz2
+  wget http://sourceforge.net/projects/pidgin/files/Pidgin/2.10.9/pidgin-2.10.9-win32-bin.zip
+  wget http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.24/gtk+-bundle_2.24.10-20120208_win32.zip
+  sudo mkdir -p /usr/i586-mingw32msvc/misc/gtk_bundle
+  sudo unzip -d /usr/i586-mingw32msvc/misc/gtk_bundle gtk+-bundle_2.24.10-20120208_win32.zip
+  unzip pidgin-2.10.9-win32-bin.zip
   sudo mkdir -p /usr/i586-mingw32msvc/misc/pidgin_dlls
-  sudo mv /tmp/pidgin-2.10.6-win32bin/*.dll /usr/i586-mingw32msvc/misc/pidgin_dlls/
-  tar -xvjf pidgin-2.10.6.tar.bz2
-  sudo mkdir -p /usr/i586-mingw32msvc/include/
-  sudo mv /tmp/pidgin-2.10.6/libpurple /usr/i586-mingw32msvc/include/
-  sudo mv /tmp/pidgin-2.10.6/pidgin /usr/i586-mingw32msvc/include/
+  sudo mv pidgin-2.10.9-win32bin/*.dll /usr/i586-mingw32msvc/misc/pidgin_dlls/
+  tar xjvvf pidgin-2.10.9.tar.bz2
+  sudo mv pidgin-2.10.9/libpurple /usr/i586-mingw32msvc/include/
+  sudo mv pidgin-2.10.9/pidgin /usr/i586-mingw32msvc/include/
   cd /path/to/pidgin-otr/
   # Finally build pidgin-otr plugin
   make -f Makefile.mingw
@@ -113,8 +138,9 @@ pidgin-otr:
   # This should now build the zipfile
   make -f Makefile.mingw zip
 
-The pidgin-otr plugin is now available in the current working directory -
+The pidgin-otr plugin will be created in the current working directory;
 inspect it with unzip:
 
   unzip -l pidgin-otr-4.0.1.zip
 
+The installer will be created in packaging/windows/pidgin-otr-4.0.1.exe .
