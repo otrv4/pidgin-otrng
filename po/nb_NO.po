@@ -1,17 +1,15 @@
 # Off-the-Record Messaging plugin for pidgin.
-# Copyright (C) 2004-2014 Ian Goldberg, Rob Smits,
-#                         Chris Alexander, Willy Lew, Lisa Du,
-#                         Nikita Borisov
+# Copyright (C) 2004-2014 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
+# Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
-# 
 # Translators:
 # Allan Nordhøy <comradekingu@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-27 21:35-0200\n"
-"PO-Revision-Date: 2014-09-15 18:49+0000\n"
+"POT-Creation-Date: 2014-10-30 17:29+0000\n"
+"PO-Revision-Date: 2014-10-19 14:33+0000\n"
 "Last-Translator: Allan Nordhøy <comradekingu@gmail.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/pidgin-otr/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +22,7 @@ msgstr ""
 #: ../gtk-dialog.c:1551 ../gtk-dialog.c:1588 ../gtk-dialog.c:1679
 #: ../gtk-dialog.c:1754 ../gtk-dialog.c:2769
 msgid "?lang=en"
-msgstr "?lang=nb"
+msgstr "?lang=nb_NO"
 
 #: ../gtk-dialog.c:484
 msgid ""

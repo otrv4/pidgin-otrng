@@ -1,3 +1,10 @@
+2015-01-04
+
+	* po/es.po: Updated Spanish translation from strel
+	* po/de.po: Updated German translation from Andy Kleinert
+	<Wawuschel@erweiterungen.de>
+	* po/nb_NO.po: Fix language code in Norwegian Bokmål translation
+
 2014-10-18
 
 	* README:
