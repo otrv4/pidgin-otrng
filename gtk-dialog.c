@@ -213,7 +213,7 @@ static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level,
     } else {
 	image = gtk_image_new_from_pixbuf(pixbuf);
     }
-    gdk_pixbuf_unref(pixbuf);
+    g_object_unref(G_OBJECT(pixbuf));
 
     gtk_widget_set_sensitive (image, sensitivity);
 
