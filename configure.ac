@@ -6,6 +6,8 @@ AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([-Wall -Werror])
 
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+
 AC_PROG_CC
 
 dnl We do not want to create a .a for the plugin, so disable by default.
