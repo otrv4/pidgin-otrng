@@ -169,7 +169,7 @@ static void otrg_gtk_dialog_free_smp_data(PurpleConversation *conv)
     g_hash_table_remove(conv->data, "otr-smpdata");
 }
 
-static void otrg_gtk_dialog_add_smp_data(PurpleConversation *conv)
+static SMPData* otrg_gtk_dialog_add_smp_data(PurpleConversation *conv)
 {
     SMPData *smp_data = malloc(sizeof(SMPData));
     smp_data->smp_secret_dialog = NULL;
@@ -182,6 +182,8 @@ static void otrg_gtk_dialog_add_smp_data(PurpleConversation *conv)
     smp_data->their_instance = OTRL_INSTAG_BEST;
 
     purple_conversation_set_data(conv, "otr-smpdata", smp_data);
+
+    return smp_data;
 }
 
 static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level,
@@ -777,7 +779,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
      * will kill any existing SMP */
     if (smp_data->their_instance != context->their_instance) {
 	otrg_gtk_dialog_free_smp_data(conv);
-	otrg_gtk_dialog_add_smp_data(conv);
+	smp_data = otrg_gtk_dialog_add_smp_data(conv);
     }
 
     if (!(smp_data->smp_secret_dialog)) {
