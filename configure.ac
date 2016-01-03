@@ -11,8 +11,7 @@ m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_CC
 
 dnl We do not want to create a .a for the plugin, so disable by default.
-AM_DISABLE_STATIC
-AM_PROG_LIBTOOL
+LT_INIT([disable-static])
 
 AM_PATH_LIBGCRYPT(1:1.2.0,,AC_MSG_ERROR(libgcrypt 1.2.0 or newer is required.))
 
