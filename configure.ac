@@ -4,6 +4,9 @@ AC_INIT(pidgin-otr, 4.0.1)
 
 AM_CONFIG_HEADER(config.h)
 
+# Silent compilation so warnings can be spotted.
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 AM_INIT_AUTOMAKE([-Wall -Werror])
 
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
