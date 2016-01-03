@@ -1442,8 +1442,6 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
 	char *question, gboolean responder)
 {
     char *primary;
-    PurplePlugin *p;
-    char *proto_name;
 
     if (context == NULL) return;
 
@@ -1454,10 +1452,6 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
 	primary = g_strdup_printf(_("Authenticate %s"),
 	    context->username);
     }
-
-    p = purple_find_prpl(context->protocol);
-    proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
-
 
     create_smp_dialog(_("Authenticate Buddy"),
 	    primary, context, responder, question);
