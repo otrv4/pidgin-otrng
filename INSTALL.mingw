@@ -141,6 +141,6 @@ pidgin-otr:
 The pidgin-otr plugin will be created in the current working directory;
 inspect it with unzip:
 
-  unzip -l pidgin-otr-4.0.1.zip
+  unzip -l pidgin-otr-4.0.2.zip
 
-The installer will be created in packaging/windows/pidgin-otr-4.0.1.exe .
+The installer will be created in packaging/windows/pidgin-otr-4.0.2.exe .

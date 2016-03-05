@@ -1,3 +1,11 @@
+2016-03-05
+
+	* README:
+	* INSTALL.mingw:
+	* Makefile.mingw:
+	* packaging/windows/pidgin-otr.nsi:
+	* configure.ac: Change version number to 4.0.2
+
 2016-01-03
 
 	* gtk-dialog.c (otrg_gtk_dialog_add_smp_data):
