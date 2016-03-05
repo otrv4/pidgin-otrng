@@ -1,3 +1,22 @@
+2016-01-03
+
+	* gtk-dialog.c (otrg_gtk_dialog_add_smp_data):
+	* gtk-dialog.c (create_smp_dialog): Fix use-after-free issue
+	during SMP.  Thanks to Stefan Sperling <otr@stsp.name> and Hanno
+	Böck <hanno@hboeck.de> for the report.
+
+	* configure.ac: Add AM_PROG_AR to configure.ac.  Thanks to
+	intrigeri <intrigeri@boum.org> for the report.
+
+	* configure.ac: Update a couple of deprecated configure.ac
+	macros and turn on AM_SILENT_RULES.
+
+	* gtk-dialog.c (otr_icon): Change deprecated gdk_pixbuf_unref to
+	g_object_unref.
+
+	* gtk-dialog.c (otrg_gtk_dialog_socialist_millionaires): Remove
+	unused proto_name variable.
+
 2015-03-20
 
 	* po/da.po: New Danish translation from Søren Fuglede Jørgensen
