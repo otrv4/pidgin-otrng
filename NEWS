@@ -1,3 +1,10 @@
+9 Mar 2016:
+
+- Updated Spanish, German, Norwegian Bokmål translations.
+- New Danish translation.
+- Fix use-after-free issue during SMP.
+- Release 4.0.2
+
 21 Oct 2014:
 
 - Hardened Windows build
