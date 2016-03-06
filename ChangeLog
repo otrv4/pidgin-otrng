@@ -1,3 +1,15 @@
+2016-03-06
+
+	* INSTALL.mingw: The INSTALL.mingw file is now actually a script
+	that can be passed to bash.  It will download and compile the
+	dependencies, and then build the pidgin-otr NSIS installer and
+	zip file.  Note that the GTK and pidgin libraries are downloaded
+	in Windows binary form (though their checksums are checked), and
+	not built from source.  This script is known to work on one
+	particular Ubuntu 14.04 machine.  It would be cool if others
+	could try it as well, and it would be super-cool if we could
+	turn this into a deterministic build.
+
 2016-03-05
 
 	* README:
