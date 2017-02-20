@@ -16,6 +16,8 @@ addons:
     - intltool
     - valgrind
     - libgtk2.0-dev
+    - pidgin-dev
+    - libpurple-dev
 
 before_install:
   - mkdir .deps
