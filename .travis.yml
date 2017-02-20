@@ -16,7 +16,15 @@ addons:
     - intltool
     - valgrind
     - libgtk2.0-dev
-    - libotr2-dev
+
+before_install:
+  - mkdir .deps
+  - git clone --depth=1 https://bugs.otr.im/lib/libotr.git .deps/libotr
+  - pushd .deps/libotr && ./bootstrap && ./configure --prefix=/tmp/prefix && make && make install && popd
 
 script:
-  - ./autogen.sh && ./configure && make
+  - echo -e "ACLOCAL_FLAGS= -I /tmp/prefix/share/aclocal\n$(cat Makefile.am)" > Makefile.am
+  - ./autogen.sh
+  - ./configure --with-libotr-inc-prefix=/tmp/prefix/include --with-libotr-prefix=/tmp/prefix/lib
+  - make
+
