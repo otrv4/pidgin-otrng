@@ -1,0 +1,15 @@
+language: c
+cache: ccache
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - clang
+  - gcc
+
+sudo: required
+
+script:
+  - ./autogen.sh && ./configure && make
