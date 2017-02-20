@@ -28,5 +28,5 @@ script:
   - echo -e "ACLOCAL_FLAGS= -I /tmp/prefix/share/aclocal\n$(cat Makefile.am)" > Makefile.am
   - ./autogen.sh
   - ./configure --with-libotr-inc-prefix=/tmp/prefix/include --with-libotr-prefix=/tmp/prefix/lib
-  - make
+  - make && make check
 
