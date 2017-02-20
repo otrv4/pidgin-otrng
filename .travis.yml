@@ -20,12 +20,27 @@ addons:
 
 before_install:
   - mkdir .deps
+  - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
+  - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   - git clone --depth=1 https://bugs.otr.im/lib/libotr.git .deps/libotr
-  - pushd .deps/libotr && ./bootstrap && ./configure --prefix=/tmp/prefix && make && make install && popd
+  - pushd .deps/libotr && ./bootstrap && ./configure --prefix=$PREFIX && make && make install && popd
+  # Dependencies for libotr4
+  - curl https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.26.tar.bz2 | tar xjf - -C .deps
+  - pushd .deps/libgpg-error-1.26 && ./configure --prefix=$PREFIX && make && make install && popd
+  - curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.7.6.tar.bz2 | tar xjf - -C .deps
+  - pushd .deps/libgcrypt-1.7.6 && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
+  - curl https://download.libsodium.org/libsodium/releases/libsodium-1.0.11.tar.gz | tar xzf - -C .deps
+  - pushd .deps/libsodium-1.0.11 && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
+  - git clone --depth=1 https://github.com/twstrike/ed448goldilocks-decaf.git .deps/decaf
+  - pushd .deps/decaf && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
+  - git clone --depth=1 https://github.com/twstrike/cramershoup.git .deps/cramershoup
+  - pushd .deps/cramershoup && ./autogen.sh && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX CFLAGS="-DFAST_RANDOM" && make && make install && popd
+  - git clone --depth=1 https://github.com/twstrike/libotrv4.git .deps/libotr4
+  - pushd .deps/libotr4 && ./autogen.sh && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
 
 script:
-  - echo -e "ACLOCAL_FLAGS= -I /tmp/prefix/share/aclocal\n$(cat Makefile.am)" > Makefile.am
+  - echo -e "ACLOCAL_FLAGS= -I ${PREFIX}/share/aclocal\n$(cat Makefile.am)" > Makefile.am
   - ./autogen.sh
-  - ./configure --with-libotr-inc-prefix=/tmp/prefix/include --with-libotr-prefix=/tmp/prefix/lib
+  - ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib
   - make && make check
 
