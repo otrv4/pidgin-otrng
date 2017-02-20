@@ -9,7 +9,11 @@ compiler:
   - clang
   - gcc
 
-sudo: required
+addons:
+  apt:
+    packages:
+    - gettext
+    - valgrind
 
 script:
   - ./autogen.sh && ./configure && make
