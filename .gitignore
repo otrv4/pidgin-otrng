@@ -27,7 +27,7 @@ intltool-update.in
 libtool
 ltmain.sh
 missing
-pidgin-otr.pot
+pidgin-otr4.pot
 po/Makefile.in.in
 po/*.gmo
 po/Makefile

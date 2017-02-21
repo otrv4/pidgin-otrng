@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce configure.
 
-AC_INIT(pidgin-otr, 4.0.2)
+AC_INIT(pidgin-otr4, 4.0.2)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -24,7 +24,7 @@ PKG_CHECK_MODULES([EXTRA], [glib-2.0 >= 2.6 gtk+-2.0 >= 2.6 pidgin >= 2.0 purple
 
 AC_PROG_INTLTOOL
 
-GETTEXT_PACKAGE=pidgin-otr
+GETTEXT_PACKAGE=pidgin-otr4
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
 

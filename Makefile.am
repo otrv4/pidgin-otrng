@@ -7,12 +7,12 @@ SUBDIRS=	po
 
 plugindir=		${libdir}/pidgin
 
-plugin_LTLIBRARIES=	pidgin-otr.la
+plugin_LTLIBRARIES=	pidgin-otr4.la
 
-pidgin_otr_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
+pidgin_otr4_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
                         tooltipmenu.c
-pidgin_otr_la_LDFLAGS=	-module -avoid-version
-pidgin_otr_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@
+pidgin_otr4_la_LDFLAGS=	-module -avoid-version
+pidgin_otr4_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@
 
 EXTRA_DIST=		dialogs.h gtk-dialog.h gtk-ui.h otr-plugin.h ui.h \
 			otr-icons.h tooltipmenu.h \
