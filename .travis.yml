@@ -1,8 +1,8 @@
 language: c
 cache: ccache
 
-os:
-  - linux
+sudo: false
+dist: trusty
 
 compiler:
   - clang
