@@ -804,7 +804,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 }
 
 static gboolean process_receiving_im(PurpleAccount *account, char **who,
-	char **message, int *flags, void *m)
+	char **message, PurpleConversation *conv, PurpleMessageFlags *flags)
 {
     //OtrlTLV *tlvs = NULL;
     //OtrlTLV *tlv = NULL;
@@ -821,6 +821,9 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     username = strdup(purple_normalize(account, *who));
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
+
+    if (!otrv4_client->conv->ctx)
+        otrv4_client->conv->ctx = otrl_context_find(otrg_plugin_userstate, username, accountname, protocol, 0, 1, NULL, NULL, NULL);
 
     res = otr4_client_receive(&tosend, &todisplay, *message, username, otrv4_client);
     if (tosend) {
@@ -875,6 +878,11 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 
     context = otrl_context_find(otrg_plugin_userstate, username, accountname,
 	    proto, their_instance, force_create, NULL, NULL, NULL);
+
+    //TODO: this is hackish, but its easier to just use the ConnContext to
+    //not break the UI.
+    if (force_create)
+        otr4_watch_context(context, otrv4_client);
 
     g_free(username);
 
@@ -1306,6 +1314,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     otrg_plugin_userstate = otrl_userstate_create();
 
     otrv4_client = otr4_client_new();
+    otrv4_client->callbacks = &otr4_callbacks;
 
     otrg_plugin_timerid = 0;
 
