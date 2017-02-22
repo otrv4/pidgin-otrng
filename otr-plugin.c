@@ -72,7 +72,7 @@
 #include <libotr/instag.h>
 
 /* libotr4 headers */
-#include <libotr4/protocol.h>
+#include "otr4-client.h"
 
 /* purple-otr headers */
 #include "ui.h"
@@ -113,8 +113,7 @@ PurplePlugin *otrg_plugin_handle;
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
 
-cs_keypair_t cs_keypair;
-otrv4_t *otrv4_client = NULL;
+otr4_client_t *otrv4_client = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
@@ -719,20 +718,23 @@ static void process_sending_im(PurpleAccount *account, char *who,
     instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
 
-    //TODO: move to otrv4_client
-    if (otrv4_client->state == OTRV4_STATE_START) {
+    int err = otr4_client_send(&newmessage, *message, username, otrv4_client);
+    if (err == 1) {
         return;
     }
 
-    //TODO: add notifications
-    if (!otrv4_send_message((unsigned char **) &newmessage, (unsigned char*) *message, strlen(*message)+1, otrv4_client)) {
+    if (err == -1) {
 
 	/* Do not send out plain text */
 	char *ourm = strdup("");
 	free(*message);
 	*message = ourm;
-    } else if (newmessage) {
-	*message = strdup(newmessage);
+    }
+
+    if (!err) {
+	char *ourm = strdup(newmessage);
+	free(*message);
+	*message = ourm;
     }
 
     otrl_message_free(newmessage);
@@ -811,6 +813,8 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     gboolean res;
     const char *accountname;
     const char *protocol;
+    char *tosend;
+    char *todisplay;
 
     if (!who || !*who || !message || !*message)
 	return 0;
@@ -819,28 +823,25 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-
-    otrv4_response_t *response = otrv4_response_new();
-    if (!otrv4_receive_message(response, otrv4_client, *message, strlen(*message))) {
-      otrv4_response_free(response);
-      return 0;
+    res = otr4_client_receive(&tosend, &todisplay, *message, username, otrv4_client);
+    if (tosend) {
+        //TODO: Add fragmentation?
+        otrg_plugin_inject_message(account, username, tosend);
+        otrl_message_free(tosend);
     }
 
-    if (response->to_send) {
-      //TODO: Add fragmentation
-      otrg_plugin_inject_message(account, *who, response->to_send);
-    }
-
-    if (response->to_display) {
-	char *ourm = strdup(response->to_display);
+    if (todisplay) {
+	char *ourm = strdup(todisplay);
 	free(*message);
 	*message = ourm;
-        res = 0;
     } else {
-        res = 1;
+        /* If we're supposed to ignore this incoming message (because it's a
+         * protocol message), set it to NULL, so that other plugins that
+         * catch receiving-im-msg don't return 0, and cause it to be
+         * displayed anyway. */
+	free(*message);
+	*message = NULL;
     }
-
-    otrv4_response_free(response);
 
     //tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
     //if (tlv) {
@@ -853,14 +854,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     free(username);
 
-    /* If we're supposed to ignore this incoming message (because it's a
-     * protocol message), set it to NULL, so that other plugins that
-     * catch receiving-im-msg don't return 0, and cause it to be
-     * displayed anyway. */
-    if (res) {
-	free(*message);
-	*message = NULL;
-    }
     return res;
 }
 
@@ -1313,8 +1306,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-    cs_keypair_generate(cs_keypair);
-    otrv4_client = otrv4_new(cs_keypair);
+    otrv4_client = otr4_client_new();
 
     otrg_plugin_timerid = 0;
 
@@ -1394,9 +1386,8 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
-    otrv4_free(otrv4_client);
+    otr4_client_free(otrv4_client);
     otrv4_client = NULL;
-    cs_keypair_destroy(cs_keypair);
 
     otrg_free_mms_table();
 
