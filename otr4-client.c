@@ -74,3 +74,13 @@ otr4_client_receive(char **newmessage, char **todisplay, const char *message, co
     otrv4_response_free(response);
     return should_ignore;
 }
+
+char*
+otr4_client_query_message(const char *recipient, const char* message, otr4_client_t *client) {
+    otrv4_t *conn = get_connection_for_recipient(recipient, client);
+
+    //TODO: implement policy
+    char *ret = NULL;
+    otrv4_build_query_message(&ret, conn, (const string_t) message, strlen(message));
+    return ret;
+}
