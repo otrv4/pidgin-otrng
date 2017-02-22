@@ -71,6 +71,9 @@
 #include <libotr/userstate.h>
 #include <libotr/instag.h>
 
+/* libotr4 headers */
+#include <libotr4/protocol.h>
+
 /* purple-otr headers */
 #include "ui.h"
 #include "dialogs.h"
@@ -109,6 +112,9 @@ PurplePlugin *otrg_plugin_handle;
 
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
+
+cs_keypair_t cs_keypair;
+otrv4_t *otrv4_client = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
@@ -700,7 +706,6 @@ static void process_sending_im(PurpleAccount *account, char *who,
     const char *accountname = purple_account_get_username(account);
     const char *protocol = purple_account_get_protocol_id(account);
     char *username;
-    gcry_error_t err;
     PurpleConversation * conv = NULL;
     otrl_instag_t instance;
 
@@ -713,11 +718,15 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
     instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
-    err = otrl_message_sending(otrg_plugin_userstate, &ui_ops, NULL,
-	    accountname, protocol, username, instance, *message, NULL,
-	    &newmessage, OTRL_FRAGMENT_SEND_ALL_BUT_LAST, NULL, NULL, NULL);
 
-    if (err) {
+    //TODO: move to otrv4_client
+    if (otrv4_client->state == OTRV4_STATE_START) {
+        return;
+    }
+
+    //TODO: add notifications
+    if (!otrv4_send_message((unsigned char **) &newmessage, (unsigned char*) *message, strlen(*message)+1, otrv4_client)) {
+
 	/* Do not send out plain text */
 	char *ourm = strdup("");
 	free(*message);
@@ -789,16 +798,15 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 
     otrg_ui_get_prefs(&prefs, account, username);
     msg = otrl_proto_default_query_msg(accountname, prefs.policy);
-    otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv23?");
+    otrg_plugin_inject_message(account, username, "?OTRv4?");
     free(msg);
 }
 
 static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	char **message, int *flags, void *m)
 {
-    char *newmessage = NULL;
-    OtrlTLV *tlvs = NULL;
-    OtrlTLV *tlv = NULL;
+    //OtrlTLV *tlvs = NULL;
+    //OtrlTLV *tlv = NULL;
     char *username;
     gboolean res;
     const char *accountname;
@@ -811,25 +819,37 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-    res = otrl_message_receiving(otrg_plugin_userstate, &ui_ops, NULL,
-	    accountname, protocol, username, *message,
-	    &newmessage, &tlvs, NULL, NULL, NULL);
 
-    if (newmessage) {
-	char *ourm = strdup(newmessage);
-	otrl_message_free(newmessage);
+    otrv4_response_t *response = otrv4_response_new();
+    if (!otrv4_receive_message(response, otrv4_client, *message, strlen(*message))) {
+      otrv4_response_free(response);
+      return 0;
+    }
+
+    if (response->to_send) {
+      //TODO: Add fragmentation
+      otrg_plugin_inject_message(account, *who, response->to_send);
+    }
+
+    if (response->to_display) {
+	char *ourm = strdup(response->to_display);
 	free(*message);
 	*message = ourm;
+        res = 0;
+    } else {
+        res = 1;
     }
 
-    tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
-    if (tlv) {
-	/* Notify the user that the other side disconnected. */
-	otrg_dialog_finished(accountname, protocol, username);
-	otrg_ui_update_keylist();
-    }
+    otrv4_response_free(response);
 
-    otrl_tlv_free(tlvs);
+    //tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
+    //if (tlv) {
+    //    /* Notify the user that the other side disconnected. */
+    //    otrg_dialog_finished(accountname, protocol, username);
+    //    otrg_ui_update_keylist();
+    //}
+
+    //otrl_tlv_free(tlvs);
 
     free(username);
 
@@ -1293,6 +1313,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
+    cs_keypair_generate(cs_keypair);
+    otrv4_client = otrv4_new(cs_keypair);
+
     otrg_plugin_timerid = 0;
 
     otrl_privkey_read_FILEp(otrg_plugin_userstate, privf);
@@ -1371,6 +1394,10 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
+    otrv4_free(otrv4_client);
+    otrv4_client = NULL;
+    cs_keypair_destroy(cs_keypair);
+
     otrg_free_mms_table();
 
     return 1;
@@ -1414,7 +1441,7 @@ static PurplePluginInfo info =
 	0,                                                /* flags          */
 	NULL,                                             /* dependencies   */
 	PURPLE_PRIORITY_DEFAULT,                          /* priority       */
-	"otr",                                            /* id             */
+	"otr4",                                            /* id             */
 	NULL,                                             /* name           */
 	PIDGIN_OTR_VERSION,                               /* version        */
 	NULL,                                             /* summary        */
@@ -1450,7 +1477,7 @@ __init_plugin(PurplePlugin *plugin)
 #endif
 
     /* Initialize the OTR library */
-    OTRL_INIT;
+    OTR4_INIT;
 
 #ifdef ENABLE_NLS
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
@@ -1464,4 +1491,4 @@ __init_plugin(PurplePlugin *plugin)
 			 "deniability, and perfect forward secrecy.");
 }
 
-PURPLE_INIT_PLUGIN(otr, __init_plugin, info)
+PURPLE_INIT_PLUGIN(otr4, __init_plugin, info)
