@@ -165,7 +165,12 @@ void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
 /* Call this when a context transitions to ENCRYPTED. */
 void otrg_dialog_connected(ConnContext *context)
 {
-    ui_ops->connected(context);
+    otrg_plugin_conversation conv;
+    conv.accountname = context->accountname;
+    conv.protocol = context->protocol;
+    conv.username = context->username;
+
+    ui_ops->connected(&conv);
 }
 
 /* Call this when a context transitions to PLAINTEXT. */

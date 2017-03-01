@@ -1248,6 +1248,20 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     otr_add_buddy_top_menus(conv);
 }
 
+static void dialog_update_label_real(otrg_plugin_conversation *context)
+{
+    PurpleAccount *account;
+    PurpleConversation *conv;
+    TrustLevel level = otrg_plugin_conversation_to_trust(context);
+
+    account = purple_accounts_find(context->accountname, context->protocol);
+    if (!account) return;
+    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
+	    context->username, account);
+    if (!conv) return;
+    dialog_update_label_conv(conv, level);
+}
+
 static void dialog_update_label(ConnContext *context)
 {
     PurpleAccount *account;
@@ -1517,7 +1531,7 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
-static void otrg_gtk_dialog_connected(ConnContext *context)
+static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
 {
     PurpleConversation *conv;
     char *buf;
@@ -1525,9 +1539,11 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     TrustLevel level;
     OtrgUiPrefs prefs;
     gboolean * is_multi_inst;
+    int protocol_version;
 
-    conv = otrg_plugin_context_to_conv(context, TRUE);
-    level = otrg_plugin_context_to_trust(context);
+    conv = otrg_plugin_conversation_to_purple_conv(context, TRUE);
+    level = otrg_plugin_conversation_to_trust(context);
+    protocol_version = otrg_plugin_conversation_to_protocol_version(context);
 
     otrg_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
 	    context->username);
@@ -1556,7 +1572,7 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     }
     buf = g_strdup_printf(format_buf,
 		purple_conversation_get_name(conv),
-		context->protocol_version == 1 ? _("  Warning: using old "
+		protocol_version == 1 ? _("  Warning: using old "
 		"protocol version 1.") : "", conv->logging ?
 		_("  Your client is logging this conversation.") :
 		_("  Your client is not logging this conversation."));
@@ -1567,7 +1583,7 @@ static void otrg_gtk_dialog_connected(ConnContext *context)
     g_free(buf);
     g_free(format_buf);
 
-    dialog_update_label(context);
+    dialog_update_label_real(context);
 
     is_multi_inst = (gboolean *) purple_conversation_get_data(conv,
 	    "otr-conv_multi_instances");
@@ -3300,7 +3316,7 @@ static const OtrgDialogUiOps gtk_dialog_ui_ops = {
     otrg_gtk_dialog_verify_fingerprint,
     otrg_gtk_dialog_socialist_millionaires,
     otrg_gtk_dialog_update_smp,
-    otrg_gtk_dialog_connected,
+    otrg_gtk_dialog_connected_real,
     otrg_gtk_dialog_disconnected,
     otrg_gtk_dialog_stillconnected,
     otrg_gtk_dialog_finished,

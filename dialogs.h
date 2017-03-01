@@ -29,6 +29,8 @@
 #include <libotr/proto.h>
 #include <libotr/message.h>
 
+#include "otr-plugin.h"
+
 /* The various help URLs */
 #define BASE_HELPURL "https://otr-help.cypherpunks.ca/" PIDGIN_OTR_VERSION "/"
 #define AUTHENTICATE_HELPURL  BASE_HELPURL "authenticate.php"
@@ -68,7 +70,7 @@ typedef struct {
     void (*update_smp)(ConnContext *context, OtrlSMPEvent smp_event,
 	    double progress_level);
 
-    void (*connected)(ConnContext *context);
+    void (*connected)(otrg_plugin_conversation *conv);
 
     void (*disconnected)(ConnContext *context);
 

@@ -119,4 +119,26 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
 /* Return 1 if the given protocol supports OTR, 0 otherwise. */
 int otrg_plugin_proto_supports_otr(const char *proto);
 
+
+typedef struct {
+  char *accountname;
+  char *protocol;
+  char *username; //recipient
+} otrg_plugin_conversation;
+
+static inline PurpleConversation *otrg_plugin_conversation_to_purple_conv(const otrg_plugin_conversation *conv, int force) {
+  return otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
+      conv->username, force);
+}
+
+static inline TrustLevel
+otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *conv) {
+    return TRUST_PRIVATE; //TODO: get this trust based on fingerprint and conversation status
+}
+
+static inline int
+otrg_plugin_conversation_to_protocol_version(const otrg_plugin_conversation *conv) {
+    return 4; //TODO: get this from the OTR conversation
+}
+
 #endif
