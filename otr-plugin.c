@@ -72,6 +72,7 @@
 #include <libotr/instag.h>
 
 /* libotr4 headers */
+#include <libotr4/protocol.h>
 #include "otr4-client.h"
 
 /* purple-otr headers */
@@ -113,7 +114,7 @@ PurplePlugin *otrg_plugin_handle;
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
 
-otr4_client_t *otrv4_client = NULL;
+otr4_client_adapter_t *otrv4_client = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
@@ -718,7 +719,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
     instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
 
-    int err = otr4_client_send(&newmessage, *message, username, otrv4_client);
+    int err = otr4_client_adapter_send(&newmessage, *message, username, otrv4_client);
     if (err == 1) {
         return;
     }
@@ -778,7 +779,7 @@ void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
     OtrgUiPrefs prefs;
 
     otrg_ui_get_prefs(&prefs, account, context->username);
-    msg = otr4_client_query_message(context->username, "", otrv4_client);
+    msg = otr4_client_adapter_query_message(context->username, "", otrv4_client);
     otrg_plugin_inject_message(account, context->username,
 	     msg ? msg : "?OTRv34?");
     free(msg);
@@ -798,7 +799,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     username = purple_conversation_get_name(conv);
 
     otrg_ui_get_prefs(&prefs, account, username);
-    msg = otr4_client_query_message(username, "", otrv4_client);
+    msg = otr4_client_adapter_query_message(username, "", otrv4_client);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
     free(msg);
 }
@@ -822,10 +823,11 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-    if (!otrv4_client->conv->ctx)
-        otrv4_client->conv->ctx = otrl_context_find(otrg_plugin_userstate, username, accountname, protocol, 0, 1, NULL, NULL, NULL);
+    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, username, accountname, protocol, 0, 1, NULL, NULL, NULL);
+    if (ctx)
+      otr4_client_adapter_set_context(username, ctx, otrv4_client);
 
-    res = otr4_client_receive(&tosend, &todisplay, *message, username, otrv4_client);
+    res = otr4_client_adapter_receive(&tosend, &todisplay, *message, username, otrv4_client);
     if (tosend) {
         //TODO: Add fragmentation?
         otrg_plugin_inject_message(account, username, tosend);
@@ -879,10 +881,8 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
     context = otrl_context_find(otrg_plugin_userstate, username, accountname,
 	    proto, their_instance, force_create, NULL, NULL, NULL);
 
-    //TODO: this is hackish, but its easier to just use the ConnContext to
-    //not break the UI.
-    if (force_create)
-        otr4_watch_context(context, otrv4_client);
+    if (context)
+      otr4_client_adapter_set_context(username, context, otrv4_client);
 
     g_free(username);
 
@@ -1219,6 +1219,24 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
+static void otr4_gone_secure_cb(const otr4_conversation_t *conv)
+{
+    ConnContext *ctx = otr4_client_adapter_get_context(conv, otrv4_client);
+    ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
+    gone_secure_cb(NULL, ctx);
+}
+
+static void otr4_gone_insecure_cb(const otr4_conversation_t *conv)
+{
+    ConnContext *ctx = otr4_client_adapter_get_context(conv, otrv4_client);
+    gone_insecure_cb(NULL, ctx);
+}
+
+static otr4_client_callbacks_t otr4_callbacks = {
+    otr4_gone_secure_cb,
+    otr4_gone_insecure_cb,
+};
+
 static gboolean otr_plugin_load(PurplePlugin *handle)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME,
@@ -1313,8 +1331,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-    otrv4_client = otr4_client_new();
-    otrv4_client->callbacks = &otr4_callbacks;
+    otrv4_client = otr4_client_adapter_new(&otr4_callbacks);
 
     otrg_plugin_timerid = 0;
 
@@ -1394,7 +1411,7 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
-    otr4_client_free(otrv4_client);
+    otr4_client_adapter_free(otrv4_client);
     otrv4_client = NULL;
 
     otrg_free_mms_table();

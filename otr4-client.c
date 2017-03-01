@@ -1,109 +1,74 @@
 #include "otr4-client.h"
 
-otr4_client_t*
-otr4_client_new() {
-    otr4_client_t *client = malloc(sizeof(otr4_client_t));
-    if (!client)
+otr4_client_adapter_t*
+otr4_client_adapter_new(otr4_client_callbacks_t *cb) {
+    otr4_client_adapter_t *c = malloc(sizeof(otr4_client_adapter_t));
+    if (!c)
         return NULL;
 
-    otr4_conversation_t *conv = malloc(sizeof(otr4_conversation_t));
-    if (!conv)
-        return NULL;
+    c->real_client = otr4_client_new();
+    c->real_client->callbacks = cb;
+    c->plugin_conversations = NULL;
 
-    cs_keypair_generate(client->keypair);
-
-    conv->ctx = NULL;
-    conv->conn = otrv4_new(client->keypair);
-    client->conv = conv;
-    return client;
+    return c;
 }
 
 void
-otr4_client_free(otr4_client_t *client) {
-    otrv4_free(client->conv->conn);
-    client->conv->conn = NULL;
-    free(client->conv);
-
-    client->conv = NULL;
-    cs_keypair_destroy(client->keypair);
-
+otr4_client_adapter_free(otr4_client_adapter_t *client) {
+    list_free_full(client->plugin_conversations);
+    client->plugin_conversations = NULL;
+    client->real_client->callbacks = NULL;
     free(client);
 }
 
-otr4_conversation_t*
-get_conversation_with(const char *recipient, otr4_client_t *client) {
-    //TODO
-    return client->conv;
-}
-
-int
-otr4_client_send(char **newmessage, const char *message, const char *recipient, otr4_client_t *client) {
-    otr4_conversation_t *conv = get_conversation_with(recipient, client);
-
-    if (conv->conn->state == OTRV4_STATE_START) {
-        return 1;
-    }
-
-    //TODO: add notifications (like "ttried to send a message while not in
-    //encrypted")
-    *newmessage = NULL;
-    if (!otrv4_send_message((unsigned char **) newmessage, (unsigned char*) message, strlen(message)+1, conv->conn)) {
-        return -1;
-    }
-
-    return 0;
-}
-
-int
-otr4_client_receive(char **newmessage, char **todisplay, const char *message, const char *recipient, otr4_client_t *client) {
-    otrv4_state state_before;
-    *newmessage = NULL;
-    *todisplay = NULL;
-
-    otr4_conversation_t *conv = get_conversation_with(recipient, client);
-    state_before = conv->conn->state;
-
-    otrv4_response_t *response = otrv4_response_new();
-    if (!otrv4_receive_message(response, (const string_t) message, strlen(message), conv->conn)) {
-      otrv4_response_free(response);
-      return 0; //Should this cause the message to be ignored or not?
-    }
-
-    if (state_before != OTRV4_STATE_ENCRYPTED_MESSAGES && conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
-        conv->ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
-        if (client->callbacks && client->callbacks->gone_secure)
-            client->callbacks->gone_secure(conv);
-    }
-
-    if (response->to_send) {
-      char *tosend = strdup(response->to_send);
-      *newmessage = tosend;
-    }
-
-    int should_ignore = 1;
-    if (response->to_display) {
-	char *plain = strdup(response->to_display);
-        *todisplay = plain;
-        should_ignore = 0;
-    }
-
-    otrv4_response_free(response);
-    return should_ignore;
-}
-
 char*
-otr4_client_query_message(const char *recipient, const char* message, otr4_client_t *client) {
-    otr4_conversation_t *conv = get_conversation_with(recipient, client);
+otr4_client_adapter_query_message(const char *recipient,
+                          const char* message,
+                          otr4_client_adapter_t *client) {
+    return otr4_client_query_message(recipient, message, client->real_client);
+}
 
-    //TODO: implement policy
-    char *ret = NULL;
-    otrv4_build_query_message(&ret, conv->conn, (const string_t) message, strlen(message));
-    return ret;
+int
+otr4_client_adapter_send(char **newmessage,
+                 const char *message,
+                 const char *recipient,
+                 otr4_client_adapter_t *client) {
+    return otr4_client_send(newmessage, message, recipient, client->real_client);
+}
+
+int
+otr4_client_adapter_receive(char **newmessage,
+                    char **todisplay,
+                    const char *message,
+                    const char *recipient,
+                    otr4_client_adapter_t *client) {
+    return otr4_client_receive(newmessage, todisplay, message, recipient, client->real_client);
+}
+
+ConnContext*
+otr4_client_adapter_get_context(const otr4_conversation_t *wanted, otr4_client_adapter_t *client) {
+    list_foreach(client->plugin_conversations, c, {
+    otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) c->data;
+    if (conv->conv == wanted)
+      return conv->ctx;
+  });
+
+  return NULL;
 }
 
 void
-otr4_watch_context(ConnContext *ctx, otr4_client_t *client) {
-    //TODO: There should be one per conversation (from, to, proto,
-    //instance_tag)
-    client->conv->ctx = ctx;
+otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_client_adapter_t *client) {
+    otr4_conversation_t *conv = otr4_client_get_conversation(1, recipient, client->real_client);
+    if(otr4_client_adapter_get_context(conv, client)) {
+        return;
+    }
+
+    otr4_plugin_conversation_t *plugin_conv = malloc(sizeof(otr4_plugin_conversation_t));
+    if (!plugin_conv)
+        return;
+
+    plugin_conv->conv = conv;
+    plugin_conv->ctx = ctx;
+    client->plugin_conversations = list_add(plugin_conv, client->plugin_conversations);
 }
+
