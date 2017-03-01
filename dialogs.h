@@ -72,7 +72,7 @@ typedef struct {
 
     void (*connected)(otrg_plugin_conversation *conv);
 
-    void (*disconnected)(ConnContext *context);
+    void (*disconnected)(otrg_plugin_conversation *conv);
 
     void (*stillconnected)(ConnContext *context);
 

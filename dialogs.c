@@ -176,7 +176,12 @@ void otrg_dialog_connected(ConnContext *context)
 /* Call this when a context transitions to PLAINTEXT. */
 void otrg_dialog_disconnected(ConnContext *context)
 {
-    ui_ops->disconnected(context);
+    otrg_plugin_conversation conv;
+    conv.accountname = context->accountname;
+    conv.protocol = context->protocol;
+    conv.username = context->username;
+
+    ui_ops->disconnected(&conv);
 }
 
 /* Call this when we receive a Key Exchange message that doesn't cause

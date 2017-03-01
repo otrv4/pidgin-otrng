@@ -1606,13 +1606,13 @@ static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
-static void otrg_gtk_dialog_disconnected(ConnContext *context)
+static void otrg_gtk_dialog_disconnected_real(otrg_plugin_conversation *context)
 {
     PurpleConversation *conv;
     char *buf;
     OtrgUiPrefs prefs;
 
-    conv = otrg_plugin_context_to_conv(context, 1);
+    conv = otrg_plugin_conversation_to_purple_conv(context, TRUE);
 
     buf = g_strdup_printf(_("Private conversation with %s lost."),
 	    purple_conversation_get_name(conv));
@@ -1630,7 +1630,7 @@ static void otrg_gtk_dialog_disconnected(ConnContext *context)
 	}
     }
 
-    dialog_update_label(context);
+    dialog_update_label_real(context);
     close_smp_window(conv);
 }
 
@@ -3317,7 +3317,7 @@ static const OtrgDialogUiOps gtk_dialog_ui_ops = {
     otrg_gtk_dialog_socialist_millionaires,
     otrg_gtk_dialog_update_smp,
     otrg_gtk_dialog_connected_real,
-    otrg_gtk_dialog_disconnected,
+    otrg_gtk_dialog_disconnected_real,
     otrg_gtk_dialog_stillconnected,
     otrg_gtk_dialog_finished,
     otrg_gtk_dialog_resensitize_all,
