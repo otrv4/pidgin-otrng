@@ -71,10 +71,6 @@
 #include <libotr/userstate.h>
 #include <libotr/instag.h>
 
-/* libotr4 headers */
-#include <libotr4/protocol.h>
-#include "otr4-client.h"
-
 /* purple-otr headers */
 #include "ui.h"
 #include "dialogs.h"

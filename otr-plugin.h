@@ -31,6 +31,9 @@
 #include <libotr/userstate.h>
 #include <libotr/instag.h>
 
+/* libotr4 headers */
+#include "otr4-client.h"
+
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"
 #define INSTAGFNAME "otr.instance_tags"
@@ -39,6 +42,9 @@
 extern PurplePlugin *otrg_plugin_handle;
 
 extern OtrlUserState otrg_plugin_userstate;
+
+//TODO: This should be a UserState that maps (account, protocol) -> (otr4_client)
+extern otr4_client_adapter_t *otrv4_client;
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
