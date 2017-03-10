@@ -96,11 +96,9 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     char *fingerprint;
 
     if (account) {
-	char fingerprint_buf[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 	accountname = purple_account_get_username(account);
 	protocol = purple_account_get_protocol_id(account);
-	fingerprint = otrl_privkey_fingerprint(otrg_plugin_userstate,
-		fingerprint_buf, accountname, protocol);
+        fingerprint = otrv4_client_adapter_privkey_fingerprint(otrv4_client);
 
 	if (fingerprint) {
 	    s = g_strdup_printf(_("Fingerprint: %.80s"), fingerprint);
@@ -111,6 +109,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 	    if (ui_layout.generate_button)
 		gtk_widget_set_sensitive(ui_layout.generate_button, 1);
 	}
+        free(fingerprint);
     } else {
 	s = g_strdup(_("No account available"));
 	if (ui_layout.generate_button)

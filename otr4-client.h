@@ -52,4 +52,7 @@ otr4_client_adapter_get_context(const otr4_conversation_t *conv, otr4_client_ada
 void
 otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_client_adapter_t *client);
 
+char*
+otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client);
+
 #endif

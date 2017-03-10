@@ -72,3 +72,18 @@ otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_cl
     client->plugin_conversations = list_add(plugin_conv, client->plugin_conversations);
 }
 
+char*
+otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client) {
+    char *ret = malloc(OTR4_FPRINT_HUMAN_LEN);
+    if (!ret)
+        return NULL;
+
+    uint8_t *our_fp = otr4_client_get_our_fingerprint(client->real_client);
+    if (!our_fp)
+        return NULL;
+
+    otr4_fingerprint_hash_to_human(ret, our_fp);
+    free(our_fp);
+
+    return ret;
+}
