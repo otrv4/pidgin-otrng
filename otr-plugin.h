@@ -34,6 +34,8 @@
 /* libotr4 headers */
 #include "otr4-client.h"
 
+#define PRIVKEYFNAMEv4 "otr4.private_key"
+
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"
 #define INSTAGFNAME "otr.instance_tags"

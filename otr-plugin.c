@@ -203,21 +203,21 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
     return prefs.policy;
 }
 
-/* Generate a private key for the given accountname/protocol */
-void otrg_plugin_create_privkey(const char *accountname,
+
+static int otrg_plugin_create_privkey_v4(const char *accountname,
 	const char *protocol)
 {
-    OtrgDialogWaitHandle waithandle;
 #ifndef WIN32
     mode_t mask;
 #endif  /* WIN32 */
     FILE *privf;
 
+    //TODO: create a file per account and protocol
     gchar *privkeyfile = g_build_filename(purple_user_dir(),
-	    PRIVKEYFNAME, NULL);
+	    PRIVKEYFNAMEv4, NULL);
     if (!privkeyfile) {
 	fprintf(stderr, _("Out of memory building filenames!\n"));
-	return;
+	return -1;
     }
 #ifndef WIN32
     mask = umask (0077);
@@ -226,18 +226,27 @@ void otrg_plugin_create_privkey(const char *accountname,
 #ifndef WIN32
     umask (mask);
 #endif  /* WIN32 */
+
     g_free(privkeyfile);
     if (!privf) {
 	fprintf(stderr, _("Could not write private key file\n"));
-	return;
+	return -1;
     }
 
+    int err = otr4_privkey_generate_FILEp(otrv4_client->real_client, privf);
+    fclose(privf);
+
+    return err;
+}
+
+/* Generate a private key for the given accountname/protocol */
+void otrg_plugin_create_privkey(const char *accountname,
+	const char *protocol)
+{
+    OtrgDialogWaitHandle waithandle;
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
-    /* Generate the key */
-    otrl_privkey_generate_FILEp(otrg_plugin_userstate, privf,
-	    accountname, protocol);
-    fclose(privf);
+    otrg_plugin_create_privkey_v4(accountname, protocol);
     otrg_ui_update_fingerprint();
 
     /* Mark the dialog as done. */
@@ -1235,7 +1244,7 @@ static otr4_client_callbacks_t otr4_callbacks = {
 
 static gboolean otr_plugin_load(PurplePlugin *handle)
 {
-    gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME,
+    gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4,
 	    NULL);
     gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
@@ -1331,7 +1340,6 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
     otrg_plugin_timerid = 0;
 
-    otrl_privkey_read_FILEp(otrg_plugin_userstate, privf);
     otrl_privkey_read_fingerprints_FILEp(otrg_plugin_userstate, storef,
 	    NULL, NULL);
     otrl_instag_read_FILEp(otrg_plugin_userstate, instagf);
