@@ -55,4 +55,11 @@ otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_cl
 char*
 otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client);
 
+int
+otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *privf);
+
+int
+otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *privf);
+
+
 #endif

@@ -233,7 +233,7 @@ static int otrg_plugin_create_privkey_v4(const char *accountname,
 	return -1;
     }
 
-    int err = otr4_privkey_generate_FILEp(otrv4_client->real_client, privf);
+    int err = otr4_client_adapter_privkey_generate_FILEp(otrv4_client, privf);
     fclose(privf);
 
     return err;
@@ -1336,7 +1336,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
+    //TODO: create one client per account and protocol
     otrv4_client = otr4_client_adapter_new(&otr4_callbacks);
+    otr4_client_adapter_read_privkey_FILEp(otrv4_client, privf);
 
     otrg_plugin_timerid = 0;
 

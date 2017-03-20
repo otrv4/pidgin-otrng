@@ -6,7 +6,7 @@ otr4_client_adapter_new(otr4_client_callbacks_t *cb) {
     if (!c)
         return NULL;
 
-    c->real_client = otr4_client_new();
+    c->real_client = otr4_client_new(NULL);
     c->real_client->callbacks = cb;
     c->plugin_conversations = NULL;
 
@@ -48,9 +48,9 @@ otr4_client_adapter_receive(char **newmessage,
 ConnContext*
 otr4_client_adapter_get_context(const otr4_conversation_t *wanted, otr4_client_adapter_t *client) {
     list_foreach(client->plugin_conversations, c, {
-    otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) c->data;
-    if (conv->conv == wanted)
-      return conv->ctx;
+      otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) c->data;
+      if (conv->conv == wanted)
+        return conv->ctx;
   });
 
   return NULL;
@@ -87,3 +87,33 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client) {
 
     return ret;
 }
+
+static int
+generate_privkey(otr4_client_adapter_t *client) {
+    client->real_client->keypair = malloc(sizeof(cs_keypair_s));
+    if (!client->real_client->keypair)
+        return -1;
+
+    cs_keypair_generate(client->real_client->keypair);
+    return 0;
+}
+
+int
+otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *privf) {
+    if (!privf)
+        return -1;
+
+    if(generate_privkey(client))
+        return -2;
+
+    return otr4_privkey_generate_FILEp(client->real_client, privf);
+}
+
+int
+otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *privf) {
+    if (!privf)
+        return -1;
+
+    return otr4_read_privkey_FILEp(client->real_client, privf);
+}
+
