@@ -22,8 +22,7 @@ typedef struct {
 } otr4_client_adapter_t;
 
 otr4_client_adapter_t*
-otr4_client_adapter_new(otr4_client_callbacks_t *cb);
-// otrv4_client->callbacks = &otr4_callbacks;
+otr4_client_adapter_new(otrv4_callbacks_t *cb);
 
 void
 otr4_client_adapter_free(otr4_client_adapter_t *client);
@@ -61,5 +60,7 @@ otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *priv
 int
 otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *privf);
 
+const otr4_conversation_t *
+otr4_client_adapter_get_conversation_from_connection(const otrv4_t *conn, const otr4_client_adapter_t *client);
 
 #endif

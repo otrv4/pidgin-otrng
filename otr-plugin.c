@@ -1224,22 +1224,18 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
-static void otr4_gone_secure_cb(const otr4_conversation_t *conv)
+static void otr4_gone_secure_cb(const otrv4_t *conn)
 {
+    //TODO: This will not work with multiple accounts. otrv4_t is not a good
+    //fit for this callback (it does not know anything about the account).
+    const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, otrv4_client);
     ConnContext *ctx = otr4_client_adapter_get_context(conv, otrv4_client);
     ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
     gone_secure_cb(NULL, ctx);
 }
 
-static void otr4_gone_insecure_cb(const otr4_conversation_t *conv)
-{
-    ConnContext *ctx = otr4_client_adapter_get_context(conv, otrv4_client);
-    gone_insecure_cb(NULL, ctx);
-}
-
-static otr4_client_callbacks_t otr4_callbacks = {
+static otrv4_callbacks_t otr4_callbacks = {
     otr4_gone_secure_cb,
-    otr4_gone_insecure_cb,
 };
 
 static gboolean otr_plugin_load(PurplePlugin *handle)

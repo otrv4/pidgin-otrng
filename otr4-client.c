@@ -1,13 +1,13 @@
 #include "otr4-client.h"
 
 otr4_client_adapter_t*
-otr4_client_adapter_new(otr4_client_callbacks_t *cb) {
+otr4_client_adapter_new(otrv4_callbacks_t *callbacks) {
     otr4_client_adapter_t *c = malloc(sizeof(otr4_client_adapter_t));
     if (!c)
         return NULL;
 
     c->real_client = otr4_client_new(NULL);
-    c->real_client->callbacks = cb;
+    c->real_client->callbacks = callbacks;
     c->plugin_conversations = NULL;
 
     return c;
@@ -115,5 +115,24 @@ otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *priv
         return -1;
 
     return otr4_read_privkey_FILEp(client->real_client, privf);
+}
+
+const otr4_conversation_t *
+otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, const otr4_client_adapter_t *client) {
+    otr4_plugin_conversation_t *conv = NULL;
+
+    if (!wanted)
+        return NULL;
+
+    list_foreach(client->plugin_conversations, c, {
+      conv = (otr4_plugin_conversation_t*) c->data;
+      if (!conv->conv)
+        continue;
+
+      if (conv->conv->conn == wanted)
+        return conv->conv;
+  });
+
+  return NULL;
 }
 
