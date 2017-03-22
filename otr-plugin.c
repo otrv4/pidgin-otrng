@@ -1224,6 +1224,26 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
+static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv4_t *conn)
+{
+    //TODO: use fp to determine if you have seen this fp before
+    //See: otrg_gtk_dialog_unknown_fingerprint
+    char *buf;
+
+    const otr4_conversation_t *otrconv = otr4_client_adapter_get_conversation_from_connection(conn, otrv4_client);
+    ConnContext *ctx = otr4_client_adapter_get_context(otrconv, otrv4_client);
+    PurpleConversation *conv = otrg_plugin_context_to_conv(ctx, 0);
+
+    buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
+        "should <a href=\"%s%s\">authenticate</a> this buddy."),
+        ctx->username, AUTHENTICATE_HELPURL, _("?lang=en"));
+
+    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
+	    time(NULL));
+
+    g_free(buf);
+}
+
 static void otr4_gone_secure_cb(const otrv4_t *conn)
 {
     //TODO: This will not work with multiple accounts. otrv4_t is not a good
@@ -1236,6 +1256,7 @@ static void otr4_gone_secure_cb(const otrv4_t *conn)
 
 static otrv4_callbacks_t otr4_callbacks = {
     otr4_gone_secure_cb,
+    otr4_confirm_fingerprint_cb,
 };
 
 static gboolean otr_plugin_load(PurplePlugin *handle)
