@@ -47,13 +47,14 @@ otr4_client_adapter_receive(char **newmessage,
 
 ConnContext*
 otr4_client_adapter_get_context(const otr4_conversation_t *wanted, otr4_client_adapter_t *client) {
-    list_foreach(client->plugin_conversations, c, {
-      otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) c->data;
-      if (conv->conv == wanted)
-        return conv->ctx;
-  });
+    list_element_t *el = NULL;
+    for (el = client->plugin_conversations; el; el = el->next) {
+        otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) el->data;
+        if (conv->conv == wanted)
+            return conv->ctx;
+    }
 
-  return NULL;
+    return NULL;
 }
 
 void
@@ -120,20 +121,19 @@ otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *priv
 
 const otr4_conversation_t *
 otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, const otr4_client_adapter_t *client) {
-    otr4_plugin_conversation_t *conv = NULL;
-
     if (!wanted)
         return NULL;
 
-    list_foreach(client->plugin_conversations, c, {
-      conv = (otr4_plugin_conversation_t*) c->data;
-      if (!conv->conv)
-        continue;
+    list_element_t *el = NULL;
+    for (el = client->plugin_conversations; el; el = el->next) {
+        otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) el->data;
+        if (!conv->conv)
+            continue;
 
-      if (conv->conv->conn == wanted)
-        return conv->conv;
-  });
+        if (conv->conv->conn == wanted)
+            return conv->conv;
+    }
 
-  return NULL;
+    return NULL;
 }
 
