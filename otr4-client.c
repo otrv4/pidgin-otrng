@@ -137,3 +137,10 @@ otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, cons
     return NULL;
 }
 
+int
+otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
+                               otr4_client_adapter_t * client)
+{
+    return otr4_client_disconnect(newmessage, recipient, client->real_client);
+}
+

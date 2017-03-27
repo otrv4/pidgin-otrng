@@ -1041,9 +1041,19 @@ void otrg_plugin_disconnect_all_instances(ConnContext *context)
  * appropriate. */
 void otrg_plugin_disconnect(ConnContext *context)
 {
-    otrl_message_disconnect(otrg_plugin_userstate, &ui_ops, NULL,
-	    context->accountname, context->protocol, context->username,
-	    context->their_instance);
+    char *msg = NULL;
+    PurpleConversation *conv = NULL;
+    PurpleAccount *account;
+
+    if (!context) return;
+
+    conv = otrg_plugin_context_to_conv(context, 1);
+    account = purple_conversation_get_account(conv);
+
+    if (!otr4_client_adapter_disconnect(&msg, context->username, otrv4_client))
+        otrg_plugin_inject_message(account, context->username, msg);
+
+    free(msg);
 }
 
 /* Write the fingerprints to disk. */

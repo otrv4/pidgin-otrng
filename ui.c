@@ -129,7 +129,10 @@ void otrg_ui_disconnect_connection(ConnContext *context)
 	return;
 
     otrg_plugin_disconnect(context);
-    otrg_dialog_disconnected(context);
+
+    //TODO: We call gone_insecure when we close.
+    //libotr DOES NOT.
+    //otrg_dialog_disconnected(context);
 }
 
 /* Forget a fingerprint */

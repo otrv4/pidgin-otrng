@@ -63,4 +63,8 @@ otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *
 const otr4_conversation_t *
 otr4_client_adapter_get_conversation_from_connection(const otrv4_t *conn, const otr4_client_adapter_t *client);
 
+int
+otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
+                               otr4_client_adapter_t * client);
+
 #endif
