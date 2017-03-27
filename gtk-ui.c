@@ -89,16 +89,13 @@ static const gchar *trust_states[] = {
 static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 	void *data)
 {
-    const char *accountname;
-    const char *protocol;
     GtkWidget *fprint = ui_layout.fprint_label;
     char *s = NULL;
     char *fingerprint;
 
     if (account) {
-	accountname = purple_account_get_username(account);
-	protocol = purple_account_get_protocol_id(account);
-        fingerprint = otrv4_client_adapter_privkey_fingerprint(otrv4_client);
+        otr4_client_adapter_t* c = purple_account_to_otr4_client(account);
+        fingerprint = otrv4_client_adapter_privkey_fingerprint(c);
 
 	if (fingerprint) {
 	    s = g_strdup_printf(_("Fingerprint: %.80s"), fingerprint);

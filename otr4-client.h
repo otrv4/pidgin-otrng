@@ -67,4 +67,16 @@ int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client);
 
-#endif
+typedef struct {
+    char *account;
+    char *protocol;
+
+    //state
+    otrl_instag_t our_instance;
+
+} otr4_account_t;
+
+void
+otr4_account_free(otr4_account_t *account);
+
+#endif 

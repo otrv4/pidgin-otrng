@@ -144,3 +144,15 @@ otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
     return otr4_client_disconnect(newmessage, recipient, client->real_client);
 }
 
+
+
+void otr4_account_free(otr4_account_t *account)
+{
+    free(account->account);
+    account->account = NULL;
+
+    free(account->protocol);
+    account->account = NULL;
+
+    free(account);
+}

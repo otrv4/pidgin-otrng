@@ -45,8 +45,12 @@ extern PurplePlugin *otrg_plugin_handle;
 
 extern OtrlUserState otrg_plugin_userstate;
 
-//TODO: This should be a UserState that maps (account, protocol) -> (otr4_client)
+extern GHashTable *client_table;
 extern otr4_client_adapter_t *otrv4_client;
+extern otrv4_callbacks_t otr4_callbacks;
+
+otr4_client_adapter_t*
+purple_account_to_otr4_client(PurpleAccount *account);
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
