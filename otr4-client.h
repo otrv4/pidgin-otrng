@@ -58,6 +58,9 @@ int
 otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *privf);
 
 int
+otr4_client_generate_privkey(otr4_client_adapter_t *client);
+
+int
 otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *privf);
 
 const otr4_conversation_t *

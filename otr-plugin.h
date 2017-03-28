@@ -46,7 +46,6 @@ extern PurplePlugin *otrg_plugin_handle;
 extern OtrlUserState otrg_plugin_userstate;
 
 extern GHashTable *client_table;
-extern otr4_client_adapter_t *otrv4_client;
 extern otrv4_callbacks_t otr4_callbacks;
 
 otr4_client_adapter_t*

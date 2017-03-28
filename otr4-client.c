@@ -90,8 +90,8 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client)
     return ret;
 }
 
-static int
-generate_privkey(otr4_client_adapter_t *client) {
+int
+otr4_client_generate_privkey(otr4_client_adapter_t *client) {
     client->real_client->keypair = malloc(sizeof(cs_keypair_s));
     if (!client->real_client->keypair)
         return -1;
@@ -105,7 +105,7 @@ otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *
     if (!privf)
         return -1;
 
-    if(generate_privkey(client))
+    if(otr4_client_generate_privkey(client))
         return -2;
 
     return otr4_privkey_generate_FILEp(client->real_client, privf);
