@@ -33,7 +33,7 @@ before_install:
   - pushd .deps/libsodium-1.0.11 && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
   - git clone --depth=1 https://github.com/twstrike/ed448goldilocks .deps/goldilocks
   - pushd .deps/goldilocks && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
-   git clone --depth=1 https://github.com/twstrike/cramershoup.git .deps/cramershoup
+  - git clone --depth=1 https://github.com/twstrike/cramershoup.git .deps/cramershoup
   - pushd .deps/cramershoup && ./autogen.sh && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX CFLAGS="-DFAST_RANDOM" && make && make install && popd
   - git clone --depth=1 https://github.com/twstrike/libotrv4.git .deps/libotr4
   - pushd .deps/libotr4 && ./autogen.sh && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
