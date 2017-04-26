@@ -97,7 +97,7 @@ otr4_client_generate_privkey(otr4_client_adapter_t *client) {
         return -1;
 
     // remove when the function handles the sym itself
-    uint8_t sym[ED448_PRIVATE_BYTES] = { 1 };
+    uint8_t sym[57] = { 1 };
     otrv4_keypair_generate(client->real_client->keypair, sym);
     return 0;
 }
