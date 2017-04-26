@@ -1467,11 +1467,13 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     char *line = NULL;
     size_t cap = 0;
     int len = 0;
-    while ((len = getline(&line, &cap, privf)) != -1) {
-        gchar *key = g_strndup(line, len-1);
-        otr4_client_adapter_t *client = otr4_client_from_key(key);
-        //TODO: What to do if an error happens?
-        otr4_client_adapter_read_privkey_FILEp(client, privf);
+    if (privf) {
+        while ((len = getline(&line, &cap, privf)) != -1) {
+            gchar *key = g_strndup(line, len-1);
+            otr4_client_adapter_t *client = otr4_client_from_key(key);
+            //TODO: What to do if an error happens?
+            otr4_client_adapter_read_privkey_FILEp(client, privf);
+        }
     }
 
     otrg_plugin_timerid = 0;
