@@ -122,6 +122,14 @@ g_destroy_otrv4_account(gpointer data)
     otr4_account_free(data);
 }
 
+static void
+otrv4_userstate_create()
+{
+    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                         g_destroy_otrv4_account);
+}
+
+//NOTE: Key is owned by the hash table.
 otr4_client_adapter_t*
 otr4_client_from_key(char *key)
 {
@@ -135,6 +143,26 @@ otr4_client_from_key(char *key)
 
     g_hash_table_insert(client_table, key, client);
     return client;
+}
+
+static void privkey_read_FILEp(FILE *privf)
+{
+    gchar *key = NULL;
+    otr4_client_adapter_t *client = NULL;
+
+    char *line = NULL;
+    size_t cap = 0;
+    int len = 0;
+
+    if (!privf)
+        return;
+
+    while ((len = getline(&line, &cap, privf)) != -1) {
+        key = g_strndup(line, len-1);
+        client = otr4_client_from_key(key);
+        //TODO: What to do if an error happens?
+        otr4_client_adapter_read_privkey_FILEp(client, privf);
+    }
 }
 
 otr4_client_adapter_t*
@@ -1461,20 +1489,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-                                         g_destroy_otrv4_account);
 
-    char *line = NULL;
-    size_t cap = 0;
-    int len = 0;
-    if (privf) {
-        while ((len = getline(&line, &cap, privf)) != -1) {
-            gchar *key = g_strndup(line, len-1);
-            otr4_client_adapter_t *client = otr4_client_from_key(key);
-            //TODO: What to do if an error happens?
-            otr4_client_adapter_read_privkey_FILEp(client, privf);
-        }
-    }
+    otrv4_userstate_create();
+    privkey_read_FILEp(privf);
 
     otrg_plugin_timerid = 0;
 
