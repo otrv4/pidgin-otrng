@@ -868,17 +868,19 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
     int err = otr4_client_adapter_send(&newmessage, *message, username,
                                        purple_account_to_otr4_client(account));
-    if (err == 1) {
+
+    //TODO: this message should be stored for retransmission 
+    if (err == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
         return;
     }
 
-    if (err == -1) {
-
-	/* Do not send out plain text */
-	char *ourm = strdup("");
-	free(*message);
-	*message = ourm;
-    }
+    //TODO: if require encription
+    //if (err == ???) {
+    //    /* Do not send out plain text */
+    //    char *ourm = strdup("");
+    //    free(*message);
+    //    *message = ourm;
+    //}
 
     if (!err) {
 	char *ourm = strdup(newmessage);
