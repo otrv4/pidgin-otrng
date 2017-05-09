@@ -112,17 +112,6 @@ otr4_client_generate_privkey(otr4_client_adapter_t *client) {
 }
 
 int
-otr4_client_adapter_privkey_generate_FILEp(otr4_client_adapter_t *client, FILE *privf) {
-    if (!privf)
-        return -1;
-
-    if(otr4_client_generate_privkey(client))
-        return -2;
-
-    return otr4_privkey_generate_FILEp(client->real_client, privf);
-}
-
-int
 otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *privf) {
     if (!privf)
         return -1;

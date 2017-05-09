@@ -299,6 +299,38 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
     return prefs.policy;
 }
 
+static int
+otr4_privkey_generate_FILEp(const otr4_client_t * client, const char *key, FILE * privf)
+{
+        char *buff = NULL;
+        size_t s = 0;
+        int err = 0;
+
+        if (!privf)
+                return -1;
+
+        if (!client->keypair)
+                return -2;
+
+        err = otrv4_symmetric_key_serialize(&buff, &s, client->keypair->sym);
+        if (err)
+                return err;
+
+        if (EOF == fputs(key, privf))
+                return -3;
+
+        if (EOF == fputs("\n", privf))
+                return -3;
+
+        if (1 != fwrite(buff, s, 1, privf))
+                return -3;
+
+        if (EOF == fputs("\n", privf))
+                return -3;
+
+        return 0;
+}
+
 static void
 add_privkey_to_file(gpointer key,
            gpointer value,
@@ -307,11 +339,8 @@ add_privkey_to_file(gpointer key,
     otr4_client_adapter_t *client = value;
     FILE *privf = user_data;
 
-    fputs(key, privf);
-    fputs("\n", privf);
-
     //TODO: What if an error hapens?
-    otr4_privkey_generate_FILEp(client->real_client, privf);
+    otr4_privkey_generate_FILEp(client->real_client, key, privf);
 }
 
 static int otrg_plugin_create_privkey_v4(const char *accountname,
