@@ -485,16 +485,6 @@ static void write_fingerprints_cb(void *opdata)
     otrg_dialog_resensitize_all();
 }
 
-static void gone_secure_cb(void *opdata, ConnContext *context)
-{
-    otrg_dialog_connected(context);
-}
-
-static void gone_insecure_cb(void *opdata, ConnContext *context)
-{
-    otrg_dialog_disconnected(context);
-}
-
 static void still_secure_cb(void *opdata, ConnContext *context, int is_reply)
 {
     if (is_reply == 0) {
@@ -818,8 +808,8 @@ static OtrlMessageAppOps ui_ops = {
     update_context_list_cb,
     confirm_fingerprint_cb,
     write_fingerprints_cb,
-    gone_secure_cb,
-    gone_insecure_cb,
+    NULL, //gone_secure_cb
+    NULL, //gone_insecure_cb
     still_secure_cb,
     max_message_size_cb,
     NULL,                   /* account_name */
