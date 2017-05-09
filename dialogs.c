@@ -162,6 +162,11 @@ void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
     ui_ops->update_smp(context, smp_event, progress_level);
 }
 
+void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv)
+{
+    ui_ops->connected(conv);
+}
+
 /* Call this when a context transitions to ENCRYPTED. */
 void otrg_dialog_connected(ConnContext *context)
 {
@@ -169,8 +174,12 @@ void otrg_dialog_connected(ConnContext *context)
     conv.accountname = context->accountname;
     conv.protocol = context->protocol;
     conv.username = context->username;
+    otrg_dialog_conversation_connected(&conv);
+}
 
-    ui_ops->connected(&conv);
+void otrg_dialog_conversation_disconnected(otrg_plugin_conversation *conv)
+{
+    ui_ops->disconnected(conv);
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
@@ -181,7 +190,7 @@ void otrg_dialog_disconnected(ConnContext *context)
     conv.protocol = context->protocol;
     conv.username = context->username;
 
-    ui_ops->disconnected(&conv);
+    otrg_dialog_conversation_disconnected(&conv);
 }
 
 /* Call this when we receive a Key Exchange message that doesn't cause

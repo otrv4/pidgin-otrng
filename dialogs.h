@@ -157,9 +157,11 @@ void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
 	double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */
+void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv);
 void otrg_dialog_connected(ConnContext *context);
 
 /* Call this when a context transitions to PLAINTEXT. */
+void otrg_dialog_conversation_disconnected(otrg_plugin_conversation *conv);
 void otrg_dialog_disconnected(ConnContext *context);
 
 /* Call this when we receive a Key Exchange message that doesn't cause

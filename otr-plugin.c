@@ -168,12 +168,21 @@ static void privkey_read_FILEp(FILE *privf)
 otr4_client_adapter_t*
 otr4_client(const char *accountname, const char *protocol)
 {
+    otr4_client_adapter_t *ret = NULL;
     char *key = NULL;
+
     asprintf(&key, "%s:%s", protocol, accountname);
     if (!key)
         return NULL;
 
-    return otr4_client_from_key(key);
+    ret = otr4_client_from_key(key);
+    if (!ret)
+        return NULL;
+
+    ret->account = g_strdup(accountname);
+    ret->protocol = g_strdup(protocol);
+
+    return ret;
 }
 
 otr4_client_adapter_t*
@@ -917,6 +926,19 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     free(msg);
 }
 
+//Tells the client about a conversation with a peer.
+static void
+otr4_client_seen_conversation_with(const char *peer, otr4_client_adapter_t *client)
+{
+    //TODO: Remove ConnContext after we remove callbacks dependency on it.
+    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, peer, client->account, client->protocol, 0, 1, NULL, NULL, NULL);
+    if (!ctx)
+        return;
+
+    otr4_client_adapter_set_context(peer, ctx, client);
+}
+
+
 static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	char **message, PurpleConversation *conv, PurpleMessageFlags *flags)
 {
@@ -937,11 +959,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     protocol = purple_account_get_protocol_id(account);
 
     otr4_client_adapter_t *acc = purple_account_to_otr4_client(account);
-
-    //TODO: Can we remove this?
-    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, username, accountname, protocol, 0, 1, NULL, NULL, NULL);
-    if (ctx)
-      otr4_client_adapter_set_context(username, ctx, acc);
+    otr4_client_seen_conversation_with(username, acc);
 
     res = otr4_client_adapter_receive(&tosend, &todisplay, *message, username, acc);
     if (tosend) {
@@ -1373,9 +1391,15 @@ static void otr4_gone_secure_cb(const otrv4_t *conn)
     //fit for this callback (it does not know anything about the account).
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
+
     ConnContext *ctx = otr4_client_adapter_get_context(conv, client);
     ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
-    gone_secure_cb(NULL, ctx);
+
+    otrg_plugin_conversation plugin_conv;
+    plugin_conv.accountname = client->account;
+    plugin_conv.protocol = client->protocol;
+    plugin_conv.username = conv->recipient;
+    otrg_dialog_conversation_connected(&plugin_conv);
 }
 
 static void otr4_gone_insecure_cb(const otrv4_t *conn)
@@ -1384,9 +1408,15 @@ static void otr4_gone_insecure_cb(const otrv4_t *conn)
     //fit for this callback (it does not know anything about the account).
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
+
     ConnContext *ctx = otr4_client_adapter_get_context(conv, client);
     ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
-    gone_insecure_cb(NULL, ctx);
+
+    otrg_plugin_conversation plugin_conv;
+    plugin_conv.accountname = client->account;
+    plugin_conv.protocol = client->protocol;
+    plugin_conv.username = conv->recipient;
+    otrg_dialog_conversation_disconnected(&plugin_conv);
 }
 
 otrv4_callbacks_t otr4_callbacks = {

@@ -17,6 +17,9 @@ typedef struct {
 } otr4_plugin_conversation_t;
 
 typedef struct {
+  char *account;
+  char *protocol;
+
   list_element_t *plugin_conversations;
   otr4_client_t *real_client;
 } otr4_client_adapter_t;

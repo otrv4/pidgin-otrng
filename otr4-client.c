@@ -6,6 +6,8 @@ otr4_client_adapter_new(otrv4_callbacks_t *callbacks) {
     if (!c)
         return NULL;
 
+    c->account = NULL;
+    c->protocol = NULL;
     c->real_client = otr4_client_new(NULL);
     c->real_client->callbacks = callbacks;
     c->plugin_conversations = NULL;
@@ -15,6 +17,12 @@ otr4_client_adapter_new(otrv4_callbacks_t *callbacks) {
 
 void
 otr4_client_adapter_free(otr4_client_adapter_t *client) {
+    free(client->account);
+    client->account = NULL;
+
+    free(client->protocol);
+    client->protocol = NULL;
+
     list_free_full(client->plugin_conversations);
     client->plugin_conversations = NULL;
     client->real_client->callbacks = NULL;
