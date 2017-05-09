@@ -53,7 +53,7 @@ otr4_client_adapter_receive(char **newmessage,
     return otr4_client_receive(newmessage, todisplay, message, recipient, client->real_client);
 }
 
-ConnContext*
+static ConnContext*
 otr4_client_adapter_get_context(const otr4_conversation_t *wanted, otr4_client_adapter_t *client) {
     list_element_t *el = NULL;
     for (el = client->plugin_conversations; el; el = el->next) {
@@ -68,7 +68,7 @@ otr4_client_adapter_get_context(const otr4_conversation_t *wanted, otr4_client_a
 void
 otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_client_adapter_t *client) {
     otr4_conversation_t *conv = otr4_client_get_conversation(1, recipient, client->real_client);
-    if(otr4_client_adapter_get_context(conv, client)) {
+    if (otr4_client_adapter_get_context(conv, client)) {
         return;
     }
 

@@ -6,9 +6,6 @@
 
 //The current plugin requires a ConnContext
 typedef struct {
-  //const char *username;
-  //const char* accountname;
-  //const char* proto; //???
   //otrl_instag_t their_instance;
   //otrl_instag_t our_instance;
 
@@ -47,9 +44,6 @@ otr4_client_adapter_receive(char **newmessage,
                     const char *message,
                     const char *recipient,
                     otr4_client_adapter_t *client);
-
-ConnContext*
-otr4_client_adapter_get_context(const otr4_conversation_t *conv, otr4_client_adapter_t *client);
 
 void
 otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_client_adapter_t *client);

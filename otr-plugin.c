@@ -962,7 +962,9 @@ static void
 otr4_client_seen_conversation_with(const char *peer, otr4_client_adapter_t *client)
 {
     //TODO: Remove ConnContext after we remove callbacks dependency on it.
-    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, peer, client->account, client->protocol, 0, 1, NULL, NULL, NULL);
+    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, peer,
+        client->account, client->protocol, 0, 1, NULL, NULL, NULL);
+
     if (!ctx)
         return;
 
@@ -1403,12 +1405,13 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
 
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *otrconv = otr4_client_adapter_get_conversation_from_connection(conn, client);
-    ConnContext *ctx = otr4_client_adapter_get_context(otrconv, client);
-    PurpleConversation *conv = otrg_plugin_context_to_conv(ctx, 0);
 
     buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
         "should <a href=\"%s%s\">authenticate</a> this buddy."),
-        ctx->username, AUTHENTICATE_HELPURL, _("?lang=en"));
+        otrconv->recipient, AUTHENTICATE_HELPURL, _("?lang=en"));
+
+    PurpleConversation *conv = otrg_plugin_userinfo_to_conv(client->account,
+	client->protocol, otrconv->recipient, 0);
 
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
@@ -1423,9 +1426,6 @@ static void otr4_gone_secure_cb(const otrv4_t *conn)
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
 
-    ConnContext *ctx = otr4_client_adapter_get_context(conv, client);
-    ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
-
     otrg_plugin_conversation plugin_conv;
     plugin_conv.accountname = client->account;
     plugin_conv.protocol = client->protocol;
@@ -1439,9 +1439,6 @@ static void otr4_gone_insecure_cb(const otrv4_t *conn)
     //fit for this callback (it does not know anything about the account).
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
-
-    ConnContext *ctx = otr4_client_adapter_get_context(conv, client);
-    ctx->msgstate = OTRL_MSGSTATE_ENCRYPTED; //Sync our state with OTR3 state
 
     otrg_plugin_conversation plugin_conv;
     plugin_conv.accountname = client->account;
