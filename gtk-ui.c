@@ -195,7 +195,8 @@ static void otrg_gtk_ui_update_keylist(void)
 		TrustLevel this_level = TRUST_NOT_PRIVATE;
 
 		if (context_iter->active_fingerprint == fingerprint) {
-		    this_level = otrg_plugin_context_to_trust(context_iter);
+                    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
+		    //this_level = otrg_plugin_context_to_trust(context_iter);
 		    used = 1;
 
 		    if (this_level == TRUST_PRIVATE) {
@@ -341,14 +342,15 @@ static int fngsortval(Fingerprint *f)
 	context_iter = context_iter->next) {
 
 	int is_active = 0;
-	TrustLevel level;
+        //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
+        TrustLevel level = TRUST_NOT_PRIVATE;
 
 	if  (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 	    context_iter->active_fingerprint == f) {
 	    is_active = 1;
 	}
 
-	level = otrg_plugin_context_to_trust(context_iter);
+	//level = otrg_plugin_context_to_trust(context_iter);
 
 	if (level == TRUST_PRIVATE) {
 	    if (is_active) {
