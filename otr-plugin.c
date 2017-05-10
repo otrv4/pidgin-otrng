@@ -116,6 +116,8 @@ GHashTable* mms_table = NULL;
 
 GHashTable *client_table = NULL;
 
+GHashTable *fingerprint_table = NULL;
+
 static void 
 g_destroy_otrv4_account(gpointer data)
 {
@@ -212,6 +214,44 @@ otr4_connection_to_client(const otrv4_t *conn)
     return g_hash_table_find(client_table, find_otr_client, (gpointer) conn);
 }
 
+static void 
+g_destroy_plugin_fingerprint(gpointer data)
+{
+    otrg_plugin_fingerprint *fp = data;
+    free(fp->username);
+    fp->username = NULL;
+
+    free(fp);
+}
+
+void
+otrg_plugin_fingerprint_store_create()
+{
+    fingerprint_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                         g_destroy_plugin_fingerprint);
+}
+
+otrg_plugin_fingerprint*
+otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN])
+{
+    return g_hash_table_lookup(fingerprint_table, fp);
+}
+
+otrg_plugin_fingerprint*
+otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN], const char *peer)
+{
+    otrg_plugin_fingerprint *info = malloc(sizeof(otrg_plugin_fingerprint));
+    if (!info)
+        return NULL;
+
+    info->level = TRUST_NOT_PRIVATE;
+    memcpy(info->fp, fp, OTR4_FPRINT_HUMAN_LEN);
+    info->username = g_strdup(peer);
+
+    char *key = g_strdup(fp);
+    g_hash_table_insert(fingerprint_table, key, info);
+    return info;
+}
 
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
@@ -1390,15 +1430,26 @@ static void otrg_free_mms_table()
 static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv4_t *conn)
 {
     //TODO: use fp to determine if you have seen this fp before
-    //See: otrg_gtk_dialog_unknown_fingerprint
+    //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
     char *buf;
+    char fp_human[OTR4_FPRINT_HUMAN_LEN];
+
+    otr4_fingerprint_hash_to_human(fp_human, fp);
+    if (otrg_plugin_fingerprint_get(fp_human))
+        return;
 
     otr4_client_adapter_t *client = otr4_connection_to_client(conn);
     const otr4_conversation_t *otrconv = otr4_client_adapter_get_conversation_from_connection(conn, client);
 
+    //TODO: Change the message if we have have already seen another FP for this contact.
+
+    otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human, otrconv->recipient);
+    if (!info)
+        return; //ERROR
+
     buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
         "should <a href=\"%s%s\">authenticate</a> this buddy."),
-        otrconv->recipient, AUTHENTICATE_HELPURL, _("?lang=en"));
+        info->username, AUTHENTICATE_HELPURL, _("?lang=en"));
 
     PurpleConversation *conv = otrg_plugin_userinfo_to_conv(client->account,
 	client->protocol, otrconv->recipient, 0);
@@ -1537,12 +1588,12 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-
     otrv4_userstate_create();
     privkey_read_FILEp(privf);
 
     otrg_plugin_timerid = 0;
 
+    otrg_plugin_fingerprint_store_create(); //TODO: Read from file
     otrl_privkey_read_fingerprints_FILEp(otrg_plugin_userstate, storef,
 	    NULL, NULL);
     otrl_instag_read_FILEp(otrg_plugin_userstate, instagf);

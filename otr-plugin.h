@@ -152,4 +152,10 @@ otrg_plugin_conversation_to_protocol_version(const otrg_plugin_conversation *con
     return 4; //TODO: get this from the OTR conversation
 }
 
+typedef struct {
+    char *username;
+    unsigned char fp[OTR4_FPRINT_HUMAN_LEN];
+    TrustLevel level;
+} otrg_plugin_fingerprint;
+
 #endif
