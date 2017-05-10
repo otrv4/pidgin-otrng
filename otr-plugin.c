@@ -246,6 +246,13 @@ static void
 g_destroy_plugin_fingerprint(gpointer data)
 {
     otrg_plugin_fingerprint *fp = data;
+
+    free(fp->protocol);
+    fp->protocol = NULL;
+
+    free(fp->account);
+    fp->account = NULL;
+
     free(fp->username);
     fp->username = NULL;
 
@@ -266,14 +273,17 @@ otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN])
 }
 
 otrg_plugin_fingerprint*
-otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN], const char *peer)
+otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN],
+    const char *protocol, const char *account, const char *peer)
 {
     otrg_plugin_fingerprint *info = malloc(sizeof(otrg_plugin_fingerprint));
     if (!info)
         return NULL;
 
-    info->level = TRUST_NOT_PRIVATE;
+    info->trusted = 0;
     memcpy(info->fp, fp, OTR4_FPRINT_HUMAN_LEN);
+    info->protocol = g_strdup(protocol);
+    info->account = g_strdup(account);
     info->username = g_strdup(peer);
 
     char *key = g_strdup(fp);
@@ -1295,14 +1305,23 @@ void otrg_plugin_disconnect(ConnContext *context)
     free(msg);
 }
 
-/* Write the fingerprints to disk. */
-void otrg_plugin_write_fingerprints(void)
+static void
+add_fingerprint_to_file(gpointer key, gpointer value, gpointer user_data)
+{
+    otrg_plugin_fingerprint *fp = value;
+    FILE *storef = user_data;
+
+    fprintf(storef, "%s\t%s\t%s\t", fp->username, fp->account, fp->protocol);
+    fprintf(storef, "%s\t%s\n", fp->fp, fp->trusted ? "trusted" : "");
+}
+
+void otrg_plugin_write_fingerprints_v4(void)
 {
 #ifndef WIN32
     mode_t mask;
 #endif  /* WIN32 */
     FILE *storef;
-    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
+    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
 #ifndef WIN32
     mask = umask (0077);
 #endif  /* WIN32 */
@@ -1312,9 +1331,83 @@ void otrg_plugin_write_fingerprints(void)
 #endif  /* WIN32 */
     g_free(storefile);
     if (!storef) return;
-    otrl_privkey_write_fingerprints_FILEp(otrg_plugin_userstate, storef);
+
+    g_hash_table_foreach(fingerprint_table, add_fingerprint_to_file, storef);
+
     fclose(storef);
 }
+
+/* Write the fingerprints to disk. */
+void otrg_plugin_write_fingerprints(void)
+{
+    //TODO: write otrv3 fingerprints
+    otrg_plugin_write_fingerprints_v4();
+}
+
+void otrg_plugin_read_fingerprints_FILEp(FILE *storef)
+{
+     char storeline[1000];
+     size_t maxsize = sizeof(storeline);
+
+    if (!storef) return;
+
+     while(fgets(storeline, maxsize, storef)) {
+         char *username;
+         char *accountname;
+         char *protocol;
+         char *fp_human;
+         char *trust;
+         char *tab;
+         char *eol;
+         otrg_plugin_fingerprint *fng;
+
+         /* Parse the line, which should be of the form:
+          *    username\taccountname\tprotocol\t40_hex_nybbles\n          */
+         username = storeline;
+         tab = strchr(username, '\t');
+         if (!tab) continue;
+         *tab = '\0';
+
+         accountname = tab + 1;
+         tab = strchr(accountname, '\t');
+         if (!tab) continue;
+         *tab = '\0';
+
+         protocol = tab + 1;
+         tab = strchr(protocol, '\t');
+         if (!tab) continue;
+         *tab = '\0';
+
+         fp_human = tab + 1;
+         tab = strchr(fp_human, '\t');
+         if (!tab) {
+             eol = strchr(fp_human, '\r');
+             if (!eol) eol = strchr(fp_human, '\n');
+             if (!eol) continue;
+             *eol = '\0';
+             trust = NULL;
+         } else {
+             *tab = '\0';
+             trust = tab + 1;
+             eol = strchr(trust, '\r');
+             if (!eol) eol = strchr(trust, '\n');
+             if (!eol) continue;
+             *eol = '\0';
+         }
+
+         if (strlen(fp_human) != OTR4_FPRINT_HUMAN_LEN-1) continue;
+
+         fng = otrg_plugin_fingerprint_get(fp_human);
+         if (!fng)
+             fng = otrg_plugin_fingerprint_new(fp_human, protocol, accountname,
+                 username);
+
+          if (!fng) continue;
+
+          fng->trusted = trust ? 1 : 0;
+    }
+}
+
 
 /* Find the PurpleConversation appropriate to the given userinfo.  If
  * one doesn't yet exist, create it if force_create is true. */
@@ -1489,7 +1582,8 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
 
     //TODO: Change the message if we have have already seen another FP for this contact.
 
-    otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human, otrconv->recipient);
+    otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human,
+        client->protocol, client->account, otrconv->recipient);
     if (!info)
         return; //ERROR
 
@@ -1544,7 +1638,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4,
 	    NULL);
-    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAME, NULL);
+    gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
     void *conv_handle = purple_conversations_get_handle();
     void *conn_handle = purple_connections_get_handle();
@@ -1639,9 +1733,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
     otrg_plugin_timerid = 0;
 
-    otrg_plugin_fingerprint_store_create(); //TODO: Read from file
-    otrl_privkey_read_fingerprints_FILEp(otrg_plugin_userstate, storef,
-	    NULL, NULL);
+    otrg_plugin_fingerprint_store_create();
+    otrg_plugin_read_fingerprints_FILEp(storef);
+
     otrl_instag_read_FILEp(otrg_plugin_userstate, instagf);
     if (privf) fclose(privf);
     if (storef) fclose(storef);
@@ -1717,6 +1811,9 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
 
     g_hash_table_remove_all(client_table);
     client_table = NULL;
+
+    g_hash_table_remove_all(fingerprint_table);
+    fingerprint_table = NULL;
 
     otrg_free_mms_table();
 

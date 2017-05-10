@@ -35,6 +35,7 @@
 #include "otr4-client.h"
 
 #define PRIVKEYFNAMEv4 "otr4.private_key"
+#define STOREFNAMEv4 "otr4.fingerprints"
 
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"
@@ -162,16 +163,15 @@ otrg_plugin_conversation_to_protocol_version(const otrg_plugin_conversation *con
 }
 
 typedef struct {
+    char *protocol;
+    char *account;
     char *username;
     unsigned char fp[OTR4_FPRINT_HUMAN_LEN];
-    TrustLevel level;
+    int trusted; //0 - no, 1 - yes
 } otrg_plugin_fingerprint;
 
 //otrg_plugin_fingerprint*
 //otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
-//
-//otrg_plugin_fingerprint*
-//otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN], const char *peer);
 
 otrg_plugin_fingerprint*
 otrg_plugin_fingerprint_get_active(const char *peer);
