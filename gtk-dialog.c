@@ -76,6 +76,9 @@ static int img_id_unverified = 0;
 static int img_id_private = 0;
 static int img_id_finished = 0;
 
+#define AUTH_SMP_QUESTION 0
+#define AUTH_SMP_SHARED_SECRET 1
+#define AUTH_FINGERPRINT_VERIFICATION -1
 
 typedef struct {
     ConnContext *context;       /* The context used to fire library code */
@@ -311,7 +314,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
 	} else {
 
-	    if (smppair->smp_type == 0) {
+	    if (smppair->smp_type == AUTH_SMP_QUESTION) {
 		if (!question_entry) {
 		    return;
 		}
@@ -336,11 +339,11 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     } else if (response == GTK_RESPONSE_HELP) {
 	char *helpurl = g_strdup_printf("%s%s&context=%s",
 		AUTHENTICATE_HELPURL, _("?lang=en"),
-		auth_opt_data->smppair->smp_type == 0 ?
+		auth_opt_data->smppair->smp_type == AUTH_SMP_QUESTION ?
 		    ( /* Question and Answer */
 		      auth_opt_data->smppair->responder ?
 		      "answer" : "question" ) :
-		auth_opt_data->smppair->smp_type == 1 ?
+		auth_opt_data->smppair->smp_type == AUTH_SMP_SHARED_SECRET ?
 		    ( /* Shared secret */
 		      auth_opt_data->smppair->responder ?
 		      "secretresp" : "secret" ) :
@@ -720,15 +723,15 @@ static void redraw_auth_vbox(GtkComboBox *combo, void *data)
     if (selected == 0) {
 	gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 0);
 	auth_data->smppair->entry = auth_data->one_way_entry;
-	auth_data->smppair->smp_type = 0;
+	auth_data->smppair->smp_type = AUTH_SMP_QUESTION;
     } else if (selected == 1) {
 	gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 1);
 	auth_data->smppair->entry = auth_data->two_way_entry;
-	auth_data->smppair->smp_type = 1;
+	auth_data->smppair->smp_type = AUTH_SMP_SHARED_SECRET;
     } else if (selected == 2) {
 	auth_data->smppair->entry = NULL;
 	gtk_notebook_set_current_page (GTK_NOTEBOOK(notebook), 2);
-	auth_data->smppair->smp_type = -1;
+	auth_data->smppair->smp_type = AUTH_FINGERPRINT_VERIFICATION;
     }
 
 }
@@ -868,7 +871,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 	    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), one_way_vbox,
 		    gtk_label_new("0"));
 	    smppair->entry = auth_opt_data->one_way_entry;
-	    smppair->smp_type = 0;
+	    smppair->smp_type = AUTH_SMP_QUESTION;
 	}
 
 	if (!responder || (responder && question == NULL)) {
@@ -879,7 +882,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
 	    if (responder && question == NULL) {
 		smppair->entry = auth_opt_data->two_way_entry;
-		smppair->smp_type = 1;
+		smppair->smp_type = AUTH_SMP_SHARED_SECRET;
 	    }
 	}
 
