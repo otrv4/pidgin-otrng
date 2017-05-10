@@ -49,6 +49,9 @@ extern GHashTable *client_table;
 extern otrv4_callbacks_t otr4_callbacks;
 
 otr4_client_adapter_t*
+otr4_client(const char *accountname, const char *protocol);
+
+otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account);
 
 ConnContext*
@@ -163,5 +166,14 @@ typedef struct {
     unsigned char fp[OTR4_FPRINT_HUMAN_LEN];
     TrustLevel level;
 } otrg_plugin_fingerprint;
+
+//otrg_plugin_fingerprint*
+//otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
+//
+//otrg_plugin_fingerprint*
+//otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN], const char *peer);
+
+otrg_plugin_fingerprint*
+otrg_plugin_fingerprint_get_active(const char *peer);
 
 #endif

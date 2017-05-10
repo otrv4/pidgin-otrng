@@ -647,19 +647,26 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     }
 }
 
+//TODO: This should not receive ConnContext.
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 	ConnContext *context, SmpResponsePair* smppair) {
-    char our_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN],
-	    their_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
+    char our_hash[OTR4_FPRINT_HUMAN_LEN];
     GtkWidget *label;
     char *label_text;
-    struct vrfy_fingerprint_data *vfd;
+    //struct vrfy_fingerprint_data *vfd = NULL;
     PurplePlugin *p;
     char *proto_name;
-    Fingerprint *fprint = context->active_fingerprint;
+
+    otr4_client_adapter_t* client = otr4_client(context->accountname, context->protocol);
+
+    //TODO: this is ugly
+    PurpleConversation *conv = otrg_plugin_userinfo_to_conv(context->accountname,
+        context->protocol, context->username, 0);
+    PurpleAccount *account = purple_conversation_get_account(conv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
+    otrg_plugin_fingerprint* fprint = otrg_plugin_fingerprint_get_active(username);
 
     if (fprint == NULL) return;
-    if (fprint->fingerprint == NULL) return;
 
     label_text = g_strdup_printf("<small><i>\n%s %s\n</i></small>",
 	    _("To verify the fingerprint, contact your buddy via some "
@@ -675,20 +682,20 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-    vfd = vrfy_fingerprint_data_new(fprint);
+    strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    strncpy(our_hash, _("[none]"), 44);
-    our_hash[44] = '\0';
-    otrl_privkey_fingerprint(otrg_plugin_userstate, our_hash,
-	    context->accountname, context->protocol);
+    char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
+    if (our_fp_human)
+        strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
 
-    otrl_privkey_hash_to_human(their_hash, fprint->fingerprint);
+    free(our_fp_human);
+    our_hash[OTR4_FPRINT_HUMAN_LEN-1] = '\0';
 
     p = purple_find_prpl(context->protocol);
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
     label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
 	    "Purported fingerprint for %s:\n%s\n"), context->accountname,
-	    proto_name, our_hash, context->username, their_hash);
+	    proto_name, our_hash, context->username, fprint->fp);
 
     label = gtk_label_new(NULL);
 
@@ -703,9 +710,11 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-    add_vrfy_fingerprint(vbox, vfd);
-    g_signal_connect(G_OBJECT(vbox), "destroy",
-	    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
+    //??
+    //vfd = vrfy_fingerprint_data_new(fprint);
+    //add_vrfy_fingerprint(vbox, vfd);
+    //g_signal_connect(G_OBJECT(vbox), "destroy",
+//	    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
 }
 
 static void redraw_auth_vbox(GtkComboBox *combo, void *data)

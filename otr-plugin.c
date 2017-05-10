@@ -281,6 +281,24 @@ otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN], const char *pe
     return info;
 }
 
+static gboolean
+find_active_fingerprint(gpointer key, gpointer value, gpointer user_data)
+{
+    otrg_plugin_fingerprint *info = value;
+
+    //TODO: get the "active" and not the first.
+    if (!strcmp(info->username, user_data))
+        return true;
+
+    return false;
+}
+
+otrg_plugin_fingerprint*
+otrg_plugin_fingerprint_get_active(const char *peer)
+{
+    return g_hash_table_find(fingerprint_table, find_active_fingerprint, (gpointer) peer);
+}
+
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
 void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
