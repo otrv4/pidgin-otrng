@@ -541,7 +541,8 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 	gtk_box_pack_start(GTK_BOX(vbox), question_entry, FALSE, FALSE, 0);
     }
 
-    if (context->active_fingerprint->trust &&
+    if (context->active_fingerprint &&
+        context->active_fingerprint->trust &&
 	context->active_fingerprint->trust[0] && !(smppair->responder)) {
 	label2 = gtk_label_new(_("This buddy is already authenticated."));
     } else {
@@ -622,7 +623,8 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
     auth_opt_data->two_way_entry = GTK_ENTRY(entry);
 
-    if (context->active_fingerprint->trust &&
+    if (context->active_fingerprint &&
+        context->active_fingerprint->trust &&
 	context->active_fingerprint->trust[0]) {
 	label2 = gtk_label_new(_("This buddy is already authenticated."));
     } else {
@@ -1747,18 +1749,13 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 /* Called when SMP verification option selected from menu */
 static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
-    ConvOrContext *convctx = data;
-    PurpleConversation *conv;
+    PurpleConversation *conv = data;
     ConnContext *context = NULL;
 
-    if (convctx->convctx_type == convctx_conv) {
-	conv = convctx->conv;
-	context = otrg_plugin_conv_to_selected_context(conv, 0);
-    } else if (convctx->convctx_type == convctx_ctx) {
-	context = convctx->context;
-    }
+    otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
+    context = purple_conversation_to_context(conv);
 
-    if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED)
+    if (otr_conv == NULL || otr_conv->conn->state != OTRV4_STATE_ENCRYPTED_MESSAGES)
 	return;
 
     otrg_gtk_dialog_socialist_millionaires(context, NULL, FALSE);
@@ -2069,7 +2066,7 @@ static void build_otr_menu(ConvOrContext *convctx, GtkWidget *menu,
     gtk_signal_connect(GTK_OBJECT(buddymenuend), "activate",
 	GTK_SIGNAL_FUNC(menu_end_private_conversation), convctx);
     gtk_signal_connect(GTK_OBJECT(buddymenusmp), "activate",
-	GTK_SIGNAL_FUNC(socialist_millionaires), convctx);
+	GTK_SIGNAL_FUNC(socialist_millionaires), conv);
 
 }
 

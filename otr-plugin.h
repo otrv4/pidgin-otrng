@@ -51,6 +51,12 @@ extern otrv4_callbacks_t otr4_callbacks;
 otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account);
 
+ConnContext*
+purple_conversation_to_context(PurpleConversation *conv);
+
+otr4_conversation_t*
+purple_conversation_to_otr4_conversation(PurpleConversation *conv);
+
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
 ConnContext* otrg_plugin_conv_to_selected_context(PurpleConversation *conv,

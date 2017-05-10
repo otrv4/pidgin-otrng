@@ -196,6 +196,34 @@ purple_account_to_otr4_client(PurpleAccount *account)
     return otr4_client(accountname, protocol);
 }
 
+ConnContext*
+purple_conversation_to_context(PurpleConversation *conv)
+{
+    PurpleAccount *account = purple_conversation_get_account(conv);
+
+    const char *accountname = purple_account_get_username(account);
+    const char *protocol = purple_account_get_protocol_id(account);
+    const char *username = purple_conversation_get_name(conv);
+
+    return otrl_context_find(otrg_plugin_userstate, username,
+        accountname, protocol, 0, 1, NULL, NULL, NULL);
+}
+
+otr4_conversation_t*
+purple_conversation_to_otr4_conversation(PurpleConversation *conv)
+{
+    PurpleAccount *account = NULL;
+    const char *recipient = NULL;
+    
+    account = purple_conversation_get_account(conv);
+    recipient = strdup(purple_normalize(account, purple_conversation_get_name(conv)));
+
+    otr4_client_adapter_t *client = purple_account_to_otr4_client(account);
+
+    //TODO: should we force creation here?
+    return otr4_client_get_conversation(0, recipient, client->real_client);
+}
+
 static gboolean
 find_otr_client(gpointer key, gpointer value, gpointer user_data)
 {
