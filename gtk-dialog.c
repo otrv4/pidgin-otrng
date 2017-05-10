@@ -1525,7 +1525,8 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 		GTK_RESPONSE_ACCEPT);
 
 	if (smp_event == OTRL_SMPEVENT_SUCCESS) {
-	    if (context->active_fingerprint->trust &&
+	    if (context->active_fingerprint &&
+                context->active_fingerprint->trust &&
 		    context->active_fingerprint->trust[0]) {
 		gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
 			_("Authentication successful."));
