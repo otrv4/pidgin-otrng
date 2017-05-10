@@ -134,27 +134,25 @@ typedef enum {
     TRUST_FINISHED
 } TrustLevel;
 
-/* What level of trust do we have in the privacy of this ConnContext? */
-TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
-
-/* Return 1 if the given protocol supports OTR, 0 otherwise. */
-int otrg_plugin_proto_supports_otr(const char *proto);
-
-
+//TODO: should we use this instead of otr_conversation?
 typedef struct {
   char *accountname;
   char *protocol;
   char *username; //recipient
 } otrg_plugin_conversation;
 
+
+TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv);
+
+/* What level of trust do we have in the privacy of this ConnContext? */
+TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
+
+/* Return 1 if the given protocol supports OTR, 0 otherwise. */
+int otrg_plugin_proto_supports_otr(const char *proto);
+
 static inline PurpleConversation *otrg_plugin_conversation_to_purple_conv(const otrg_plugin_conversation *conv, int force) {
   return otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
       conv->username, force);
-}
-
-static inline TrustLevel
-otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *conv) {
-    return TRUST_PRIVATE; //TODO: get this trust based on fingerprint and conversation status
 }
 
 static inline int

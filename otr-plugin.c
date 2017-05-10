@@ -1438,6 +1438,33 @@ PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
 	    context->protocol, context->username, force_create);
 }
 
+TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv)
+{
+    TrustLevel level = TRUST_NOT_PRIVATE;
+
+    if (!conv)
+        return level;
+
+    otr4_client_adapter_t *client = otr4_client(conv->accountname, conv->protocol);
+    if (!client)
+        return level;
+
+    otr4_conversation_t *otr_conv = otr4_client_get_conversation(1,
+        conv->username, client->real_client);
+
+    otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->username);
+    if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
+        if (fp->trusted)
+	    level = TRUST_PRIVATE;
+        else
+	    level = TRUST_UNVERIFIED;
+    } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
+	level = TRUST_FINISHED;
+    }
+
+    return level;
+}
+
 /* What level of trust do we have in the privacy of this ConnContext? */
 TrustLevel otrg_plugin_context_to_trust(ConnContext *context)
 {

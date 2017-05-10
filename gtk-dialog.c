@@ -1266,6 +1266,7 @@ static void dialog_update_label_real(otrg_plugin_conversation *context)
 {
     PurpleAccount *account;
     PurpleConversation *conv;
+
     TrustLevel level = otrg_plugin_conversation_to_trust(context);
 
     account = purple_accounts_find(context->accountname, context->protocol);
@@ -1276,13 +1277,31 @@ static void dialog_update_label_real(otrg_plugin_conversation *context)
     dialog_update_label_conv(conv, level);
 }
 
+static otrg_plugin_conversation *
+conn_context_to_plugin_conversation(ConnContext *context)
+{
+    if (!context)
+        return NULL;
+
+    otrg_plugin_conversation *plugin_conv = malloc(sizeof(otrg_plugin_conversation));
+    if (!plugin_conv)
+        return NULL;
+
+    plugin_conv->accountname = context->accountname;
+    plugin_conv->protocol = context->protocol;
+    plugin_conv->username = context->username;
+
+    return plugin_conv;
+}
+
 static void dialog_update_label(ConnContext *context)
 {
     PurpleAccount *account;
     PurpleConversation *conv;
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
+    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     account = purple_accounts_find(context->accountname, context->protocol);
     if (!account) return;
@@ -1667,9 +1686,11 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
     g_free(buf);
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
     context = otrg_plugin_conv_to_selected_context(conv, 0);
+    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
+
     dialog_update_label_conv(conv, level);
     close_smp_window(conv);
 }
@@ -1681,8 +1702,10 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
     PurpleConversation *conv;
     char *buf;
     char *format_buf;
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
+
+    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     conv = otrg_plugin_context_to_conv(context, 1);
 
@@ -1903,7 +1926,6 @@ static void otr_set_menu_labels(ConvOrContext *convctx, GtkWidget *query,
     int authen = 0;
     int finished = 0;
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel level = TRUST_NOT_PRIVATE;
 
     if (convctx->convctx_type == convctx_conv) {
@@ -1912,7 +1934,10 @@ static void otr_set_menu_labels(ConvOrContext *convctx, GtkWidget *query,
 	authen = purple_conversation_get_data(conv, "otr-authenticated") ? 1 :0;
 	finished = purple_conversation_get_data(conv, "otr-finished") ? 1 : 0;
     } else if (convctx->convctx_type == convctx_ctx) {
-	//level = otrg_plugin_context_to_trust(convctx->context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(convctx->context);
+        level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
+
 	insecure = level == TRUST_UNVERIFIED || level == TRUST_PRIVATE ? 0 : 1;
 	authen = level == TRUST_PRIVATE ? 1 : 0;
 	finished = level == TRUST_FINISHED ? 1 : 0;
@@ -2084,7 +2109,6 @@ static void otr_add_top_otr_menu(PurpleConversation *conv)
     GtkWidget *topmenu;
     GtkWidget *topmenuitem;
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel level = TRUST_NOT_PRIVATE;
     ConnContext *context = otrg_plugin_conv_to_selected_context(conv, 1);
 
@@ -2101,7 +2125,9 @@ static void otr_add_top_otr_menu(PurpleConversation *conv)
     topmenu = gtk_menu_new();
 
     if (context != NULL) {
-	//level = otrg_plugin_context_to_trust(context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+        level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
     }
 
     convctx = g_hash_table_lookup(conv_or_ctx_map, conv);
@@ -2353,7 +2379,6 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
     otrl_instag_t * selected_instance = NULL;
     gboolean selection_exists = 0;
     ConnContext * context = instances->data;
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel level = TRUST_NOT_PRIVATE;
     GHashTable * conv_or_ctx_map;
     PurpleConversation * conv = NULL;
@@ -2412,7 +2437,10 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 	instance_menu_item = gtk_image_menu_item_new_with_label(text);
 	instance_submenu = gtk_menu_new();
 
-	//level = otrg_plugin_context_to_trust(curr_context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(curr_context);
+        level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
+
 	menu_image = otr_icon(NULL, level, selected);
 
 	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(instance_menu_item),
@@ -2465,7 +2493,10 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 
     }
 
-    //level = otrg_plugin_context_to_trust(context);
+    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
+
     menu_image = otr_icon(NULL, level, active_conv);
     convctx.convctx_type = convctx_ctx;
     convctx.context = context;
@@ -2509,7 +2540,6 @@ static void otr_add_buddy_top_menu(PidginConversation *gtkconv,
     GtkWidget *menu_bar = win->menu.menubar;
     GtkWidget *menu;
     GtkWidget *menu_image;
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel level = TRUST_NOT_PRIVATE;
     ConnContext *context = NULL;
     GList * menu_list;
@@ -2524,7 +2554,9 @@ static void otr_add_buddy_top_menu(PidginConversation *gtkconv,
     }
 
     if (context != NULL) {
-	//level = otrg_plugin_context_to_trust(context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+        level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
     }
 
     menu_image = otr_icon(NULL, level, active_conv);
@@ -2745,7 +2777,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv)
 static void otr_check_conv_status_change( PurpleConversation *conv)
 {
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel current_level = TRUST_NOT_PRIVATE;
     ConnContext *context = otrg_plugin_conv_to_context(conv,
 	    OTRL_INSTAG_RECENT, 0);
@@ -2755,7 +2786,9 @@ static void otr_check_conv_status_change( PurpleConversation *conv)
     char *status = "";
 
     if (context != NULL) {
-	//current_level = otrg_plugin_context_to_trust(context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+        current_level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
     }
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
@@ -2923,8 +2956,10 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 
     bbox = gtkconv->toolbar;
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
+    ConnContext *context = otrg_plugin_conv_to_selected_context(conv, 0);
+    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     /* See if we're already set up */
     button = purple_conversation_get_data(conv, "otr-button");
@@ -3098,7 +3133,6 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 	gboolean show_date) {
 
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
     TrustLevel current_level = TRUST_NOT_PRIVATE;
     ConnContext *context = (ConnContext *) otrg_plugin_conv_to_context(conv,
 	    OTRL_INSTAG_RECENT, 0);
@@ -3107,7 +3141,9 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 
 
     if (context != NULL) {
-	//current_level = otrg_plugin_context_to_trust(context);
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+        current_level = otrg_plugin_conversation_to_trust(plugin_conv);
+        free(plugin_conv);
     }
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
@@ -3196,14 +3232,14 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
 	return 0;
     }
 
-    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
-
     if (have_received &&
 	    *last_received_instance != received_context->their_instance &&
 	    selected_instance != OTRL_INSTAG_MASTER &&
 	    selected_instance < OTRL_MIN_VALID_INSTAG) {
-	dialog_update_label_conv(conv, level); // otrg_plugin_context_to_trust(current_out)
+
+        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(current_out);
+	dialog_update_label_conv(conv, otrg_plugin_conversation_to_trust(plugin_conv));
+        free(plugin_conv);
     }
 
     *last_received_instance = received_context->their_instance;
