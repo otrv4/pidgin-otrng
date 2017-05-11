@@ -1619,6 +1619,9 @@ static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
 	    g_free(buf);
 	}
     }
+
+    otrg_ui_update_keylist();
+    otrg_dialog_resensitize_all();
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
@@ -1648,6 +1651,9 @@ static void otrg_gtk_dialog_disconnected_real(otrg_plugin_conversation *context)
 
     dialog_update_label_real(context);
     close_smp_window(conv);
+
+    otrg_ui_update_keylist();
+    otrg_dialog_resensitize_all();
 }
 
 /* Call this if the remote user terminates his end of an ENCRYPTED
