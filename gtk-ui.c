@@ -371,7 +371,7 @@ static void connect_connection_ui(otrg_plugin_conversation *conv)
         conv->username, client->real_client);
     
     /* Don't do this if we're already ENCRYPTED */
-    if (otr_conv == NULL && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES)
+    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES)
 	return;
 
     otrg_plugin_send_default_query(conv);
