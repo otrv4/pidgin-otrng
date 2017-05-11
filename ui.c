@@ -135,27 +135,19 @@ void otrg_ui_disconnect_connection(ConnContext *context)
     //otrg_dialog_disconnected(context);
 }
 
+//TODO: should not this be in another file?
 /* Forget a fingerprint */
-void otrg_ui_forget_fingerprint(Fingerprint *fingerprint)
+void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint)
 {
-    ConnContext *context;
-    ConnContext *context_iter;
-
     if (fingerprint == NULL) return;
+
+    otr4_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(fingerprint);
 
     /* Don't do anything with the active fingerprint if we're in the
      * ENCRYPTED state. */
-    context = fingerprint->context;
+    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) return;
 
-    for (context_iter = context->m_context;
-	    context_iter && context_iter->m_context == context->m_context;
-	    context_iter = context_iter->next) {
-
-	if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-		context_iter->active_fingerprint == fingerprint) return;
-    }
-
-    otrl_context_forget_fingerprint(fingerprint, 1);
+    otrg_plugin_fingerprint_forget(fingerprint->fp);
     otrg_plugin_write_fingerprints();
 
     otrg_ui_update_keylist();

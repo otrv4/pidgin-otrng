@@ -242,6 +242,22 @@ otr4_connection_to_client(const otrv4_t *conn)
     return g_hash_table_find(client_table, find_otr_client, (gpointer) conn);
 }
 
+otr4_conversation_t*
+otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
+{
+    otr4_client_adapter_t *client = NULL;
+
+    if (!f)
+        return NULL;
+
+    client = otr4_client(f->account, f->protocol);
+    if (!client)
+        return NULL;
+
+    return otr4_client_get_conversation(0, f->username, client->real_client);
+}
+
+
 static void 
 g_destroy_plugin_fingerprint(gpointer data)
 {
@@ -295,6 +311,12 @@ otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN],
     char *key = g_strdup(fp);
     g_hash_table_insert(fingerprint_table, key, info);
     return info;
+}
+
+void
+otrg_plugin_fingerprint_forget(const char fp[OTR4_FPRINT_HUMAN_LEN])
+{
+    g_hash_table_remove(fingerprint_table, fp);
 }
 
 static gboolean

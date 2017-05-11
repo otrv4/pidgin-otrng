@@ -23,6 +23,7 @@
 #define __OTRG_UI_H__
 
 #include <libotr/context.h>
+#include "otr-plugin.h"
 
 /* Global and per-buddy preferences */
 typedef struct {
@@ -72,7 +73,7 @@ void otrg_ui_connect_connection(ConnContext *context);
 void otrg_ui_disconnect_connection(ConnContext *context);
 
 /* Forget a fingerprint */
-void otrg_ui_forget_fingerprint(Fingerprint *fingerprint);
+void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint);
 
 /* Configure OTR for a particular buddy */
 void otrg_ui_config_buddy(PurpleBuddy *buddy);

@@ -171,10 +171,16 @@ typedef struct {
 //otrg_plugin_fingerprint*
 //otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
 
+otr4_conversation_t*
+otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f);
+
 GList *
 otrg_plugin_fingerprint_get_all(void);
 
 otrg_plugin_fingerprint*
 otrg_plugin_fingerprint_get_active(const char *peer);
+
+void
+otrg_plugin_fingerprint_forget(const char fp[OTR4_FPRINT_HUMAN_LEN]);
 
 #endif

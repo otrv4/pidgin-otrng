@@ -247,33 +247,22 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
 	    row);
     //ConnContext *context_iter;
 
-    if (f) {
+    otr4_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(f);
+
+    if (f && otr_conv) {
 	verify_sensitive = 1;
 	forget_sensitive = 1;
 
-        otr4_client_adapter_t *client = NULL;
-        otr4_conversation_t *otr_conv = NULL;
-
-        do {
-            client = otr4_client(f->account, f->protocol);
-            if (!client)
-                continue;
-
-            otr_conv = otr4_client_get_conversation(0, f->username, client->real_client);
-            if (!otr_conv)
-                continue;
-
-            //TODO: and this is the active fingerprint
-            if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
-                disconnect_sensitive = 1;
-                forget_sensitive = 0;
-            } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
-                disconnect_sensitive = 1;
-                connect_sensitive = 1;
-            } else {
-                connect_sensitive = 1;
-            }
-        } while(0);
+        //TODO: and this is the active fingerprint
+        if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
+            disconnect_sensitive = 1;
+            forget_sensitive = 0;
+        } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
+            disconnect_sensitive = 1;
+            connect_sensitive = 1;
+        } else {
+            connect_sensitive = 1;
+        }
     }
 
     gtk_widget_set_sensitive(ui_layout.connect_button,
@@ -409,9 +398,8 @@ static void disconnect_connection(GtkWidget *widget, gpointer data)
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data)
 {
-    //TODO
-    //otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-    //otrg_ui_forget_fingerprint(fingerprint);
+    otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+    otrg_ui_forget_fingerprint(fingerprint);
 }
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data)
