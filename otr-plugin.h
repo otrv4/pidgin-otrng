@@ -164,12 +164,15 @@ typedef struct {
     char *protocol;
     char *account;
     char *username;
-    unsigned char fp[OTR4_FPRINT_HUMAN_LEN];
+    char fp[OTR4_FPRINT_HUMAN_LEN];
     int trusted; //0 - no, 1 - yes
 } otrg_plugin_fingerprint;
 
 //otrg_plugin_fingerprint*
 //otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
+
+GList *
+otrg_plugin_fingerprint_get_all(void);
 
 otrg_plugin_fingerprint*
 otrg_plugin_fingerprint_get_active(const char *peer);

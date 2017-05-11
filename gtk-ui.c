@@ -70,7 +70,7 @@ static struct {
     GtkWidget *scrollwin;
     GtkWidget *keylist;
     gint sortcol, sortdir;
-    Fingerprint *selected_fprint;
+    otrg_plugin_fingerprint *selected_fprint;
     GtkWidget *connect_button;
     GtkWidget *disconnect_button;
     GtkWidget *forget_button;
@@ -156,9 +156,6 @@ static void clist_all_unselected(void)
 static void otrg_gtk_ui_update_keylist(void)
 {
     gchar *titles[5];
-    char hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
-    ConnContext * context;
-    Fingerprint * fingerprint;
     int selected_row = -1;
 
     GtkWidget *keylist = ui_layout.keylist;
@@ -169,69 +166,33 @@ static void otrg_gtk_ui_update_keylist(void)
     gtk_clist_freeze(GTK_CLIST(keylist));
     gtk_clist_clear(GTK_CLIST(keylist));
 
-    for (context = otrg_plugin_userstate->context_root; context != NULL;
-	    context = context->next) {
+    GList *fingerprints = otrg_plugin_fingerprint_get_all();
+    GList *iter;
+    for (iter = fingerprints; iter != NULL; iter = iter->next) {
+        otrg_plugin_conversation plugin_conv;
 	int i;
-	PurplePlugin *p;
-	char *proto_name;
+        otrg_plugin_fingerprint *fp = iter->data;
 
-	if (context->m_context != context) continue;
+        plugin_conv.accountname = fp->account;
+        plugin_conv.protocol = fp->protocol;
+        plugin_conv.username = fp->username;
+        TrustLevel level = otrg_plugin_conversation_to_trust(&plugin_conv);
 
-	fingerprint = context->fingerprint_root.next;
-	/* If there's no fingerprint, don't add it to the known
-	 * fingerprints list */
-	while(fingerprint) {
-	    ConnContext *context_iter;
-	    TrustLevel best_level = TRUST_NOT_PRIVATE;
-	    int used = 0;
+        titles[0] = fp->username;
+        //titles[1] = _("Unused");
+        titles[1] = (gchar *)_(trust_states[level]);
+        titles[2] = (fp->trusted) ? _("Yes") : _("No");
+	titles[3] = fp->fp;
+        titles[4] = g_strdup_printf("%s (%s)", fp->account, fp->protocol);
 
-	    titles[0] = context->username;
-	    titles[1] = _("Unused");
-
-	    for (context_iter = context->m_context;
-		    context_iter && context_iter->m_context == context->m_context;
-		    context_iter = context_iter->next) {
-
-		TrustLevel this_level = TRUST_NOT_PRIVATE;
-
-		if (context_iter->active_fingerprint == fingerprint) {
-                    //TODO: get the correct trustlevel. See otrg_plugin_context_to_trust(ConnContext *context)
-		    //this_level = otrg_plugin_context_to_trust(context_iter);
-		    used = 1;
-
-		    if (this_level == TRUST_PRIVATE) {
-			best_level = TRUST_PRIVATE;
-		    } else if (this_level == TRUST_UNVERIFIED
-			    && best_level != TRUST_PRIVATE) {
-			best_level = TRUST_UNVERIFIED;
-		    } else if (this_level == TRUST_FINISHED
-			    && best_level == TRUST_NOT_PRIVATE) {
-			best_level = TRUST_FINISHED;
-		    }
-		}
-	    }
-
-	    if (used) {
-		titles[1] = (gchar *)
-		    _(trust_states[best_level]);
-	    }
-	    titles[2] = (fingerprint->trust && fingerprint->trust[0]) ?
-		    _("Yes") : _("No");
-	    otrl_privkey_hash_to_human(hash, fingerprint->fingerprint);
-	    titles[3] = hash;
-	    p = purple_find_prpl(context->protocol);
-	    proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
-	    titles[4] = g_strdup_printf("%s (%s)", context->accountname,
-		    proto_name);
-	    i = gtk_clist_append(GTK_CLIST(keylist), titles);
-	    g_free(titles[4]);
-	    gtk_clist_set_row_data(GTK_CLIST(keylist), i, fingerprint);
-	    if (ui_layout.selected_fprint == fingerprint) {
-		selected_row = i;
-	    }
-	    fingerprint = fingerprint->next;
-	}
+        i = gtk_clist_append(GTK_CLIST(keylist), titles);
+        g_free(titles[4]);
+        gtk_clist_set_row_data(GTK_CLIST(keylist), i, fp);
+        if (ui_layout.selected_fprint == fp) {
+            selected_row = i;
+        }
     }
+    g_list_free(fingerprints);
 
     if (selected_row >= 0) {
 	gtk_clist_select_row(GTK_CLIST(keylist), selected_row, 0);
@@ -282,34 +243,37 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
     int disconnect_sensitive = 0;
     int forget_sensitive = 0;
     int verify_sensitive = 0;
-    Fingerprint *f = gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist),
+    otrg_plugin_fingerprint *f = gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist),
 	    row);
-    ConnContext *context_iter;
+    //ConnContext *context_iter;
 
     if (f) {
 	verify_sensitive = 1;
 	forget_sensitive = 1;
 
-	if (f->context && f->context->m_context) {
-	    for (context_iter = f->context;
-		    context_iter && context_iter->m_context ==
-		    f->context->m_context;
-		    context_iter = context_iter->next) {
+        otr4_client_adapter_t *client = NULL;
+        otr4_conversation_t *otr_conv = NULL;
 
-		if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-		    context_iter->active_fingerprint == f) {
-		    disconnect_sensitive = 1;
-		    forget_sensitive = 0;
-		}
-		else if (context_iter->msgstate == OTRL_MSGSTATE_FINISHED) {
-		    disconnect_sensitive = 1;
-		    connect_sensitive = 1;
-		}
-		else if (context_iter->msgstate == OTRL_MSGSTATE_PLAINTEXT) {
-		    connect_sensitive = 1;
-		}
-	    }
-	}
+        do {
+            client = otr4_client(f->account, f->protocol);
+            if (!client)
+                continue;
+
+            otr_conv = otr4_client_get_conversation(0, f->username, client->real_client);
+            if (!otr_conv)
+                continue;
+
+            //TODO: and this is the active fingerprint
+            if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
+                disconnect_sensitive = 1;
+                forget_sensitive = 0;
+            } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
+                disconnect_sensitive = 1;
+                connect_sensitive = 1;
+            } else {
+                connect_sensitive = 1;
+            }
+        } while(0);
     }
 
     gtk_widget_set_sensitive(ui_layout.connect_button,
@@ -409,51 +373,52 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
 static void connect_connection(GtkWidget *widget, gpointer data)
 {
     /* Send an OTR Query to the other side. */
-    ConnContext *context;
+    //ConnContext *context;
 
     if (ui_layout.selected_fprint == NULL) return;
 
-    context = ui_layout.selected_fprint->context;
-    otrg_ui_connect_connection(context);
+    //context = ui_layout.selected_fprint->context;
+    //otrg_ui_connect_connection(context);
 }
 
 static void disconnect_connection(GtkWidget *widget, gpointer data)
 {
     /* Forget whatever state we've got with this context */
-    ConnContext *context;
-    ConnContext *context_iter;
+    ConnContext *context = NULL;
+    //ConnContext *context_iter;
 
     if (ui_layout.selected_fprint == NULL) return;
 
-    context = ui_layout.selected_fprint->context;
+    //context = ui_layout.selected_fprint->context;
     if (context == NULL) return;
 
-    for (context_iter = context->m_context;
-	    context_iter && context_iter->m_context == context->m_context;
-	    context_iter = context_iter->next) {
+    //TODO: Make it work
+    //for (context_iter = context->m_context;
+    //        context_iter && context_iter->m_context == context->m_context;
+    //        context_iter = context_iter->next) {
 
-	/* Don't do anything with fingerprints other than the active one
-	 * if we're in the ENCRYPTED state */
-	if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-	    context_iter->active_fingerprint == ui_layout.selected_fprint) {
-	    otrg_ui_disconnect_connection(context_iter);
-	}
-    }
+    //    /* Don't do anything with fingerprints other than the active one
+    //     * if we're in the ENCRYPTED state */
+    //    if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
+    //        context_iter->active_fingerprint == ui_layout.selected_fprint) {
+    //        otrg_ui_disconnect_connection(context_iter);
+    //    }
+    //}
 
 }
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data)
 {
-    Fingerprint *fingerprint = ui_layout.selected_fprint;
-
-    otrg_ui_forget_fingerprint(fingerprint);
+    //TODO
+    //otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+    //otrg_ui_forget_fingerprint(fingerprint);
 }
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data)
 {
-    Fingerprint *fingerprint = ui_layout.selected_fprint;
-
-    otrg_dialog_verify_fingerprint(fingerprint);
+    //TODO
+    //otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+    //otrg_dialog_verify_fingerprint(fingerprint);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,

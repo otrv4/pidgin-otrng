@@ -266,6 +266,12 @@ otrg_plugin_fingerprint_store_create()
                                          g_destroy_plugin_fingerprint);
 }
 
+GList *
+otrg_plugin_fingerprint_get_all(void)
+{
+    return g_hash_table_get_values(fingerprint_table);
+}
+
 otrg_plugin_fingerprint*
 otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN])
 {
