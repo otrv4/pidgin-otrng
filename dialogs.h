@@ -62,7 +62,7 @@ typedef struct {
     void (*unknown_fingerprint)(OtrlUserState us, const char *accountname,
 	const char *protocol, const char *who, unsigned char fingerprint[20]);
 
-    void (*verify_fingerprint)(Fingerprint *fprint);
+    void (*verify_fingerprint)(otrg_plugin_fingerprint *fprint);
 
     void (*socialist_millionaires)(ConnContext *context, char *question,
 	    gboolean responder);
@@ -142,7 +142,7 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 	const char *protocol, const char *who, unsigned char fingerprint[20]);
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrg_dialog_verify_fingerprint(Fingerprint *fprint);
+void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint);
 
 /* Show a dialog asking the user to give an SMP secret. */
 void otrg_dialog_socialist_millionaires(ConnContext *context);

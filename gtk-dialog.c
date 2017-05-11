@@ -230,11 +230,9 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget)
 
 /* Forward declarations for the benefit of smp_message_response_cb/redraw
  * authvbox */
-static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint);
+static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprint);
 static void add_vrfy_fingerprint(GtkWidget *vbox, void *data);
-static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(
-    ConnContext *context,
-    otrg_plugin_fingerprint *fprint);
+static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(otrg_plugin_fingerprint *fprint);
 static void vrfy_fingerprint_destroyed(GtkWidget *w,
 	struct vrfy_fingerprint_data *vfd);
 static void conversation_switched ( PurpleConversation *conv, void * data );
@@ -710,7 +708,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-    vfd = vrfy_fingerprint_data_new(context, fprint);
+    vfd = vrfy_fingerprint_data_new(fprint);
 
     add_vrfy_fingerprint(vbox, vfd);
     g_signal_connect(G_OBJECT(vbox), "destroy",
@@ -1326,17 +1324,17 @@ static void vrfy_fingerprint_data_free(struct vrfy_fingerprint_data *vfd)
 }
 
 static struct vrfy_fingerprint_data* vrfy_fingerprint_data_new(
-    ConnContext *context,
     otrg_plugin_fingerprint *fprint)
 {
     struct vrfy_fingerprint_data *vfd;
 
     vfd = malloc(sizeof(*vfd));
     vfd->fprint = fprint;
-    vfd->accountname = strdup(context->accountname);
-    vfd->username = strdup(context->username);
-    vfd->protocol = strdup(context->protocol);
-    vfd->their_instance = context->their_instance;
+    vfd->accountname = strdup(fprint->account);
+    vfd->username = strdup(fprint->username);
+    vfd->protocol = strdup(fprint->protocol);
+    //TODO: Why do you need their instance tag?
+    //vfd->their_instance = context->their_instance;
 
     return vfd;
 }
@@ -1416,37 +1414,29 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 }
 
 //TODO: this has duplicated logic. See: add_to_vbox_verify_fingerprint
-static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
+static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprint)
 {
     GtkWidget *dialog;
-    char our_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN],
-	    their_hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
+    char our_hash[OTR4_FPRINT_HUMAN_LEN];
     char *primary;
     char *secondary;
     struct vrfy_fingerprint_data *vfd;
-    ConnContext *context;
-    PurplePlugin *p;
-    char *proto_name;
 
     if (fprint == NULL) return;
-    if (fprint->fingerprint == NULL) return;
-    context = fprint->context;
-    if (context == NULL) return;
 
     primary = g_strdup_printf(_("Verify fingerprint for %s"),
-	    context->username);
-    vfd = NULL;
-    //vfd = vrfy_fingerprint_data_new(fprint);
+	    fprint->username);
 
-    strncpy(our_hash, _("[none]"), 44);
-    our_hash[44] = '\0';
-    otrl_privkey_fingerprint(otrg_plugin_userstate, our_hash,
-	    context->accountname, context->protocol);
+    strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otrl_privkey_hash_to_human(their_hash, fprint->fingerprint);
+    otr4_client_adapter_t* client = otr4_client(fprint->account, fprint->protocol);
+    char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
+    if (our_fp_human)
+        strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
 
-    p = purple_find_prpl(context->protocol);
-    proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
+    free(our_fp_human);
+    our_hash[OTR4_FPRINT_HUMAN_LEN-1] = '\0';
+
     secondary = g_strdup_printf(_("<small><i>%s %s\n\n</i></small>"
 	    "Fingerprint for you, %s (%s):\n%s\n\n"
 	    "Purported fingerprint for %s:\n%s\n"),
@@ -1456,9 +1446,10 @@ static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
 	    "to the other."),
 	    _("If everything matches up, you should indicate in the above "
 	    "dialog that you <b>have</b> verified the fingerprint."),
-	    context->accountname, proto_name, our_hash,
-	    context->username, their_hash);
+	    fprint->account, fprint->protocol, our_hash,
+	    fprint->username, fprint->fp);
 
+    vfd = vrfy_fingerprint_data_new(fprint);
     dialog = create_dialog(parent, PURPLE_NOTIFY_MSG_INFO,
 	    _("Verify fingerprint"), primary, secondary, 1, NULL,
 	    add_vrfy_fingerprint, vfd);
@@ -1469,7 +1460,7 @@ static void verify_fingerprint(GtkWindow *parent, Fingerprint *fprint)
     g_free(secondary);
 }
 
-static void otrg_gtk_dialog_verify_fingerprint(Fingerprint *fprint)
+static void otrg_gtk_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint)
 {
     verify_fingerprint(NULL, fprint);
 }

@@ -404,9 +404,8 @@ static void forget_fingerprint(GtkWidget *widget, gpointer data)
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data)
 {
-    //TODO
-    //otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-    //otrg_dialog_verify_fingerprint(fingerprint);
+    otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+    otrg_dialog_verify_fingerprint(fingerprint);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,

@@ -136,7 +136,7 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 }
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrg_dialog_verify_fingerprint(Fingerprint *fprint)
+void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint)
 {
     ui_ops->verify_fingerprint(fprint);
 }
