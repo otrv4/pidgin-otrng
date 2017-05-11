@@ -97,17 +97,24 @@ void otrg_ui_update_keylist(void)
 }
 
 /* Drop a context to PLAINTEXT state */
-void otrg_ui_disconnect_connection(ConnContext *context)
+void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 {
+    otr4_client_adapter_t* client = otr4_client(conv->accountname, conv->protocol);
+    if (!client)
+        return;
 
-    if (context == NULL)
-	return;
+    otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
+        conv->username, client->real_client);
 
-    otrg_plugin_disconnect(context);
+    /* Don't do anything with fingerprints other than the active one
+     * if we're in the ENCRYPTED state */
+    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES){
+        otrg_plugin_disconnect(conv);
 
-    //TODO: We call gone_insecure when we close.
-    //libotr DOES NOT.
-    //otrg_dialog_disconnected(context);
+        //TODO: We call gone_insecure when we close.
+        //libotr DOES NOT.
+        //otrg_dialog_disconnected(context);
+    }
 }
 
 //TODO: should not this be in another file?

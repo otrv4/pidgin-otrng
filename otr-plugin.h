@@ -110,7 +110,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv);
 
 /* Disconnect a context, sending a notice to the other side, if
  * appropriate. */
-void otrg_plugin_disconnect(ConnContext *context);
+void otrg_plugin_disconnect(otrg_plugin_conversation *conv);
 
 /* Write the fingerprints to disk. */
 void otrg_plugin_write_fingerprints(void);

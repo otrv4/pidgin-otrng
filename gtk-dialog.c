@@ -1804,8 +1804,13 @@ static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
 	context = convctx->context;
     }
 
+    //TODO: Remove ConnContext
+    otrg_plugin_conversation p_conv[1];
+    p_conv->protocol = context->protocol;
+    p_conv->accountname = context->accountname;
+    p_conv->username = context->username;
 
-    otrg_ui_disconnect_connection(context);
+    otrg_ui_disconnect_connection(p_conv);
 }
 
 static void dialog_resensitize(PurpleConversation *conv);

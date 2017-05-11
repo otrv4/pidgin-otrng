@@ -1321,19 +1321,24 @@ void otrg_plugin_disconnect_all_instances(ConnContext *context)
 
 /* Disconnect a context, sending a notice to the other side, if
  * appropriate. */
-void otrg_plugin_disconnect(ConnContext *context)
+void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
 {
     char *msg = NULL;
-    PurpleConversation *conv = NULL;
-    PurpleAccount *account;
+    PurpleConversation *purp_conv = NULL;
+    PurpleAccount *account = NULL;
+    otr4_client_adapter_t* client = NULL;
 
-    if (!context) return;
+    if (!conv) return;
 
-    conv = otrg_plugin_context_to_conv(context, 1);
-    account = purple_conversation_get_account(conv);
+    client = otr4_client(conv->accountname, conv->protocol);
+    if (!client) return;
 
-    if (!otr4_client_adapter_disconnect(&msg, context->username, purple_account_to_otr4_client(account)))
-        otrg_plugin_inject_message(account, context->username, msg);
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
+        conv->username, 1);
+    account = purple_conversation_get_account(purp_conv);
+
+    if (!otr4_client_adapter_disconnect(&msg, conv->username, client))
+        otrg_plugin_inject_message(account, conv->username, msg);
 
     free(msg);
 }
@@ -1521,12 +1526,20 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context)
 /* Send the OTRL_TLV_DISCONNECTED packets when we're about to quit. */
 static void process_quitting(void)
 {
+    //TODO: use our client_hash to iterate over all active connections
     ConnContext *context = otrg_plugin_userstate->context_root;
     while(context) {
 	ConnContext *next = context->next;
 	if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
 		context->protocol_version > 1) {
-	    otrg_plugin_disconnect(context);
+
+            //TODO: Remove ConnContext
+            otrg_plugin_conversation conv[1];
+            conv->protocol = context->protocol;
+            conv->accountname = context->accountname;
+            conv->username = context->username;
+
+	    otrg_plugin_disconnect(conv);
 	}
 	context = next;
     }

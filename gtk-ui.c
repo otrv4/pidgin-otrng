@@ -408,27 +408,15 @@ static void connect_connection(GtkWidget *widget, gpointer data)
 static void disconnect_connection(GtkWidget *widget, gpointer data)
 {
     /* Forget whatever state we've got with this context */
-    ConnContext *context = NULL;
-    //ConnContext *context_iter;
+    otrg_plugin_conversation conv[1];
+    otrg_plugin_fingerprint *fp = ui_layout.selected_fprint;
 
-    if (ui_layout.selected_fprint == NULL) return;
+    if (!fp) return;
 
-    //context = ui_layout.selected_fprint->context;
-    if (context == NULL) return;
-
-    //TODO: Make it work
-    //for (context_iter = context->m_context;
-    //        context_iter && context_iter->m_context == context->m_context;
-    //        context_iter = context_iter->next) {
-
-    //    /* Don't do anything with fingerprints other than the active one
-    //     * if we're in the ENCRYPTED state */
-    //    if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-    //        context_iter->active_fingerprint == ui_layout.selected_fprint) {
-    //        otrg_ui_disconnect_connection(context_iter);
-    //    }
-    //}
-
+    conv->protocol = fp->protocol;
+    conv->accountname = fp->account;
+    conv->username = fp->username;
+    otrg_ui_disconnect_connection(conv);
 }
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data)

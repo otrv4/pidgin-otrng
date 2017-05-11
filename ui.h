@@ -70,7 +70,7 @@ void otrg_ui_update_keylist(void);
 void otrg_ui_connect_connection(ConnContext *context);
 
 /* Drop a context to PLAINTEXT state */
-void otrg_ui_disconnect_connection(ConnContext *context);
+void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv);
 
 /* Forget a fingerprint */
 void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint);
