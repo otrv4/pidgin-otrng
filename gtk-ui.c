@@ -359,15 +359,50 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
     gtk_clist_sort(clist);
 }
 
+/* Send an OTR Query Message to attempt to start a connection */
+static void connect_connection_ui(otrg_plugin_conversation *conv)
+{
+    /* Send an OTR Query to the other side. */
+    otr4_client_adapter_t* client = otr4_client(conv->accountname, conv->protocol);
+    if (!client)
+        return;
+
+    otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
+        conv->username, client->real_client);
+    
+    /* Don't do this if we're already ENCRYPTED */
+    if (otr_conv == NULL && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES)
+	return;
+
+    otrg_plugin_send_default_query(conv);
+}
+
 static void connect_connection(GtkWidget *widget, gpointer data)
 {
     /* Send an OTR Query to the other side. */
-    //ConnContext *context;
+    PurpleAccount *account;
+    char *msg;
 
     if (ui_layout.selected_fprint == NULL) return;
 
-    //context = ui_layout.selected_fprint->context;
-    //otrg_ui_connect_connection(context);
+    otrg_plugin_fingerprint *fp = ui_layout.selected_fprint;
+    account = purple_accounts_find(fp->account, fp->protocol);
+    if (!account) {
+	PurplePlugin *p = purple_find_prpl(fp->protocol);
+	msg = g_strdup_printf(_("Account %s (%s) could not be found"),
+		fp->account,
+		(p && p->info->name) ? p->info->name : _("Unknown"));
+	otrg_dialog_notify_error(fp->account, fp->protocol,
+		fp->username, _("Account not found"), msg, NULL);
+	g_free(msg);
+	return;
+    }
+
+    otrg_plugin_conversation conv[1];
+    conv->protocol = fp->protocol;
+    conv->accountname = fp->account;
+    conv->username = fp->username;
+    connect_connection_ui(conv);
 }
 
 static void disconnect_connection(GtkWidget *widget, gpointer data)

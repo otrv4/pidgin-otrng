@@ -96,31 +96,6 @@ void otrg_ui_update_keylist(void)
     }
 }
 
-/* Send an OTR Query Message to attempt to start a connection */
-void otrg_ui_connect_connection(ConnContext *context)
-{
-    /* Send an OTR Query to the other side. */
-    PurpleAccount *account;
-    char *msg;
-
-    /* Don't do this if we're already ENCRYPTED */
-    if (context == NULL || context->msgstate == OTRL_MSGSTATE_ENCRYPTED)
-	return;
-
-    account = purple_accounts_find(context->accountname, context->protocol);
-    if (!account) {
-	PurplePlugin *p = purple_find_prpl(context->protocol);
-	msg = g_strdup_printf(_("Account %s (%s) could not be found"),
-		context->accountname,
-		(p && p->info->name) ? p->info->name : _("Unknown"));
-	otrg_dialog_notify_error(context->accountname, context->protocol,
-		context->username, _("Account not found"), msg, NULL);
-	g_free(msg);
-	return;
-    }
-    otrg_plugin_send_default_query(context, account);
-}
-
 /* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(ConnContext *context)
 {

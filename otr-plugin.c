@@ -1032,21 +1032,26 @@ void otrg_plugin_continue_smp(ConnContext *context,
 	    context, secret, secretlen);
 }
 
-/* Send the default OTR Query message to the correspondent of the given
- * context, from the given account.  [account is actually a
- * PurpleAccount*, but it's declared here as void* so this can be passed
- * as a callback.] */
-void otrg_plugin_send_default_query(ConnContext *context, void *vaccount)
+void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
 {
-    PurpleAccount *account = vaccount;
+    PurpleConversation *purp_conv = NULL;
+    PurpleAccount *account = NULL;
     char *msg;
-    OtrgUiPrefs prefs;
 
-    otrg_ui_get_prefs(&prefs, account, context->username);
-    msg = otr4_client_adapter_query_message(context->username, "",
-                                        purple_account_to_otr4_client(account));
+    //OtrgUiPrefs prefs;
+    //otrg_ui_get_prefs(&prefs, account, context->username);
 
-    otrg_plugin_inject_message(account, context->username,
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
+        conv->username, 1);
+    account = purple_conversation_get_account(purp_conv);
+
+    otr4_client_adapter_t* client = otr4_client(conv->accountname, conv->protocol);
+    if (!client)
+        return;
+
+    msg = otr4_client_adapter_query_message(conv->username, "", client);
+
+    otrg_plugin_inject_message(account, conv->username,
 	     msg ? msg : "?OTRv34?");
     free(msg);
 }

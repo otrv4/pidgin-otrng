@@ -95,11 +95,14 @@ void otrg_plugin_continue_smp(ConnContext *context,
  * are received. */
 void otrg_plugin_abort_smp(ConnContext *context);
 
-/* Send the default OTR Query message to the correspondent of the given
- * context, from the given account.  [account is actually a
- * PurpleAccount*, but it's declared here as void* so this can be passed
- * as a callback.] */
-void otrg_plugin_send_default_query(ConnContext *context, void *account);
+//TODO: should we use this instead of otr_conversation?
+typedef struct {
+  char *accountname;
+  char *protocol;
+  char *username; //recipient
+} otrg_plugin_conversation;
+
+void otrg_plugin_send_default_query(otrg_plugin_conversation *conv);
 
 /* Send the default OTR Query message to the correspondent of the given
  * conversation. */
@@ -133,14 +136,6 @@ typedef enum {
     TRUST_PRIVATE,
     TRUST_FINISHED
 } TrustLevel;
-
-//TODO: should we use this instead of otr_conversation?
-typedef struct {
-  char *accountname;
-  char *protocol;
-  char *username; //recipient
-} otrg_plugin_conversation;
-
 
 TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv);
 
