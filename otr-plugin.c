@@ -1505,7 +1505,29 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
-static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv4_t *conn)
+static void gone_secure_v4(const otr4_client_conversation_t *conv)
+{
+    //TODO: Could use otr4_client_conversation_t directly
+    otrg_plugin_conversation plugin_conv;
+    plugin_conv.accountname = conv->account;
+    plugin_conv.protocol = conv->protocol;
+    plugin_conv.username = conv->peer;
+
+    otrg_dialog_conversation_connected(&plugin_conv);
+}
+
+static void gone_insecure_v4(const otr4_client_conversation_t *conv)
+{
+    //TODO: Could use otr4_client_conversation_t directly
+    otrg_plugin_conversation plugin_conv;
+    plugin_conv.accountname = conv->account;
+    plugin_conv.protocol = conv->protocol;
+    plugin_conv.username = conv->peer;
+
+    otrg_dialog_conversation_disconnected(&plugin_conv);
+}
+
+static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *conv)
 {
     //TODO: use fp to determine if you have seen this fp before
     //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
@@ -1516,13 +1538,10 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
     if (otrg_plugin_fingerprint_get(fp_human))
         return;
 
-    otr4_client_adapter_t *client = otr4_connection_to_client(conn);
-    const otr4_conversation_t *otrconv = otr4_client_adapter_get_conversation_from_connection(conn, client);
-
     //TODO: Change the message if we have have already seen another FP for this contact.
 
     otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human,
-        client->protocol, client->account, otrconv->recipient);
+        conv->protocol, conv->account, conv->peer);
     if (!info)
         return; //ERROR
 
@@ -1530,47 +1549,19 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
         "should <a href=\"%s%s\">authenticate</a> this buddy."),
         info->username, AUTHENTICATE_HELPURL, _("?lang=en"));
 
-    PurpleConversation *conv = otrg_plugin_userinfo_to_conv(client->account,
-	client->protocol, otrconv->recipient, 0);
+    PurpleConversation *purple_conv = otrg_plugin_userinfo_to_conv(conv->account,
+	conv->protocol, conv->peer, 0);
 
-    purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
+    purple_conversation_write(purple_conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
 
     g_free(buf);
 }
 
-static void otr4_gone_secure_cb(const otrv4_t *conn)
-{
-    //TODO: This will not work with multiple accounts. otrv4_t is not a good
-    //fit for this callback (it does not know anything about the account).
-    otr4_client_adapter_t *client = otr4_connection_to_client(conn);
-    const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
-
-    otrg_plugin_conversation plugin_conv;
-    plugin_conv.accountname = client->account;
-    plugin_conv.protocol = client->protocol;
-    plugin_conv.username = conv->recipient;
-    otrg_dialog_conversation_connected(&plugin_conv);
-}
-
-static void otr4_gone_insecure_cb(const otrv4_t *conn)
-{
-    //TODO: This will not work with multiple accounts. otrv4_t is not a good
-    //fit for this callback (it does not know anything about the account).
-    otr4_client_adapter_t *client = otr4_connection_to_client(conn);
-    const otr4_conversation_t *conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
-
-    otrg_plugin_conversation plugin_conv;
-    plugin_conv.accountname = client->account;
-    plugin_conv.protocol = client->protocol;
-    plugin_conv.username = conv->recipient;
-    otrg_dialog_conversation_disconnected(&plugin_conv);
-}
-
-otrv4_callbacks_t otr4_callbacks = {
-    otr4_gone_secure_cb,
-    otr4_gone_insecure_cb,
-    otr4_confirm_fingerprint_cb,
+otrv4_plugin_callbacks_t callbacks_v4 = {
+    gone_secure_v4,
+    gone_insecure_v4,
+    fingerprint_seen_v4,
 };
 
 static gboolean otr_plugin_load(PurplePlugin *handle)
@@ -1667,7 +1658,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
-    otr4_callbacks_set(&otr4_callbacks);
+    otr4_callbacks_set(&callbacks_v4);
     otrv4_userstate_create();
     otr4_privkey_read_FILEp(privf);
 

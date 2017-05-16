@@ -1,26 +1,10 @@
 #include "otr4-client.h"
 
-static const otrv4_callbacks_t *otr4_callback = NULL;
+static const otrv4_plugin_callbacks_t *callback_v4 = NULL;
 static GHashTable *client_table = NULL;
 
-void otr4_callbacks_set(const otrv4_callbacks_t *cb) {
-    otr4_callback = cb;
-}
-
-static void 
-g_destroy_otrv4_account(gpointer data) {
-    otr4_account_free(data);
-}
-
-void
-otrv4_userstate_create(void) {
-    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-                                         g_destroy_otrv4_account);
-}
-
-void otrv4_userstate_destroy(void) {
-    g_hash_table_remove_all(client_table);
-    client_table = NULL;
+void otr4_callbacks_set(const otrv4_plugin_callbacks_t *cb) {
+    callback_v4 = cb;
 }
 
 static gboolean
@@ -35,10 +19,88 @@ find_otr_client(gpointer key, gpointer value, gpointer user_data)
     return false;
 }
 
-otr4_client_adapter_t*
+static otr4_client_adapter_t*
 otr4_connection_to_client(const otrv4_t *conn)
 {
     return g_hash_table_find(client_table, find_otr_client, (gpointer) conn);
+}
+
+static otr4_client_conversation_t* conn_to_conv(const otrv4_t *conn)
+{
+    otr4_client_conversation_t *client_conv = NULL;
+    const otr4_client_adapter_t *client = NULL;
+    const otr4_conversation_t *conv = NULL;
+
+    client_conv = malloc(sizeof(otr4_client_conversation_t));
+    if (!client_conv)
+        return NULL;
+
+    client = otr4_connection_to_client(conn);
+    conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
+
+    client_conv->account = client->account;
+    client_conv->protocol = client->protocol;
+    client_conv->peer = conv->recipient;
+    //uint16_t their_instance_tag;
+    //uint16_t our_instance_tag;
+
+    return client_conv;
+}
+
+static void otr4_gone_secure_cb(const otrv4_t *conn)
+{
+    if (!callback_v4 || !callback_v4->gone_secure)
+        return;
+
+    otr4_client_conversation_t* client_conv = conn_to_conv(conn);
+    callback_v4->gone_secure(client_conv);
+    free(client_conv);
+}
+
+static void otr4_gone_insecure_cb(const otrv4_t *conn)
+{
+    if (!callback_v4 || !callback_v4->gone_insecure)
+        return;
+
+    otr4_client_conversation_t* client_conv = conn_to_conv(conn);
+    callback_v4->gone_insecure(client_conv);
+    free(client_conv);
+}
+
+static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv4_t *conn)
+{
+    if (!callback_v4 || !callback_v4->fingerprint_seen)
+        return;
+
+    otr4_client_conversation_t* client_conv = conn_to_conv(conn);
+    callback_v4->fingerprint_seen(fp, client_conv);
+    free(client_conv);
+}
+
+//This will forward libotr callbacks (they only know about otrv4 connections)
+//to plugin callbacks (they know about having multiple accounts in mutiple
+//protocols and so on)
+static otrv4_callbacks_t otr4_callbacks = {
+    otr4_gone_secure_cb,
+    otr4_gone_insecure_cb,
+    otr4_confirm_fingerprint_cb,
+};
+
+static void g_destroy_conversation(gpointer data)
+{
+    otr4_client_adapter_t *client = data;
+    otr4_client_adapter_free(client);
+}
+
+void
+otrv4_userstate_create(void) {
+    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                         g_destroy_conversation);
+}
+
+void otrv4_userstate_destroy(void) {
+    g_hash_table_remove_all(client_table);
+    client_table = NULL;
 }
 
 //NOTE: Key is owned by the hash table.
@@ -49,7 +111,7 @@ otr4_client_from_key(char *key)
     if (client)
         return client;
 
-    client = otr4_client_adapter_new(otr4_callback);
+    client = otr4_client_adapter_new(&otr4_callbacks);
     if (!client)
         return NULL;
 
@@ -293,15 +355,7 @@ otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
     return otr4_client_disconnect(newmessage, recipient, client->real_client);
 }
 
-
-
-void otr4_account_free(otr4_account_t *account)
+otr4_client_adapter_t* otr4_get_client(const otr4_client_conversation_t* conv)
 {
-    free(account->account);
-    account->account = NULL;
-
-    free(account->protocol);
-    account->account = NULL;
-
-    free(account);
+    return otr4_client(conv->account, conv->protocol);
 }
