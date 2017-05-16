@@ -1267,10 +1267,10 @@ static void dialog_update_label_real(otrg_plugin_conversation *context)
 
     TrustLevel level = otrg_plugin_conversation_to_trust(context);
 
-    account = purple_accounts_find(context->accountname, context->protocol);
+    account = purple_accounts_find(context->account, context->protocol);
     if (!account) return;
     conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
-	    context->username, account);
+	    context->peer, account);
     if (!conv) return;
     dialog_update_label_conv(conv, level);
 }
@@ -1285,9 +1285,9 @@ conn_context_to_plugin_conversation(ConnContext *context)
     if (!plugin_conv)
         return NULL;
 
-    plugin_conv->accountname = context->accountname;
+    plugin_conv->account = context->accountname;
     plugin_conv->protocol = context->protocol;
-    plugin_conv->username = context->username;
+    plugin_conv->peer = context->username;
 
     return plugin_conv;
 }
@@ -1562,7 +1562,7 @@ static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
     protocol_version = otrg_plugin_conversation_to_protocol_version(context);
 
     otrg_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
-	    context->username);
+	    context->peer);
     if (prefs.avoid_logging_otr) {
 	purple_conversation_set_logging(conv, FALSE);
     }
@@ -1614,8 +1614,8 @@ static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
 		    " OTR has established <a href=\"%s%s\">multiple sessions"
 		    "</a>. Use the icon menu above if you wish to select the "
 		    "outgoing session."), SESSIONS_HELPURL, _("?lang=en"));
-	    otrg_gtk_dialog_display_otr_message(context->accountname,
-		    context->protocol, context->username, buf, 0);
+	    otrg_gtk_dialog_display_otr_message(context->account,
+		    context->protocol, context->peer, buf, 0);
 	    g_free(buf);
 	}
     }
@@ -1642,7 +1642,7 @@ static void otrg_gtk_dialog_disconnected_real(otrg_plugin_conversation *context)
     g_free(buf);
 
     otrg_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
-	    context->username);
+	    context->peer);
     if (prefs.avoid_logging_otr) {
 	if (purple_prefs_get_bool("/purple/logging/log_ims")) {
 	    purple_conversation_set_logging(conv, TRUE);
@@ -1807,8 +1807,8 @@ static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
     //TODO: Remove ConnContext
     otrg_plugin_conversation p_conv[1];
     p_conv->protocol = context->protocol;
-    p_conv->accountname = context->accountname;
-    p_conv->username = context->username;
+    p_conv->account = context->accountname;
+    p_conv->peer = context->username;
 
     otrg_ui_disconnect_connection(p_conv);
 }

@@ -171,9 +171,9 @@ void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv)
 void otrg_dialog_connected(ConnContext *context)
 {
     otrg_plugin_conversation conv;
-    conv.accountname = context->accountname;
+    conv.account = context->accountname;
     conv.protocol = context->protocol;
-    conv.username = context->username;
+    conv.peer = context->username;
     otrg_dialog_conversation_connected(&conv);
 }
 
@@ -186,9 +186,9 @@ void otrg_dialog_conversation_disconnected(otrg_plugin_conversation *conv)
 void otrg_dialog_disconnected(ConnContext *context)
 {
     otrg_plugin_conversation conv;
-    conv.accountname = context->accountname;
+    conv.account = context->accountname;
     conv.protocol = context->protocol;
-    conv.username = context->username;
+    conv.peer = context->username;
 
     otrg_dialog_conversation_disconnected(&conv);
 }

@@ -92,12 +92,8 @@ void otrg_plugin_continue_smp(ConnContext *context,
  * are received. */
 void otrg_plugin_abort_smp(ConnContext *context);
 
-//TODO: should we use this instead of otr_conversation?
-typedef struct {
-  char *accountname;
-  char *protocol;
-  char *username; //recipient
-} otrg_plugin_conversation;
+//TODO: rename who uses this
+typedef otr4_client_conversation_t otrg_plugin_conversation;
 
 void otrg_plugin_send_default_query(otrg_plugin_conversation *conv);
 
@@ -143,8 +139,8 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
 int otrg_plugin_proto_supports_otr(const char *proto);
 
 static inline PurpleConversation *otrg_plugin_conversation_to_purple_conv(const otrg_plugin_conversation *conv, int force) {
-  return otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
-      conv->username, force);
+  return otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
+      conv->peer, force);
 }
 
 static inline int

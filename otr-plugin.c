@@ -907,17 +907,17 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     //OtrgUiPrefs prefs;
     //otrg_ui_get_prefs(&prefs, account, context->username);
 
-    purp_conv = otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
-        conv->username, 1);
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
+        conv->peer, 1);
     account = purple_conversation_get_account(purp_conv);
 
-    otr4_client_adapter_t* client = otr4_client(conv->accountname, conv->protocol);
+    otr4_client_adapter_t* client = otr4_client(conv->account, conv->protocol);
     if (!client)
         return;
 
-    msg = otr4_client_adapter_query_message(conv->username, "", client);
+    msg = otr4_client_adapter_query_message(conv->peer, "", client);
 
-    otrg_plugin_inject_message(account, conv->username,
+    otrg_plugin_inject_message(account, conv->peer,
 	     msg ? msg : "?OTRv34?");
     free(msg);
 }
@@ -1196,15 +1196,15 @@ void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
 
     if (!conv) return;
 
-    client = otr4_client(conv->accountname, conv->protocol);
+    client = otr4_client(conv->account, conv->protocol);
     if (!client) return;
 
-    purp_conv = otrg_plugin_userinfo_to_conv(conv->accountname, conv->protocol,
-        conv->username, 1);
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
+        conv->peer, 1);
     account = purple_conversation_get_account(purp_conv);
 
-    if (!otr4_client_adapter_disconnect(&msg, conv->username, client))
-        otrg_plugin_inject_message(account, conv->username, msg);
+    if (!otr4_client_adapter_disconnect(&msg, conv->peer, client))
+        otrg_plugin_inject_message(account, conv->peer, msg);
 
     free(msg);
 }
@@ -1349,14 +1349,14 @@ TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv)
     if (!conv)
         return level;
 
-    otr4_client_adapter_t *client = otr4_client(conv->accountname, conv->protocol);
+    otr4_client_adapter_t *client = otr4_client(conv->account, conv->protocol);
     if (!client)
         return level;
 
     otr4_conversation_t *otr_conv = otr4_client_get_conversation(1,
-        conv->username, client->real_client);
+        conv->peer, client->real_client);
 
-    otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->username);
+    otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
     if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
         if (fp->trusted)
 	    level = TRUST_PRIVATE;
@@ -1402,8 +1402,8 @@ static void process_quitting(void)
             //TODO: Remove ConnContext
             otrg_plugin_conversation conv[1];
             conv->protocol = context->protocol;
-            conv->accountname = context->accountname;
-            conv->username = context->username;
+            conv->account = context->accountname;
+            conv->peer = context->username;
 
 	    otrg_plugin_disconnect(conv);
 	}
@@ -1507,24 +1507,12 @@ static void otrg_free_mms_table()
 
 static void gone_secure_v4(const otr4_client_conversation_t *conv)
 {
-    //TODO: Could use otr4_client_conversation_t directly
-    otrg_plugin_conversation plugin_conv;
-    plugin_conv.accountname = conv->account;
-    plugin_conv.protocol = conv->protocol;
-    plugin_conv.username = conv->peer;
-
-    otrg_dialog_conversation_connected(&plugin_conv);
+    otrg_dialog_conversation_connected((otr4_client_conversation_t *)conv);
 }
 
 static void gone_insecure_v4(const otr4_client_conversation_t *conv)
 {
-    //TODO: Could use otr4_client_conversation_t directly
-    otrg_plugin_conversation plugin_conv;
-    plugin_conv.accountname = conv->account;
-    plugin_conv.protocol = conv->protocol;
-    plugin_conv.username = conv->peer;
-
-    otrg_dialog_conversation_disconnected(&plugin_conv);
+    otrg_dialog_conversation_disconnected((otr4_client_conversation_t *)conv);
 }
 
 static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *conv)

@@ -173,9 +173,9 @@ static void otrg_gtk_ui_update_keylist(void)
 	int i;
         otrg_plugin_fingerprint *fp = iter->data;
 
-        plugin_conv.accountname = fp->account;
+        plugin_conv.account = fp->account;
         plugin_conv.protocol = fp->protocol;
-        plugin_conv.username = fp->username;
+        plugin_conv.peer = fp->username;
         TrustLevel level = otrg_plugin_conversation_to_trust(&plugin_conv);
 
         titles[0] = fp->username;
@@ -363,12 +363,12 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
 static void connect_connection_ui(otrg_plugin_conversation *conv)
 {
     /* Send an OTR Query to the other side. */
-    otr4_client_adapter_t* client = otr4_client(conv->accountname, conv->protocol);
+    otr4_client_adapter_t* client = otr4_client(conv->account, conv->protocol);
     if (!client)
         return;
 
     otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
-        conv->username, client->real_client);
+        conv->peer, client->real_client);
     
     /* Don't do this if we're already ENCRYPTED */
     if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES)
@@ -400,8 +400,8 @@ static void connect_connection(GtkWidget *widget, gpointer data)
 
     otrg_plugin_conversation conv[1];
     conv->protocol = fp->protocol;
-    conv->accountname = fp->account;
-    conv->username = fp->username;
+    conv->account = fp->account;
+    conv->peer = fp->username;
     connect_connection_ui(conv);
 }
 
@@ -414,8 +414,8 @@ static void disconnect_connection(GtkWidget *widget, gpointer data)
     if (!fp) return;
 
     conv->protocol = fp->protocol;
-    conv->accountname = fp->account;
-    conv->username = fp->username;
+    conv->account = fp->account;
+    conv->peer = fp->username;
     otrg_ui_disconnect_connection(conv);
 }
 
