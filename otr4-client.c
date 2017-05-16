@@ -1,7 +1,156 @@
 #include "otr4-client.h"
 
+static const otrv4_callbacks_t *otr4_callback = NULL;
+static GHashTable *client_table = NULL;
+
+void otr4_callbacks_set(const otrv4_callbacks_t *cb) {
+    otr4_callback = cb;
+}
+
+static void 
+g_destroy_otrv4_account(gpointer data) {
+    otr4_account_free(data);
+}
+
+void
+otrv4_userstate_create(void) {
+    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                         g_destroy_otrv4_account);
+}
+
+void otrv4_userstate_destroy(void) {
+    g_hash_table_remove_all(client_table);
+    client_table = NULL;
+}
+
+static gboolean
+find_otr_client(gpointer key, gpointer value, gpointer user_data)
+{
+    const otrv4_t *conn = user_data;
+    otr4_client_adapter_t *client = value;
+
+    if (otr4_client_adapter_get_conversation_from_connection(conn, client))
+        return true;
+
+    return false;
+}
+
 otr4_client_adapter_t*
-otr4_client_adapter_new(otrv4_callbacks_t *callbacks) {
+otr4_connection_to_client(const otrv4_t *conn)
+{
+    return g_hash_table_find(client_table, find_otr_client, (gpointer) conn);
+}
+
+//NOTE: Key is owned by the hash table.
+otr4_client_adapter_t*
+otr4_client_from_key(char *key)
+{
+    otr4_client_adapter_t* client = g_hash_table_lookup(client_table, key);
+    if (client)
+        return client;
+
+    client = otr4_client_adapter_new(otr4_callback);
+    if (!client)
+        return NULL;
+
+    g_hash_table_insert(client_table, key, client);
+    return client;
+}
+
+otr4_client_adapter_t*
+otr4_client(const char *accountname, const char *protocol)
+{
+    otr4_client_adapter_t *ret = NULL;
+    char *key = NULL;
+
+    asprintf(&key, "%s:%s", protocol, accountname);
+    if (!key)
+        return NULL;
+
+    ret = otr4_client_from_key(key);
+    if (!ret)
+        return NULL;
+
+    ret->account = g_strdup(accountname);
+    ret->protocol = g_strdup(protocol);
+
+    return ret;
+}
+
+void
+otr4_privkey_read_FILEp(FILE *privf)
+{
+    gchar *key = NULL;
+    otr4_client_adapter_t *client = NULL;
+
+    char *line = NULL;
+    size_t cap = 0;
+    int len = 0;
+
+    if (!privf)
+        return;
+
+    while ((len = getline(&line, &cap, privf)) != -1) {
+        key = g_strndup(line, len-1);
+        client = otr4_client_from_key(key);
+        //TODO: What to do if an error happens?
+        otr4_client_adapter_read_privkey_FILEp(client, privf);
+    }
+}
+
+static int
+otr4_privkey_generate_FILEp(const otr4_client_t * client, const char *key, FILE * privf)
+{
+        char *buff = NULL;
+        size_t s = 0;
+        int err = 0;
+
+        if (!privf)
+                return -1;
+
+        if (!client->keypair)
+                return -2;
+
+        err = otrv4_symmetric_key_serialize(&buff, &s, client->keypair->sym);
+        if (err)
+                return err;
+
+        if (EOF == fputs(key, privf))
+                return -3;
+
+        if (EOF == fputs("\n", privf))
+                return -3;
+
+        if (1 != fwrite(buff, s, 1, privf))
+                return -3;
+
+        if (EOF == fputs("\n", privf))
+                return -3;
+
+        return 0;
+}
+
+
+static void
+add_privkey_to_file(gpointer key,
+           gpointer value,
+           gpointer user_data)
+{
+    otr4_client_adapter_t *client = value;
+    FILE *privf = user_data;
+
+    //TODO: What if an error hapens?
+    otr4_privkey_generate_FILEp(client->real_client, key, privf);
+}
+
+void
+otr4_privkey_write_FILEp(FILE *privf) {
+        g_hash_table_foreach(client_table, add_privkey_to_file, privf);
+}
+
+
+otr4_client_adapter_t*
+otr4_client_adapter_new(const otrv4_callbacks_t *callbacks) {
     otr4_client_adapter_t *c = malloc(sizeof(otr4_client_adapter_t));
     if (!c)
         return NULL;

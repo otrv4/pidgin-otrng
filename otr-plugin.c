@@ -114,78 +114,7 @@ OtrlUserState otrg_plugin_userstate = NULL;
  * protocols. */
 GHashTable* mms_table = NULL;
 
-GHashTable *client_table = NULL;
-
 GHashTable *fingerprint_table = NULL;
-
-static void 
-g_destroy_otrv4_account(gpointer data)
-{
-    otr4_account_free(data);
-}
-
-static void
-otrv4_userstate_create()
-{
-    client_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-                                         g_destroy_otrv4_account);
-}
-
-//NOTE: Key is owned by the hash table.
-otr4_client_adapter_t*
-otr4_client_from_key(char *key)
-{
-    otr4_client_adapter_t* client = g_hash_table_lookup(client_table, key);
-    if (client)
-        return client;
-
-    client = otr4_client_adapter_new(&otr4_callbacks);
-    if (!client)
-        return NULL;
-
-    g_hash_table_insert(client_table, key, client);
-    return client;
-}
-
-static void privkey_read_FILEp(FILE *privf)
-{
-    gchar *key = NULL;
-    otr4_client_adapter_t *client = NULL;
-
-    char *line = NULL;
-    size_t cap = 0;
-    int len = 0;
-
-    if (!privf)
-        return;
-
-    while ((len = getline(&line, &cap, privf)) != -1) {
-        key = g_strndup(line, len-1);
-        client = otr4_client_from_key(key);
-        //TODO: What to do if an error happens?
-        otr4_client_adapter_read_privkey_FILEp(client, privf);
-    }
-}
-
-otr4_client_adapter_t*
-otr4_client(const char *accountname, const char *protocol)
-{
-    otr4_client_adapter_t *ret = NULL;
-    char *key = NULL;
-
-    asprintf(&key, "%s:%s", protocol, accountname);
-    if (!key)
-        return NULL;
-
-    ret = otr4_client_from_key(key);
-    if (!ret)
-        return NULL;
-
-    ret->account = g_strdup(accountname);
-    ret->protocol = g_strdup(protocol);
-
-    return ret;
-}
 
 otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account)
@@ -222,24 +151,6 @@ purple_conversation_to_otr4_conversation(PurpleConversation *conv)
 
     //TODO: should we force creation here?
     return otr4_client_get_conversation(0, recipient, client->real_client);
-}
-
-static gboolean
-find_otr_client(gpointer key, gpointer value, gpointer user_data)
-{
-    const otrv4_t *conn = user_data;
-    otr4_client_adapter_t *client = value;
-
-    if (otr4_client_adapter_get_conversation_from_connection(conn, client))
-        return true;
-
-    return false;
-}
-
-otr4_client_adapter_t*
-otr4_connection_to_client(const otrv4_t *conn)
-{
-    return g_hash_table_find(client_table, find_otr_client, (gpointer) conn);
 }
 
 otr4_conversation_t*
@@ -423,50 +334,6 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
     return prefs.policy;
 }
 
-static int
-otr4_privkey_generate_FILEp(const otr4_client_t * client, const char *key, FILE * privf)
-{
-        char *buff = NULL;
-        size_t s = 0;
-        int err = 0;
-
-        if (!privf)
-                return -1;
-
-        if (!client->keypair)
-                return -2;
-
-        err = otrv4_symmetric_key_serialize(&buff, &s, client->keypair->sym);
-        if (err)
-                return err;
-
-        if (EOF == fputs(key, privf))
-                return -3;
-
-        if (EOF == fputs("\n", privf))
-                return -3;
-
-        if (1 != fwrite(buff, s, 1, privf))
-                return -3;
-
-        if (EOF == fputs("\n", privf))
-                return -3;
-
-        return 0;
-}
-
-static void
-add_privkey_to_file(gpointer key,
-           gpointer value,
-           gpointer user_data)
-{
-    otr4_client_adapter_t *client = value;
-    FILE *privf = user_data;
-
-    //TODO: What if an error hapens?
-    otr4_privkey_generate_FILEp(client->real_client, key, privf);
-}
-
 static int otrg_plugin_create_privkey_v4(const char *accountname,
 	const char *protocol)
 {
@@ -497,9 +364,8 @@ static int otrg_plugin_create_privkey_v4(const char *accountname,
 
     otr4_client_adapter_t *client = otr4_client(accountname, protocol);
     int err = otr4_client_generate_privkey(client);
-
     if (!err)
-        g_hash_table_foreach(client_table, add_privkey_to_file, privf);
+        otr4_privkey_write_FILEp(privf);
 
     fclose(privf);
 
@@ -1801,8 +1667,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     /* Make our OtrlUserState; we'll only use the one. */
     otrg_plugin_userstate = otrl_userstate_create();
 
+    otr4_callbacks_set(&otr4_callbacks);
     otrv4_userstate_create();
-    privkey_read_FILEp(privf);
+    otr4_privkey_read_FILEp(privf);
 
     otrg_plugin_timerid = 0;
 
@@ -1882,9 +1749,7 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
-    g_hash_table_remove_all(client_table);
-    client_table = NULL;
-
+    otrv4_userstate_destroy();
     g_hash_table_remove_all(fingerprint_table);
     fingerprint_table = NULL;
 
