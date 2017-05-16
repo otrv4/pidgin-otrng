@@ -244,6 +244,10 @@ char*
 otr4_client_adapter_query_message(const char *recipient,
                           const char* message,
                           otr4_client_adapter_t *client) {
+
+    if (!client->real_client->keypair && callback_v4->create_privkey)
+        callback_v4->create_privkey(client);
+
     return otr4_client_query_message(recipient, message, client->real_client);
 }
 
@@ -252,6 +256,9 @@ otr4_client_adapter_send(char **newmessage,
                  const char *message,
                  const char *recipient,
                  otr4_client_adapter_t *client) {
+    if (!client->real_client->keypair && callback_v4->create_privkey)
+        callback_v4->create_privkey(client);
+
     return otr4_client_send(newmessage, message, recipient, client->real_client);
 }
 
@@ -261,6 +268,9 @@ otr4_client_adapter_receive(char **newmessage,
                     const char *message,
                     const char *recipient,
                     otr4_client_adapter_t *client) {
+    if (!client->real_client->keypair && callback_v4->create_privkey)
+        callback_v4->create_privkey(client);
+
     return otr4_client_receive(newmessage, todisplay, message, recipient, client->real_client);
 }
 
@@ -352,6 +362,9 @@ int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client)
 {
+    if (!client->real_client->keypair && callback_v4->create_privkey)
+        callback_v4->create_privkey(client);
+
     return otr4_client_disconnect(newmessage, recipient, client->real_client);
 }
 

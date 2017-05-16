@@ -5,12 +5,14 @@
 #include <libotr/context.h>
 #include <libotr4/client.h>
 
-//TODO: This can be removed once we remove dependency on ConnContext from the
-//plugin
 typedef struct {
-  ConnContext *ctx;
-  otr4_conversation_t *conv;
-} otr4_plugin_conversation_t;
+  char *account;
+  char *protocol;
+
+  //TODO: this goes away when ConnContext is removed
+  list_element_t *plugin_conversations;
+  otr4_client_t *real_client;
+} otr4_client_adapter_t;
 
 typedef struct {
     char *account;
@@ -22,6 +24,10 @@ typedef struct {
 } otr4_client_conversation_t;
 
 typedef struct {
+        /* Create a private key for the given accountname/protocol if
+         * desired. */
+        void (*create_privkey)(const otr4_client_adapter_t *);
+
         /* A connection has entered a secure state. */
         void (*gone_secure) (const otr4_client_conversation_t *);
 
@@ -32,14 +38,14 @@ typedef struct {
         void (*fingerprint_seen) (const otrv4_fingerprint_t, const otr4_client_conversation_t *);
 } otrv4_plugin_callbacks_t;
 
+//TODO: This can be removed once we remove dependency on ConnContext from the
+//plugin
 typedef struct {
-  char *account;
-  char *protocol;
+  ConnContext *ctx;
+  otr4_conversation_t *conv;
+} otr4_plugin_conversation_t;
 
-  //TODO: this goes away when ConnContext is removed
-  list_element_t *plugin_conversations;
-  otr4_client_t *real_client;
-} otr4_client_adapter_t;
+
 
 otr4_client_adapter_t*
 otr4_client_adapter_new(const otrv4_callbacks_t *cb);

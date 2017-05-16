@@ -1356,6 +1356,9 @@ TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv)
     otr4_conversation_t *otr_conv = otr4_client_get_conversation(1,
         conv->peer, client->real_client);
 
+    if (!otr_conv)
+        return level;
+
     otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
     if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
         if (fp->trusted)
@@ -1505,6 +1508,11 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
+static void create_privkey(const otr4_client_adapter_t *client)
+{
+    otrg_plugin_create_privkey(client->account, client->protocol);
+}
+
 static void gone_secure_v4(const otr4_client_conversation_t *conv)
 {
     otrg_dialog_conversation_connected((otr4_client_conversation_t *)conv);
@@ -1547,6 +1555,7 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
 }
 
 otrv4_plugin_callbacks_t callbacks_v4 = {
+    create_privkey,
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
