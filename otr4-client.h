@@ -36,6 +36,32 @@ typedef struct {
 
         /* A fingerprint was seen in this connection. */
         void (*fingerprint_seen) (const otrv4_fingerprint_t, const otr4_client_conversation_t *);
+
+        /* Update the authentication UI and prompt the user to enter a shared secret.
+         *      The sender application should call otrl_message_initiate_smp,
+         *      passing NULL as the question.
+         *      When the receiver application resumes the SM protocol by calling
+         *      otrl_message_respond_smp with the secret answer. */
+        void (*smp_ask_for_secret) (const otr4_client_conversation_t *);
+
+        /* Same as smp_ask_for_secret but sender calls otrl_message_initiate_smp_q instead) */
+        void (*smp_ask_for_answer) (const char* question, const otr4_client_conversation_t *);
+
+        /* Update the authentication UI with respect to SMP events
+         * These are the possible events:
+         * - OTRL_SMPEVENT_CHEATED
+         *      abort the current auth and update the auth progress dialog
+         *      with progress_percent. otrl_message_abort_smp should be called to
+         *      stop the SM protocol.
+         * - OTRL_SMPEVENT_INPROGRESS       and
+         *   OTRL_SMPEVENT_SUCCESS          and
+         *   OTRL_SMPEVENT_FAILURE          and
+         *   OTRL_SMPEVENT_ABORT
+         *      update the auth progress dialog with progress_percent
+         * - OTRL_SMPEVENT_ERROR
+         *      (same as OTRL_SMPEVENT_CHEATED)
+         * */
+        void (*smp_update) (const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *);
 } otrv4_plugin_callbacks_t;
 
 //TODO: This can be removed once we remove dependency on ConnContext from the

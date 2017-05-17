@@ -77,6 +77,48 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
     free(client_conv);
 }
 
+static void otr4_handle_smp_event_cb(const otr4_smp_event_t event,
+             const uint8_t progress_percent, const char *question,
+             const otrv4_t *conn)
+{
+    otr4_client_conversation_t* client_conv = NULL;
+    if (!callback_v4)
+        return;
+
+    client_conv = conn_to_conv(conn);
+
+    switch (event) {
+	case OTRV4_SMPEVENT_ASK_FOR_SECRET :
+            if (!callback_v4->smp_ask_for_secret)
+                return;
+
+            callback_v4->smp_ask_for_secret(client_conv);
+	    break;
+	case OTRV4_SMPEVENT_ASK_FOR_ANSWER :
+            if (!callback_v4->smp_ask_for_answer)
+                return;
+
+            callback_v4->smp_ask_for_answer(question, client_conv);
+	    break;
+	case OTRV4_SMPEVENT_CHEATED :
+	case OTRV4_SMPEVENT_IN_PROGRESS :
+	case OTRV4_SMPEVENT_SUCCESS :
+	case OTRV4_SMPEVENT_FAILURE :
+	case OTRV4_SMPEVENT_ABORT :
+	case OTRV4_SMPEVENT_ERROR :
+            if (!callback_v4->smp_update)
+                return;
+
+            callback_v4->smp_update(event, progress_percent, client_conv);
+	    break;
+        default:
+            //OTRV4_SMPEVENT_NONE. Should not be used.
+            break;
+    }
+
+    free(client_conv);
+}
+
 //This will forward libotr callbacks (they only know about otrv4 connections)
 //to plugin callbacks (they know about having multiple accounts in mutiple
 //protocols and so on)
@@ -84,6 +126,7 @@ static otrv4_callbacks_t otr4_callbacks = {
     otr4_gone_secure_cb,
     otr4_gone_insecure_cb,
     otr4_confirm_fingerprint_cb,
+    otr4_handle_smp_event_cb,
 };
 
 static void g_destroy_conversation(gpointer data)
