@@ -1508,7 +1508,7 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
-static void create_privkey(const otr4_client_adapter_t *client)
+static void create_privkey_v4(const otr4_client_adapter_t *client)
 {
     otrg_plugin_create_privkey(client->account, client->protocol);
 }
@@ -1554,11 +1554,53 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
     g_free(buf);
 }
 
+static void smp_ask_for_secret_v4(const otr4_client_conversation_t *conv)
+{
+    if (!conv) return;
+    //TODO
+    //otrg_dialog_socialist_millionaires(context);
+}
+
+static void smp_ask_for_answer_v4(const char *question, const otr4_client_conversation_t *conv)
+{
+    if (!conv) return;
+    //TODO
+    //otrg_dialog_socialist_millionaires_q(context, question);
+}
+
+static void smp_update_v4(const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *conv)
+{
+    if (!conv) return;
+
+    //TODO
+    switch (event) {
+	case OTRV4_SMPEVENT_CHEATED :
+	    //otrg_plugin_abort_smp(context);
+	    /* FALLTHROUGH */
+	case OTRV4_SMPEVENT_IN_PROGRESS :
+	case OTRV4_SMPEVENT_SUCCESS :
+	case OTRV4_SMPEVENT_FAILURE :
+	case OTRV4_SMPEVENT_ABORT :
+	    //otrg_dialog_update_smp(context, smp_event, ((gdouble)progress_percent)/100.0);
+	    break;
+	case OTRL_SMPEVENT_ERROR :
+	    //otrg_plugin_abort_smp(context);
+	    break;
+        default:
+            //should be an error
+            break;
+    }
+}
+
+
 otrv4_plugin_callbacks_t callbacks_v4 = {
-    create_privkey,
+    create_privkey_v4,
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
+    smp_ask_for_secret_v4,
+    smp_ask_for_answer_v4,
+    smp_update_v4,
 };
 
 static gboolean otr_plugin_load(PurplePlugin *handle)
