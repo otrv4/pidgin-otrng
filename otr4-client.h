@@ -116,6 +116,10 @@ int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client);
 
+int otr4_client_adapter_smp_start(char **tosend, const char *recipient,
+    const char *question, const unsigned char *secret, size_t secretlen,
+    otr4_client_adapter_t * client);
+
 void otr4_callbacks_set(const otrv4_plugin_callbacks_t *otr4_callbacks);
 void otrv4_userstate_create(void);
 void otrv4_userstate_destroy(void);

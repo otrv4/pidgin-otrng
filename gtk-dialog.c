@@ -82,6 +82,8 @@ static int img_id_finished = 0;
 
 typedef struct {
     ConnContext *context;       /* The context used to fire library code */
+    otrg_plugin_conversation conv[1];
+
     GtkEntry* question_entry;   /* The text entry field containing the user
 				 * question */
     GtkEntry *entry;	        /* The text entry field containing the secret */
@@ -270,72 +272,8 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
     }
 }
 
-/* Called when a button is pressed on the "enter the secret" smp dialog
- * The data passed contains a pointer to the text entry field containing
- * the entered secret as well as the current context.
- */
-static void smp_secret_response_cb(GtkDialog *dialog, gint response,
-	AuthSignalData *auth_opt_data)
+static void display_smp_help(AuthSignalData *auth_opt_data)
 {
-    ConnContext* context;
-    PurpleConversation *conv;
-    SMPData *smp_data;
-    SmpResponsePair *smppair;
-
-    if (!auth_opt_data) return;
-
-    smppair = auth_opt_data->smppair;
-
-    if (!smppair) return;
-
-    context = smppair->context;
-
-    if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
-	GtkEntry* entry = smppair->entry;
-	char *secret;
-	size_t secret_len;
-
-	GtkEntry* question_entry = smppair->question_entry;
-
-	const char *user_question = NULL;
-
-
-	if (context == NULL || context->msgstate != OTRL_MSGSTATE_ENCRYPTED) {
-	    return;
-	}
-
-	secret = g_strdup(gtk_entry_get_text(entry));
-	secret_len = strlen(secret);
-
-	if (smppair->responder) {
-	    otrg_plugin_continue_smp(context, (const unsigned char *)secret,
-		    secret_len);
-
-	} else {
-
-	    if (smppair->smp_type == AUTH_SMP_QUESTION) {
-		if (!question_entry) {
-		    return;
-		}
-
-		user_question = gtk_entry_get_text(question_entry);
-
-		if (user_question == NULL || strlen(user_question) == 0) {
-		    return;
-		}
-	    }
-
-	    /* pass user question here */
-	    otrg_plugin_start_smp(context, user_question,
-		    (const unsigned char *)secret, secret_len);
-
-	}
-
-	g_free(secret);
-
-	/* launch progress bar window */
-	create_smp_progress_dialog(GTK_WINDOW(dialog), context);
-    } else if (response == GTK_RESPONSE_HELP) {
 	char *helpurl = g_strdup_printf("%s%s&context=%s",
 		AUTHENTICATE_HELPURL, _("?lang=en"),
 		auth_opt_data->smppair->smp_type == AUTH_SMP_QUESTION ?
@@ -351,6 +289,82 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 		);
 	purple_notify_uri(otrg_plugin_handle, helpurl);
 	g_free(helpurl);
+}
+
+static int start_or_continue_smp(SmpResponsePair *smppair)
+{
+	GtkEntry* question_entry = smppair->question_entry;
+	GtkEntry* entry = smppair->entry;
+
+	const char *user_question = NULL;
+	char *secret;
+	size_t secret_len;
+
+        ConnContext *context = smppair->context;
+
+	secret = g_strdup(gtk_entry_get_text(entry));
+	secret_len = strlen(secret);
+
+        if (!smppair->responder) {
+	    if (smppair->smp_type == AUTH_SMP_QUESTION) {
+		if (!question_entry) {
+	            g_free(secret);
+		    return 1;
+		}
+
+		user_question = gtk_entry_get_text(question_entry);
+
+		if (user_question == NULL || strlen(user_question) == 0) {
+	            g_free(secret);
+		    return 1;
+		}
+	    }
+
+	    /* pass user question here */
+	    otrg_plugin_start_smp(smppair->conv, user_question,
+		    (const unsigned char *)secret, secret_len);
+        } else {
+	    otrg_plugin_continue_smp(context, (const unsigned char *)secret,
+		    secret_len);
+	}
+
+        g_free(secret);
+        return 0;
+}
+
+/* Called when a button is pressed on the "enter the secret" smp dialog
+ * The data passed contains a pointer to the text entry field containing
+ * the entered secret as well as the current context.
+ */
+static void smp_secret_response_cb(GtkDialog *dialog, gint response,
+	AuthSignalData *auth_opt_data)
+{
+    otrg_plugin_conversation *plugin_conv;
+    ConnContext* context;
+    PurpleConversation *conv;
+    SMPData *smp_data;
+    SmpResponsePair *smppair;
+
+    if (!auth_opt_data) return;
+
+    smppair = auth_opt_data->smppair;
+
+    if (!smppair) return;
+
+    plugin_conv = smppair->conv;
+    context = smppair->context;
+
+    if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
+        if (otrg_plugin_conversation_get_msgstate(plugin_conv) != OTRV4_STATE_ENCRYPTED_MESSAGES)
+            return;
+
+        if (start_or_continue_smp(smppair))
+            return;
+
+	/* launch progress bar window */
+	create_smp_progress_dialog(GTK_WINDOW(dialog), context);
+    } else if (response == GTK_RESPONSE_HELP) {
+        display_smp_help(auth_opt_data);
 
 	/* Don't destroy the window */
 	return;
@@ -372,6 +386,9 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
     /* Free memory */
     free(auth_opt_data);
+    free(smppair->conv->account);
+    free(smppair->conv->protocol);
+    free(smppair->conv->peer);
     free(smppair);
 }
 
@@ -824,10 +841,14 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 	hbox = gtk_hbox_new(FALSE, 15);
 	vbox = gtk_vbox_new(FALSE, 0);
 
+        PurpleAccount *account = purple_conversation_get_account(conv);
+
 	smppair = malloc(sizeof(SmpResponsePair));
 	smppair->responder = responder;
 	smppair->context = context;
-
+        smppair->conv->account = g_strdup(context->accountname);
+        smppair->conv->protocol = g_strdup(context->protocol);
+        smppair->conv->peer = g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
 
 	notebook = gtk_notebook_new();
 	auth_opt_data = malloc(sizeof(AuthSignalData));

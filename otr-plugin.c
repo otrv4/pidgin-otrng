@@ -879,14 +879,32 @@ void otrg_plugin_abort_smp(ConnContext *context)
     otrl_message_abort_smp(otrg_plugin_userstate, &ui_ops, NULL, context);
 }
 
+static otr4_client_adapter_t * otrg_plugin_conversation_to_client(otrg_plugin_conversation *conv)
+{
+    return otr4_client(conv->account, conv->protocol);
+}
+
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrg_plugin_start_smp(ConnContext *context, const char *question,
-	const unsigned char *secret, size_t secretlen)
+void otrg_plugin_start_smp(otrg_plugin_conversation *conv,
+    const char *question, const unsigned char *secret, size_t secretlen)
 {
-    otrl_message_initiate_smp_q(otrg_plugin_userstate, &ui_ops, NULL,
-	    context, question, secret, secretlen);
+    otr4_client_adapter_t *client = otrg_plugin_conversation_to_client(conv);
+    if (!client)
+        return;
+
+    char *tosend = NULL;
+    if (otr4_client_adapter_smp_start(&tosend, conv->peer, question, secret, secretlen, client))
+        return; //ERROR?
+
+    PurpleConversation *purp_conv = NULL;
+    PurpleAccount *account = NULL;
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
+        conv->peer, 1);
+    account = purple_conversation_get_account(purp_conv);
+    otrg_plugin_inject_message(account, conv->peer, tosend);
+    free(tosend);
 }
 
 /* Continue the Socialist Millionaires' Protocol over the current connection,
@@ -896,6 +914,22 @@ void otrg_plugin_continue_smp(ConnContext *context,
 {
     otrl_message_respond_smp(otrg_plugin_userstate, &ui_ops, NULL,
 	    context, secret, secretlen);
+}
+
+otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv)
+{
+    otr4_client_adapter_t *client;
+    otr4_conversation_t *otrconv;
+    
+    client = otr4_client(conv->account, conv->protocol);
+    if (!client)
+        return OTRV4_STATE_NONE;
+
+    otrconv = otr4_client_get_conversation(0, conv->peer, client->real_client);
+    if (!otrconv || !otrconv->conn)
+        return OTRV4_STATE_NONE;
+
+    return otrconv->conn->state;
 }
 
 void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)

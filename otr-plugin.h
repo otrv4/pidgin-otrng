@@ -80,11 +80,15 @@ void otrg_plugin_create_privkey(const char *accountname,
 void otrg_plugin_create_instag(const char *accountname,
 	const char *protocol);
 
+//TODO: rename who uses this
+typedef otr4_client_conversation_t otrg_plugin_conversation;
+
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrg_plugin_start_smp(ConnContext *context, const char *question,
-	const unsigned char *secret, size_t secretlen);
+void otrg_plugin_start_smp(otrg_plugin_conversation *plugin_conv,
+    const char *question, const unsigned char *secret, size_t secretlen);
+
 void otrg_plugin_continue_smp(ConnContext *context,
 	const unsigned char *secret, size_t secretlen);
 
@@ -92,8 +96,7 @@ void otrg_plugin_continue_smp(ConnContext *context,
  * are received. */
 void otrg_plugin_abort_smp(ConnContext *context);
 
-//TODO: rename who uses this
-typedef otr4_client_conversation_t otrg_plugin_conversation;
+otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv);
 
 void otrg_plugin_send_default_query(otrg_plugin_conversation *conv);
 

@@ -411,7 +411,16 @@ otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
     return otr4_client_disconnect(newmessage, recipient, client->real_client);
 }
 
+int otr4_client_adapter_smp_start(char **tosend, const char *recipient,
+    const char *question, const unsigned char *secret, size_t secretlen,
+    otr4_client_adapter_t * client)
+{
+    return otr4_client_smp_start(tosend, recipient, question,
+        secret, secretlen, client->real_client);
+}
+
 otr4_client_adapter_t* otr4_get_client(const otr4_client_conversation_t* conv)
 {
     return otr4_client(conv->account, conv->protocol);
 }
+
