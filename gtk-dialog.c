@@ -984,7 +984,7 @@ static GtkWidget *create_smp_progress_dialog(GtkWindow *parent,
 	    _("Authenticating to Buddy") :
 	    /* Translators: you asked your buddy to authenticate him/herself */
 	    _("Authenticating Buddy"),
-	    parent, 0, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+	    NULL, 0, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
 	    GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
     gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 	    GTK_RESPONSE_ACCEPT);
