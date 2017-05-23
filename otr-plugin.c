@@ -1342,7 +1342,7 @@ void otrg_plugin_read_fingerprints_FILEp(FILE *storef)
 
           if (!fng) continue;
 
-          fng->trusted = trust ? 1 : 0;
+          fng->trusted = strlen(trust) ? 1 : 0;
     }
 }
 
