@@ -64,11 +64,11 @@ typedef struct {
 
     void (*verify_fingerprint)(otrg_plugin_fingerprint *fprint);
 
-    void (*socialist_millionaires)(ConnContext *context, char *question,
+    void (*socialist_millionaires)(const otrg_plugin_conversation *conv, const char *question,
 	    gboolean responder);
 
-    void (*update_smp)(ConnContext *context, OtrlSMPEvent smp_event,
-	    double progress_level);
+    void (*update_smp)(const otrg_plugin_conversation *context,
+        otr4_smp_event_t smp_event, double progress_level);
 
     void (*connected)(otrg_plugin_conversation *conv);
 
@@ -145,15 +145,15 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint);
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrg_dialog_socialist_millionaires(ConnContext *context);
+void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv);
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrg_dialog_socialist_millionaires_q(ConnContext *context,
-	char *question);
+void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
+	const char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
+void otrg_dialog_update_smp(const otrg_plugin_conversation *context, otr4_smp_event_t smp_event,
 	double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */

@@ -257,7 +257,9 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
 		GTK_PROGRESS_BAR(smp_data->smp_progress_bar));
 
 	if (frac != 0.0 && frac != 1.0 && response == GTK_RESPONSE_REJECT) {
-	    otrg_plugin_abort_smp(context);
+	    otrg_plugin_abort_smp(
+                connection_context_to_otrg_plugin_conversation(context)
+            );
 	}
     }
     /* In all cases, destroy the current window */
@@ -324,8 +326,9 @@ static int start_or_continue_smp(SmpResponsePair *smppair)
 	    otrg_plugin_start_smp(smppair->conv, user_question,
 		    (const unsigned char *)secret, secret_len);
         } else {
-	    otrg_plugin_continue_smp(context, (const unsigned char *)secret,
-		    secret_len);
+	    otrg_plugin_continue_smp(
+                connection_context_to_otrg_plugin_conversation(context), 
+                (const unsigned char *)secret, secret_len);
 	}
 
         g_free(secret);
@@ -369,7 +372,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 	/* Don't destroy the window */
 	return;
     } else {
-	otrg_plugin_abort_smp(context);
+	otrg_plugin_abort_smp(connection_context_to_otrg_plugin_conversation(context));
     }
 
     /* In all cases except HELP, destroy the current window */
@@ -491,7 +494,7 @@ static GtkWidget *create_dialog(GtkWindow *parent,
 }
 
 static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
-	ConnContext *context, AuthSignalData *auth_opt_data, char *question) {
+	ConnContext *context, AuthSignalData *auth_opt_data, const char *question) {
     GtkWidget *question_entry;
     GtkWidget *entry;
     GtkWidget *label;
@@ -795,7 +798,7 @@ static void add_other_authentication_options(GtkWidget *vbox,
 
 
 static GtkWidget *create_smp_dialog(const char *title, const char *primary,
-	ConnContext *context, gboolean responder, char *question)
+	ConnContext *context, gboolean responder, const char *question)
 {
     GtkWidget *dialog;
 
@@ -1488,23 +1491,23 @@ static void otrg_gtk_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint)
 
 /* Create the SMP dialog.  responder is true if this is called in
  * response to someone else's run of SMP. */
-static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
-	char *question, gboolean responder)
+static void otrg_gtk_dialog_socialist_millionaires(const otrg_plugin_conversation *conv,
+	const char *question, gboolean responder)
 {
     char *primary;
 
-    if (context == NULL) return;
+    if (conv == NULL) return;
 
     if (responder && question) {
 	primary = g_strdup_printf(_("Authentication from %s"),
-	    context->username);
+	    conv->peer);
     } else {
 	primary = g_strdup_printf(_("Authenticate %s"),
-	    context->username);
+	    conv->peer);
     }
 
     create_smp_dialog(_("Authenticate Buddy"),
-	    primary, context, responder, question);
+	    primary, otrg_plugin_conversation_to_conn_context(conv), responder, question);
 
     g_free(primary);
 }
@@ -1512,10 +1515,10 @@ static void otrg_gtk_dialog_socialist_millionaires(ConnContext *context,
 /* Call this to update the status of an ongoing socialist millionaires
  * protocol.  Progress_level is a percentage, from 0.0 (aborted) to
  * 1.0 (complete).  Any other value represents an intermediate state. */
-static void otrg_gtk_dialog_update_smp(ConnContext *context,
-	OtrlSMPEvent smp_event, double progress_level)
+static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
+        otr4_smp_event_t smp_event, double progress_level)
 {
-    PurpleConversation *conv = otrg_plugin_context_to_conv(context, 0);
+    PurpleConversation *conv = otrg_plugin_conversation_to_purple_conv(context, 0);
     GtkProgressBar *bar;
     SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
@@ -1545,10 +1548,22 @@ static void otrg_gtk_dialog_update_smp(ConnContext *context,
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
 
-	if (smp_event == OTRL_SMPEVENT_SUCCESS) {
-	    if (context->active_fingerprint &&
-                context->active_fingerprint->trust &&
-		    context->active_fingerprint->trust[0]) {
+	if (smp_event == OTRV4_SMPEVENT_SUCCESS) {
+            //TODO: This is how it used to behave:
+            //- It expects the libotr to set trust on on the fingerprint.
+            //- It expects both parties to run different SMPs to authenticate
+            //each other, and not allow a single SMP to authenticate both.
+            int responder = 0; // TODO: How can we know it now? We cant use
+            //smp_data->smp_secret_smppair->responder (its is not available)
+            otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(context->peer);
+            if (fp && !responder) {
+                fp->trusted = 1;
+                otrg_plugin_write_fingerprints();
+                otrg_ui_update_keylist();
+                otrg_dialog_resensitize_all();
+            }
+
+	    if (fp && fp->trusted) {
 		gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
 			_("Authentication successful."));
 	    } else {
@@ -1802,7 +1817,8 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
     if (otr_conv == NULL || otr_conv->conn->state != OTRV4_STATE_ENCRYPTED_MESSAGES)
 	return;
 
-    otrg_gtk_dialog_socialist_millionaires(context, NULL, FALSE);
+    otrg_gtk_dialog_socialist_millionaires(conn_context_to_plugin_conversation(context),
+        NULL, FALSE);
 }
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data)

@@ -142,21 +142,21 @@ void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint)
 }
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrg_dialog_socialist_millionaires(ConnContext *context)
+void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv)
 {
-    ui_ops->socialist_millionaires(context, NULL, TRUE);
+    ui_ops->socialist_millionaires(conv, NULL, TRUE);
 }
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrg_dialog_socialist_millionaires_q(ConnContext *context,
-	char *question)
+void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
+	const char *question)
 {
-    ui_ops->socialist_millionaires(context, question, TRUE);
+    ui_ops->socialist_millionaires(conv, question, TRUE);
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(ConnContext *context, OtrlSMPEvent smp_event,
+void otrg_dialog_update_smp(const otrg_plugin_conversation *context, otr4_smp_event_t smp_event,
 	double progress_level)
 {
     ui_ops->update_smp(context, smp_event, progress_level);
