@@ -534,37 +534,6 @@ static void resent_msg_prefix_free_cb(void *opdata, const char *prefix)
 	if (prefix) g_free((char*)prefix);
 }
 
-static void handle_smp_event_cb(void *opdata, OtrlSMPEvent smp_event,
-	ConnContext *context, unsigned short progress_percent,
-	char *question)
-{
-    if (!context) return;
-    switch (smp_event)
-    {
-	case OTRL_SMPEVENT_NONE :
-	    break;
-	case OTRL_SMPEVENT_ASK_FOR_SECRET :
-	    otrg_dialog_socialist_millionaires(context);
-	    break;
-	case OTRL_SMPEVENT_ASK_FOR_ANSWER :
-	    otrg_dialog_socialist_millionaires_q(context, question);
-	    break;
-	case OTRL_SMPEVENT_CHEATED :
-	    otrg_plugin_abort_smp(context);
-	    /* FALLTHROUGH */
-	case OTRL_SMPEVENT_IN_PROGRESS :
-	case OTRL_SMPEVENT_SUCCESS :
-	case OTRL_SMPEVENT_FAILURE :
-	case OTRL_SMPEVENT_ABORT :
-	    otrg_dialog_update_smp(context,
-		    smp_event, ((gdouble)progress_percent)/100.0);
-	    break;
-	case OTRL_SMPEVENT_ERROR :
-	    otrg_plugin_abort_smp(context);
-	    break;
-    }
-}
-
 /* Treat this event like other incoming messages. This allows message
  * notification events to get properly triggered. */
 static void emit_msg_received(ConnContext *context, const char* message) {
@@ -813,7 +782,7 @@ static OtrlMessageAppOps ui_ops = {
     otr_error_message_free_cb,
     resent_msg_prefix_cb,
     resent_msg_prefix_free_cb,
-    handle_smp_event_cb,
+    NULL, // handle_smp_event_cb,
     handle_msg_event_cb,
     create_instag_cb,
     NULL,		    /* convert_data */
@@ -874,14 +843,110 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
  * are received. */
-void otrg_plugin_abort_smp(ConnContext *context)
+void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv)
 {
-    otrl_message_abort_smp(otrg_plugin_userstate, &ui_ops, NULL, context);
+    //TODO: create and inject abort SMP message.
+    //otr4_client_adapter_smp_abort(&tosend, conv->peer, question, secret, secretlen, client);
 }
 
-static otr4_client_adapter_t * otrg_plugin_conversation_to_client(otrg_plugin_conversation *conv)
+otr4_client_adapter_t* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
 {
     return otr4_client(conv->account, conv->protocol);
+}
+
+otrg_plugin_conversation *otrg_plugin_conversation_new(const char *account,
+    const char *protocol, const char *peer)
+{
+    otrg_plugin_conversation *ret = malloc(sizeof(otrg_plugin_conversation));
+    if (!ret)
+        return ret;
+
+    ret->account = g_strdup(account);
+    ret->protocol = g_strdup(protocol);
+    ret->peer = g_strdup(peer);
+    ret->their_instance_tag = 0;
+    ret->our_instance_tag = 0;
+
+    return ret;
+}
+
+otrg_plugin_conversation *otrg_plugin_conversation_copy(const otrg_plugin_conversation* conv)
+{
+    otrg_plugin_conversation *ret = otrg_plugin_conversation_new(conv->account, conv->protocol, conv->peer);
+    if (!ret)
+        return ret;
+
+    ret->their_instance_tag = conv->their_instance_tag;
+    ret->our_instance_tag = conv->our_instance_tag;
+
+    return ret;
+}
+
+otrg_plugin_conversation*
+purple_conversation_to_plugin_conversation(PurpleConversation *conv)
+{
+    PurpleAccount *account = purple_conversation_get_account(conv);
+
+    const char *accountname = purple_account_get_username(account);
+    const char *protocol = purple_account_get_protocol_id(account);
+    const char *peer = purple_conversation_get_name(conv);
+
+    return otrg_plugin_conversation_new(accountname, protocol, peer);
+}
+
+ConnContext*
+otrg_plugin_conversation_to_conn_context(const otrg_plugin_conversation *conv)
+{
+    if (!conv)
+        return NULL;
+
+    return otrl_context_find(otrg_plugin_userstate, conv->peer,
+        conv->account, conv->protocol, OTRL_INSTAG_BEST, 1,
+        NULL, NULL, NULL);
+}
+
+otrg_plugin_conversation* connection_context_to_otrg_plugin_conversation(ConnContext *context)
+{
+    PurpleConversation *conv = NULL;
+    PurpleAccount *account = NULL;
+
+    if (!context)
+        return NULL;
+
+    conv = otrg_plugin_userinfo_to_conv(context->accountname, context->protocol,
+        context->username, 0);
+
+    if (!conv)
+        return NULL;
+
+    otrg_plugin_conversation *ret = malloc(sizeof(otrg_plugin_conversation));
+    if (!ret)
+        return ret;
+
+    account = purple_conversation_get_account(conv);
+    ret->account = g_strdup(context->accountname);
+    ret->protocol = g_strdup(context->protocol);
+    ret->peer = g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
+
+    //TODO: do we want to add this?
+    ret->their_instance_tag = 0;
+    ret->our_instance_tag = 0;
+
+    return ret;
+}
+
+void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
+{
+    g_free(conv->account);
+    conv->account = NULL;
+
+    g_free(conv->protocol);
+    conv->protocol = NULL;
+
+    g_free(conv->peer);
+    conv->peer = NULL;
+
+    free(conv);
 }
 
 /* Start the Socialist Millionaires' Protocol over the current connection,
@@ -909,11 +974,24 @@ void otrg_plugin_start_smp(otrg_plugin_conversation *conv,
 
 /* Continue the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret (ie finish step 2). */
-void otrg_plugin_continue_smp(ConnContext *context,
+void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen)
 {
-    otrl_message_respond_smp(otrg_plugin_userstate, &ui_ops, NULL,
-	    context, secret, secretlen);
+    otr4_client_adapter_t *client = otrg_plugin_conversation_to_client(conv);
+    if (!client)
+        return;
+
+    char *tosend = NULL;
+    if (otr4_client_adapter_smp_respond(&tosend, conv->peer, secret, secretlen, client))
+        return; //ERROR?
+
+    PurpleConversation *purp_conv = NULL;
+    PurpleAccount *account = NULL;
+    purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
+        conv->peer, 1);
+    account = purple_conversation_get_account(purp_conv);
+    otrg_plugin_inject_message(account, conv->peer, tosend);
+    free(tosend);
 }
 
 otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv)
@@ -1376,7 +1454,7 @@ PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
 	    context->protocol, context->username, force_create);
 }
 
-TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv)
+TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *conv)
 {
     TrustLevel level = TRUST_NOT_PRIVATE;
 
@@ -1591,41 +1669,37 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
 static void smp_ask_for_secret_v4(const otr4_client_conversation_t *conv)
 {
     if (!conv) return;
-    //TODO
-    //otrg_dialog_socialist_millionaires(context);
+    otrg_dialog_socialist_millionaires(conv);
 }
 
 static void smp_ask_for_answer_v4(const char *question, const otr4_client_conversation_t *conv)
 {
     if (!conv) return;
-    //TODO
-    //otrg_dialog_socialist_millionaires_q(context, question);
+
+    otrg_dialog_socialist_millionaires_q(conv, question);
 }
 
 static void smp_update_v4(const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *conv)
 {
     if (!conv) return;
 
-    //TODO
     switch (event) {
 	case OTRV4_SMPEVENT_CHEATED :
-	    //otrg_plugin_abort_smp(context);
-	    /* FALLTHROUGH */
+	case OTRV4_SMPEVENT_ERROR :
+	    otrg_plugin_abort_smp(conv);
+	case OTRV4_SMPEVENT_ABORT :
+	    otrg_dialog_update_smp(conv, event, 0);
+	    break;
 	case OTRV4_SMPEVENT_IN_PROGRESS :
 	case OTRV4_SMPEVENT_SUCCESS :
 	case OTRV4_SMPEVENT_FAILURE :
-	case OTRV4_SMPEVENT_ABORT :
-	    //otrg_dialog_update_smp(context, smp_event, ((gdouble)progress_percent)/100.0);
-	    break;
-	case OTRL_SMPEVENT_ERROR :
-	    //otrg_plugin_abort_smp(context);
-	    break;
+	    otrg_dialog_update_smp(conv, event, ((gdouble)progress_percent)/100.0);
+            break;
         default:
             //should be an error
             break;
     }
 }
-
 
 otrv4_plugin_callbacks_t callbacks_v4 = {
     create_privkey_v4,

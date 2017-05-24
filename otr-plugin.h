@@ -83,18 +83,37 @@ void otrg_plugin_create_instag(const char *accountname,
 //TODO: rename who uses this
 typedef otr4_client_conversation_t otrg_plugin_conversation;
 
+otrg_plugin_conversation*
+purple_conversation_to_plugin_conversation(PurpleConversation *conv);
+
+//This is a sign of me giving up.
+ConnContext*
+otrg_plugin_conversation_to_conn_context(const otrg_plugin_conversation *conv);
+
+otr4_client_adapter_t *
+otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
+
+otrg_plugin_conversation*
+otrg_plugin_conversation_copy(const otrg_plugin_conversation*);
+
+void
+otrg_plugin_conversation_free(otrg_plugin_conversation*);
+
+otrg_plugin_conversation*
+connection_context_to_otrg_plugin_conversation(ConnContext *ctx);
+
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
 void otrg_plugin_start_smp(otrg_plugin_conversation *plugin_conv,
     const char *question, const unsigned char *secret, size_t secretlen);
 
-void otrg_plugin_continue_smp(ConnContext *context,
+void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen);
 
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
  * are received. */
-void otrg_plugin_abort_smp(ConnContext *context);
+void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv);
 
 otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv);
 
@@ -133,7 +152,7 @@ typedef enum {
     TRUST_FINISHED
 } TrustLevel;
 
-TrustLevel otrg_plugin_conversation_to_trust(otrg_plugin_conversation *conv);
+TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *conv);
 
 /* What level of trust do we have in the privacy of this ConnContext? */
 TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
