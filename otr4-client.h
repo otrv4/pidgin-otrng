@@ -74,7 +74,7 @@ typedef struct {
 
 
 otr4_client_adapter_t*
-otr4_client_adapter_new(const otrv4_callbacks_t *cb);
+otr4_client_adapter_new(const otrv4_callbacks_t *callbacks, const char *protocol, const char *account);
 
 void
 otr4_client_adapter_free(otr4_client_adapter_t *client);
