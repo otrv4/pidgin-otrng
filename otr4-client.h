@@ -126,7 +126,7 @@ int otr4_client_adapter_smp_respond(char **tosend, const char *recipient,
 void otr4_callbacks_set(const otrv4_plugin_callbacks_t *otr4_callbacks);
 void otrv4_userstate_create(void);
 void otrv4_userstate_destroy(void);
-otr4_client_adapter_t* otr4_client(const char *accountname, const char *protocol);
+otr4_client_adapter_t* otr4_client(const char *protocol, const char *accountname);
 void otr4_privkey_read_FILEp(FILE *privf);
 void otr4_privkey_write_FILEp(FILE *privf);
 

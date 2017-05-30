@@ -122,7 +122,7 @@ purple_account_to_otr4_client(PurpleAccount *account)
     const char *accountname = purple_account_get_username(account);
     const char *protocol = purple_account_get_protocol_id(account);
 
-    return otr4_client(accountname, protocol);
+    return otr4_client(protocol, accountname);
 }
 
 ConnContext*
@@ -161,7 +161,7 @@ otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
     if (!f)
         return NULL;
 
-    client = otr4_client(f->account, f->protocol);
+    client = otr4_client(f->protocol, f->account);
     if (!client)
         return NULL;
 
@@ -334,7 +334,53 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
     return prefs.policy;
 }
 
-static int otrg_plugin_create_privkey_v4(const char *accountname,
+static int otrg_plugin_write_privkey_v3_FILEp(const char *accountname,
+	const char *protocol)
+{
+#ifndef WIN32
+    mode_t mask;
+#endif  /* WIN32 */
+    FILE *privf;
+
+    gchar *privkeyfile = g_build_filename(purple_user_dir(),
+	    PRIVKEYFNAME, NULL);
+    if (!privkeyfile) {
+	fprintf(stderr, _("Out of memory building filenames!\n"));
+	return -1;
+    }
+#ifndef WIN32
+    mask = umask (0077);
+#endif  /* WIN32 */
+    privf = g_fopen(privkeyfile, "w+b");
+#ifndef WIN32
+    umask (mask);
+#endif  /* WIN32 */
+
+    g_free(privkeyfile);
+    if (!privf) {
+	fprintf(stderr, _("Could not write private key file\n"));
+	return -1;
+    }
+
+    //1. Get client
+    otr4_client_adapter_t *client = otr4_client(protocol, accountname);
+    if (!client)
+        return -1;
+
+    int error = 0;
+    error = otr3_privkey_generate(client->real_client, privf);
+    fclose(privf);
+
+    //TODO: generate instance tag in a separate function
+    FILE *tmpFILEp = tmpfile();
+    otrl_instag_generate_FILEp(client->real_client->userstate, tmpFILEp,
+        client->account, client->protocol);
+    fclose(tmpFILEp);
+
+    return error;
+}
+
+static int otrg_plugin_write_privkey_v4_FILEp(const char *accountname,
 	const char *protocol)
 {
 #ifndef WIN32
@@ -362,14 +408,10 @@ static int otrg_plugin_create_privkey_v4(const char *accountname,
 	return -1;
     }
 
-    otr4_client_adapter_t *client = otr4_client(accountname, protocol);
-    int err = otr4_client_generate_privkey(client);
-    if (!err)
-        otr4_privkey_write_FILEp(privf);
-
+    otr4_privkey_write_FILEp(privf);
     fclose(privf);
 
-    return err;
+    return 0;
 }
 
 /* Generate a private key for the given accountname/protocol */
@@ -379,7 +421,13 @@ void otrg_plugin_create_privkey(const char *accountname,
     OtrgDialogWaitHandle waithandle;
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
-    otrg_plugin_create_privkey_v4(accountname, protocol);
+    otr4_client_adapter_t *client = otr4_client(protocol, accountname);
+    int err = otr4_client_generate_privkey(client);
+    if (err)
+        return;
+
+    otrg_plugin_write_privkey_v4_FILEp(accountname, protocol);
+    otrg_plugin_write_privkey_v3_FILEp(accountname, protocol);
     otrg_ui_update_fingerprint();
 
     /* Mark the dialog as done. */
@@ -851,7 +899,7 @@ void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv)
 
 otr4_client_adapter_t* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
 {
-    return otr4_client(conv->account, conv->protocol);
+    return otr4_client(conv->protocol, conv->account);
 }
 
 otrg_plugin_conversation *otrg_plugin_conversation_new(const char *account,
@@ -999,7 +1047,7 @@ otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv
     otr4_client_adapter_t *client;
     otr4_conversation_t *otrconv;
     
-    client = otr4_client(conv->account, conv->protocol);
+    client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return OTRV4_STATE_NONE;
 
@@ -1023,7 +1071,7 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
         conv->peer, 1);
     account = purple_conversation_get_account(purp_conv);
 
-    otr4_client_adapter_t* client = otr4_client(conv->account, conv->protocol);
+    otr4_client_adapter_t* client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return;
 
@@ -1308,7 +1356,7 @@ void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
 
     if (!conv) return;
 
-    client = otr4_client(conv->account, conv->protocol);
+    client = otr4_client(conv->protocol, conv->account);
     if (!client) return;
 
     purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
@@ -1461,7 +1509,7 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
     if (!conv)
         return level;
 
-    otr4_client_adapter_t *client = otr4_client(conv->account, conv->protocol);
+    otr4_client_adapter_t *client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return level;
 
