@@ -67,14 +67,10 @@ typedef struct {
         void (*smp_update) (const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *);
 } otrv4_plugin_callbacks_t;
 
-//TODO: This can be removed once we remove dependency on ConnContext from the
-//plugin
+//TODO: remove me
 typedef struct {
-  ConnContext *ctx;
   otr4_conversation_t *conv;
 } otr4_plugin_conversation_t;
-
-
 
 otr4_client_adapter_t*
 otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
@@ -100,9 +96,6 @@ otr4_client_adapter_receive(char **newmessage,
                     const char *message,
                     const char *recipient,
                     otr4_client_adapter_t *client);
-
-void
-otr4_client_adapter_set_context(const char* recipient, ConnContext *ctx, otr4_client_adapter_t *client);
 
 char*
 otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client);

@@ -1102,21 +1102,6 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     free(msg);
 }
 
-//Tells the client about a conversation with a peer.
-static void
-otr4_client_seen_conversation_with(const char *peer, otr4_client_adapter_t *client)
-{
-    //TODO: Remove ConnContext after we remove callbacks dependency on it.
-    ConnContext *ctx = otrl_context_find(otrg_plugin_userstate, peer,
-        client->account, client->protocol, 0, 1, NULL, NULL, NULL);
-
-    if (!ctx)
-        return;
-
-    otr4_client_adapter_set_context(peer, ctx, client);
-}
-
-
 static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	char **message, PurpleConversation *conv, PurpleMessageFlags *flags)
 {
@@ -1137,7 +1122,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     protocol = purple_account_get_protocol_id(account);
 
     otr4_client_adapter_t *acc = purple_account_to_otr4_client(account);
-    otr4_client_seen_conversation_with(username, acc);
 
     res = otr4_client_adapter_receive(&tosend, &todisplay, *message, username, acc);
     if (tosend) {
@@ -1173,6 +1157,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     return res;
 }
 
+//TODO: Remove me
 /* Find the ConnContext appropriate to a given PurpleConversation. */
 ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 	otrl_instag_t their_instance, int force_create)
@@ -1192,11 +1177,6 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 
     context = otrl_context_find(otrg_plugin_userstate, username, accountname,
 	    proto, their_instance, force_create, NULL, NULL, NULL);
-
-    if (context)
-      otr4_client_adapter_set_context(username, context,
-                                      purple_account_to_otr4_client(account));
-
     g_free(username);
 
     return context;
