@@ -357,8 +357,11 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     plugin_conv = smppair->conv;
     context = smppair->context;
 
+    conv = otrg_plugin_conversation_to_purple_conv(plugin_conv, 1);
+    otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
+
     if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
-        if (otrg_plugin_conversation_get_msgstate(plugin_conv) != OTRV4_STATE_ENCRYPTED_MESSAGES)
+        if (!otr4_conversation_is_encrypted(otr_conv))
             return;
 
         if (start_or_continue_smp(smppair))
@@ -379,7 +382,6 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     gtk_widget_destroy(GTK_WIDGET(dialog));
 
     /* Clean up references to this window */
-    conv = otrg_plugin_context_to_conv(smppair->context, 0);
     smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
     if (smp_data) {
@@ -1814,8 +1816,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
     otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
     context = purple_conversation_to_context(conv);
 
-    //TODO: This should also work with OTR3
-    if (otr_conv == NULL || otr_conv->conn->state != OTRV4_STATE_ENCRYPTED_MESSAGES)
+    if (!otr4_conversation_is_encrypted(otr_conv))
 	return;
 
     otrg_gtk_dialog_socialist_millionaires(conn_context_to_plugin_conversation(context),

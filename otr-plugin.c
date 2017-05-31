@@ -1042,22 +1042,6 @@ void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
     free(tosend);
 }
 
-otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv)
-{
-    otr4_client_adapter_t *client;
-    otr4_conversation_t *otrconv;
-    
-    client = otr4_client(conv->protocol, conv->account);
-    if (!client)
-        return OTRV4_STATE_NONE;
-
-    otrconv = otr4_client_get_conversation(0, conv->peer, client->real_client);
-    if (!otrconv || !otrconv->conn)
-        return OTRV4_STATE_NONE;
-
-    return otrconv->conn->state;
-}
-
 void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
 {
     PurpleConversation *purp_conv = NULL;
@@ -1504,12 +1488,13 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
         return otrg_plugin_context_to_trust(otr_conv->conn->otr3_conn->ctx);
 
     otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
-    if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
+
+    if (otr4_conversation_is_encrypted(otr_conv)) {
         if (fp->trusted)
 	    level = TRUST_PRIVATE;
         else
 	    level = TRUST_UNVERIFIED;
-    } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
+    } else if (otr4_conversation_is_finished(otr_conv)) {
 	level = TRUST_FINISHED;
     }
 

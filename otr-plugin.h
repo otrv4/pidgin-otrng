@@ -115,8 +115,6 @@ void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
  * are received. */
 void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv);
 
-otrv4_state otrg_plugin_conversation_get_msgstate(otrg_plugin_conversation *conv);
-
 void otrg_plugin_send_default_query(otrg_plugin_conversation *conv);
 
 /* Send the default OTR Query message to the correspondent of the given

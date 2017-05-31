@@ -108,7 +108,7 @@ void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 
     /* Don't do anything with fingerprints other than the active one
      * if we're in the ENCRYPTED state */
-    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES){
+    if (otr4_conversation_is_encrypted(otr_conv)) {
         otrg_plugin_disconnect(conv);
 
         //TODO: We call gone_insecure when we close.
@@ -127,7 +127,8 @@ void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint)
 
     /* Don't do anything with the active fingerprint if we're in the
      * ENCRYPTED state. */
-    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) return;
+    if (otr4_conversation_is_encrypted(otr_conv))
+        return;
 
     otrg_plugin_fingerprint_forget(fingerprint->fp);
     otrg_plugin_write_fingerprints();

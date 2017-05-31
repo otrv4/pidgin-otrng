@@ -254,10 +254,10 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
 	forget_sensitive = 1;
 
         //TODO: and this is the active fingerprint
-        if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
+        if (otr4_conversation_is_encrypted(otr_conv)) {
             disconnect_sensitive = 1;
             forget_sensitive = 0;
-        } else if (otr_conv->conn->state == OTRV4_STATE_FINISHED) {
+        } else if (otr4_conversation_is_finished(otr_conv)) {
             disconnect_sensitive = 1;
             connect_sensitive = 1;
         } else {
@@ -371,8 +371,8 @@ static void connect_connection_ui(otrg_plugin_conversation *conv)
         conv->peer, client->real_client);
     
     /* Don't do this if we're already ENCRYPTED */
-    if (otr_conv && otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES)
-	return;
+    if (otr4_conversation_is_encrypted(otr_conv))
+        return;
 
     otrg_plugin_send_default_query(conv);
 }
