@@ -1284,7 +1284,7 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
     otr_add_buddy_top_menus(conv);
 }
 
-static void dialog_update_label_real(otrg_plugin_conversation *context)
+static void dialog_update_label_real(const otrg_plugin_conversation *context)
 {
     PurpleAccount *account;
     PurpleConversation *conv;
@@ -1583,7 +1583,7 @@ static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
-static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
+static void otrg_gtk_dialog_connected_real(const otrg_plugin_conversation *context)
 {
     PurpleConversation *conv;
     char *buf;
@@ -1661,7 +1661,7 @@ static void otrg_gtk_dialog_connected_real(otrg_plugin_conversation *context)
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
-static void otrg_gtk_dialog_disconnected_real(otrg_plugin_conversation *context)
+static void otrg_gtk_dialog_disconnected_real(const otrg_plugin_conversation *context)
 {
     PurpleConversation *conv;
     char *buf;

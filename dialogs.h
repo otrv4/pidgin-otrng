@@ -70,9 +70,9 @@ typedef struct {
     void (*update_smp)(const otrg_plugin_conversation *context,
         otr4_smp_event_t smp_event, double progress_level);
 
-    void (*connected)(otrg_plugin_conversation *conv);
+    void (*connected)(const otrg_plugin_conversation *conv);
 
-    void (*disconnected)(otrg_plugin_conversation *conv);
+    void (*disconnected)(const otrg_plugin_conversation *conv);
 
     void (*stillconnected)(ConnContext *context);
 
@@ -161,7 +161,7 @@ void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv);
 void otrg_dialog_connected(ConnContext *context);
 
 /* Call this when a context transitions to PLAINTEXT. */
-void otrg_dialog_conversation_disconnected(otrg_plugin_conversation *conv);
+void otrg_dialog_conversation_disconnected(const otrg_plugin_conversation *conv);
 void otrg_dialog_disconnected(ConnContext *context);
 
 /* Call this when we receive a Key Exchange message that doesn't cause

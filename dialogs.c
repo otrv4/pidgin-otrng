@@ -177,7 +177,7 @@ void otrg_dialog_connected(ConnContext *context)
     otrg_dialog_conversation_connected(&conv);
 }
 
-void otrg_dialog_conversation_disconnected(otrg_plugin_conversation *conv)
+void otrg_dialog_conversation_disconnected(const otrg_plugin_conversation *conv)
 {
     ui_ops->disconnected(conv);
 }

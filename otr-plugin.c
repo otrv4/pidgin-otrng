@@ -1680,7 +1680,7 @@ static void gone_secure_v4(const otr4_client_conversation_t *conv)
 
 static void gone_insecure_v4(const otr4_client_conversation_t *conv)
 {
-    otrg_dialog_conversation_disconnected((otr4_client_conversation_t *)conv);
+    otrg_dialog_conversation_disconnected(conv);
 }
 
 static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *conv)
