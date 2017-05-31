@@ -1763,6 +1763,8 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4,
 	    NULL);
+    gchar *privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME,
+	    NULL);
     gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
     void *conv_handle = purple_conversations_get_handle();
@@ -1770,6 +1772,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     void *blist_handle = purple_blist_get_handle();
     void *core_handle = purple_get_core();
     FILE *privf;
+    FILE *priv3f;
     FILE *storef;
     FILE *instagf;
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
@@ -1779,8 +1782,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     gchar * buf = NULL;
 #endif
 
-    if (!privkeyfile || !storefile || !instagfile) {
+    if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile) {
 	g_free(privkeyfile);
+	g_free(privkeyfile3);
 	g_free(storefile);
 	g_free(instagfile);
 	return 0;
@@ -1812,6 +1816,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
 	g_free(buf);
 	g_free(privkeyfile);
+	g_free(privkeyfile3);
 	g_free(storefile);
 	g_free(instagfile);
 	return 0;
@@ -1840,9 +1845,11 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 #endif
 
     privf = g_fopen(privkeyfile, "rb");
+    priv3f = g_fopen(privkeyfile3, "rb");
     storef = g_fopen(storefile, "rb");
     instagf = g_fopen(instagfile, "rb");
     g_free(privkeyfile);
+    g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
 
@@ -1856,6 +1863,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     otr4_callbacks_set(&callbacks_v4);
     otrv4_userstate_create();
     otr4_privkey_read_FILEp(privf);
+    otrl_privkey_read_FILEp(otrg_plugin_userstate, priv3f);
 
     otrg_plugin_timerid = 0;
 

@@ -1,5 +1,7 @@
 #include "otr4-client.h"
 
+#include "otr-plugin.h"
+
 static const otrv4_plugin_callbacks_t *callback_v4 = NULL;
 static GHashTable *client_table = NULL;
 
@@ -175,7 +177,7 @@ otr4_client(const char *protocol, const char *accountname)
     if (!key)
         return NULL;
 
-    ret = otr4_client_adapter_new(&otr4_callbacks, protocol, accountname);
+    ret = otr4_client_adapter_new(&otr4_callbacks, otrg_plugin_userstate, protocol, accountname);
     if (!ret)
         return NULL;
 
@@ -207,6 +209,13 @@ otr4_privkey_read_FILEp(FILE *privf)
         //TODO: What to do if an error happens?
         otr4_client_adapter_read_privkey_FILEp(client, privf);
         free(key);
+
+        //TODO: load instance tag from a different
+        FILE *tmpFILEp = tmpfile();
+        otrl_instag_generate_FILEp(client->real_client->userstate, tmpFILEp,
+            client->account, client->protocol);
+        fclose(tmpFILEp);
+
     }
 }
 
@@ -260,16 +269,17 @@ otr4_privkey_write_FILEp(FILE *privf) {
         g_hash_table_foreach(client_table, add_privkey_to_file, privf);
 }
 
-
 otr4_client_adapter_t*
-otr4_client_adapter_new(const otrv4_callbacks_t *callbacks, const char *protocol, const char *account) {
+otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
+    OtrlUserState userstate, const char *protocol, const char *account)
+{
     otr4_client_adapter_t *c = malloc(sizeof(otr4_client_adapter_t));
     if (!c)
         return NULL;
 
     c->protocol = g_strdup(protocol);
     c->account = g_strdup(account);
-    c->real_client = otr4_client_new(NULL, protocol, account);
+    c->real_client = otr4_client_new(NULL, userstate, protocol, account);
     c->real_client->callbacks = callbacks;
     c->plugin_conversations = NULL;
 
