@@ -79,6 +79,16 @@ static void otr4_confirm_fingerprint_cb(const otrv4_fingerprint_t fp, const otrv
     free(client_conv);
 }
 
+static void otr4_confirm_otr3_fingerprint_cb(const otrv3_fingerprint_t fp, const otrv4_t *conn)
+{
+    if (!callback_v4 || !callback_v4->fingerprint_seen_otr3)
+        return;
+
+    otr4_client_conversation_t* client_conv = conn_to_conv(conn);
+    callback_v4->fingerprint_seen_otr3(fp, client_conv);
+    free(client_conv);
+}
+
 static void otr4_handle_smp_event_cb(const otr4_smp_event_t event,
              const uint8_t progress_percent, const char *question,
              const otrv4_t *conn)
@@ -128,6 +138,7 @@ static otrv4_callbacks_t otr4_callbacks = {
     otr4_gone_secure_cb,
     otr4_gone_insecure_cb,
     otr4_confirm_fingerprint_cb,
+    otr4_confirm_otr3_fingerprint_cb,
     otr4_handle_smp_event_cb,
 };
 

@@ -1683,6 +1683,12 @@ static void gone_insecure_v4(const otr4_client_conversation_t *conv)
     otrg_dialog_conversation_disconnected(conv);
 }
 
+static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otr4_client_conversation_t *conv)
+{
+    //TODO: something like
+    //otrg_dialog_unknown_fingerprint(us, accountname, protocol, username, fingerprint);
+}
+
 static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *conv)
 {
     //TODO: use fp to determine if you have seen this fp before
@@ -1754,6 +1760,7 @@ otrv4_plugin_callbacks_t callbacks_v4 = {
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
+    fingerprint_seen_v3,
     smp_ask_for_secret_v4,
     smp_ask_for_answer_v4,
     smp_update_v4,

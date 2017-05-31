@@ -37,6 +37,9 @@ typedef struct {
         /* A fingerprint was seen in this connection. */
         void (*fingerprint_seen) (const otrv4_fingerprint_t, const otr4_client_conversation_t *);
 
+        /* A OTR3 fingerprint was seen in this connection. */
+        void (*fingerprint_seen_otr3) (const otrv3_fingerprint_t, const otr4_client_conversation_t *);
+
         /* Update the authentication UI and prompt the user to enter a shared secret.
          *      The sender application should call otrl_message_initiate_smp,
          *      passing NULL as the question.
