@@ -9,8 +9,6 @@ typedef struct {
   char *account;
   char *protocol;
 
-  //TODO: this goes away when ConnContext is removed
-  list_element_t *plugin_conversations;
   otr4_client_t *real_client;
 } otr4_client_adapter_t;
 
@@ -66,11 +64,6 @@ typedef struct {
          * */
         void (*smp_update) (const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *);
 } otrv4_plugin_callbacks_t;
-
-//TODO: remove me
-typedef struct {
-  otr4_conversation_t *conv;
-} otr4_plugin_conversation_t;
 
 otr4_client_adapter_t*
 otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,

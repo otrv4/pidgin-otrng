@@ -292,7 +292,6 @@ otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
     c->account = g_strdup(account);
     c->real_client = otr4_client_new(NULL, userstate, protocol, account);
     c->real_client->callbacks = callbacks;
-    c->plugin_conversations = NULL;
 
     return c;
 }
@@ -305,8 +304,6 @@ otr4_client_adapter_free(otr4_client_adapter_t *client) {
     free(client->protocol);
     client->protocol = NULL;
 
-    list_free_full(client->plugin_conversations);
-    client->plugin_conversations = NULL;
     client->real_client->callbacks = NULL;
     free(client);
 }
@@ -394,13 +391,10 @@ otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, cons
         return NULL;
 
     list_element_t *el = NULL;
-    for (el = client->plugin_conversations; el; el = el->next) {
-        otr4_plugin_conversation_t *conv = (otr4_plugin_conversation_t*) el->data;
-        if (!conv->conv)
-            continue;
-
-        if (conv->conv->conn == wanted)
-            return conv->conv;
+    for (el = client->real_client->conversations; el; el = el->next) {
+        otr4_conversation_t *conv = (otr4_conversation_t*) el->data;
+        if (conv->conn == wanted)
+            return conv;
     }
 
     return NULL;
