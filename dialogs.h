@@ -60,7 +60,7 @@ typedef struct {
     void (*private_key_wait_done)(OtrgDialogWaitHandle handle);
 
     void (*unknown_fingerprint)(OtrlUserState us, const char *accountname,
-	const char *protocol, const char *who, unsigned char fingerprint[20]);
+	const char *protocol, const char *who, const unsigned char fingerprint[20]);
 
     void (*verify_fingerprint)(otrg_plugin_fingerprint *fprint);
 
@@ -139,7 +139,7 @@ void otrg_dialog_private_key_wait_done(OtrgDialogWaitHandle handle);
 /* Show a dialog informing the user that a correspondent (who) has sent
  * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-	const char *protocol, const char *who, unsigned char fingerprint[20]);
+	const char *protocol, const char *who, const unsigned char fingerprint[20]);
 
 /* Show a dialog asking the user to verify the given fingerprint. */
 void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint);

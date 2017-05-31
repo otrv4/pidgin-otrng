@@ -1519,6 +1519,10 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
     if (!otr_conv)
         return level;
 
+    //Use OTR3 if available
+    if (otr_conv->conn->running_version == OTRV4_VERSION_3)
+        return otrg_plugin_context_to_trust(otr_conv->conn->otr3_conn->ctx);
+
     otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
     if (otr_conv->conn->state == OTRV4_STATE_ENCRYPTED_MESSAGES) {
         if (fp->trusted)
@@ -1685,8 +1689,13 @@ static void gone_insecure_v4(const otr4_client_conversation_t *conv)
 
 static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otr4_client_conversation_t *conv)
 {
-    //TODO: something like
-    //otrg_dialog_unknown_fingerprint(us, accountname, protocol, username, fingerprint);
+    otr4_client_adapter_t *client = otr4_client(conv->protocol, conv->account);
+    if (!client)
+        return;
+
+    otr4_conversation_t *real_conv = otr4_client_get_conversation(0, conv->peer, client->real_client);
+    OtrlUserState us = real_conv->conn->otr3_conn->userstate;
+    otrg_dialog_unknown_fingerprint(us, conv->account, conv->protocol, conv->peer, fp);
 }
 
 static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *conv)

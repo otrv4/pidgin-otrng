@@ -1151,7 +1151,7 @@ static void otrg_gtk_dialog_private_key_wait_done(OtrgDialogWaitHandle handle)
 /* Inform the user that an unknown fingerprint was received. */
 static void otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us,
 	const char *accountname, const char *protocol, const char *who,
-	unsigned char fingerprint[20])
+	const unsigned char fingerprint[20])
 {
     PurpleConversation *conv;
     char *buf;
@@ -1814,6 +1814,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
     otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
     context = purple_conversation_to_context(conv);
 
+    //TODO: This should also work with OTR3
     if (otr_conv == NULL || otr_conv->conn->state != OTRV4_STATE_ENCRYPTED_MESSAGES)
 	return;
 
