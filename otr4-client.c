@@ -49,6 +49,16 @@ static otr4_client_conversation_t* conn_to_conv(const otrv4_t *conn)
     return client_conv;
 }
 
+static void otr4_create_privkey_cb(const otrv4_t *conn)
+{
+    if (!callback_v4 || !callback_v4->create_privkey)
+        return;
+
+    otr4_client_conversation_t* client_conv = conn_to_conv(conn);
+    callback_v4->create_privkey(client_conv);
+    free(client_conv);
+}
+
 static void otr4_gone_secure_cb(const otrv4_t *conn)
 {
     if (!callback_v4 || !callback_v4->gone_secure)
@@ -135,6 +145,7 @@ static void otr4_handle_smp_event_cb(const otr4_smp_event_t event,
 //to plugin callbacks (they know about having multiple accounts in mutiple
 //protocols and so on)
 static otrv4_callbacks_t otr4_callbacks = {
+    otr4_create_privkey_cb,
     otr4_gone_secure_cb,
     otr4_gone_insecure_cb,
     otr4_confirm_fingerprint_cb,
@@ -308,18 +319,10 @@ otr4_client_adapter_free(otr4_client_adapter_t *client) {
     free(client);
 }
 
-static void maybe_create_keys(const otr4_client_adapter_t *client)
-{
-    //TODO: What about OTR3 keys?
-    if (!client->real_client->keypair && callback_v4->create_privkey)
-        callback_v4->create_privkey(client);
-}
-
 char*
 otr4_client_adapter_query_message(const char *recipient,
                           const char* message,
                           otr4_client_adapter_t *client) {
-    maybe_create_keys(client);
     return otr4_client_query_message(recipient, message, client->real_client);
 }
 
@@ -328,7 +331,6 @@ otr4_client_adapter_send(char **newmessage,
                  const char *message,
                  const char *recipient,
                  otr4_client_adapter_t *client) {
-    maybe_create_keys(client);
     return otr4_client_send(newmessage, message, recipient, client->real_client);
 }
 
@@ -338,7 +340,6 @@ otr4_client_adapter_receive(char **newmessage,
                     const char *message,
                     const char *recipient,
                     otr4_client_adapter_t *client) {
-    maybe_create_keys(client);
     return otr4_client_receive(newmessage, todisplay, message, recipient, client->real_client);
 }
 
@@ -404,7 +405,6 @@ int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client)
 {
-    maybe_create_keys(client);
     return otr4_client_disconnect(newmessage, recipient, client->real_client);
 }
 

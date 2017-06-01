@@ -24,7 +24,7 @@ typedef struct {
 typedef struct {
         /* Create a private key for the given accountname/protocol if
          * desired. */
-        void (*create_privkey)(const otr4_client_adapter_t *);
+        void (*create_privkey)(const otr4_client_conversation_t *);
 
         /* A connection has entered a secure state. */
         void (*gone_secure) (const otr4_client_conversation_t *);

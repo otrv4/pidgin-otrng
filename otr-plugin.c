@@ -1637,7 +1637,7 @@ static void otrg_free_mms_table()
     mms_table = NULL;
 }
 
-static void create_privkey_v4(const otr4_client_adapter_t *client)
+static void create_privkey_v4(const otr4_client_conversation_t *client)
 {
     otrg_plugin_create_privkey(client->account, client->protocol);
 }
