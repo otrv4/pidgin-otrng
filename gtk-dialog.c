@@ -1688,7 +1688,6 @@ static void otrg_gtk_dialog_finished(const char *accountname,
     /* See if there's a conversation window we can put this in. */
     PurpleAccount *account;
     PurpleConversation *conv;
-    ConnContext *context;
     char *buf;
 
     account = purple_accounts_find(accountname, protocol);
@@ -1707,8 +1706,7 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
     g_free(buf);
 
-    context = otrg_plugin_conv_to_selected_context(conv, 0);
-    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
     free(plugin_conv);
 
@@ -1762,7 +1760,7 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
     g_free(format_buf);
 
     dialog_update_label_real(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 }
 
 /* This is called when the OTR button in the button box is clicked, or
@@ -1805,8 +1803,9 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
     if (!otr4_conversation_is_encrypted(otr_conv))
 	return;
 
-    otrg_gtk_dialog_socialist_millionaires(conn_context_to_plugin_conversation(context),
-        NULL, FALSE);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    otrg_gtk_dialog_socialist_millionaires(plugin_conv, NULL, FALSE);
+    otrg_plugin_conversation_free(plugin_conv);
 }
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data)
@@ -1947,7 +1946,7 @@ static void otr_set_menu_labels(ConvOrContext *convctx, GtkWidget *query,
     } else if (convctx->convctx_type == convctx_ctx) {
         otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(convctx->context);
         level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
+        otrg_plugin_conversation_free(plugin_conv);
 
 	insecure = level == TRUST_UNVERIFIED || level == TRUST_PRIVATE ? 0 : 1;
 	authen = level == TRUST_PRIVATE ? 1 : 0;
@@ -2448,9 +2447,9 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 	instance_menu_item = gtk_image_menu_item_new_with_label(text);
 	instance_submenu = gtk_menu_new();
 
-        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(curr_context);
+        otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
         level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
+        otrg_plugin_conversation_free(plugin_conv);
 
 	menu_image = otr_icon(NULL, level, selected);
 
@@ -2504,9 +2503,9 @@ static void otr_add_buddy_instances_top_menu(PidginConversation *gtkconv,
 
     }
 
-    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     menu_image = otr_icon(NULL, level, active_conv);
     convctx.convctx_type = convctx_ctx;
@@ -2567,7 +2566,7 @@ static void otr_add_buddy_top_menu(PidginConversation *gtkconv,
     if (context != NULL) {
         otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
         level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
+        otrg_plugin_conversation_free(plugin_conv);
     }
 
     menu_image = otr_icon(NULL, level, active_conv);
@@ -3236,9 +3235,9 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
 	    selected_instance != OTRL_INSTAG_MASTER &&
 	    selected_instance < OTRL_MIN_VALID_INSTAG) {
 
-        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(current_out);
+        otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
 	dialog_update_label_conv(conv, otrg_plugin_conversation_to_trust(plugin_conv));
-        free(plugin_conv);
+        otrg_plugin_conversation_free(plugin_conv);
     }
 
     *last_received_instance = received_context->their_instance;
