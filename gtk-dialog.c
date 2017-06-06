@@ -1321,23 +1321,6 @@ conn_context_to_plugin_conversation(ConnContext *context)
     return plugin_conv;
 }
 
-static void dialog_update_label(ConnContext *context)
-{
-    PurpleAccount *account;
-    PurpleConversation *conv;
-
-    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
-    TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
-
-    account = purple_accounts_find(context->accountname, context->protocol);
-    if (!account) return;
-    conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
-	    context->username, account);
-    if (!conv) return;
-    dialog_update_label_conv(conv, level);
-}
-
 struct vrfy_fingerprint_data {
     otrg_plugin_fingerprint *fprint;
     char *accountname, *username, *protocol;
@@ -1743,7 +1726,6 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 
     otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
     TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
 
     conv = otrg_plugin_context_to_conv(context, 1);
 
@@ -1779,7 +1761,8 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
     g_free(buf);
     g_free(format_buf);
 
-    dialog_update_label(context);
+    dialog_update_label_real(plugin_conv);
+    free(plugin_conv);
 }
 
 /* This is called when the OTR button in the button box is clicked, or
@@ -1836,6 +1819,7 @@ static void menu_whatsthis(GtkWidget *widget, gpointer data)
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
 {
     otrg_ui_disconnect_connection(data);
+    otrg_plugin_conversation_free(data);
 }
 
 static void dialog_resensitize(PurpleConversation *conv);
@@ -2140,7 +2124,7 @@ static void otr_add_top_otr_menu(PurpleConversation *conv)
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     if (plugin_conv)
         level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     ConvOrContext *convctx;
     GHashTable * conv_or_ctx_map = purple_conversation_get_data(conv,
@@ -2308,7 +2292,9 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data)
 	    otrg_plugin_conv_to_selected_context(conv, 1);
 
     pidgin_conv_switch_active_conversation(conv);
-    dialog_update_label(context);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    dialog_update_label_real(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 }
 
 static void select_menu_ctx(GtkWidget *widget, gpointer data)
@@ -2330,7 +2316,9 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data)
     }
 
     pidgin_conv_switch_active_conversation(conv);
-    dialog_update_label(context);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    dialog_update_label_real(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     if (is_multi_instance && *is_multi_instance && context != recent_context) {
 	gchar *buf = g_strdup_printf(_("Warning: The selected outgoing OTR "
@@ -2808,7 +2796,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv)
 
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
 
@@ -2977,7 +2965,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     /* See if we're already set up */
     button = purple_conversation_get_data(conv, "otr-button");
@@ -3156,7 +3144,7 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-    free(plugin_conv);
+    otrg_plugin_conversation_free(plugin_conv);
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
 
