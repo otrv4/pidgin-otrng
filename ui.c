@@ -108,13 +108,8 @@ void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 
     /* Don't do anything with fingerprints other than the active one
      * if we're in the ENCRYPTED state */
-    if (otr4_conversation_is_encrypted(otr_conv)) {
+    if (otr4_conversation_is_encrypted(otr_conv))
         otrg_plugin_disconnect(conv);
-
-        //TODO: We call gone_insecure when we close.
-        //libotr DOES NOT.
-        //otrg_dialog_disconnected(context);
-    }
 }
 
 //TODO: should not this be in another file?

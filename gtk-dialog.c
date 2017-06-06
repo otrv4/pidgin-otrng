@@ -1214,6 +1214,7 @@ static void destroy_menuitem(GtkWidget *widget, gpointer data)
 static void otr_build_status_submenu(PidginWindow *win,
 	ConvOrContext *convctx, GtkWidget *menu, TrustLevel level);
 
+//TODO: This function calls build_otr_menu 3 times.
 static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 {
     GtkWidget *label;
@@ -1268,7 +1269,9 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 
     convctx->convctx_type = convctx_conv;
     convctx->conv = conv;
-    build_otr_menu(convctx, menu, level);
+
+    // TODO: These can be removed because otr_add_top_otr_menu already calls it.
+    build_otr_menu(convctx, menu, level); // TODO: first call to build_otr_menu
     otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
 	    level);
 
@@ -1280,10 +1283,10 @@ static void dialog_update_label_conv(PurpleConversation *conv, TrustLevel level)
 	return;
     }
 
-    otr_destroy_top_menu_objects(conv);
+    otr_destroy_top_menu_objects(conv); // TODO: second call to build_otr_menu.
     otr_add_top_otr_menu(conv);
     otr_refresh_otr_buttons(conv);
-    otr_add_buddy_top_menus(conv);
+    otr_add_buddy_top_menus(conv); // TODO: third call to build_otr_menu.
 }
 
 static void dialog_update_label_real(const otrg_plugin_conversation *context)
@@ -1832,24 +1835,7 @@ static void menu_whatsthis(GtkWidget *widget, gpointer data)
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data)
 {
-    PurpleConversation *conv;
-    ConnContext *context = NULL;
-    ConvOrContext *convctx = data;
-
-    if (convctx->convctx_type == convctx_conv) {
-	conv = convctx->conv;
-	context = otrg_plugin_conv_to_selected_context(conv, 0);
-    } else if (convctx->convctx_type == convctx_ctx) {
-	context = convctx->context;
-    }
-
-    //TODO: Remove ConnContext
-    otrg_plugin_conversation p_conv[1];
-    p_conv->protocol = context->protocol;
-    p_conv->account = context->accountname;
-    p_conv->peer = context->username;
-
-    otrg_ui_disconnect_connection(p_conv);
+    otrg_ui_disconnect_connection(data);
 }
 
 static void dialog_resensitize(PurpleConversation *conv);
@@ -2133,10 +2119,10 @@ static void build_otr_menu(ConvOrContext *convctx, GtkWidget *menu,
     gtk_signal_connect(GTK_OBJECT(buddymenuquery), "activate",
 	GTK_SIGNAL_FUNC(otrg_gtk_dialog_clicked_connect), conv);
     gtk_signal_connect(GTK_OBJECT(buddymenuend), "activate",
-	GTK_SIGNAL_FUNC(menu_end_private_conversation), convctx);
+	GTK_SIGNAL_FUNC(menu_end_private_conversation),
+        purple_conversation_to_plugin_conversation(conv));
     gtk_signal_connect(GTK_OBJECT(buddymenusmp), "activate",
 	GTK_SIGNAL_FUNC(socialist_millionaires), conv);
-
 }
 
 static void otr_add_top_otr_menu(PurpleConversation *conv)
@@ -2151,10 +2137,12 @@ static void otr_add_top_otr_menu(PurpleConversation *conv)
     GtkWidget *topmenuitem;
 
     TrustLevel level = TRUST_NOT_PRIVATE;
-    ConnContext *context = otrg_plugin_conv_to_selected_context(conv, 1);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    if (plugin_conv)
+        level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     ConvOrContext *convctx;
-
     GHashTable * conv_or_ctx_map = purple_conversation_get_data(conv,
 	    "otr-convorctx");
 
@@ -2164,12 +2152,6 @@ static void otr_add_top_otr_menu(PurpleConversation *conv)
 
     topmenuitem = gtk_menu_item_new_with_label ( "OTR" );
     topmenu = gtk_menu_new();
-
-    if (context != NULL) {
-        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
-        level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
-    }
 
     convctx = g_hash_table_lookup(conv_or_ctx_map, conv);
 
@@ -2815,22 +2797,18 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv)
 }
 
 
-static void otr_check_conv_status_change( PurpleConversation *conv)
+static void otr_check_conv_status_change(PurpleConversation *conv)
 {
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     TrustLevel current_level = TRUST_NOT_PRIVATE;
-    ConnContext *context = otrg_plugin_conv_to_context(conv,
-	    OTRL_INSTAG_RECENT, 0);
 
     TrustLevel *previous_level;
     char *buf;
     char *status = "";
 
-    if (context != NULL) {
-        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
-        current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
-    }
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    current_level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
 
@@ -2997,8 +2975,7 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
 
     bbox = gtkconv->toolbar;
 
-    ConnContext *context = otrg_plugin_conv_to_selected_context(conv, 0);
-    otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
     TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
     free(plugin_conv);
 
@@ -3075,7 +3052,6 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv)
     menu = gtk_menu_new();
     gtk_menu_set_title(GTK_MENU(menu), _("OTR Messaging"));
 
-    //TODO: What is this for?
     convctx = malloc(sizeof(ConvOrContext));
     convctx->convctx_type = convctx_conv;
     convctx->conv = conv;

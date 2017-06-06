@@ -143,9 +143,9 @@ purple_conversation_to_otr4_conversation(PurpleConversation *conv)
 {
     PurpleAccount *account = NULL;
     const char *recipient = NULL;
-    
+
     account = purple_conversation_get_account(conv);
-    recipient = strdup(purple_normalize(account, purple_conversation_get_name(conv)));
+    recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
     otr4_client_adapter_t *client = purple_account_to_otr4_client(account);
 
@@ -935,9 +935,11 @@ purple_conversation_to_plugin_conversation(PurpleConversation *conv)
 {
     PurpleAccount *account = purple_conversation_get_account(conv);
 
+    account = purple_conversation_get_account(conv);
+
     const char *accountname = purple_account_get_username(account);
     const char *protocol = purple_account_get_protocol_id(account);
-    const char *peer = purple_conversation_get_name(conv);
+    const char *peer = purple_normalize(account, purple_conversation_get_name(conv));
 
     return otrg_plugin_conversation_new(accountname, protocol, peer);
 }
@@ -953,7 +955,8 @@ otrg_plugin_conversation_to_conn_context(const otrg_plugin_conversation *conv)
         NULL, NULL, NULL);
 }
 
-otrg_plugin_conversation* connection_context_to_otrg_plugin_conversation(ConnContext *context)
+otrg_plugin_conversation*
+connection_context_to_otrg_plugin_conversation(ConnContext *context)
 {
     PurpleConversation *conv = NULL;
     PurpleAccount *account = NULL;
@@ -1077,7 +1080,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 
     account = purple_conversation_get_account(conv);
     accountname = purple_account_get_username(account);
-    username = purple_conversation_get_name(conv);
+    username = purple_normalize(account, purple_conversation_get_name(conv));
 
     otrg_ui_get_prefs(&prefs, account, username);
     msg = otr4_client_adapter_query_message(username, "",
@@ -1147,7 +1150,7 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
 	otrl_instag_t their_instance, int force_create)
 {
     PurpleAccount *account;
-    char *username;
+    const char *username;
     const char *accountname, *proto;
     ConnContext *context;
 
@@ -1156,12 +1159,10 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
     account = purple_conversation_get_account(conv);
     accountname = purple_account_get_username(account);
     proto = purple_account_get_protocol_id(account);
-    username = g_strdup(
-	    purple_normalize(account, purple_conversation_get_name(conv)));
+    username = purple_conversation_get_name(conv);
 
     context = otrl_context_find(otrg_plugin_userstate, username, accountname,
 	    proto, their_instance, force_create, NULL, NULL, NULL);
-    g_free(username);
 
     return context;
 }
@@ -1939,6 +1940,11 @@ int otrg_plugin_proto_supports_otr(const char *proto)
     /* Right now, OTR should work on all protocols, possibly
      * with the help of fragmentation. */
     return 1;
+}
+
+int
+otrg_plugin_conversation_to_protocol_version(const otrg_plugin_conversation *conv) {
+    return 4; //TODO: get this from the OTR conversation
 }
 
 #ifdef USING_GTK
