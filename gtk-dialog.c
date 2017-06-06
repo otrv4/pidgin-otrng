@@ -3151,20 +3151,14 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 
     PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
     TrustLevel current_level = TRUST_NOT_PRIVATE;
-    ConnContext *context = (ConnContext *) otrg_plugin_conv_to_context(conv,
-	    OTRL_INSTAG_RECENT, 0);
     TrustLevel *previous_level;
     int id;
 
-
-    if (context != NULL) {
-        otrg_plugin_conversation *plugin_conv = conn_context_to_plugin_conversation(context);
-        current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-        free(plugin_conv);
-    }
+    otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
+    current_level = otrg_plugin_conversation_to_trust(plugin_conv);
+    free(plugin_conv);
 
     previous_level = g_hash_table_lookup ( otr_win_status, gtkconv );
-
 
     if (previous_level && *previous_level == current_level) {
 	return NULL;
