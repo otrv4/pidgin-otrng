@@ -126,7 +126,7 @@ purple_account_to_otr4_client(PurpleAccount *account)
 }
 
 ConnContext*
-purple_conversation_to_context(PurpleConversation *conv)
+purple_conversation_to_context(const PurpleConversation *conv)
 {
     PurpleAccount *account = purple_conversation_get_account(conv);
 
@@ -139,7 +139,7 @@ purple_conversation_to_context(PurpleConversation *conv)
 }
 
 otr4_conversation_t*
-purple_conversation_to_otr4_conversation(PurpleConversation *conv)
+purple_conversation_to_otr4_conversation(const PurpleConversation *conv)
 {
     PurpleAccount *account = NULL;
     const char *recipient = NULL;
@@ -931,7 +931,7 @@ otrg_plugin_conversation *otrg_plugin_conversation_copy(const otrg_plugin_conver
 }
 
 otrg_plugin_conversation*
-purple_conversation_to_plugin_conversation(PurpleConversation *conv)
+purple_conversation_to_plugin_conversation(const PurpleConversation *conv)
 {
     PurpleAccount *account = purple_conversation_get_account(conv);
 

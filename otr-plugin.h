@@ -53,10 +53,10 @@ otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account);
 
 ConnContext*
-purple_conversation_to_context(PurpleConversation *conv);
+purple_conversation_to_context(const PurpleConversation *conv);
 
 otr4_conversation_t*
-purple_conversation_to_otr4_conversation(PurpleConversation *conv);
+purple_conversation_to_otr4_conversation(const PurpleConversation *conv);
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
@@ -84,7 +84,7 @@ void otrg_plugin_create_instag(const char *accountname,
 typedef otr4_client_conversation_t otrg_plugin_conversation;
 
 otrg_plugin_conversation*
-purple_conversation_to_plugin_conversation(PurpleConversation *conv);
+purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
 //This is a sign of me giving up.
 ConnContext*
