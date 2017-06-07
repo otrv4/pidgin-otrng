@@ -988,6 +988,9 @@ connection_context_to_otrg_plugin_conversation(ConnContext *context)
 
 void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
 {
+    if (!conv)
+        return;
+
     g_free(conv->account);
     conv->account = NULL;
 

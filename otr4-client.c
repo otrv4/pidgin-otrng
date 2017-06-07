@@ -2,11 +2,30 @@
 
 #include "otr-plugin.h"
 
+//TODO: This client_adapter should be removed.
+//It does not adapts the client anymore (by adding ConnContext to each
+//conversation).
+
 static const otrv4_plugin_callbacks_t *callback_v4 = NULL;
 static GHashTable *client_table = NULL;
 
 void otr4_callbacks_set(const otrv4_plugin_callbacks_t *cb) {
     callback_v4 = cb;
+}
+
+static const otr4_conversation_t *
+otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, const otr4_client_adapter_t *client) {
+    if (!wanted)
+        return NULL;
+
+    list_element_t *el = NULL;
+    for (el = client->real_client->conversations; el; el = el->next) {
+        otr4_conversation_t *conv = (otr4_conversation_t*) el->data;
+        if (conv->conn == wanted)
+            return conv;
+    }
+
+    return NULL;
 }
 
 static gboolean
@@ -390,21 +409,6 @@ otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *priv
     return otr4_read_privkey_FILEp(client->real_client, privf);
 }
 
-const otr4_conversation_t *
-otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, const otr4_client_adapter_t *client) {
-    if (!wanted)
-        return NULL;
-
-    list_element_t *el = NULL;
-    for (el = client->real_client->conversations; el; el = el->next) {
-        otr4_conversation_t *conv = (otr4_conversation_t*) el->data;
-        if (conv->conn == wanted)
-            return conv;
-    }
-
-    return NULL;
-}
-
 int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client)
@@ -425,10 +429,5 @@ int otr4_client_adapter_smp_respond(char **tosend, const char *recipient,
 {
     return otr4_client_smp_respond(tosend, recipient, secret, secretlen,
         client->real_client);
-}
-
-otr4_client_adapter_t* otr4_get_client(const otr4_client_conversation_t* conv)
-{
-    return otr4_client(conv->protocol, conv->account);
 }
 

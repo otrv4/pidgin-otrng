@@ -100,9 +100,6 @@ otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *priv
 int
 otr4_client_generate_privkey(otr4_client_adapter_t *client);
 
-const otr4_conversation_t *
-otr4_client_adapter_get_conversation_from_connection(const otrv4_t *conn, const otr4_client_adapter_t *client);
-
 int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client);
@@ -120,8 +117,5 @@ void otrv4_userstate_destroy(void);
 otr4_client_adapter_t* otr4_client(const char *protocol, const char *accountname);
 void otr4_privkey_read_FILEp(FILE *privf);
 void otr4_privkey_write_FILEp(FILE *privf);
-
-//TODO: UNUSED?
-otr4_client_adapter_t* otr4_get_client(const otr4_client_conversation_t*);
 
 #endif 
