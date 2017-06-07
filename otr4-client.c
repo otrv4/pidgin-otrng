@@ -383,22 +383,9 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client)
     return ret;
 }
 
-static int generate_keypair_otr4(otr4_client_adapter_t *client)
-{
-    client->real_client->keypair = malloc(sizeof(otrv4_keypair_t));
-    if (!client->real_client->keypair)
-        return -1;
-
-    uint8_t sym[ED448_PRIVATE_BYTES];
-    gcry_randomize(sym, ED448_PRIVATE_BYTES, GCRY_VERY_STRONG_RANDOM);
-
-    otrv4_keypair_generate(client->real_client->keypair, sym);
-    return 0;
-}
-
 int
 otr4_client_generate_privkey(otr4_client_adapter_t *client) {
-    return generate_keypair_otr4(client);
+    return otr4_client_generate_keypair(client->real_client);
 }
 
 int
