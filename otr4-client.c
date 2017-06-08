@@ -1,5 +1,6 @@
 #include "otr4-client.h"
 
+#include <stdio.h>
 #include "otr-plugin.h"
 
 //TODO: This client_adapter should be removed.
@@ -318,10 +319,9 @@ otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
     if (!c)
         return NULL;
 
-    c->instag = otr4_instag_generate(account, protocol);
     c->protocol = g_strdup(protocol);
     c->account = g_strdup(account);
-    c->real_client = otr4_client_new(NULL, userstate, protocol, account, c->instag);
+    c->real_client = otr4_client_new(NULL, userstate, protocol, account);
     c->real_client->callbacks = callbacks;
 
     return c;
@@ -337,9 +337,6 @@ otr4_client_adapter_free(otr4_client_adapter_t *client) {
 
     client->real_client->callbacks = NULL;
     free(client);
-
-    otr4_instag_free(client->instag);
-    client->instag = NULL;
 }
 
 char*

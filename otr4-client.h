@@ -8,7 +8,6 @@
 typedef struct {
   char *account;
   char *protocol;
-  otrv4_instag_t *instag;
 
   otr4_client_t *real_client;
 } otr4_client_adapter_t;
