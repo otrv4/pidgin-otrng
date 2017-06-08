@@ -82,7 +82,7 @@ static int img_id_finished = 0;
 
 typedef struct {
     ConnContext *context;       /* The context used to fire library code */
-    otrg_plugin_conversation conv[1];
+    otrg_plugin_conversation *conv;
 
     GtkEntry* question_entry;   /* The text entry field containing the user
 				 * question */
@@ -391,9 +391,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
     /* Free memory */
     free(auth_opt_data);
-    free(smppair->conv->account);
-    free(smppair->conv->protocol);
-    free(smppair->conv->peer);
+    otrg_plugin_conversation_free(smppair->conv);
     free(smppair);
 }
 
@@ -495,12 +493,11 @@ static GtkWidget *create_dialog(GtkWindow *parent,
     return dialog;
 }
 
-static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
-	ConnContext *context, AuthSignalData *auth_opt_data, const char *question) {
+static void add_to_vbox_init_one_way_auth(GtkWidget *vbox, AuthSignalData *auth_opt_data, const char *question) {
     GtkWidget *question_entry;
     GtkWidget *entry;
     GtkWidget *label;
-    GtkWidget *label2;
+    GtkWidget *label2 = NULL;
     char *label_text;
 
     SmpResponsePair* smppair = auth_opt_data->smppair;
@@ -545,8 +542,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-
-
     if (smppair->responder && question) {
 	label_text = g_markup_printf_escaped("<span background=\"white\" "
 		"foreground=\"black\" weight=\"bold\">%s</span>", question);
@@ -565,14 +560,10 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 	gtk_box_pack_start(GTK_BOX(vbox), question_entry, FALSE, FALSE, 0);
     }
 
-    if (context->active_fingerprint &&
-        context->active_fingerprint->trust &&
-	context->active_fingerprint->trust[0] && !(smppair->responder)) {
-	label2 = gtk_label_new(_("This buddy is already authenticated."));
-    } else {
-	label2 = NULL;
-    }
+    otrg_plugin_fingerprint* fp = otrg_plugin_fingerprint_get_active(smppair->conv->peer);
 
+    if (fp && fp->trusted && !(smppair->responder))
+	label2 = gtk_label_new(_("This buddy is already authenticated."));
 
     /* Leave a blank line */
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE,
@@ -610,11 +601,10 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     }
 }
 
-static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
-	ConnContext *context, AuthSignalData *auth_opt_data) {
+static void add_to_vbox_init_two_way_auth(GtkWidget *vbox, AuthSignalData *auth_opt_data) {
     GtkWidget *entry;
     GtkWidget *label;
-    GtkWidget *label2;
+    GtkWidget *label2 = NULL;
     char *label_text;
 
     label_text = g_strdup_printf("<small><i>\n%s\n</i></small>",
@@ -647,13 +637,9 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
     auth_opt_data->two_way_entry = GTK_ENTRY(entry);
 
-    if (context->active_fingerprint &&
-        context->active_fingerprint->trust &&
-	context->active_fingerprint->trust[0]) {
+    otrg_plugin_fingerprint* fp = otrg_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
+    if (fp && fp->trusted)
 	label2 = gtk_label_new(_("This buddy is already authenticated."));
-    } else {
-	label2 = NULL;
-    }
 
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 
@@ -668,9 +654,8 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
     }
 }
 
-//TODO: This should not receive ConnContext.
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
-	ConnContext *context, SmpResponsePair* smppair) {
+	const otrg_plugin_conversation *conv, SmpResponsePair* smppair) {
     char our_hash[OTR4_FPRINT_HUMAN_LEN];
     GtkWidget *label;
     char *label_text;
@@ -678,11 +663,9 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     PurplePlugin *p;
     char *proto_name;
 
-    //TODO: this is ugly
-    PurpleConversation *conv = otrg_plugin_userinfo_to_conv(context->accountname,
-        context->protocol, context->username, 0);
-    PurpleAccount *account = purple_conversation_get_account(conv);
-    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
+    PurpleConversation *pconv = otrg_plugin_conversation_to_purple_conv(conv, 0);
+    PurpleAccount *account = purple_conversation_get_account(pconv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(pconv));
     otrg_plugin_fingerprint* fprint = otrg_plugin_fingerprint_get_active(username);
 
     if (fprint == NULL) return;
@@ -703,7 +686,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
     strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otr4_client_adapter_t* client = otr4_client(context->protocol, context->accountname);
+    otr4_client_adapter_t* client = otr4_client(conv->protocol, conv->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
         strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
@@ -711,11 +694,11 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     free(our_fp_human);
     our_hash[OTR4_FPRINT_HUMAN_LEN-1] = '\0';
 
-    p = purple_find_prpl(context->protocol);
+    p = purple_find_prpl(conv->protocol);
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
     label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
-	    "Purported fingerprint for %s:\n%s\n"), context->accountname,
-	    proto_name, our_hash, context->username, fprint->fp);
+	    "Purported fingerprint for %s:\n%s\n"), conv->account,
+	    proto_name, our_hash, username, fprint->fp);
 
     label = gtk_label_new(NULL);
 
@@ -766,7 +749,7 @@ static void redraw_auth_vbox(GtkComboBox *combo, void *data)
 }
 
 static void add_other_authentication_options(GtkWidget *vbox,
-	GtkWidget *notebook, ConnContext *context, AuthSignalData *data) {
+	GtkWidget *notebook, AuthSignalData *data) {
     GtkWidget *label;
     GtkWidget *combo;
     char *labeltext;
@@ -800,18 +783,18 @@ static void add_other_authentication_options(GtkWidget *vbox,
 
 
 static GtkWidget *create_smp_dialog(const char *title, const char *primary,
-	ConnContext *context, gboolean responder, const char *question)
+	const otrg_plugin_conversation *pconv, gboolean responder, const char *question)
 {
     GtkWidget *dialog;
+    PurpleConversation *conv = otrg_plugin_conversation_to_purple_conv(pconv, 1);
 
-    PurpleConversation *conv = otrg_plugin_context_to_conv(context, 1);
     SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
     close_progress_window(smp_data);
 
     /* If you start SMP authentication on a different context, it
      * will kill any existing SMP */
-    if (smp_data->their_instance != context->their_instance) {
+    if (smp_data->their_instance != pconv->their_instance_tag) {
 	otrg_gtk_dialog_free_smp_data(conv);
 	smp_data = otrg_gtk_dialog_add_smp_data(conv);
     }
@@ -828,7 +811,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 	GtkWidget *notebook;
 	AuthSignalData *auth_opt_data;
 
-	smp_data->their_instance = context->their_instance;
+	smp_data->their_instance = pconv->their_instance_tag;
 	icon_name = PIDGIN_STOCK_DIALOG_INFO;
 	img = gtk_image_new_from_stock(icon_name,
 		gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
@@ -846,14 +829,10 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 	hbox = gtk_hbox_new(FALSE, 15);
 	vbox = gtk_vbox_new(FALSE, 0);
 
-        PurpleAccount *account = purple_conversation_get_account(conv);
-
 	smppair = malloc(sizeof(SmpResponsePair));
 	smppair->responder = responder;
-	smppair->context = context;
-        smppair->conv->account = g_strdup(context->accountname);
-        smppair->conv->protocol = g_strdup(context->protocol);
-        smppair->conv->peer = g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
+	smppair->context = NULL; //TODO: Are we using this?
+        smppair->conv = otrg_plugin_conversation_copy(pconv);
 
 	notebook = gtk_notebook_new();
 	auth_opt_data = malloc(sizeof(AuthSignalData));
@@ -889,8 +868,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	if (!responder) {
-	    add_other_authentication_options(vbox, notebook, context,
-		    auth_opt_data);
+	    add_other_authentication_options(vbox, notebook, auth_opt_data);
 	}
 
 	g_signal_connect(G_OBJECT(dialog), "response",
@@ -899,8 +877,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
 	if (!responder || (responder && question != NULL)) {
 	    GtkWidget *one_way_vbox = gtk_vbox_new(FALSE, 0);
-	    add_to_vbox_init_one_way_auth(one_way_vbox, context,
-		    auth_opt_data, question);
+	    add_to_vbox_init_one_way_auth(one_way_vbox, auth_opt_data, question);
 	    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), one_way_vbox,
 		    gtk_label_new("0"));
 	    smppair->entry = auth_opt_data->one_way_entry;
@@ -909,7 +886,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
 	if (!responder || (responder && question == NULL)) {
 	    GtkWidget *two_way_vbox = gtk_vbox_new(FALSE, 0);
-	    add_to_vbox_init_two_way_auth(two_way_vbox, context, auth_opt_data);
+	    add_to_vbox_init_two_way_auth(two_way_vbox, auth_opt_data);
 	    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), two_way_vbox,
 		    gtk_label_new("1"));
 
@@ -921,7 +898,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
 	if (!responder) {
 	    GtkWidget *fingerprint_vbox = gtk_vbox_new(FALSE, 0);
-	    add_to_vbox_verify_fingerprint(fingerprint_vbox, context, smppair);
+	    add_to_vbox_verify_fingerprint(fingerprint_vbox, pconv, smppair);
 	    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), fingerprint_vbox,
 		    gtk_label_new("2"));
 	}
@@ -1494,8 +1471,7 @@ static void otrg_gtk_dialog_socialist_millionaires(const otrg_plugin_conversatio
 	    conv->peer);
     }
 
-    create_smp_dialog(_("Authenticate Buddy"),
-	    primary, otrg_plugin_conversation_to_conn_context(conv), responder, question);
+    create_smp_dialog(_("Authenticate Buddy"), primary, conv, responder, question);
 
     g_free(primary);
 }
@@ -1610,8 +1586,11 @@ static void otrg_gtk_dialog_connected_real(const otrg_plugin_conversation *conte
 		    "started.%s%s"));
 	    break;
     }
+
+    PurpleAccount *account = purple_conversation_get_account(conv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
     buf = g_strdup_printf(format_buf,
-		purple_conversation_get_name(conv),
+		username,
 		protocol_version == 1 ? _("  Warning: using old "
 		"protocol version 1.") : "", conv->logging ?
 		_("  Your client is logging this conversation.") :
@@ -1657,8 +1636,9 @@ static void otrg_gtk_dialog_disconnected_real(const otrg_plugin_conversation *co
 
     conv = otrg_plugin_conversation_to_purple_conv(context, TRUE);
 
-    buf = g_strdup_printf(_("Private conversation with %s lost."),
-	    purple_conversation_get_name(conv));
+    PurpleAccount *account = purple_conversation_get_account(conv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
+    buf = g_strdup_printf(_("Private conversation with %s lost."), username);
 
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
@@ -1699,7 +1679,7 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
     buf = g_strdup_printf(_("%s has ended his/her private conversation with "
 	    "you; you should do the same."),
-	    purple_conversation_get_name(conv));
+        purple_normalize(account, purple_conversation_get_name(conv)));
 
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
@@ -1748,8 +1728,9 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context)
 	    break;
     }
 
-    buf = g_strdup_printf(format_buf,
-		purple_conversation_get_name(conv),
+    PurpleAccount *account = purple_conversation_get_account(conv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
+    buf = g_strdup_printf(format_buf, username,
 		context->protocol_version == 1 ? _("  Warning: using old "
 		"protocol version 1.") : "");
 
@@ -1781,7 +1762,10 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
     } else {
 	format = _("Attempting to start a private conversation with %s...");
     }
-    buf = g_strdup_printf(format, purple_conversation_get_name(conv));
+
+    PurpleAccount *account = purple_conversation_get_account(conv);
+    const char *username = purple_normalize(account, purple_conversation_get_name(conv));
+    buf = g_strdup_printf(format, username);
 
     purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
@@ -2658,9 +2642,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv)
 
 	    account = purple_conversation_get_account(currentConv);
 	    accountname = purple_account_get_username(account);
-	    username = g_strdup(
-		    purple_normalize(account,
-			    purple_conversation_get_name(currentConv)));
+	    username = g_strdup(purple_normalize(account, purple_conversation_get_name(currentConv)));
 
             otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(currentConv);
 	    otr_add_buddy_top_menu(gtkconv, plugin_conv, convctx, active_conv, username,
