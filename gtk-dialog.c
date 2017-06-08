@@ -1795,10 +1795,8 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data)
 static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
     const PurpleConversation *conv = data;
-    ConnContext *context = NULL;
 
     otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
-    context = purple_conversation_to_context(conv);
 
     if (!otr4_conversation_is_encrypted(otr_conv))
 	return;

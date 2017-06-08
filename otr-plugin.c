@@ -125,19 +125,6 @@ purple_account_to_otr4_client(PurpleAccount *account)
     return otr4_client(protocol, accountname);
 }
 
-ConnContext*
-purple_conversation_to_context(const PurpleConversation *conv)
-{
-    PurpleAccount *account = purple_conversation_get_account(conv);
-
-    const char *accountname = purple_account_get_username(account);
-    const char *protocol = purple_account_get_protocol_id(account);
-    const char *username = purple_conversation_get_name(conv);
-
-    return otrl_context_find(otrg_plugin_userstate, username,
-        accountname, protocol, 0, 1, NULL, NULL, NULL);
-}
-
 otr4_conversation_t*
 purple_conversation_to_otr4_conversation(const PurpleConversation *conv)
 {

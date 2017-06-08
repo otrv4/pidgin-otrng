@@ -52,9 +52,6 @@ otr4_client(const char *accountname, const char *protocol);
 otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account);
 
-ConnContext*
-purple_conversation_to_context(const PurpleConversation *conv);
-
 otr4_conversation_t*
 purple_conversation_to_otr4_conversation(const PurpleConversation *conv);
 
