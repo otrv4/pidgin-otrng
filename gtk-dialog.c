@@ -2215,6 +2215,8 @@ static void unselect_meta_ctx(PurpleConversation *conv)
     GTK_CHECK_MENU_ITEM(select_best)->active = 0;
 }
 
+//TODO: We dont have the meta instance tag in OTR4
+//Double check this
 static void select_meta_ctx(GtkWidget *widget, gpointer data)
 {
     PurpleConversation *conv = (PurpleConversation *) data;
@@ -2264,9 +2266,6 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data)
 	    *selected_instance = OTRL_INSTAG_RECENT_RECEIVED;
 	}
     }
-
-    if (!context) context = (ConnContext *)
-	    otrg_plugin_conv_to_selected_context(conv, 1);
 
     pidgin_conv_switch_active_conversation(conv);
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
@@ -3090,6 +3089,8 @@ static char* conversation_timestamp(PurpleConversation *conv, time_t mtime,
 static gboolean check_incoming_instance_change(PurpleAccount *account,
 	char *sender, char *message, PurpleConversation *conv,
 	PurpleMessageFlags flags) {
+    //TODO: We dont have the meta instance tag in OTR4
+    //Double check this function
     otrl_instag_t * last_received_instance;
     otrl_instag_t selected_instance;
     gboolean have_received = FALSE;
