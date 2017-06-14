@@ -49,4 +49,4 @@ int otr4_client_adapter_smp_respond(char **tosend, const char *recipient,
 void otrv4_userstate_create(void);
 void otrv4_userstate_destroy(void);
 
-#endif 
+#endif

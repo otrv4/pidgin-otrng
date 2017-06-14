@@ -173,7 +173,7 @@ otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
 }
 
 
-static void 
+static void
 g_destroy_plugin_fingerprint(gpointer data)
 {
     otrg_plugin_fingerprint *fp = data;
@@ -874,7 +874,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
     int err = otr4_client_adapter_send(&newmessage, *message, username,
                                        purple_account_to_otr4_client(account));
 
-    //TODO: this message should be stored for retransmission 
+    //TODO: this message should be stored for retransmission
     if (err == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
         return;
     }
@@ -1712,7 +1712,6 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
     if (otrg_plugin_fingerprint_get(fp_human))
         return;
 
-    //TODO: free
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
 
     //TODO: Change the message if we have have already seen another FP for this contact.
@@ -1720,7 +1719,8 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
     otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human,
         conv->protocol, conv->account, conv->peer);
     if (!info)
-        return; //ERROR
+        otrg_plugin_conversation_free(conv);
+	return; //ERROR
 
     buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
         "should <a href=\"%s%s\">authenticate</a> this buddy."),
@@ -1732,6 +1732,7 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
     purple_conversation_write(purple_conv, NULL, buf, PURPLE_MESSAGE_SYSTEM,
 	    time(NULL));
 
+    otrg_plugin_conversation_free(conv);
     g_free(buf);
 }
 
