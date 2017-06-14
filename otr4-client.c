@@ -7,20 +7,17 @@
 //It does not adapts the client anymore (by adding ConnContext to each
 //conversation).
 
-static const otrv4_plugin_callbacks_t *callback_v4 = NULL;
+//TODO: REMOVE
 static GHashTable *client_table = NULL;
 
-void otr4_callbacks_set(const otrv4_plugin_callbacks_t *cb) {
-    callback_v4 = cb;
-}
-
+/*
 static const otr4_conversation_t *
 otr4_client_adapter_get_conversation_from_connection(const otrv4_t *wanted, const otr4_client_adapter_t *client) {
     if (!wanted)
         return NULL;
 
     list_element_t *el = NULL;
-    for (el = client->real_client->conversations; el; el = el->next) {
+    for (el = client->conversations; el; el = el->next) {
         otr4_conversation_t *conv = (otr4_conversation_t*) el->data;
         if (conv->conn == wanted)
             return conv;
@@ -60,8 +57,11 @@ static otr4_client_conversation_t* conn_to_conv(const otrv4_t *conn)
     client = otr4_connection_to_client(conn);
     conv = otr4_client_adapter_get_conversation_from_connection(conn, client);
 
-    client_conv->account = client->account;
-    client_conv->protocol = client->protocol;
+    //TODO: This should come from the state's opdata
+    //TODO: What about the peer?
+
+    //client_conv->account = client->account;
+    //client_conv->protocol = client->protocol;
     client_conv->peer = conv->recipient;
     //uint16_t their_instance_tag;
     //uint16_t our_instance_tag;
@@ -165,13 +165,15 @@ static void otr4_handle_smp_event_cb(const otr4_smp_event_t event,
 //to plugin callbacks (they know about having multiple accounts in mutiple
 //protocols and so on)
 static otrv4_callbacks_t otr4_callbacks = {
-    otr4_create_privkey_cb,
-    otr4_gone_secure_cb,
-    otr4_gone_insecure_cb,
-    otr4_confirm_fingerprint_cb,
-    otr4_confirm_otr3_fingerprint_cb,
-    otr4_handle_smp_event_cb,
+    NULL, //otr4_create_privkey_cb,
+    NULL, //otr4_gone_secure_cb,
+    NULL, //otr4_gone_insecure_cb,
+    NULL, //otr4_confirm_fingerprint_cb,
+    NULL, //otr4_confirm_otr3_fingerprint_cb,
+    NULL, //otr4_handle_smp_event_cb,
 };
+
+*/
 
 static void g_destroy_conversation(gpointer data)
 {
@@ -190,6 +192,7 @@ void otrv4_userstate_destroy(void) {
     client_table = NULL;
 }
 
+/*
 static
 otr4_client_adapter_t*
 get_otr4_client(const char *accountname, const char *protocol)
@@ -204,26 +207,6 @@ get_otr4_client(const char *accountname, const char *protocol)
     ret = g_hash_table_lookup(client_table, key);
     free(key);
     
-    return ret;
-}
-
-otr4_client_adapter_t*
-otr4_client(const char *protocol, const char *accountname)
-{
-    otr4_client_adapter_t *ret = get_otr4_client(accountname, protocol);
-    if (ret)
-        return ret;
-
-    char *key = NULL;
-    asprintf(&key, "%s:%s", protocol, accountname);
-    if (!key)
-        return NULL;
-
-    ret = otr4_client_adapter_new(&otr4_callbacks, otrg_plugin_userstate, protocol, accountname);
-    if (!ret)
-        return NULL;
-
-    g_hash_table_insert(client_table, key, ret);
     return ret;
 }
 
@@ -254,10 +237,9 @@ otr4_privkey_read_FILEp(FILE *privf)
 
         //TODO: load instance tag from a different
         FILE *tmpFILEp = tmpfile();
-        otrl_instag_generate_FILEp(client->real_client->userstate, tmpFILEp,
+        otrl_instag_generate_FILEp(client->userstate, tmpFILEp,
             client->account, client->protocol);
         fclose(tmpFILEp);
-
     }
 }
 
@@ -293,7 +275,6 @@ otr4_privkey_generate_FILEp(const otr4_client_t * client, const char *key, FILE 
         return 0;
 }
 
-
 static void
 add_privkey_to_file(gpointer key,
            gpointer value,
@@ -303,7 +284,7 @@ add_privkey_to_file(gpointer key,
     FILE *privf = user_data;
 
     //TODO: What if an error hapens?
-    otr4_privkey_generate_FILEp(client->real_client, key, privf);
+    otr4_privkey_generate_FILEp(client, key, privf);
 }
 
 void
@@ -326,24 +307,18 @@ otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
 
     return c;
 }
+*/
 
 void
 otr4_client_adapter_free(otr4_client_adapter_t *client) {
-    free(client->account);
-    client->account = NULL;
-
-    free(client->protocol);
-    client->protocol = NULL;
-
-    client->real_client->callbacks = NULL;
-    free(client);
+    otr4_client_free(client);
 }
 
 char*
 otr4_client_adapter_query_message(const char *recipient,
                           const char* message,
                           otr4_client_adapter_t *client) {
-    return otr4_client_query_message(recipient, message, client->real_client);
+    return otr4_client_query_message(recipient, message, client);
 }
 
 int
@@ -351,7 +326,7 @@ otr4_client_adapter_send(char **newmessage,
                  const char *message,
                  const char *recipient,
                  otr4_client_adapter_t *client) {
-    return otr4_client_send(newmessage, message, recipient, client->real_client);
+    return otr4_client_send(newmessage, message, recipient, client);
 }
 
 int
@@ -360,7 +335,7 @@ otr4_client_adapter_receive(char **newmessage,
                     const char *message,
                     const char *recipient,
                     otr4_client_adapter_t *client) {
-    return otr4_client_receive(newmessage, todisplay, message, recipient, client->real_client);
+    return otr4_client_receive(newmessage, todisplay, message, recipient, client);
 }
 
 char*
@@ -369,7 +344,7 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client)
     char *ret = NULL;
 
     otrv4_fingerprint_t our_fp = {0};
-    if (otr4_client_get_our_fingerprint(our_fp, client->real_client))
+    if (otr4_client_get_our_fingerprint(our_fp, client))
         return NULL;
 
     ret = malloc(OTR4_FPRINT_HUMAN_LEN);
@@ -382,22 +357,14 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client)
 
 int
 otr4_client_generate_privkey(otr4_client_adapter_t *client) {
-    return otr4_client_generate_keypair(client->real_client);
-}
-
-int
-otr4_client_adapter_read_privkey_FILEp(otr4_client_adapter_t *client, FILE *privf) {
-    if (!privf)
-        return -1;
-
-    return otr4_read_privkey_FILEp(client->real_client, privf);
+    return otr4_client_generate_keypair(client);
 }
 
 int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client)
 {
-    return otr4_client_disconnect(newmessage, recipient, client->real_client);
+    return otr4_client_disconnect(newmessage, recipient, client);
 }
 
 int otr4_client_adapter_smp_start(char **tosend, const char *recipient,
@@ -405,13 +372,13 @@ int otr4_client_adapter_smp_start(char **tosend, const char *recipient,
     otr4_client_adapter_t * client)
 {
     return otr4_client_smp_start(tosend, recipient, question,
-        secret, secretlen, client->real_client);
+        secret, secretlen, client);
 }
 
 int otr4_client_adapter_smp_respond(char **tosend, const char *recipient,
      const unsigned char *secret, size_t secretlen, otr4_client_adapter_t * client)
 {
     return otr4_client_smp_respond(tosend, recipient, secret, secretlen,
-        client->real_client);
+        client);
 }
 

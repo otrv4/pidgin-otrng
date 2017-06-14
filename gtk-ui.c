@@ -363,12 +363,12 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
 static void connect_connection_ui(otrg_plugin_conversation *conv)
 {
     /* Send an OTR Query to the other side. */
-    otr4_client_adapter_t* client = otr4_client(conv->protocol, conv->account);
+    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return;
 
     otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
-        conv->peer, client->real_client);
+        conv->peer, client);
     
     /* Don't do this if we're already ENCRYPTED */
     if (otr4_conversation_is_encrypted(otr_conv))

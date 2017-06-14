@@ -99,12 +99,12 @@ void otrg_ui_update_keylist(void)
 /* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 {
-    otr4_client_adapter_t* client = otr4_client(conv->protocol, conv->account);
+    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return;
 
     otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
-        conv->peer, client->real_client);
+        conv->peer, client);
 
     /* Don't do anything with fingerprints other than the active one
      * if we're in the ENCRYPTED state */

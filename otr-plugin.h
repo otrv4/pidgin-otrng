@@ -31,6 +31,8 @@
 #include <libotr/userstate.h>
 #include <libotr/instag.h>
 
+#include <libotr4/messaging.h>
+
 /* libotr4 headers */
 #include "otr4-client.h"
 
@@ -44,9 +46,10 @@
 
 extern PurplePlugin *otrg_plugin_handle;
 
+extern otr4_userstate_t *otr4_userstate;
 extern OtrlUserState otrg_plugin_userstate;
 
-otr4_client_adapter_t*
+otr4_client_t*
 otr4_client(const char *accountname, const char *protocol);
 
 otr4_client_adapter_t*
@@ -77,8 +80,14 @@ void otrg_plugin_create_privkey(const char *accountname,
 void otrg_plugin_create_instag(const char *accountname,
 	const char *protocol);
 
-//TODO: rename who uses this
-typedef otr4_client_conversation_t otrg_plugin_conversation;
+//TODO: REPLACE by using opdata to get this information
+typedef struct {
+    char *account;
+    char *protocol;
+    char *peer;
+    uint16_t their_instance_tag;
+    uint16_t our_instance_tag;
+} otrg_plugin_conversation;
 
 otrg_plugin_conversation*
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
