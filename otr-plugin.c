@@ -1683,14 +1683,7 @@ static void gone_insecure_v4(const otr4_client_conversation_t *cconv)
 static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otr4_client_conversation_t *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
-    otr4_client_t *client = otr4_client(conv->protocol, conv->account);
-
-    if (client) {
-        otr4_conversation_t *real_conv = otr4_client_get_conversation(0, conv->peer, client);
-        OtrlUserState us = real_conv->conn->otr3_conn->userstate;
-        otrg_dialog_unknown_fingerprint(us, conv->account, conv->protocol, conv->peer, fp);
-    }
-
+    otrg_dialog_unknown_fingerprint(cconv->client->userstate, conv->account, conv->protocol, conv->peer, fp);
     otrg_plugin_conversation_free(conv);
 }
 
