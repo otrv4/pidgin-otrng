@@ -221,6 +221,12 @@ otrg_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
 }
 
 static void
+otrg_plugin_read_instance_tags_FILEp(FILE *instagf) {
+    //TODO: Read for OTR4
+    otrl_instag_read_FILEp(otr4_userstate->userstate_v3, instagf);
+}
+
+static void
 otrg_plugin_fingerprint_store_create()
 {
     fingerprint_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
@@ -1926,7 +1932,8 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     // Read V3 and V4 private keys from files
     otrg_plugin_read_private_keys(priv3f, privf);
 
-    //TODO: Read instance tags to both V4 and V3 libraries' storage
+    // Read instance tags to both V4 and V3 libraries' storage
+    otrg_plugin_read_instance_tags_FILEp(instagf);
 
     // Read fingerprints to OTR4 fingerprint store
     otrg_plugin_fingerprint_store_create();
@@ -1934,7 +1941,6 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
     otrg_plugin_timerid = 0;
 
-    otrl_instag_read_FILEp(otrg_plugin_userstate, instagf);
     if (privf) fclose(privf);
     if (storef) fclose(storef);
     if (instagf) fclose(instagf);
