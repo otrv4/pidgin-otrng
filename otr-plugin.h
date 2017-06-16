@@ -92,10 +92,6 @@ typedef struct {
 otrg_plugin_conversation*
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
-//This is a sign of me giving up.
-ConnContext*
-otrg_plugin_conversation_to_conn_context(const otrg_plugin_conversation *conv);
-
 otr4_client_adapter_t *
 otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
 
@@ -104,9 +100,6 @@ otrg_plugin_conversation_copy(const otrg_plugin_conversation*);
 
 void
 otrg_plugin_conversation_free(otrg_plugin_conversation*);
-
-otrg_plugin_conversation*
-connection_context_to_otrg_plugin_conversation(ConnContext *ctx);
 
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to

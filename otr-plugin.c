@@ -988,48 +988,6 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv)
     return otrg_plugin_conversation_new(accountname, protocol, peer);
 }
 
-ConnContext*
-otrg_plugin_conversation_to_conn_context(const otrg_plugin_conversation *conv)
-{
-    if (!conv)
-        return NULL;
-
-    return otrl_context_find(otrg_plugin_userstate, conv->peer,
-        conv->account, conv->protocol, OTRL_INSTAG_BEST, 1,
-        NULL, NULL, NULL);
-}
-
-otrg_plugin_conversation*
-connection_context_to_otrg_plugin_conversation(ConnContext *context)
-{
-    PurpleConversation *conv = NULL;
-    PurpleAccount *account = NULL;
-
-    if (!context)
-        return NULL;
-
-    conv = otrg_plugin_userinfo_to_conv(context->accountname, context->protocol,
-        context->username, 0);
-
-    if (!conv)
-        return NULL;
-
-    otrg_plugin_conversation *ret = malloc(sizeof(otrg_plugin_conversation));
-    if (!ret)
-        return ret;
-
-    account = purple_conversation_get_account(conv);
-    ret->account = g_strdup(context->accountname);
-    ret->protocol = g_strdup(context->protocol);
-    ret->peer = g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
-
-    //TODO: do we want to add this?
-    ret->their_instance_tag = 0;
-    ret->our_instance_tag = 0;
-
-    return ret;
-}
-
 void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
 {
     if (!conv)
