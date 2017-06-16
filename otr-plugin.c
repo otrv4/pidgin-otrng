@@ -190,7 +190,37 @@ g_destroy_plugin_fingerprint(gpointer data)
     free(fp);
 }
 
-void
+static void*
+protocol_and_account_to_purple_conversation(FILE *privf)
+{
+    char *line = NULL;
+    size_t cap = 0;
+    int len = 0;
+
+    if (!privf)
+        return NULL;
+
+    while ((len = getline(&line, &cap, privf)) != -1) {
+        char *delim = strchr(line, ':');
+
+        if (!delim) return NULL;
+        *delim = 0;
+        line[len-1] = 0; // \n
+
+        return protocol_and_account_to_purple_account(line, delim+1);
+    }
+
+    return NULL;
+}
+
+static void
+otrg_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
+    otr4_user_state_private_key_v4_read_FILEp(otr4_userstate, priv4,
+        protocol_and_account_to_purple_conversation);
+    otr4_user_state_private_key_v3_read_FILEp(otr4_userstate, priv3);
+}
+
+static void
 otrg_plugin_fingerprint_store_create()
 {
     fingerprint_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
@@ -1791,28 +1821,6 @@ otrv4_client_callbacks_t callbacks_v4 = {
     smp_update_v4,
 };
 
-void *protocol_and_account_to_purple_conversation(FILE *privf)
-{
-    char *line = NULL;
-    size_t cap = 0;
-    int len = 0;
-
-    if (!privf)
-        return NULL;
-
-    while ((len = getline(&line, &cap, privf)) != -1) {
-        char *delim = strchr(line, ':');
-
-        if (!delim) return NULL;
-        *delim = 0;
-        line[len-1] = 0; // \n
-
-        return protocol_and_account_to_purple_account(line, delim+1);
-    }
-
-    return NULL;
-}
-
 static gboolean otr_plugin_load(PurplePlugin *handle)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4,
@@ -1911,19 +1919,20 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
     otrg_plugin_handle = handle;
 
-    otrv4_userstate_create(); //TODO: Remove?
+    otrv4_userstate_create(); //TODO: Remove. otr4_userstate takes care of this.
     otr4_userstate = otr4_user_state_new(&callbacks_v4);
     otrg_plugin_userstate = otr4_userstate->userstate_v3;
 
-    otr4_user_state_private_key_v4_read_FILEp(otr4_userstate, privf,
-        protocol_and_account_to_purple_conversation);
+    // Read V3 and V4 private keys from files
+    otrg_plugin_read_private_keys(priv3f, privf);
 
-    otrl_privkey_read_FILEp(otrg_plugin_userstate, priv3f);
+    //TODO: Read instance tags to both V4 and V3 libraries' storage
 
-    otrg_plugin_timerid = 0;
-
+    // Read fingerprints to OTR4 fingerprint store
     otrg_plugin_fingerprint_store_create();
     otrg_plugin_read_fingerprints_FILEp(storef);
+
+    otrg_plugin_timerid = 0;
 
     otrl_instag_read_FILEp(otrg_plugin_userstate, instagf);
     if (privf) fclose(privf);
