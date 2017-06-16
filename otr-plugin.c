@@ -222,8 +222,7 @@ otrg_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
 
 static void
 otrg_plugin_read_instance_tags_FILEp(FILE *instagf) {
-    //TODO: Read for OTR4
-    otrl_instag_read_FILEp(otr4_userstate->userstate_v3, instagf);
+    otr4_user_state_instance_tags_read_FILEp(otr4_userstate, instagf);
 }
 
 static void
