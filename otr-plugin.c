@@ -132,7 +132,13 @@ otr4_client(const char *protocol, const char *accountname)
     if (!opdata)
         return NULL;
 
-    return otr4_messaging_client_get(otr4_userstate, opdata);
+    otr4_client_adapter_t *ret = otr4_messaging_client_get(otr4_userstate, opdata);
+
+    //TODO: Replace by a callback. This is only necessary because libotr3 api
+    //use this all over, and we use libotr userstate.
+    ret->state->account_name = g_strdup(accountname);
+    ret->state->protocol_name = g_strdup(protocol);
+    return ret;
 }
 
 //TODO: REMOVE
@@ -1765,14 +1771,17 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	    NULL);
     gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+
     void *conv_handle = purple_conversations_get_handle();
     void *conn_handle = purple_connections_get_handle();
     void *blist_handle = purple_blist_get_handle();
     void *core_handle = purple_get_core();
+
     FILE *privf;
     FILE *priv3f;
     FILE *storef;
     FILE *instagf;
+
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
     GtkWidget *dialog;
     GtkWidget *dialog_text;
