@@ -210,88 +210,6 @@ get_otr4_client(const char *accountname, const char *protocol)
     return ret;
 }
 
-void
-otr4_privkey_read_FILEp(FILE *privf)
-{
-    gchar *key = NULL;
-    otr4_client_adapter_t *client = NULL;
-
-    char *line = NULL;
-    size_t cap = 0;
-    int len = 0;
-
-    if (!privf)
-        return;
-
-    while ((len = getline(&line, &cap, privf)) != -1) {
-        key = g_strndup(line, len-1);
-        char *delim = strchr(key, ':');
-
-        if (!delim) continue;
-        *delim = 0;
-
-        client = otr4_client(key, delim+1);
-        //TODO: What to do if an error happens?
-        otr4_client_adapter_read_privkey_FILEp(client, privf);
-        free(key);
-
-        //TODO: load instance tag from a different
-        FILE *tmpFILEp = tmpfile();
-        otrl_instag_generate_FILEp(client->userstate, tmpFILEp,
-            client->account, client->protocol);
-        fclose(tmpFILEp);
-    }
-}
-
-static int
-otr4_privkey_generate_FILEp(const otr4_client_t * client, const char *key, FILE * privf)
-{
-        char *buff = NULL;
-        size_t s = 0;
-        int err = 0;
-
-        if (!privf)
-                return -1;
-
-        if (!client->keypair)
-                return -2;
-
-        err = otrv4_symmetric_key_serialize(&buff, &s, client->keypair->sym);
-        if (err)
-                return err;
-
-        if (EOF == fputs(key, privf))
-                return -3;
-
-        if (EOF == fputs("\n", privf))
-                return -3;
-
-        if (1 != fwrite(buff, s, 1, privf))
-                return -3;
-
-        if (EOF == fputs("\n", privf))
-                return -3;
-
-        return 0;
-}
-
-static void
-add_privkey_to_file(gpointer key,
-           gpointer value,
-           gpointer user_data)
-{
-    otr4_client_adapter_t *client = value;
-    FILE *privf = user_data;
-
-    //TODO: What if an error hapens?
-    otr4_privkey_generate_FILEp(client, key, privf);
-}
-
-void
-otr4_privkey_write_FILEp(FILE *privf) {
-        g_hash_table_foreach(client_table, add_privkey_to_file, privf);
-}
-
 otr4_client_adapter_t*
 otr4_client_adapter_new(const otrv4_callbacks_t *callbacks,
     OtrlUserState userstate, const char *protocol, const char *account)
@@ -353,11 +271,6 @@ otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client)
 
     otr4_fingerprint_hash_to_human(ret, our_fp);
     return ret;
-}
-
-int
-otr4_client_generate_privkey(otr4_client_adapter_t *client) {
-    return otr4_client_generate_keypair(client);
 }
 
 int

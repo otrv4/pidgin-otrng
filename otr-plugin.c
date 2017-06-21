@@ -139,7 +139,13 @@ otr4_client(const char *protocol, const char *accountname)
 otr4_client_adapter_t*
 purple_account_to_otr4_client(PurpleAccount *account)
 {
-    return otr4_messaging_client_get(otr4_userstate, account);
+    otr4_client_adapter_t *ret = otr4_messaging_client_get(otr4_userstate, account);
+
+    //TODO: Replace by a callback. This is only necessary because libotr3 api
+    //use this all over, and we use libotr userstate.
+    ret->state->account_name = g_strdup(purple_account_get_username(account));
+    ret->state->protocol_name = g_strdup(purple_account_get_protocol_id(account));
+    return ret;
 }
 
 otr4_conversation_t*
@@ -373,8 +379,7 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context)
     return prefs.policy;
 }
 
-static int otrg_plugin_write_privkey_v3_FILEp(const char *accountname,
-	const char *protocol)
+static int otrg_plugin_write_privkey_v3_FILEp(PurpleAccount *account)
 {
 #ifndef WIN32
     mode_t mask;
@@ -401,29 +406,13 @@ static int otrg_plugin_write_privkey_v3_FILEp(const char *accountname,
 	return -1;
     }
 
-    int error = 0;
-    /* TODO: HOW?
-
-    //1. Get client
-    otr4_client_adapter_t *client = otr4_client(protocol, accountname);
-    if (!client)
-        return -1;
-
-    error = otr3_privkey_generate(client->real_client, privf);
+    int err = otr4_user_state_private_key_v3_generate_FILEp(otr4_userstate, account, privf);
     fclose(privf);
 
-    //TODO: generate instance tag in a separate function
-    FILE *tmpFILEp = tmpfile();
-    otrl_instag_generate_FILEp(client->real_client->state->userstate, tmpFILEp,
-        client->account, client->protocol);
-    fclose(tmpFILEp);
-    */
-
-    return error;
+    return err;
 }
 
-static int otrg_plugin_write_privkey_v4_FILEp(const char *accountname,
-	const char *protocol)
+static int otrg_plugin_write_privkey_v4_FILEp(void)
 {
 #ifndef WIN32
     mode_t mask;
@@ -450,37 +439,30 @@ static int otrg_plugin_write_privkey_v4_FILEp(const char *accountname,
 	return -1;
     }
 
-    //TODO:
-    //otr4_privkey_write_FILEp(privf);
+    int err = otr4_user_state_private_key_v4_write_FILEp(otr4_userstate, privf);
     fclose(privf);
 
-    return 0;
+    return err;
 }
 
 /* Generate a private key for the given accountname/protocol */
-void otrg_plugin_create_privkey(const char *accountname,
-	const char *protocol)
+void otrg_plugin_create_privkey(PurpleAccount *account)
 {
     OtrgDialogWaitHandle waithandle;
+    const char *accountname = purple_account_get_username(account);
+    const char *protocol = purple_account_get_protocol_id(account);
+
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
-    otr4_client_t *client = otr4_client(protocol, accountname);
-    int err = otr4_client_generate_privkey(client);
-    if (err)
-        return;
-
-    otrg_plugin_write_privkey_v4_FILEp(accountname, protocol);
-    otrg_plugin_write_privkey_v3_FILEp(accountname, protocol);
-    otrg_ui_update_fingerprint();
+    int err = otr4_user_state_generate_private_key(otr4_userstate, account);
+    if (!err) {
+        otrg_plugin_write_privkey_v4_FILEp();
+        otrg_plugin_write_privkey_v3_FILEp(account);
+        otrg_ui_update_fingerprint();
+    }
 
     /* Mark the dialog as done. */
     otrg_dialog_private_key_wait_done(waithandle);
-}
-
-static void create_privkey_cb(void *opdata, const char *accountname,
-	const char *protocol)
-{
-    otrg_plugin_create_privkey(accountname, protocol);
 }
 
 /* Generate a instance tag for the given accountname/protocol */
@@ -852,7 +834,7 @@ static void timer_control_cb(void *opdata, unsigned int interval)
 
 static OtrlMessageAppOps ui_ops = {
     policy_cb,
-    create_privkey_cb,
+    NULL, //create_privkey_cb,
     is_logged_in_cb,
     inject_message_cb,
     update_context_list_cb,
@@ -1661,9 +1643,7 @@ client_conversation_to_plugin_conversation(const otr4_client_conversation_t *con
 static void create_privkey_v4(void *opdata)
 {
     PurpleAccount *account = opdata;
-    const char *accountname = purple_account_get_username(account);
-    const char *protocol = purple_account_get_protocol_id(account);
-    otrg_plugin_create_privkey(accountname, protocol);
+    otrg_plugin_create_privkey(account);
 }
 
 static void gone_secure_v4(const otr4_client_conversation_t *cconv)

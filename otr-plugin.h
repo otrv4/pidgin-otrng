@@ -73,8 +73,7 @@ void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
 	const char *message);
 
 /* Generate a private key for the given accountname/protocol */
-void otrg_plugin_create_privkey(const char *accountname,
-	const char *protocol);
+void otrg_plugin_create_privkey(PurpleAccount *account);
 
 /* Generate a instance tag for the given accountname/protocol */
 void otrg_plugin_create_instag(const char *accountname,

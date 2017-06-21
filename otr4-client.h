@@ -33,9 +33,6 @@ char*
 otrv4_client_adapter_privkey_fingerprint(const otr4_client_adapter_t *client);
 
 int
-otr4_client_generate_privkey(otr4_client_adapter_t *client);
-
-int
 otr4_client_adapter_disconnect(char **newmessage, const char *recipient,
                                otr4_client_adapter_t * client);
 

@@ -213,8 +213,7 @@ static void generate(GtkWidget *widget, gpointer data)
 
     if (account == NULL) return;
 
-    otrg_plugin_create_privkey(purple_account_get_username(account),
-	    purple_account_get_protocol_id(account));
+    otrg_plugin_create_privkey(account);
 }
 
 static void ui_destroyed(GtkObject *object)
