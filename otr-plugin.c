@@ -1965,7 +1965,8 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     /* Stop the timer, if necessary */
     stop_start_timer(0);
 
-    otrl_userstate_free(otrg_plugin_userstate);
+    otr4_user_state_free(otr4_userstate);
+    otr4_userstate = NULL;
     otrg_plugin_userstate = NULL;
 
     g_hash_table_remove_all(fingerprint_table);
