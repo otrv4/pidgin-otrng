@@ -94,7 +94,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     char *fingerprint;
 
     if (account) {
-        otr4_client_adapter_t* c = purple_account_to_otr4_client(account);
+        otr4_client_t* c = purple_account_to_otr4_client(account);
         fingerprint = otrv4_client_adapter_privkey_fingerprint(c);
 
 	if (fingerprint) {

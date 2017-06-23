@@ -132,7 +132,7 @@ otr4_client(const char *protocol, const char *accountname)
     if (!opdata)
         return NULL;
 
-    otr4_client_adapter_t *ret = otr4_messaging_client_get(otr4_userstate, opdata);
+    otr4_client_t *ret = otr4_messaging_client_get(otr4_userstate, opdata);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -142,10 +142,10 @@ otr4_client(const char *protocol, const char *accountname)
 }
 
 //TODO: REMOVE
-otr4_client_adapter_t*
+otr4_client_t*
 purple_account_to_otr4_client(PurpleAccount *account)
 {
-    otr4_client_adapter_t *ret = otr4_messaging_client_get(otr4_userstate, account);
+    otr4_client_t *ret = otr4_messaging_client_get(otr4_userstate, account);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -894,7 +894,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
     instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
-    int err = otr4_client_adapter_send(&newmessage, *message, username,
+    int err = otr4_client_send(&newmessage, *message, username,
                                        purple_account_to_otr4_client(account));
 
     //TODO: this message should be stored for retransmission
@@ -999,12 +999,12 @@ void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
 void otrg_plugin_start_smp(otrg_plugin_conversation *conv,
     const char *question, const unsigned char *secret, size_t secretlen)
 {
-    otr4_client_adapter_t *client = otrg_plugin_conversation_to_client(conv);
+    otr4_client_t *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
     char *tosend = NULL;
-    if (otr4_client_adapter_smp_start(&tosend, conv->peer, question, secret, secretlen, client))
+    if (otr4_client_smp_start(&tosend, conv->peer, question, secret, secretlen, client))
         return; //ERROR?
 
     PurpleConversation *purp_conv = NULL;
@@ -1021,12 +1021,12 @@ void otrg_plugin_start_smp(otrg_plugin_conversation *conv,
 void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen)
 {
-    otr4_client_adapter_t *client = otrg_plugin_conversation_to_client(conv);
+    otr4_client_t *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
     char *tosend = NULL;
-    if (otr4_client_adapter_smp_respond(&tosend, conv->peer, secret, secretlen, client))
+    if (otr4_client_smp_respond(&tosend, conv->peer, secret, secretlen, client))
         return; //ERROR?
 
     PurpleConversation *purp_conv = NULL;
@@ -1055,7 +1055,7 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     if (!client)
         return;
 
-    msg = otr4_client_adapter_query_message(conv->peer, "", client);
+    msg = otr4_client_query_message(conv->peer, "", client);
 
     otrg_plugin_inject_message(account, conv->peer,
 	     msg ? msg : "?OTRv34?");
@@ -1077,7 +1077,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 
     otr4_client_t *client = purple_account_to_otr4_client(account);
     otrg_ui_get_prefs(&prefs, account, username);
-    msg = otr4_client_adapter_query_message(username, "", client);
+    msg = otr4_client_query_message(username, "", client);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
     free(msg);
 }
@@ -1101,9 +1101,9 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-    otr4_client_adapter_t *acc = purple_account_to_otr4_client(account);
+    otr4_client_t *acc = purple_account_to_otr4_client(account);
 
-    res = otr4_client_adapter_receive(&tosend, &todisplay, *message, username, acc);
+    res = otr4_client_receive(&tosend, &todisplay, *message, username, acc);
     if (tosend) {
         //TODO: Add fragmentation?
         otrg_plugin_inject_message(account, username, tosend);
@@ -1321,7 +1321,7 @@ void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
         conv->peer, 1);
     account = purple_conversation_get_account(purp_conv);
 
-    if (!otr4_client_adapter_disconnect(&msg, conv->peer, client))
+    if (!otr4_client_disconnect(&msg, conv->peer, client))
         otrg_plugin_inject_message(account, conv->peer, msg);
 
     free(msg);
@@ -1864,7 +1864,6 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 
     otrg_plugin_handle = handle;
 
-    otrv4_userstate_create(); //TODO: Remove. otr4_userstate takes care of this.
     otr4_userstate = otr4_user_state_new(&callbacks_v4);
     otrg_plugin_userstate = otr4_userstate->userstate_v3;
 
@@ -1952,7 +1951,6 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     otrl_userstate_free(otrg_plugin_userstate);
     otrg_plugin_userstate = NULL;
 
-    otrv4_userstate_destroy();
     g_hash_table_remove_all(fingerprint_table);
     fingerprint_table = NULL;
 

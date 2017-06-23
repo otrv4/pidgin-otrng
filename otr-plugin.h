@@ -52,7 +52,7 @@ extern OtrlUserState otrg_plugin_userstate;
 otr4_client_t*
 otr4_client(const char *accountname, const char *protocol);
 
-otr4_client_adapter_t*
+otr4_client_t*
 purple_account_to_otr4_client(PurpleAccount *account);
 
 otr4_conversation_t*
@@ -91,7 +91,7 @@ typedef struct {
 otrg_plugin_conversation*
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
-otr4_client_adapter_t *
+otr4_client_t *
 otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
 
 otrg_plugin_conversation*
