@@ -1753,6 +1753,7 @@ static void smp_update_v4(const otr4_smp_event_t event, const uint8_t progress_p
 }
 
 otrv4_client_callbacks_t callbacks_v4 = {
+    //TODO: otrg_plugin_create_instag,
     create_privkey_v4,
     gone_secure_v4,
     gone_insecure_v4,
@@ -1763,7 +1764,8 @@ otrv4_client_callbacks_t callbacks_v4 = {
     smp_update_v4,
 };
 
-static gboolean otr_plugin_load(PurplePlugin *handle)
+static int
+otrg_plugin_init_userstate(void)
 {
     gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4,
 	    NULL);
@@ -1772,15 +1774,54 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
     gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
 
+    if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile) {
+	g_free(privkeyfile);
+	g_free(privkeyfile3);
+	g_free(storefile);
+	g_free(instagfile);
+	return 1;
+    }
+
+    FILE *privf = g_fopen(privkeyfile, "rb");
+    FILE *priv3f = g_fopen(privkeyfile3, "rb");
+    FILE *storef = g_fopen(storefile, "rb");
+    FILE *instagf = g_fopen(instagfile, "rb");
+
+    g_free(privkeyfile);
+    g_free(privkeyfile3);
+    g_free(storefile);
+    g_free(instagfile);
+
+    otr4_userstate = otr4_user_state_new(&callbacks_v4);
+    otrg_plugin_userstate = otr4_userstate->userstate_v3;
+
+    // Read V3 and V4 private keys from files
+    otrg_plugin_read_private_keys(priv3f, privf);
+
+    // Read instance tags to both V4 and V3 libraries' storage
+    otrg_plugin_read_instance_tags_FILEp(instagf);
+
+    // Read fingerprints to OTR4 fingerprint store
+    otrg_plugin_fingerprint_store_create();
+    otrg_plugin_read_fingerprints_FILEp(storef);
+    otrg_ui_update_fingerprint();
+
+    if (privf) fclose(privf);
+    if (storef) fclose(storef);
+    if (instagf) fclose(instagf);
+
+    return 0;
+}
+
+static gboolean otr_plugin_load(PurplePlugin *handle)
+{
     void *conv_handle = purple_conversations_get_handle();
     void *conn_handle = purple_connections_get_handle();
     void *blist_handle = purple_blist_get_handle();
     void *core_handle = purple_get_core();
 
-    FILE *privf;
-    FILE *priv3f;
-    FILE *storef;
-    FILE *instagf;
+    if(otrg_plugin_init_userstate())
+        return 0;
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
     GtkWidget *dialog;
@@ -1788,14 +1829,6 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     PidginBuddyList *blist;
     gchar * buf = NULL;
 #endif
-
-    if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile) {
-	g_free(privkeyfile);
-	g_free(privkeyfile3);
-	g_free(storefile);
-	g_free(instagfile);
-	return 0;
-    }
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
     blist = pidgin_blist_get_default_gtk_blist();
@@ -1822,10 +1855,6 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	gtk_widget_destroy(dialog);
 
 	g_free(buf);
-	g_free(privkeyfile);
-	g_free(privkeyfile3);
-	g_free(storefile);
-	g_free(instagfile);
 	return 0;
     }
 
@@ -1851,39 +1880,9 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     g_free(buf);
 #endif
 
-    privf = g_fopen(privkeyfile, "rb");
-    priv3f = g_fopen(privkeyfile3, "rb");
-    storef = g_fopen(storefile, "rb");
-    instagf = g_fopen(instagfile, "rb");
-    g_free(privkeyfile);
-    g_free(privkeyfile3);
-    g_free(storefile);
-    g_free(instagfile);
-
     otrg_init_mms_table();
-
     otrg_plugin_handle = handle;
-
-    otr4_userstate = otr4_user_state_new(&callbacks_v4);
-    otrg_plugin_userstate = otr4_userstate->userstate_v3;
-
-    // Read V3 and V4 private keys from files
-    otrg_plugin_read_private_keys(priv3f, privf);
-
-    // Read instance tags to both V4 and V3 libraries' storage
-    otrg_plugin_read_instance_tags_FILEp(instagf);
-
-    // Read fingerprints to OTR4 fingerprint store
-    otrg_plugin_fingerprint_store_create();
-    otrg_plugin_read_fingerprints_FILEp(storef);
-
     otrg_plugin_timerid = 0;
-
-    if (privf) fclose(privf);
-    if (storef) fclose(storef);
-    if (instagf) fclose(instagf);
-
-    otrg_ui_update_fingerprint();
 
     purple_signal_connect(core_handle, "quitting", otrg_plugin_handle,
 	    PURPLE_CALLBACK(process_quitting), NULL);
