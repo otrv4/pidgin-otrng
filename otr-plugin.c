@@ -1813,24 +1813,16 @@ otrg_plugin_init_userstate(void)
     return 0;
 }
 
-static gboolean otr_plugin_load(PurplePlugin *handle)
-{
-    void *conv_handle = purple_conversations_get_handle();
-    void *conn_handle = purple_connections_get_handle();
-    void *blist_handle = purple_blist_get_handle();
-    void *core_handle = purple_get_core();
-
-    if(otrg_plugin_init_userstate())
-        return 0;
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
+static int
+build_beta_dialog(void)
+{
     GtkWidget *dialog;
     GtkWidget *dialog_text;
     PidginBuddyList *blist;
     gchar * buf = NULL;
-#endif
 
-#if BETA_DIALOG && defined USING_GTK /* Only for beta */
     blist = pidgin_blist_get_default_gtk_blist();
 
     if (time(NULL) > 1356998400) /* 2013-01-01 */ {
@@ -1855,7 +1847,7 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	gtk_widget_destroy(dialog);
 
 	g_free(buf);
-	return 0;
+	return 1;
     }
 
     buf = g_strdup_printf(_("OTR PLUGIN v%s"), PIDGIN_OTR_VERSION);
@@ -1878,11 +1870,18 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
     g_free(buf);
+
+    return 0;
+}
 #endif
 
-    otrg_init_mms_table();
-    otrg_plugin_handle = handle;
-    otrg_plugin_timerid = 0;
+static void
+otrg_plugin_watch_libpurple_events(void)
+{
+    void *conv_handle = purple_conversations_get_handle();
+    void *conn_handle = purple_connections_get_handle();
+    void *blist_handle = purple_blist_get_handle();
+    void *core_handle = purple_get_core();
 
     purple_signal_connect(core_handle, "quitting", otrg_plugin_handle,
 	    PURPLE_CALLBACK(process_quitting), NULL);
@@ -1902,7 +1901,23 @@ static gboolean otr_plugin_load(PurplePlugin *handle)
 	    PURPLE_CALLBACK(process_connection_change), NULL);
     purple_signal_connect(blist_handle, "blist-node-extended-menu",
 	    otrg_plugin_handle, PURPLE_CALLBACK(supply_extended_menu), NULL);
+}
 
+static gboolean otr_plugin_load(PurplePlugin *handle)
+{
+    if(otrg_plugin_init_userstate())
+        return 0;
+
+#if BETA_DIALOG && defined USING_GTK /* Only for beta */
+    if(build_beta_dialog())
+        return 0;
+#endif
+
+    otrg_init_mms_table();
+    otrg_plugin_handle = handle;
+    otrg_plugin_timerid = 0;
+
+    otrg_plugin_watch_libpurple_events();
     otrg_ui_init();
     otrg_dialog_init();
 
