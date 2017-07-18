@@ -103,8 +103,11 @@ otrg_plugin_conversation_free(otrg_plugin_conversation*);
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrg_plugin_start_smp(otrg_plugin_conversation *plugin_conv,
-    const char *question, const unsigned char *secret, size_t secretlen);
+void otrg_plugin_start_smp(
+			   otrg_plugin_conversation *plugin_conv,
+			   const char *question, const size_t q_len,
+			   const unsigned char *secret, size_t secretlen
+			   );
 
 void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen);

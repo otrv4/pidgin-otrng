@@ -996,15 +996,18 @@ void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrg_plugin_start_smp(otrg_plugin_conversation *conv,
-    const char *question, const unsigned char *secret, size_t secretlen)
+void otrg_plugin_start_smp(
+			   otrg_plugin_conversation *conv,
+			   const char *question, const size_t q_len,
+			   const unsigned char *secret, size_t secretlen
+			   )
 {
     otr4_client_t *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
     char *tosend = NULL;
-    if (otr4_client_smp_start(&tosend, conv->peer, question, secret, secretlen, client))
+    if (otr4_client_smp_start(&tosend, conv->peer, question, q_len, secret, secretlen, client))
         return; //ERROR?
 
     PurpleConversation *purp_conv = NULL;

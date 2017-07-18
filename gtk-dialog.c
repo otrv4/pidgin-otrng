@@ -320,7 +320,7 @@ static int start_or_continue_smp(SmpResponsePair *smppair)
 	    }
 
 	    /* pass user question here */
-	    otrg_plugin_start_smp(smppair->conv, user_question,
+	    otrg_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
 		    (const unsigned char *)secret, secret_len);
         } else {
 	    otrg_plugin_continue_smp(smppair->conv,
