@@ -4,6 +4,7 @@ AC_INIT(pidgin-otr4, 4.0.2)
 
 AM_CONFIG_HEADER(config.h)
 
+AC_CONFIG_MACRO_DIR([m4])
 # Silent compilation so warnings can be spotted.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
