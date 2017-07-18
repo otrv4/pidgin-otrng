@@ -2,10 +2,12 @@
 *.la
 *.pox
 *.old.po
+tags
 
 .deps/
 .libs/
 
+#autotools
 Makefile
 Makefile.in
 aclocal.m4
@@ -27,6 +29,14 @@ intltool-update.in
 libtool
 ltmain.sh
 missing
+
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+m4/intltool.m4
+
 pidgin-otr4.pot
 po/Makefile.in.in
 po/*.gmo
