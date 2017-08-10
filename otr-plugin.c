@@ -888,7 +888,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
     if (!who || !message || !*message)
 	return;
 
-    username = strdup(purple_normalize(account, who));
+    username = g_strdup(purple_normalize(account, who));
 
     conv = otrg_plugin_userinfo_to_conv(accountname, protocol, username, 1);
 
@@ -905,19 +905,19 @@ static void process_sending_im(PurpleAccount *account, char *who,
     //TODO: if require encription
     //if (err == ???) {
     //    /* Do not send out plain text */
-    //    char *ourm = strdup("");
+    //    char *ourm = g_strdup("");
     //    free(*message);
     //    *message = ourm;
     //}
 
     if (!err) {
-	char *ourm = strdup(newmessage);
+	char *ourm = g_strdup(newmessage);
 	free(*message);
 	*message = ourm;
     }
 
     otrl_message_free(newmessage);
-    free(username);
+    g_free(username);
 }
 
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
@@ -1100,7 +1100,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     if (!who || !*who || !message || !*message)
 	return 0;
 
-    username = strdup(purple_normalize(account, *who));
+    username = g_strdup(purple_normalize(account, *who));
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
@@ -1108,13 +1108,12 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     res = otr4_client_receive(&tosend, &todisplay, *message, username, acc);
     if (tosend) {
-        //TODO: Add fragmentation?
         otrg_plugin_inject_message(account, username, tosend);
-        otrl_message_free(tosend);
+        free(tosend);
     }
 
     if (todisplay) {
-	char *ourm = strdup(todisplay);
+	char *ourm = g_strdup(todisplay);
 	free(*message);
 	*message = ourm;
     } else {
@@ -1571,7 +1570,7 @@ static void mms_read_FILEp(FILE *mmsf, GHashTable *ght)
 	if (!eol) continue;
 	*eol = '\0';
 
-	prot_in_table = strdup(protocol);
+	prot_in_table = g_strdup(protocol);
 	mms_in_table = malloc(sizeof(int));
 	*mms_in_table = atoi(mms);
 	g_hash_table_insert(ght, prot_in_table, mms_in_table);
