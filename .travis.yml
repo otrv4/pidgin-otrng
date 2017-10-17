@@ -34,7 +34,7 @@ before_install:
   - pushd .deps/libsodium-1.0.11 && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
   - git clone --depth=1 https://github.com/twstrike/ed448goldilocks .deps/goldilocks
   - pushd .deps/goldilocks && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
-  - git clone --depth=1 https://github.com/twstrike/libotrv4.git .deps/libotr4
+  - git clone --depth=1 https://github.com/otrv4/libotrv4.git .deps/libotr4
   - pushd .deps/libotr4 && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
 
 script:
