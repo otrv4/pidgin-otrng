@@ -138,6 +138,7 @@ otr4_client(const char *protocol, const char *accountname)
     //use this all over, and we use libotr userstate.
     ret->state->account_name = g_strdup(accountname);
     ret->state->protocol_name = g_strdup(protocol);
+    ret->state->pad = true;
     return ret;
 }
 
@@ -151,6 +152,7 @@ purple_account_to_otr4_client(PurpleAccount *account)
     //use this all over, and we use libotr userstate.
     ret->state->account_name = g_strdup(purple_account_get_username(account));
     ret->state->protocol_name = g_strdup(purple_account_get_protocol_id(account));
+    ret->state->pad = true;
     return ret;
 }
 
@@ -183,7 +185,6 @@ otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
 
     return otr4_client_get_conversation(0, f->username, client);
 }
-
 
 static void
 g_destroy_plugin_fingerprint(gpointer data)
