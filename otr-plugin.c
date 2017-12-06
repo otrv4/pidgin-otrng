@@ -1111,7 +1111,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     // TODO: client might optionally pass a warning here
     if (res == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
-        return;
+        return 1;
     }
 
 
