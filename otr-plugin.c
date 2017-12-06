@@ -1108,6 +1108,13 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     otr4_client_t *acc = purple_account_to_otr4_client(account);
 
     res = otr4_client_receive(&tosend, &todisplay, *message, username, acc);
+
+    // TODO: client might optionally pass a warning here
+    if (res == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
+        return;
+    }
+
+
     if (tosend) {
         otrg_plugin_inject_message(account, username, tosend);
         free(tosend);
