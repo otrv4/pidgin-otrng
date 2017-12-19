@@ -1047,19 +1047,22 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     PurpleConversation *purp_conv = NULL;
     PurpleAccount *account = NULL;
     char *msg;
-
-    //OtrgUiPrefs prefs;
-    //otrg_ui_get_prefs(&prefs, account, context->username);
+    const char *username;
 
     purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
         conv->peer, 1);
+
+    // TODO: change this later, but it is so, so it does compile
     account = purple_conversation_get_account(purp_conv);
+    username = purple_normalize(account, purple_conversation_get_name(purp_conv));
+    OtrgUiPrefs prefs;
+    otrg_ui_get_prefs(&prefs, account, username);
 
     otr4_client_t* client = otr4_client(conv->protocol, conv->account);
     if (!client)
         return;
 
-    msg = otr4_client_query_message(conv->peer, "", client);
+    msg = otr4_client_query_message(conv->peer, "", client, prefs.policy);
 
     otrg_plugin_inject_message(account, conv->peer,
 	     msg ? msg : "?OTRv34?");
@@ -1081,7 +1084,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 
     otr4_client_t *client = purple_account_to_otr4_client(account);
     otrg_ui_get_prefs(&prefs, account, username);
-    msg = otr4_client_query_message(username, "", client);
+    msg = otr4_client_query_message(username, "", client, prefs.policy);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
     free(msg);
 }
