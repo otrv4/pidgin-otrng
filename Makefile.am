@@ -10,7 +10,7 @@ plugindir=		${libdir}/pidgin
 plugin_LTLIBRARIES=	pidgin-otr4.la
 
 pidgin_otr4_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
-                        tooltipmenu.c otr4-client.c
+                        tooltipmenu.c otrng-client.c
 pidgin_otr4_la_LDFLAGS=	-module -avoid-version
 pidgin_otr4_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@
 

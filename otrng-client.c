@@ -1,4 +1,4 @@
-#include "otr4-client.h"
+#include "otrng-client.h"
 
 #include <stdio.h>
 

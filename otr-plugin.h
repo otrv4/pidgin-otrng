@@ -33,8 +33,8 @@
 
 #include <libotr4/messaging.h>
 
-/* libotr4 headers */
-#include "otr4-client.h"
+/* libotrng headers */
+#include "otrng-client.h"
 
 #define PRIVKEYFNAMEv4 "otr4.private_key"
 #define STOREFNAMEv4 "otr4.fingerprints"

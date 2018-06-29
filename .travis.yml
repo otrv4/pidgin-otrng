@@ -25,7 +25,7 @@ before_install:
   - mkdir .deps
   - git clone --depth=1 https://bugs.otr.im/lib/libotr.git .deps/libotr
   - pushd .deps/libotr && ./bootstrap && ./configure --prefix=$PREFIX && make && make install && popd
-  # Dependencies for libotr4
+  # Dependencies for libotr-ng
   - curl https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.26.tar.bz2 | tar xjf - -C .deps
   - pushd .deps/libgpg-error-1.26 && ./configure --prefix=$PREFIX && make && make install && popd
   - curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.1.tar.bz2 | tar xjf - -C .deps
