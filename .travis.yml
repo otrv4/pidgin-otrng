@@ -32,8 +32,8 @@ before_install:
   - pushd .deps/libgcrypt-1.8.1 && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
   - curl https://download.libsodium.org/libsodium/releases/old/libsodium-1.0.11.tar.gz | tar xzf - -C .deps
   - pushd .deps/libsodium-1.0.11 && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
-  - git clone --depth=1 https://github.com/otrv4/libgoldilocks .deps/goldilocks
-  - pushd .deps/goldilocks && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
+  - git clone --depth=1 https://github.com/otrv4/libgoldilocks .deps/libgoldilocks
+  - pushd .deps/libgoldilocks && ./autogen.sh && ./configure && make && sudo make install && popd
   - git clone --depth=1 https://github.com/otrv4/libotr-ng.git .deps/libotr-ng
   - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
 
