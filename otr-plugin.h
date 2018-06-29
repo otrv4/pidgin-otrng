@@ -31,7 +31,7 @@
 #include <libotr/userstate.h>
 #include <libotr/instag.h>
 
-#include <libotr4/messaging.h>
+#include <libotr-ng/messaging.h>
 
 /* libotrng headers */
 #include "otrng-client.h"

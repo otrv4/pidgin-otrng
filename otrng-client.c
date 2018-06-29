@@ -1,6 +1,8 @@
-#include "otrng-client.h"
-
 #include <stdio.h>
+
+#include <libotr-ng/client.h>
+
+#include "otrng-client.h"
 
 char*
 otrv4_client_adapter_privkey_fingerprint(const otr4_client_t *client)
