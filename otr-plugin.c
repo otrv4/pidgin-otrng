@@ -1646,7 +1646,7 @@ static void otrg_free_mms_table()
 
 //TODO: May not be necessary. Remove.
 static otrg_plugin_conversation*
-client_conversation_to_plugin_conversation(const otrng_client_conversation_t *conv)
+client_conversation_to_plugin_conversation(const otrng_client_conversation_s *conv)
 {
     PurpleAccount *account = conv->client->client_id;
     if (!account)
@@ -1665,28 +1665,28 @@ static void create_privkey_v4(void *opdata)
     otrg_plugin_create_privkey(account);
 }
 
-static void gone_secure_v4(const otrng_client_conversation_t *cconv)
+static void gone_secure_v4(const otrng_client_conversation_s *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_conversation_connected(conv);
     otrg_plugin_conversation_free(conv);
 }
 
-static void gone_insecure_v4(const otrng_client_conversation_t *cconv)
+static void gone_insecure_v4(const otrng_client_conversation_s *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_conversation_disconnected(conv);
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otrng_client_conversation_t *cconv)
+static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otrng_client_conversation_s *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_unknown_fingerprint(cconv->client->userstate, conv->account, conv->protocol, conv->peer, fp);
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client_conversation_t *cconv)
+static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client_conversation_s *cconv)
 {
     //TODO: use fp to determine if you have seen this fp before
     //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
@@ -1721,7 +1721,7 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client
     g_free(buf);
 }
 
-static void smp_ask_for_secret_v4(const otrng_client_conversation_t *cconv)
+static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv)
 {
     if (!cconv) return;
 
@@ -1730,7 +1730,7 @@ static void smp_ask_for_secret_v4(const otrng_client_conversation_t *cconv)
     otrg_plugin_conversation_free(conv);
 }
 
-static void smp_ask_for_answer_v4(const char *question, const otrng_client_conversation_t *cconv)
+static void smp_ask_for_answer_v4(const char *question, const otrng_client_conversation_s *cconv)
 {
     if (!cconv) return;
 
@@ -1739,7 +1739,7 @@ static void smp_ask_for_answer_v4(const char *question, const otrng_client_conve
     otrg_plugin_conversation_free(conv);
 }
 
-static void smp_update_v4(const otrng_smp_event_t event, const uint8_t progress_percent, const otrng_client_conversation_t *cconv)
+static void smp_update_v4(const otrng_smp_event_t event, const uint8_t progress_percent, const otrng_client_conversation_s *cconv)
 {
     if (!cconv) return;
 
