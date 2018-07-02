@@ -68,7 +68,7 @@ typedef struct {
 	    gboolean responder);
 
     void (*update_smp)(const otrg_plugin_conversation *context,
-        otr4_smp_event_t smp_event, double progress_level);
+        otrng_smp_event_t smp_event, double progress_level);
 
     void (*connected)(const otrg_plugin_conversation *conv);
 
@@ -153,7 +153,7 @@ void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
 	const char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(const otrg_plugin_conversation *context, otr4_smp_event_t smp_event,
+void otrg_dialog_update_smp(const otrg_plugin_conversation *context, otrng_smp_event_t smp_event,
 	double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */

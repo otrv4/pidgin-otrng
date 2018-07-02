@@ -352,10 +352,10 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     plugin_conv = smppair->conv;
 
     conv = otrg_plugin_conversation_to_purple_conv(plugin_conv, 1);
-    otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
+    otrng_conversation_t* otr_conv = purple_conversation_to_otrng_conversation(conv);
 
     if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
-        if (!otr4_conversation_is_encrypted(otr_conv))
+        if (!otrng_conversation_is_encrypted(otr_conv))
             return;
 
         if (start_or_continue_smp(smppair))
@@ -680,7 +680,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
     strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
+    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
         strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
@@ -1418,7 +1418,7 @@ static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprin
 
     strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otr4_client_t* client = otr4_client(fprint->protocol, fprint->account);
+    otrng_client_t* client = otrng_client(fprint->protocol, fprint->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
         strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
@@ -1480,7 +1480,7 @@ static void otrg_gtk_dialog_socialist_millionaires(const otrg_plugin_conversatio
  * protocol.  Progress_level is a percentage, from 0.0 (aborted) to
  * 1.0 (complete).  Any other value represents an intermediate state. */
 static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
-        otr4_smp_event_t smp_event, double progress_level)
+        otrng_smp_event_t smp_event, double progress_level)
 {
     PurpleConversation *conv = otrg_plugin_conversation_to_purple_conv(context, 0);
     GtkProgressBar *bar;
@@ -1780,9 +1780,9 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
     const PurpleConversation *conv = data;
 
-    otr4_conversation_t* otr_conv = purple_conversation_to_otr4_conversation(conv);
+    otrng_conversation_t* otr_conv = purple_conversation_to_otrng_conversation(conv);
 
-    if (!otr4_conversation_is_encrypted(otr_conv))
+    if (!otrng_conversation_is_encrypted(otr_conv))
 	return;
 
     otrg_plugin_conversation *plugin_conv = purple_conversation_to_plugin_conversation(conv);
@@ -2584,7 +2584,7 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv)
 
     list_iter = full_buddy_list;
 
-    //Here we know how many contexts (otr4_t*) exist for this conversation.
+    //Here we know how many contexts (otrng_t*) exist for this conversation.
     //This happens in libotr, I believe, because you can have multiple contexts
     //if they have different "their" instance tags.
 

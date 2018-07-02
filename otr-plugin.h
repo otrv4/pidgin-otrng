@@ -46,17 +46,17 @@
 
 extern PurplePlugin *otrg_plugin_handle;
 
-extern otr4_userstate_t *otr4_userstate;
+extern otrng_userstate_t *otrng_userstate;
 extern OtrlUserState otrg_plugin_userstate;
 
-otr4_client_t*
-otr4_client(const char *accountname, const char *protocol);
+otrng_client_t*
+otrng_client(const char *accountname, const char *protocol);
 
-otr4_client_t*
-purple_account_to_otr4_client(PurpleAccount *account);
+otrng_client_t*
+purple_account_to_otrng_client(PurpleAccount *account);
 
-otr4_conversation_t*
-purple_conversation_to_otr4_conversation(const PurpleConversation *conv);
+otrng_conversation_t*
+purple_conversation_to_otrng_conversation(const PurpleConversation *conv);
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
@@ -91,7 +91,7 @@ typedef struct {
 otrg_plugin_conversation*
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
-otr4_client_t *
+otrng_client_t *
 otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
 
 otrg_plugin_conversation*
@@ -178,7 +178,7 @@ typedef struct {
 //otrg_plugin_fingerprint*
 //otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
 
-otr4_conversation_t*
+otrng_conversation_t*
 otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f);
 
 GList *

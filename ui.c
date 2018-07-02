@@ -99,16 +99,16 @@ void otrg_ui_update_keylist(void)
 /* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 {
-    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
+    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 
-    otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
+    otrng_conversation_t *otr_conv = otrng_client_get_conversation(0,
         conv->peer, client);
 
     /* Don't do anything with fingerprints other than the active one
      * if we're in the ENCRYPTED state */
-    if (otr4_conversation_is_encrypted(otr_conv))
+    if (otrng_conversation_is_encrypted(otr_conv))
         otrg_plugin_disconnect(conv);
 }
 
@@ -118,11 +118,11 @@ void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint)
 {
     if (fingerprint == NULL) return;
 
-    otr4_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(fingerprint);
+    otrng_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(fingerprint);
 
     /* Don't do anything with the active fingerprint if we're in the
      * ENCRYPTED state. */
-    if (otr4_conversation_is_encrypted(otr_conv))
+    if (otrng_conversation_is_encrypted(otr_conv))
         return;
 
     otrg_plugin_fingerprint_forget(fingerprint->fp);

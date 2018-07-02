@@ -107,9 +107,9 @@
 
 PurplePlugin *otrg_plugin_handle;
 
-otr4_userstate_t *otr4_userstate = NULL;
+otrng_userstate_t *otrng_userstate = NULL;
 
-//TODO: REPLACE with otr4_userstate->userstate_v3
+//TODO: REPLACE with otrng_userstate->userstate_v3
 /* We'll only use the one OtrlUserState. */
 OtrlUserState otrg_plugin_userstate = NULL;
 
@@ -125,14 +125,14 @@ static void* protocol_and_account_to_purple_account(const char *protocol, const 
     return account;
 }
 
-otr4_client_t*
-otr4_client(const char *protocol, const char *accountname)
+otrng_client_t*
+otrng_client(const char *protocol, const char *accountname)
 {
     void *opdata = protocol_and_account_to_purple_account(protocol, accountname);
     if (!opdata)
         return NULL;
 
-    otr4_client_t *ret = otr4_messaging_client_get(otr4_userstate, opdata);
+    otrng_client_t *ret = otrng_messaging_client_get(otrng_userstate, opdata);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -143,10 +143,10 @@ otr4_client(const char *protocol, const char *accountname)
 }
 
 //TODO: REMOVE
-otr4_client_t*
-purple_account_to_otr4_client(PurpleAccount *account)
+otrng_client_t*
+purple_account_to_otrng_client(PurpleAccount *account)
 {
-    otr4_client_t *ret = otr4_messaging_client_get(otr4_userstate, account);
+    otrng_client_t *ret = otrng_messaging_client_get(otrng_userstate, account);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -156,8 +156,8 @@ purple_account_to_otr4_client(PurpleAccount *account)
     return ret;
 }
 
-otr4_conversation_t*
-purple_conversation_to_otr4_conversation(const PurpleConversation *conv)
+otrng_conversation_t*
+purple_conversation_to_otrng_conversation(const PurpleConversation *conv)
 {
     PurpleAccount *account = NULL;
     const char *recipient = NULL;
@@ -165,25 +165,25 @@ purple_conversation_to_otr4_conversation(const PurpleConversation *conv)
     account = purple_conversation_get_account(conv);
     recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
-    otr4_client_t *client = otr4_messaging_client_get(otr4_userstate, account);
+    otrng_client_t *client = otrng_messaging_client_get(otrng_userstate, account);
 
     //TODO: should we force creation here?
-    return otr4_client_get_conversation(0, recipient, client);
+    return otrng_client_get_conversation(0, recipient, client);
 }
 
-otr4_conversation_t*
+otrng_conversation_t*
 otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
 {
-    otr4_client_t *client = NULL;
+    otrng_client_t *client = NULL;
 
     if (!f)
         return NULL;
 
-    client = otr4_client(f->protocol, f->account);
+    client = otrng_client(f->protocol, f->account);
     if (!client)
         return NULL;
 
-    return otr4_client_get_conversation(0, f->username, client);
+    return otrng_client_get_conversation(0, f->username, client);
 }
 
 static void
@@ -228,14 +228,14 @@ protocol_and_account_to_purple_conversation(FILE *privf)
 
 static void
 otrg_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-    otr4_user_state_private_key_v4_read_FILEp(otr4_userstate, priv4,
+    otrng_user_state_private_key_v4_read_FILEp(otrng_userstate, priv4,
         protocol_and_account_to_purple_conversation);
-    otr4_user_state_private_key_v3_read_FILEp(otr4_userstate, priv3);
+    otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3);
 }
 
 static void
 otrg_plugin_read_instance_tags_FILEp(FILE *instagf) {
-    otr4_user_state_instance_tags_read_FILEp(otr4_userstate, instagf);
+    otrng_user_state_instance_tags_read_FILEp(otrng_userstate, instagf);
 }
 
 static void
@@ -413,7 +413,7 @@ static int otrg_plugin_write_privkey_v3_FILEp(PurpleAccount *account)
 	return -1;
     }
 
-    int err = otr4_user_state_private_key_v3_generate_FILEp(otr4_userstate, account, privf);
+    int err = otrng_user_state_private_key_v3_generate_FILEp(otrng_userstate, account, privf);
     fclose(privf);
 
     return err;
@@ -446,7 +446,7 @@ static int otrg_plugin_write_privkey_v4_FILEp(void)
 	return -1;
     }
 
-    int err = otr4_user_state_private_key_v4_write_FILEp(otr4_userstate, privf);
+    int err = otrng_user_state_private_key_v4_write_FILEp(otrng_userstate, privf);
     fclose(privf);
 
     return err;
@@ -461,7 +461,7 @@ void otrg_plugin_create_privkey(PurpleAccount *account)
 
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
-    int err = otr4_user_state_generate_private_key(otr4_userstate, account);
+    int err = otrng_user_state_generate_private_key(otrng_userstate, account);
     if (!err) {
         otrg_plugin_write_privkey_v4_FILEp();
         otrg_plugin_write_privkey_v3_FILEp(account);
@@ -895,8 +895,8 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
     instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
-    int err = otr4_client_send(&newmessage, *message, username,
-                                       purple_account_to_otr4_client(account));
+    int err = otrng_client_send(&newmessage, *message, username,
+                                       purple_account_to_otrng_client(account));
 
     //TODO: this message should be stored for retransmission
     if (err == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
@@ -926,13 +926,13 @@ static void process_sending_im(PurpleAccount *account, char *who,
 void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv)
 {
     //TODO: create and inject abort SMP message.
-    //otr4_client_adapter_smp_abort(&tosend, conv->peer, question, secret, secretlen, client);
+    //otrng_client_adapter_smp_abort(&tosend, conv->peer, question, secret, secretlen, client);
 }
 
 //TODO: REMOVE
-otr4_client_t* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
+otrng_client_t* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
 {
-    return otr4_client(conv->protocol, conv->account);
+    return otrng_client(conv->protocol, conv->account);
 }
 
 otrg_plugin_conversation *otrg_plugin_conversation_new(const char *account,
@@ -1003,12 +1003,12 @@ void otrg_plugin_start_smp(
 			   const unsigned char *secret, size_t secretlen
 			   )
 {
-    otr4_client_t *client = otrg_plugin_conversation_to_client(conv);
+    otrng_client_t *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
     char *tosend = NULL;
-    if (otr4_client_smp_start(&tosend, conv->peer, question, q_len, secret, secretlen, client))
+    if (otrng_client_smp_start(&tosend, conv->peer, question, q_len, secret, secretlen, client))
         return; //ERROR?
 
     PurpleConversation *purp_conv = NULL;
@@ -1025,12 +1025,12 @@ void otrg_plugin_start_smp(
 void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen)
 {
-    otr4_client_t *client = otrg_plugin_conversation_to_client(conv);
+    otrng_client_t *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
     char *tosend = NULL;
-    if (otr4_client_smp_respond(&tosend, conv->peer, secret, secretlen, client))
+    if (otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen, client))
         return; //ERROR?
 
     PurpleConversation *purp_conv = NULL;
@@ -1058,11 +1058,11 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     OtrgUiPrefs prefs;
     otrg_ui_get_prefs(&prefs, account, username);
 
-    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
+    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 
-    msg = otr4_client_query_message(conv->peer, "", client, prefs.policy);
+    msg = otrng_client_query_message(conv->peer, "", client, prefs.policy);
 
     otrg_plugin_inject_message(account, conv->peer,
 	     msg ? msg : "?OTRv34?");
@@ -1082,9 +1082,9 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     accountname = purple_account_get_username(account);
     username = purple_normalize(account, purple_conversation_get_name(conv));
 
-    otr4_client_t *client = purple_account_to_otr4_client(account);
+    otrng_client_t *client = purple_account_to_otrng_client(account);
     otrg_ui_get_prefs(&prefs, account, username);
-    msg = otr4_client_query_message(username, "", client, prefs.policy);
+    msg = otrng_client_query_message(username, "", client, prefs.policy);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
     free(msg);
 }
@@ -1108,9 +1108,9 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-    otr4_client_t *acc = purple_account_to_otr4_client(account);
+    otrng_client_t *acc = purple_account_to_otrng_client(account);
 
-    res = otr4_client_receive(&tosend, &todisplay, *message, username, acc);
+    res = otrng_client_receive(&tosend, &todisplay, *message, username, acc);
 
     // TODO: client might optionally pass a warning here
     if (res == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
@@ -1323,18 +1323,18 @@ void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
     char *msg = NULL;
     PurpleConversation *purp_conv = NULL;
     PurpleAccount *account = NULL;
-    otr4_client_t* client = NULL;
+    otrng_client_t* client = NULL;
 
     if (!conv) return;
 
-    client = otr4_client(conv->protocol, conv->account);
+    client = otrng_client(conv->protocol, conv->account);
     if (!client) return;
 
     purp_conv = otrg_plugin_userinfo_to_conv(conv->account, conv->protocol,
         conv->peer, 1);
     account = purple_conversation_get_account(purp_conv);
 
-    if (!otr4_client_disconnect(&msg, conv->peer, client))
+    if (!otrng_client_disconnect(&msg, conv->peer, client))
         otrg_plugin_inject_message(account, conv->peer, msg);
 
     free(msg);
@@ -1480,11 +1480,11 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
     if (!conv)
         return level;
 
-    otr4_client_t *client = otr4_client(conv->protocol, conv->account);
+    otrng_client_t *client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return level;
 
-    otr4_conversation_t *otr_conv = otr4_client_get_conversation(1,
+    otrng_conversation_t *otr_conv = otrng_client_get_conversation(1,
         conv->peer, client);
 
     if (!otr_conv)
@@ -1496,12 +1496,12 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
 
     otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
 
-    if (otr4_conversation_is_encrypted(otr_conv)) {
+    if (otrng_conversation_is_encrypted(otr_conv)) {
         if (fp->trusted)
 	    level = TRUST_PRIVATE;
         else
 	    level = TRUST_UNVERIFIED;
-    } else if (otr4_conversation_is_finished(otr_conv)) {
+    } else if (otrng_conversation_is_finished(otr_conv)) {
 	level = TRUST_FINISHED;
     }
 
@@ -1646,7 +1646,7 @@ static void otrg_free_mms_table()
 
 //TODO: May not be necessary. Remove.
 static otrg_plugin_conversation*
-client_conversation_to_plugin_conversation(const otr4_client_conversation_t *conv)
+client_conversation_to_plugin_conversation(const otrng_client_conversation_t *conv)
 {
     PurpleAccount *account = conv->client->client_id;
     if (!account)
@@ -1665,35 +1665,35 @@ static void create_privkey_v4(void *opdata)
     otrg_plugin_create_privkey(account);
 }
 
-static void gone_secure_v4(const otr4_client_conversation_t *cconv)
+static void gone_secure_v4(const otrng_client_conversation_t *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_conversation_connected(conv);
     otrg_plugin_conversation_free(conv);
 }
 
-static void gone_insecure_v4(const otr4_client_conversation_t *cconv)
+static void gone_insecure_v4(const otrng_client_conversation_t *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_conversation_disconnected(conv);
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otr4_client_conversation_t *cconv)
+static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otrng_client_conversation_t *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
     otrg_dialog_unknown_fingerprint(cconv->client->userstate, conv->account, conv->protocol, conv->peer, fp);
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_conversation_t *cconv)
+static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client_conversation_t *cconv)
 {
     //TODO: use fp to determine if you have seen this fp before
     //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
     char *buf;
     char fp_human[OTR4_FPRINT_HUMAN_LEN];
 
-    otr4_fingerprint_hash_to_human(fp_human, fp);
+    otrng_fingerprint_hash_to_human(fp_human, fp);
     if (otrg_plugin_fingerprint_get(fp_human))
         return;
 
@@ -1721,7 +1721,7 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otr4_client_
     g_free(buf);
 }
 
-static void smp_ask_for_secret_v4(const otr4_client_conversation_t *cconv)
+static void smp_ask_for_secret_v4(const otrng_client_conversation_t *cconv)
 {
     if (!cconv) return;
 
@@ -1730,7 +1730,7 @@ static void smp_ask_for_secret_v4(const otr4_client_conversation_t *cconv)
     otrg_plugin_conversation_free(conv);
 }
 
-static void smp_ask_for_answer_v4(const char *question, const otr4_client_conversation_t *cconv)
+static void smp_ask_for_answer_v4(const char *question, const otrng_client_conversation_t *cconv)
 {
     if (!cconv) return;
 
@@ -1739,7 +1739,7 @@ static void smp_ask_for_answer_v4(const char *question, const otr4_client_conver
     otrg_plugin_conversation_free(conv);
 }
 
-static void smp_update_v4(const otr4_smp_event_t event, const uint8_t progress_percent, const otr4_client_conversation_t *cconv)
+static void smp_update_v4(const otrng_smp_event_t event, const uint8_t progress_percent, const otrng_client_conversation_t *cconv)
 {
     if (!cconv) return;
 
@@ -1805,8 +1805,8 @@ otrg_plugin_init_userstate(void)
     g_free(storefile);
     g_free(instagfile);
 
-    otr4_userstate = otr4_user_state_new(&callbacks_v4);
-    otrg_plugin_userstate = otr4_userstate->userstate_v3;
+    otrng_userstate = otrng_user_state_new(&callbacks_v4);
+    otrg_plugin_userstate = otrng_userstate->userstate_v3;
 
     // Read V3 and V4 private keys from files
     otrg_plugin_read_private_keys(priv3f, privf);
@@ -1975,8 +1975,8 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     /* Stop the timer, if necessary */
     stop_start_timer(0);
 
-    otr4_user_state_free(otr4_userstate);
-    otr4_userstate = NULL;
+    otrng_user_state_free(otrng_userstate);
+    otrng_userstate = NULL;
     otrg_plugin_userstate = NULL;
 
     g_hash_table_remove_all(fingerprint_table);

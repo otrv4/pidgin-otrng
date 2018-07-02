@@ -94,7 +94,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     char *fingerprint;
 
     if (account) {
-        otr4_client_t* c = purple_account_to_otr4_client(account);
+        otrng_client_t* c = purple_account_to_otrng_client(account);
         fingerprint = otrv4_client_adapter_privkey_fingerprint(c);
 
 	if (fingerprint) {
@@ -246,17 +246,17 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
 	    row);
     //ConnContext *context_iter;
 
-    otr4_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(f);
+    otrng_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(f);
 
     if (f && otr_conv) {
 	verify_sensitive = 1;
 	forget_sensitive = 1;
 
         //TODO: and this is the active fingerprint
-        if (otr4_conversation_is_encrypted(otr_conv)) {
+        if (otrng_conversation_is_encrypted(otr_conv)) {
             disconnect_sensitive = 1;
             forget_sensitive = 0;
-        } else if (otr4_conversation_is_finished(otr_conv)) {
+        } else if (otrng_conversation_is_finished(otr_conv)) {
             disconnect_sensitive = 1;
             connect_sensitive = 1;
         } else {
@@ -362,15 +362,15 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
 static void connect_connection_ui(otrg_plugin_conversation *conv)
 {
     /* Send an OTR Query to the other side. */
-    otr4_client_t* client = otr4_client(conv->protocol, conv->account);
+    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 
-    otr4_conversation_t *otr_conv = otr4_client_get_conversation(0,
+    otrng_conversation_t *otr_conv = otrng_client_get_conversation(0,
         conv->peer, client);
     
     /* Don't do this if we're already ENCRYPTED */
-    if (otr4_conversation_is_encrypted(otr_conv))
+    if (otrng_conversation_is_encrypted(otr_conv))
         return;
 
     otrg_plugin_send_default_query(conv);
