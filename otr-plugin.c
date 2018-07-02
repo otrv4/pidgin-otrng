@@ -464,6 +464,14 @@ void otrg_plugin_create_privkey(PurpleAccount *account) {
   otrg_dialog_private_key_wait_done(waithandle);
 }
 
+void otrg_plugin_create_shared_prekey(PurpleAccount *account) {
+  int err = otrng_user_state_generate_shared_prekey(otrng_userstate, account);
+  if (!err) {
+    //TODO: SAVE to a file
+    //otrg_ui_update_fingerprint(); // Update the fingerprints VIEW
+  }
+}
+
 /* Generate a instance tag for the given accountname/protocol */
 void otrg_plugin_create_instag(const char *accountname, const char *protocol) {
   FILE *instagf;
@@ -1674,6 +1682,12 @@ static void create_privkey_v4(const void *opdata) {
   otrg_plugin_create_privkey(account);
 }
 
+static void create_shared_prekey_v4(const otrng_client_conversation_s *conv) {
+  // TODO: This discards const qualifier
+  PurpleAccount *account = (PurpleAccount *)conv->client->client_id;
+  otrg_plugin_create_shared_prekey(account);
+}
+
 static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
   otrg_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
@@ -1794,7 +1808,7 @@ static void smp_update_v4(const otrng_smp_event_t event,
 otrng_client_callbacks_s callbacks_v4 = {
     // TODO: otrg_plugin_create_instag,
     create_privkey_v4,
-    NULL, // TODO: create_sared_prekey
+    create_shared_prekey_v4,
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
