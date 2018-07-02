@@ -3,7 +3,6 @@
 
 #include <libotr-ng/client.h>
 
-char*
-otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client);
+char *otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client);
 
 #endif

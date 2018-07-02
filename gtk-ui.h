@@ -23,7 +23,7 @@
 #define __OTRG_GTK_UI_H__
 
 /* Construct the GTK OTR UI widget */
-GtkWidget* otrg_gtk_ui_make_widget(PurplePlugin *plugin);
+GtkWidget *otrg_gtk_ui_make_widget(PurplePlugin *plugin);
 
 /* Get the GTK UI ops */
 const OtrgUiUiOps *otrg_gtk_ui_get_ui_ops(void);

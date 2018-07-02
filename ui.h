@@ -23,28 +23,29 @@
 #define __OTRG_UI_H__
 
 #include <libotr/context.h>
+
 #include "otr-plugin.h"
 
 /* Global and per-buddy preferences */
 typedef struct {
-    OtrlPolicy policy;
-    gboolean avoid_logging_otr;
-    gboolean show_otr_button;
+  OtrlPolicy policy;
+  gboolean avoid_logging_otr;
+  gboolean show_otr_button;
 } OtrgUiPrefs;
 
 typedef struct {
-    void (*init)(void);
+  void (*init)(void);
 
-    void (*cleanup)(void);
+  void (*cleanup)(void);
 
-    void (*update_fingerprint)(void);
+  void (*update_fingerprint)(void);
 
-    void (*update_keylist)(void);
+  void (*update_keylist)(void);
 
-    void (*config_buddy)(PurpleBuddy *buddy);
+  void (*config_buddy)(PurpleBuddy *buddy);
 
-    void (*get_prefs)(OtrgUiPrefs *prefsp, PurpleAccount *account,
-	    const char *name);
+  void (*get_prefs)(OtrgUiPrefs *prefsp, PurpleAccount *account,
+                    const char *name);
 } OtrgUiUiOps;
 
 /* Set the UI ops */
@@ -80,6 +81,6 @@ void otrg_ui_config_buddy(PurpleBuddy *buddy);
 
 /* Load the preferences for a particular account / username */
 void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
-	const char *name);
+                       const char *name);
 
 #endif

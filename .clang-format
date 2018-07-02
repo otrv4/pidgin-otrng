@@ -1,0 +1,141 @@
+---
+# C Language Specifics
+Language:        Cpp
+# BasedOnStyle:  LLVM
+
+AccessModifierOffset: -2
+TabWidth:        8
+UseTab:          Never
+ContinuationIndentWidth: 4
+IndentCaseLabels: false
+IndentWidth:     2
+IndentWrappedFunctionNames: false
+ColumnLimit:     80
+
+# Align parameters on the open bracket
+AlignAfterOpenBracket: Align
+
+# Don't align consecutive assignments
+AlignConsecutiveAssignments: false
+
+# Don't align consecutive declarations
+AlignConsecutiveDeclarations: false
+
+# Align escaped newlines as far left as possible
+AlignEscapedNewlinesLeft: false
+
+# Align operands of binary and ternary expressions
+AlignOperands:   true
+
+# Align trailing comments
+AlignTrailingComments: true
+
+# Allow putting parameters onto the next line
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# Don't allow short braced statements to be on a single line
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# Don't add a line break after the return type of functions
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: false
+
+# Pack as many parameters or arguments in the same line as possible
+BinPackArguments: true
+BinPackParameters: true
+BraceWrapping:
+  AfterClass:      false
+  AfterControlStatement: false
+  AfterEnum:       false
+  AfterFunction:   false
+  AfterNamespace:  false
+  AfterObjCDeclaration: false
+  AfterStruct:     false
+  AfterUnion:      false
+  BeforeCatch:     false
+  BeforeElse:      false
+  IndentBraces:    false
+
+# Break after operators
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: false
+BreakBeforeBraces: Attach
+
+# Break after operators
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: false
+CommentPragmas:  '^ IWYU pragma:'
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerIndentWidth: 4
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+DisableFormat:   false
+ExperimentalAutoDetectBinPacking: false
+
+# A list of macros that should be interpreted as foreach loops
+ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
+IncludeCategories:
+  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority:        2
+  - Regex:           '^(<|"(gtest|isl|json)/)'
+    Priority:        3
+  - Regex:           '.*'
+    Priority:        1
+KeepEmptyLinesAtTheStartOfBlocks: true
+MacroBlockBegin: ''
+MacroBlockEnd:   ''
+
+# The maximum number of consecutive empty lines
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+ObjCBlockIndentWidth: 2
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+
+# Align pointer to the right
+PointerAlignment: Right
+ReflowComments:  true
+
+# Don't sort #include's
+SortIncludes:    true
+
+# Don't insert a space after a cast
+SpaceAfterCStyleCast: false
+
+# Insert spaces before and after assignment operators
+SpaceBeforeAssignmentOperators: true
+
+# Put a space before opening parentheses only after control statements
+SpaceBeforeParens: ControlStatements
+
+# Don't insert spaces inside empty '()'
+SpaceInEmptyParentheses: false
+
+# The number of spaces before trailing line comments
+SpacesBeforeTrailingComments: 1
+SpacesInAngles:  false
+
+# Don't insert spaces inside container literals
+SpacesInContainerLiterals: true
+
+# Don't insert spaces in casts
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+
+# Don't insert spaces after '[' or before ']'
+SpacesInSquareBrackets: false
+Standard:        Cpp11
+...
+

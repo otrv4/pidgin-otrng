@@ -23,206 +23,164 @@
 #include "config.h"
 #endif
 
+#include "dialogs.h"
+
 /* system headers */
 #include <stdlib.h>
-
-/* pidgin headers */
-#include "notify.h"
-
-/* libotr headers */
-#include <libotr/proto.h>
-#include <libotr/message.h>
-
-/* pidgin-otr headers */
-#include "dialogs.h"
-#include "otr-plugin.h"
 
 static const OtrgDialogUiOps *ui_ops = NULL;
 
 /* Set the UI ops */
-void otrg_dialog_set_ui_ops(const OtrgDialogUiOps *ops)
-{
-    ui_ops = ops;
-}
+void otrg_dialog_set_ui_ops(const OtrgDialogUiOps *ops) { ui_ops = ops; }
 
 /* Get the UI ops */
-const OtrgDialogUiOps *otrg_dialog_get_ui_ops(void)
-{
-    return ui_ops;
-}
+const OtrgDialogUiOps *otrg_dialog_get_ui_ops(void) { return ui_ops; }
 
 /* Initialize the OTR dialog subsystem */
-void otrg_dialog_init(void)
-{
-    ui_ops->init();
-}
+void otrg_dialog_init(void) { ui_ops->init(); }
 
 /* Deinitialize the OTR dialog subsystem */
-void otrg_dialog_cleanup(void)
-{
-    ui_ops->cleanup();
-}
+void otrg_dialog_cleanup(void) { ui_ops->cleanup(); }
 
 /* This is just like pidgin_notify_message, except: (a) it doesn't grab
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
 void otrg_dialog_notify_message(PurpleNotifyMsgType type,
-	const char *accountname, const char *protocol, const char *username,
-	const char *title, const char *primary, const char *secondary)
-{
-    ui_ops->notify_message(type, accountname, protocol, username,
-	    title, primary, secondary);
+                                const char *accountname, const char *protocol,
+                                const char *username, const char *title,
+                                const char *primary, const char *secondary) {
+  ui_ops->notify_message(type, accountname, protocol, username, title, primary,
+                         secondary);
 }
 
 /* Put up the error version of otrg_dialog_notify_message */
 void otrg_dialog_notify_error(const char *accountname, const char *protocol,
-	const char *username, const char *title, const char *primary,
-	const char *secondary)
-{
-    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_ERROR, accountname,
-	    protocol, username, title, primary, secondary);
+                              const char *username, const char *title,
+                              const char *primary, const char *secondary) {
+  otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_ERROR, accountname, protocol,
+                             username, title, primary, secondary);
 }
 
 /* Put up the warning version of otrg_dialog_notify_message */
 void otrg_dialog_notify_warning(const char *accountname, const char *protocol,
-	const char *username, const char *title, const char *primary,
-	const char *secondary)
-{
-    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_WARNING, accountname,
-	    protocol, username, title, primary, secondary);
+                                const char *username, const char *title,
+                                const char *primary, const char *secondary) {
+  otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_WARNING, accountname, protocol,
+                             username, title, primary, secondary);
 }
 
 /* Put up the info version of otrg_dialog_notify_message */
 void otrg_dialog_notify_info(const char *accountname, const char *protocol,
-	const char *username, const char *title, const char *primary,
-	const char *secondary)
-{
-    otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_INFO, accountname,
-	    protocol, username, title, primary, secondary);
+                             const char *username, const char *title,
+                             const char *primary, const char *secondary) {
+  otrg_dialog_notify_message(PURPLE_NOTIFY_MSG_INFO, accountname, protocol,
+                             username, title, primary, secondary);
 }
 
 /* Display an OTR control message for the given accountname / protocol /
  * username conversation.  Return 0 on success, non-0 on error (in which
  * case the message will be displayed inline as a received message). */
-int otrg_dialog_display_otr_message( const char *accountname,
-	const char *protocol, const char *username, const char *msg,
-	int force_create)
-{
-    return ui_ops->display_otr_message(accountname, protocol, username, msg,
-	    force_create);
+int otrg_dialog_display_otr_message(const char *accountname,
+                                    const char *protocol, const char *username,
+                                    const char *msg, int force_create) {
+  return ui_ops->display_otr_message(accountname, protocol, username, msg,
+                                     force_create);
 }
 
 /* Put up a Please Wait dialog.  This dialog can not be cancelled.
  * Return a handle that must eventually be passed to
  * otrg_dialog_private_key_wait_done. */
 OtrgDialogWaitHandle otrg_dialog_private_key_wait_start(const char *account,
-	const char *protocol)
-{
-    return ui_ops->private_key_wait_start(account, protocol);
+                                                        const char *protocol) {
+  return ui_ops->private_key_wait_start(account, protocol);
 }
 
 /* End a Please Wait dialog. */
-void otrg_dialog_private_key_wait_done(OtrgDialogWaitHandle handle)
-{
-    ui_ops->private_key_wait_done(handle);
+void otrg_dialog_private_key_wait_done(OtrgDialogWaitHandle handle) {
+  ui_ops->private_key_wait_done(handle);
 }
 
 /* Show a dialog informing the user that a correspondent (who) has sent
  * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-	const char *protocol, const char *who, const unsigned char fingerprint[20])
-{
-    ui_ops->unknown_fingerprint(us, accountname, protocol, who, fingerprint);
+                                     const char *protocol, const char *who,
+                                     const unsigned char fingerprint[20]) {
+  ui_ops->unknown_fingerprint(us, accountname, protocol, who, fingerprint);
 }
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint)
-{
-    ui_ops->verify_fingerprint(fprint);
+void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint) {
+  ui_ops->verify_fingerprint(fprint);
 }
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv)
-{
-    ui_ops->socialist_millionaires(conv, NULL, TRUE);
+void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv) {
+  ui_ops->socialist_millionaires(conv, NULL, TRUE);
 }
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
 void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
-	const char *question)
-{
-    ui_ops->socialist_millionaires(conv, question, TRUE);
+                                          const char *question) {
+  ui_ops->socialist_millionaires(conv, question, TRUE);
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(const otrg_plugin_conversation *context, otrng_smp_event_t smp_event,
-	double progress_level)
-{
-    ui_ops->update_smp(context, smp_event, progress_level);
+void otrg_dialog_update_smp(const otrg_plugin_conversation *context,
+                            otrng_smp_event_t smp_event,
+                            double progress_level) {
+  ui_ops->update_smp(context, smp_event, progress_level);
 }
 
-void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv)
-{
-    ui_ops->connected(conv);
+void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv) {
+  ui_ops->connected(conv);
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
-void otrg_dialog_connected(ConnContext *context)
-{
-    otrg_plugin_conversation conv;
-    conv.account = context->accountname;
-    conv.protocol = context->protocol;
-    conv.peer = context->username;
-    otrg_dialog_conversation_connected(&conv);
+void otrg_dialog_connected(ConnContext *context) {
+  otrg_plugin_conversation conv;
+  conv.account = context->accountname;
+  conv.protocol = context->protocol;
+  conv.peer = context->username;
+  otrg_dialog_conversation_connected(&conv);
 }
 
-void otrg_dialog_conversation_disconnected(const otrg_plugin_conversation *conv)
-{
-    ui_ops->disconnected(conv);
+void otrg_dialog_conversation_disconnected(
+    const otrg_plugin_conversation *conv) {
+  ui_ops->disconnected(conv);
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
-void otrg_dialog_disconnected(ConnContext *context)
-{
-    otrg_plugin_conversation conv;
-    conv.account = context->accountname;
-    conv.protocol = context->protocol;
-    conv.peer = context->username;
+void otrg_dialog_disconnected(ConnContext *context) {
+  otrg_plugin_conversation conv;
+  conv.account = context->accountname;
+  conv.protocol = context->protocol;
+  conv.peer = context->username;
 
-    otrg_dialog_conversation_disconnected(&conv);
+  otrg_dialog_conversation_disconnected(&conv);
 }
 
 /* Call this when we receive a Key Exchange message that doesn't cause
  * our state to change (because it was just the keys we knew already). */
-void otrg_dialog_stillconnected(ConnContext *context)
-{
-    ui_ops->stillconnected(context);
+void otrg_dialog_stillconnected(ConnContext *context) {
+  ui_ops->stillconnected(context);
 }
 
 /* Call this if the remote user terminates his end of an ENCRYPTED
  * connection, and lets us know. */
 void otrg_dialog_finished(const char *accountname, const char *protocol,
-	const char *username)
-{
-    ui_ops->finished(accountname, protocol, username);
+                          const char *username) {
+  ui_ops->finished(accountname, protocol, username);
 }
 
 /* Set all OTR buttons to "sensitive" or "insensitive" as appropriate.
  * Call this when accounts are logged in or out. */
-void otrg_dialog_resensitize_all(void)
-{
-    ui_ops->resensitize_all();
-}
+void otrg_dialog_resensitize_all(void) { ui_ops->resensitize_all(); }
 
 /* Set up the per-conversation information display */
-void otrg_dialog_new_conv(PurpleConversation *conv)
-{
-    ui_ops->new_conv(conv);
-}
+void otrg_dialog_new_conv(PurpleConversation *conv) { ui_ops->new_conv(conv); }
 
 /* Remove the per-conversation information display */
-void otrg_dialog_remove_conv(PurpleConversation *conv)
-{
-    ui_ops->remove_conv(conv);
+void otrg_dialog_remove_conv(PurpleConversation *conv) {
+  ui_ops->remove_conv(conv);
 }

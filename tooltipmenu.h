@@ -37,7 +37,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301 USA
  */
 #ifndef TOOLTIP_MENU_H
 #define TOOLTIP_MENU_H
@@ -46,24 +46,28 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtktooltips.h>
 
-#define TYPE_TOOLTIP_MENU                           (tooltip_menu_get_gtype())
-#define TOOLTIP_MENU(obj)                           (GTK_CHECK_CAST((obj), TYPE_TOOLTIP_MENU, TooltipMenu))
-#define TOOLTIP_MENU_CLASS(klass)           (GTK_CHECK_CLASS_CAST((klass), TYPE_TOOLTIP_MENU, TooltipMenuClass))
-#define IS_TOOLTIP_MENU(obj)                        (GTK_CHECK_TYPE((obj), TYPE_TOOLTIP_MENU))
-#define IS_TOOLTIP_MENU_CLASS(klass)        (GTK_CHECK_CLASS_TYPE((klass), TYPE_TOOLTIP_MENU))
-#define TOOLTIP_MENU_GET_CLASS(obj) (GTK_CHECK_GET_CLASS((obj), TYPE_TOOLTIP_MENU, TooltipMenuClass))
+#define TYPE_TOOLTIP_MENU (tooltip_menu_get_gtype())
+#define TOOLTIP_MENU(obj)                                                      \
+  (GTK_CHECK_CAST((obj), TYPE_TOOLTIP_MENU, TooltipMenu))
+#define TOOLTIP_MENU_CLASS(klass)                                              \
+  (GTK_CHECK_CLASS_CAST((klass), TYPE_TOOLTIP_MENU, TooltipMenuClass))
+#define IS_TOOLTIP_MENU(obj) (GTK_CHECK_TYPE((obj), TYPE_TOOLTIP_MENU))
+#define IS_TOOLTIP_MENU_CLASS(klass)                                           \
+  (GTK_CHECK_CLASS_TYPE((klass), TYPE_TOOLTIP_MENU))
+#define TOOLTIP_MENU_GET_CLASS(obj)                                            \
+  (GTK_CHECK_GET_CLASS((obj), TYPE_TOOLTIP_MENU, TooltipMenuClass))
 
-typedef struct _TooltipMenu                          TooltipMenu;
-typedef struct _TooltipMenuClass             TooltipMenuClass;
+typedef struct _TooltipMenu TooltipMenu;
+typedef struct _TooltipMenuClass TooltipMenuClass;
 
 struct _TooltipMenu {
-	GtkMenuItem gparent;                                    /**< The parent instance */
-	GtkWidget *tray;                                                /**< The tray */
-	GtkTooltips *tooltips;                                  /**< Tooltips */
+  GtkMenuItem gparent;   /**< The parent instance */
+  GtkWidget *tray;       /**< The tray */
+  GtkTooltips *tooltips; /**< Tooltips */
 };
 
 struct _TooltipMenuClass {
-	GtkMenuItemClass gparent;                               /**< The parent class */
+  GtkMenuItemClass gparent; /**< The parent class */
 };
 
 G_BEGIN_DECLS
@@ -97,27 +101,33 @@ GtkWidget *tooltip_menu_get_box(TooltipMenu *tooltip_menu);
  *
  * @param tooltip_menu The tray
  * @param widget    The widget
- * @param tooltip   The tooltip for this widget (widget requires its own X-window)
+ * @param tooltip   The tooltip for this widget (widget requires its own
+ * X-window)
  */
-void tooltip_menu_append(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip);
+void tooltip_menu_append(TooltipMenu *tooltip_menu, GtkWidget *widget,
+                         const char *tooltip);
 
 /**
  * Prepends a widget into the tray
  *
  * @param tooltip_menu The tray
  * @param widget    The widget
- * @param tooltip   The tooltip for this widget (widget requires its own X-window)
+ * @param tooltip   The tooltip for this widget (widget requires its own
+ * X-window)
  */
-void tooltip_menu_prepend(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip);
+void tooltip_menu_prepend(TooltipMenu *tooltip_menu, GtkWidget *widget,
+                          const char *tooltip);
 
 /**
  * Set the tooltip for a widget
  *
  * @param tooltip_menu The tray
  * @param widget    The widget
- * @param tooltip   The tooltip to set for the widget (widget requires its own X-window)
+ * @param tooltip   The tooltip to set for the widget (widget requires its own
+ * X-window)
  */
-void tooltip_menu_set_tooltip(TooltipMenu *tooltip_menu, GtkWidget *widget, const char *tooltip);
+void tooltip_menu_set_tooltip(TooltipMenu *tooltip_menu, GtkWidget *widget,
+                              const char *tooltip);
 
 G_END_DECLS
 
