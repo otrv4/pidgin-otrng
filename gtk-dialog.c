@@ -680,7 +680,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
     strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
+    otrng_client_s* client = otrng_client(conv->protocol, conv->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
         strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
@@ -1418,7 +1418,7 @@ static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprin
 
     strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
 
-    otrng_client_t* client = otrng_client(fprint->protocol, fprint->account);
+    otrng_client_s* client = otrng_client(fprint->protocol, fprint->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
         strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);

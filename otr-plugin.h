@@ -49,10 +49,10 @@ extern PurplePlugin *otrg_plugin_handle;
 extern otrng_userstate_t *otrng_userstate;
 extern OtrlUserState otrg_plugin_userstate;
 
-otrng_client_t*
+otrng_client_s*
 otrng_client(const char *accountname, const char *protocol);
 
-otrng_client_t*
+otrng_client_s*
 purple_account_to_otrng_client(PurpleAccount *account);
 
 otrng_conversation_t*
@@ -91,7 +91,7 @@ typedef struct {
 otrg_plugin_conversation*
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
-otrng_client_t *
+otrng_client_s *
 otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
 
 otrg_plugin_conversation*

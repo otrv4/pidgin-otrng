@@ -94,7 +94,7 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
     char *fingerprint;
 
     if (account) {
-        otrng_client_t* c = purple_account_to_otrng_client(account);
+        otrng_client_s* c = purple_account_to_otrng_client(account);
         fingerprint = otrv4_client_adapter_privkey_fingerprint(c);
 
 	if (fingerprint) {
@@ -362,7 +362,7 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data)
 static void connect_connection_ui(otrg_plugin_conversation *conv)
 {
     /* Send an OTR Query to the other side. */
-    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
+    otrng_client_s* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 

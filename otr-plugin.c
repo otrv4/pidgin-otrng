@@ -125,14 +125,14 @@ static void* protocol_and_account_to_purple_account(const char *protocol, const 
     return account;
 }
 
-otrng_client_t*
+otrng_client_s*
 otrng_client(const char *protocol, const char *accountname)
 {
     void *opdata = protocol_and_account_to_purple_account(protocol, accountname);
     if (!opdata)
         return NULL;
 
-    otrng_client_t *ret = otrng_messaging_client_get(otrng_userstate, opdata);
+    otrng_client_s *ret = otrng_messaging_client_get(otrng_userstate, opdata);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -143,10 +143,10 @@ otrng_client(const char *protocol, const char *accountname)
 }
 
 //TODO: REMOVE
-otrng_client_t*
+otrng_client_s*
 purple_account_to_otrng_client(PurpleAccount *account)
 {
-    otrng_client_t *ret = otrng_messaging_client_get(otrng_userstate, account);
+    otrng_client_s *ret = otrng_messaging_client_get(otrng_userstate, account);
 
     //TODO: Replace by a callback. This is only necessary because libotr3 api
     //use this all over, and we use libotr userstate.
@@ -165,7 +165,7 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv)
     account = purple_conversation_get_account(conv);
     recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
-    otrng_client_t *client = otrng_messaging_client_get(otrng_userstate, account);
+    otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
 
     //TODO: should we force creation here?
     return otrng_client_get_conversation(0, recipient, client);
@@ -174,7 +174,7 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv)
 otrng_conversation_t*
 otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
 {
-    otrng_client_t *client = NULL;
+    otrng_client_s *client = NULL;
 
     if (!f)
         return NULL;
@@ -930,7 +930,7 @@ void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv)
 }
 
 //TODO: REMOVE
-otrng_client_t* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
+otrng_client_s* otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv)
 {
     return otrng_client(conv->protocol, conv->account);
 }
@@ -1003,7 +1003,7 @@ void otrg_plugin_start_smp(
 			   const unsigned char *secret, size_t secretlen
 			   )
 {
-    otrng_client_t *client = otrg_plugin_conversation_to_client(conv);
+    otrng_client_s *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
@@ -1025,7 +1025,7 @@ void otrg_plugin_start_smp(
 void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
 	const unsigned char *secret, size_t secretlen)
 {
-    otrng_client_t *client = otrg_plugin_conversation_to_client(conv);
+    otrng_client_s *client = otrg_plugin_conversation_to_client(conv);
     if (!client)
         return;
 
@@ -1058,7 +1058,7 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     OtrgUiPrefs prefs;
     otrg_ui_get_prefs(&prefs, account, username);
 
-    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
+    otrng_client_s* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 
@@ -1082,7 +1082,7 @@ void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
     accountname = purple_account_get_username(account);
     username = purple_normalize(account, purple_conversation_get_name(conv));
 
-    otrng_client_t *client = purple_account_to_otrng_client(account);
+    otrng_client_s *client = purple_account_to_otrng_client(account);
     otrg_ui_get_prefs(&prefs, account, username);
     msg = otrng_client_query_message(username, "", client, prefs.policy);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
@@ -1108,7 +1108,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     accountname = purple_account_get_username(account);
     protocol = purple_account_get_protocol_id(account);
 
-    otrng_client_t *acc = purple_account_to_otrng_client(account);
+    otrng_client_s *acc = purple_account_to_otrng_client(account);
 
     res = otrng_client_receive(&tosend, &todisplay, *message, username, acc);
 
@@ -1323,7 +1323,7 @@ void otrg_plugin_disconnect(otrg_plugin_conversation *conv)
     char *msg = NULL;
     PurpleConversation *purp_conv = NULL;
     PurpleAccount *account = NULL;
-    otrng_client_t* client = NULL;
+    otrng_client_s* client = NULL;
 
     if (!conv) return;
 
@@ -1480,7 +1480,7 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
     if (!conv)
         return level;
 
-    otrng_client_t *client = otrng_client(conv->protocol, conv->account);
+    otrng_client_s *client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return level;
 

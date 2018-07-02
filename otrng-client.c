@@ -5,7 +5,7 @@
 #include "otrng-client.h"
 
 char*
-otrv4_client_adapter_privkey_fingerprint(const otrng_client_t *client)
+otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client)
 {
     char *ret = NULL;
 

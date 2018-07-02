@@ -99,7 +99,7 @@ void otrg_ui_update_keylist(void)
 /* Drop a context to PLAINTEXT state */
 void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv)
 {
-    otrng_client_t* client = otrng_client(conv->protocol, conv->account);
+    otrng_client_s* client = otrng_client(conv->protocol, conv->account);
     if (!client)
         return;
 
