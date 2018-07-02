@@ -55,7 +55,7 @@ otrng_client(const char *accountname, const char *protocol);
 otrng_client_s*
 purple_account_to_otrng_client(PurpleAccount *account);
 
-otrng_conversation_t*
+otrng_conversation_s*
 purple_conversation_to_otrng_conversation(const PurpleConversation *conv);
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
@@ -178,7 +178,7 @@ typedef struct {
 //otrg_plugin_fingerprint*
 //otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN]);
 
-otrng_conversation_t*
+otrng_conversation_s*
 otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f);
 
 GList *
