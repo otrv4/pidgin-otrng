@@ -2061,7 +2061,7 @@ static PurplePluginInfo info = {
     0,                       /* flags          */
     NULL,                    /* dependencies   */
     PURPLE_PRIORITY_DEFAULT, /* priority       */
-    "otr4",                  /* id             */
+    "otrng",                  /* id             */
     NULL,                    /* name           */
     PIDGIN_OTR_VERSION,      /* version        */
     NULL,                    /* summary        */
@@ -2102,11 +2102,11 @@ static void __init_plugin(PurplePlugin *plugin) {
   bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 #endif
 
-  info.name = _("Off-the-Record Messaging");
+  info.name = _("Off-the-Record Messaging nextgen");
   info.summary = _("Provides private and secure conversations");
   info.description = _("Preserves the privacy of IM communications "
                        "by providing encryption, authentication, "
                        "deniability, and perfect forward secrecy.");
 }
 
-PURPLE_INIT_PLUGIN(otr4, __init_plugin, info)
+PURPLE_INIT_PLUGIN(otrng, __init_plugin, info)
