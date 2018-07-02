@@ -899,7 +899,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
                                        purple_account_to_otrng_client(account));
 
     //TODO: this message should be stored for retransmission
-    if (err == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
+    if (err == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
         return;
     }
 
@@ -1113,7 +1113,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     res = otrng_client_receive(&tosend, &todisplay, *message, username, acc);
 
     // TODO: client might optionally pass a warning here
-    if (res == OTR4_CLIENT_ERROR_NOT_ENCRYPTED) {
+    if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
         return 1;
     }
 
@@ -1491,8 +1491,8 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
         return level;
 
     //Use OTR3 if available
-    if (otr_conv->conn->running_version == OTRV4_VERSION_3)
-        return otrg_plugin_context_to_trust(otr_conv->conn->otr3_conn->ctx);
+    if (otr_conv->conn->running_version == 3)
+        return otrg_plugin_context_to_trust(otr_conv->conn->v3_conn->ctx);
 
     otrg_plugin_fingerprint *fp = otrg_plugin_fingerprint_get_active(conv->peer);
 
@@ -1679,14 +1679,14 @@ static void gone_insecure_v4(const otrng_client_conversation_s *cconv)
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v3(const otrv3_fingerprint_t fp, const otrng_client_conversation_s *cconv)
+static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp, const otrng_client_conversation_s *cconv)
 {
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
-    otrg_dialog_unknown_fingerprint(cconv->client->userstate, conv->account, conv->protocol, conv->peer, fp);
+    otrg_dialog_unknown_fingerprint(cconv->client->user_state, conv->account, conv->protocol, conv->peer, fp);
     otrg_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client_conversation_s *cconv)
+static void fingerprint_seen_v4(const otrng_fingerprint_p fp, const otrng_client_conversation_s *cconv)
 {
     //TODO: use fp to determine if you have seen this fp before
     //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
@@ -1746,15 +1746,15 @@ static void smp_update_v4(const otrng_smp_event_t event, const uint8_t progress_
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
 
     switch (event) {
-	case OTRV4_SMPEVENT_CHEATED :
-	case OTRV4_SMPEVENT_ERROR :
-	    otrg_plugin_abort_smp(conv);
-	case OTRV4_SMPEVENT_ABORT :
+	case OTRNG_SMP_EVENT_CHEATED :
+	case OTRNG_SMP_EVENT_ERROR :
+	    otrg_plugin_abort_smp(conv); // fallthrough intended
+	case OTRNG_SMP_EVENT_ABORT :
 	    otrg_dialog_update_smp(conv, event, 0);
 	    break;
-	case OTRV4_SMPEVENT_IN_PROGRESS :
-	case OTRV4_SMPEVENT_SUCCESS :
-	case OTRV4_SMPEVENT_FAILURE :
+	case OTRNG_SMP_EVENT_IN_PROGRESS :
+	case OTRNG_SMP_EVENT_SUCCESS :
+	case OTRNG_SMP_EVENT_FAILURE :
 	    otrg_dialog_update_smp(conv, event, ((gdouble)progress_percent)/100.0);
             break;
         default:
@@ -1765,9 +1765,10 @@ static void smp_update_v4(const otrng_smp_event_t event, const uint8_t progress_
     otrg_plugin_conversation_free(conv);
 }
 
-otrv4_client_callbacks_t callbacks_v4 = {
+otrng_client_callbacks_s callbacks_v4 = {
     //TODO: otrg_plugin_create_instag,
     create_privkey_v4,
+    NULL, // TODO: create_sared_prekey
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
@@ -1775,6 +1776,8 @@ otrv4_client_callbacks_t callbacks_v4 = {
     smp_ask_for_secret_v4,
     smp_ask_for_answer_v4,
     smp_update_v4,
+    NULL, //TODO: received_extra_symm_key
+    NULL, //TODO: get_shared_session_state
 };
 
 static int
@@ -1806,7 +1809,7 @@ otrg_plugin_init_userstate(void)
     g_free(instagfile);
 
     otrng_userstate = otrng_user_state_new(&callbacks_v4);
-    otrg_plugin_userstate = otrng_userstate->userstate_v3;
+    otrg_plugin_userstate = otrng_userstate->user_state_v3;
 
     // Read V3 and V4 private keys from files
     otrg_plugin_read_private_keys(priv3f, privf);
@@ -2066,7 +2069,7 @@ __init_plugin(PurplePlugin *plugin)
 #endif
 
     /* Initialize the OTR library */
-    OTR4_INIT;
+    OTRNG_INIT;
 
 #ifdef ENABLE_NLS
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);

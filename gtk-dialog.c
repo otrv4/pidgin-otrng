@@ -1512,7 +1512,7 @@ static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
 	gtk_dialog_set_default_response(GTK_DIALOG(dialog),
 		GTK_RESPONSE_ACCEPT);
 
-	if (smp_event == OTRV4_SMPEVENT_SUCCESS) {
+	if (smp_event == OTRNG_SMP_EVENT_SUCCESS) {
             //TODO: This is how it used to behave:
             //- It expects the libotr to set trust on on the fingerprint.
             //- It expects both parties to run different SMPs to authenticate
