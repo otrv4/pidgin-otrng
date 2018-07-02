@@ -246,7 +246,7 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
 	    row);
     //ConnContext *context_iter;
 
-    otrng_conversation_t *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(f);
+    otrng_conversation_s *otr_conv = otrg_plugin_fingerprint_to_otr_conversation(f);
 
     if (f && otr_conv) {
 	verify_sensitive = 1;
@@ -366,7 +366,7 @@ static void connect_connection_ui(otrg_plugin_conversation *conv)
     if (!client)
         return;
 
-    otrng_conversation_t *otr_conv = otrng_client_get_conversation(0,
+    otrng_conversation_s *otr_conv = otrng_client_get_conversation(0,
         conv->peer, client);
     
     /* Don't do this if we're already ENCRYPTED */

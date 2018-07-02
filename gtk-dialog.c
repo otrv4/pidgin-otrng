@@ -352,7 +352,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     plugin_conv = smppair->conv;
 
     conv = otrg_plugin_conversation_to_purple_conv(plugin_conv, 1);
-    otrng_conversation_t* otr_conv = purple_conversation_to_otrng_conversation(conv);
+    otrng_conversation_s* otr_conv = purple_conversation_to_otrng_conversation(conv);
 
     if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
         if (!otrng_conversation_is_encrypted(otr_conv))
@@ -1780,7 +1780,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data)
 {
     const PurpleConversation *conv = data;
 
-    otrng_conversation_t* otr_conv = purple_conversation_to_otrng_conversation(conv);
+    otrng_conversation_s* otr_conv = purple_conversation_to_otrng_conversation(conv);
 
     if (!otrng_conversation_is_encrypted(otr_conv))
 	return;

@@ -156,7 +156,7 @@ purple_account_to_otrng_client(PurpleAccount *account)
     return ret;
 }
 
-otrng_conversation_t*
+otrng_conversation_s*
 purple_conversation_to_otrng_conversation(const PurpleConversation *conv)
 {
     PurpleAccount *account = NULL;
@@ -171,7 +171,7 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv)
     return otrng_client_get_conversation(0, recipient, client);
 }
 
-otrng_conversation_t*
+otrng_conversation_s*
 otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f)
 {
     otrng_client_s *client = NULL;
@@ -1484,7 +1484,7 @@ TrustLevel otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *con
     if (!client)
         return level;
 
-    otrng_conversation_t *otr_conv = otrng_client_get_conversation(1,
+    otrng_conversation_s *otr_conv = otrng_client_get_conversation(1,
         conv->peer, client);
 
     if (!otr_conv)
