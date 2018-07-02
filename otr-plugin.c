@@ -203,7 +203,7 @@ g_destroy_plugin_fingerprint(gpointer data)
     free(fp);
 }
 
-static void*
+static const void*
 protocol_and_account_to_purple_conversation(FILE *privf)
 {
     char *line = NULL;
@@ -880,20 +880,19 @@ static void process_sending_im(PurpleAccount *account, char *who,
 	char **message, void *m)
 {
     char *newmessage = NULL;
-    const char *accountname = purple_account_get_username(account);
-    const char *protocol = purple_account_get_protocol_id(account);
+    //const char *accountname = purple_account_get_username(account);
+    //const char *protocol = purple_account_get_protocol_id(account);
     char *username;
-    PurpleConversation * conv = NULL;
-    otrl_instag_t instance;
+    //PurpleConversation * conv = NULL;
+    //otrl_instag_t instance;
 
     if (!who || !message || !*message)
 	return;
 
     username = g_strdup(purple_normalize(account, who));
 
-    conv = otrg_plugin_userinfo_to_conv(accountname, protocol, username, 1);
-
-    instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
+    //conv = otrg_plugin_userinfo_to_conv(accountname, protocol, username, 1);
+    //instance = otrg_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
     int err = otrng_client_send(&newmessage, *message, username,
                                        purple_account_to_otrng_client(account));
@@ -999,7 +998,7 @@ void otrg_plugin_conversation_free(otrg_plugin_conversation* conv)
  * the buddy. */
 void otrg_plugin_start_smp(
 			   otrg_plugin_conversation *conv,
-			   const char *question, const size_t q_len,
+			   const unsigned char *question, const size_t q_len,
 			   const unsigned char *secret, size_t secretlen
 			   )
 {
@@ -1062,7 +1061,9 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
     if (!client)
         return;
 
-    msg = otrng_client_query_message(conv->peer, "", client, prefs.policy);
+    //TODO: Use policy?
+    //prefs.policy
+    msg = otrng_client_query_message(conv->peer, "", client);
 
     otrg_plugin_inject_message(account, conv->peer,
 	     msg ? msg : "?OTRv34?");
@@ -1074,17 +1075,21 @@ void otrg_plugin_send_default_query(otrg_plugin_conversation *conv)
 void otrg_plugin_send_default_query_conv(PurpleConversation *conv)
 {
     PurpleAccount *account;
-    const char *username, *accountname;
+    const char *username;
+    //const char *accountname;
     char *msg;
     OtrgUiPrefs prefs;
 
     account = purple_conversation_get_account(conv);
-    accountname = purple_account_get_username(account);
+    //accountname = purple_account_get_username(account);
     username = purple_normalize(account, purple_conversation_get_name(conv));
 
     otrng_client_s *client = purple_account_to_otrng_client(account);
     otrg_ui_get_prefs(&prefs, account, username);
-    msg = otrng_client_query_message(username, "", client, prefs.policy);
+
+    //TODO: Use policy?
+    //prefs.policy
+    msg = otrng_client_query_message(username, "", client);
     otrg_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
     free(msg);
 }
@@ -1096,8 +1101,8 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     //OtrlTLV *tlv = NULL;
     char *username;
     gboolean res;
-    const char *accountname;
-    const char *protocol;
+    //const char *accountname;
+    //const char *protocol;
     char *tosend;
     char *todisplay;
 
@@ -1105,8 +1110,8 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	return 0;
 
     username = g_strdup(purple_normalize(account, *who));
-    accountname = purple_account_get_username(account);
-    protocol = purple_account_get_protocol_id(account);
+    //accountname = purple_account_get_username(account);
+    //protocol = purple_account_get_protocol_id(account);
 
     otrng_client_s *acc = purple_account_to_otrng_client(account);
 
@@ -1136,6 +1141,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 	*message = NULL;
     }
 
+    //TODO: This should be done in gone_insecure_cb
     //tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
     //if (tlv) {
     //    /* Notify the user that the other side disconnected. */
@@ -1648,7 +1654,8 @@ static void otrg_free_mms_table()
 static otrg_plugin_conversation*
 client_conversation_to_plugin_conversation(const otrng_client_conversation_s *conv)
 {
-    PurpleAccount *account = conv->client->client_id;
+    //TODO: This discards const qualifier
+    PurpleAccount *account = (PurpleAccount*) conv->client->client_id;
     if (!account)
         return NULL;
 
@@ -1659,9 +1666,10 @@ client_conversation_to_plugin_conversation(const otrng_client_conversation_s *co
     return otrg_plugin_conversation_new(accountname, protocol, conv->peer);
 }
 
-static void create_privkey_v4(void *opdata)
+static void create_privkey_v4(const void *opdata)
 {
-    PurpleAccount *account = opdata;
+    //TODO: discards const
+    PurpleAccount *account = (PurpleAccount *) opdata;
     otrg_plugin_create_privkey(account);
 }
 
@@ -1703,9 +1711,11 @@ static void fingerprint_seen_v4(const otrng_fingerprint_p fp, const otrng_client
 
     otrg_plugin_fingerprint *info = otrg_plugin_fingerprint_new(fp_human,
         conv->protocol, conv->account, conv->peer);
-    if (!info)
+
+    if (!info) {
         otrg_plugin_conversation_free(conv);
 	return; //ERROR
+    }
 
     buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
         "should <a href=\"%s%s\">authenticate</a> this buddy."),
@@ -1730,12 +1740,16 @@ static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv)
     otrg_plugin_conversation_free(conv);
 }
 
-static void smp_ask_for_answer_v4(const char *question, const otrng_client_conversation_s *cconv)
+static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len, const otrng_client_conversation_s *cconv)
 {
     if (!cconv) return;
 
+    //TODO: otrg_dialog_socialist_millionaires_q expects question to be
+    //a string, so it will stop at first 0 anyways. having a unsigned char does
+    //not help in any way.
+
     otrg_plugin_conversation *conv = client_conversation_to_plugin_conversation(cconv);
-    otrg_dialog_socialist_millionaires_q(conv, question);
+    otrg_dialog_socialist_millionaires_q(conv, (const char*) question);
     otrg_plugin_conversation_free(conv);
 }
 

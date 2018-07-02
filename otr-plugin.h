@@ -105,7 +105,7 @@ otrg_plugin_conversation_free(otrg_plugin_conversation*);
  * the buddy. */
 void otrg_plugin_start_smp(
 			   otrg_plugin_conversation *plugin_conv,
-			   const char *question, const size_t q_len,
+			   const unsigned char *question, const size_t q_len,
 			   const unsigned char *secret, size_t secretlen
 			   );
 
