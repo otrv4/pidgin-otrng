@@ -114,10 +114,6 @@ PurplePlugin *otrg_plugin_handle;
 
 otrng_user_state_s *otrng_userstate = NULL;
 
-// TODO: REPLACE with otrng_userstate->userstate_v3
-/* We'll only use the one OtrlUserState. */
-OtrlUserState otrg_plugin_userstate = NULL;
-
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
 GHashTable *mms_table = NULL;
@@ -489,7 +485,7 @@ void otrg_plugin_create_instag(const char *accountname, const char *protocol) {
   }
 
   /* Generate the instag */
-  otrl_instag_generate_FILEp(otrg_plugin_userstate, instagf, accountname,
+  otrl_instag_generate_FILEp(otrng_userstate->user_state_v3, instagf, accountname,
                              protocol);
   fclose(instagf);
 }
@@ -873,7 +869,7 @@ static OtrlMessageAppOps ui_ops = {policy_cb,
 
 /* Called by the glib main loop, as set up by stop_start_timer */
 static gboolean timer_fired_cb(gpointer data) {
-  otrl_message_poll(otrg_plugin_userstate, &ui_ops, NULL);
+  otrl_message_poll(otrng_userstate->user_state_v3, &ui_ops, NULL);
   return TRUE;
 }
 
@@ -1173,7 +1169,7 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
   username = purple_conversation_get_name(conv);
 
   context =
-      otrl_context_find(otrg_plugin_userstate, username, accountname, proto,
+      otrl_context_find(otrng_userstate->user_state_v3, username, accountname, proto,
                         their_instance, force_create, NULL, NULL, NULL);
 
   return context;
@@ -1310,7 +1306,7 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
 /* Disconnect all context instances, sending a notice to the other side, if
  * appropriate. */
 void otrg_plugin_disconnect_all_instances(ConnContext *context) {
-  otrl_message_disconnect_all_instances(otrg_plugin_userstate, &ui_ops, NULL,
+  otrl_message_disconnect_all_instances(otrng_userstate->user_state_v3, &ui_ops, NULL,
                                         context->accountname, context->protocol,
                                         context->username);
 }
@@ -1548,8 +1544,9 @@ TrustLevel otrg_plugin_context_to_trust(ConnContext *context) {
 
 /* Send the OTRL_TLV_DISCONNECTED packets when we're about to quit. */
 static void process_quitting(void) {
+  OtrlUserState userstate = otrng_userstate->user_state_v3;
   // TODO: use our client_hash to iterate over all active connections
-  ConnContext *context = otrg_plugin_userstate->context_root;
+  ConnContext *context = userstate->context_root;
   while (context) {
     ConnContext *next = context->next;
     if (context->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
@@ -1680,6 +1677,11 @@ static void create_privkey_v4(const void *opdata) {
   // TODO: discards const
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrg_plugin_create_privkey(account);
+
+  //TODO: Move to its own callback, and add this callback to the protocol
+  const char *protocol = purple_account_get_protocol_id(account);
+  const char *accountname = purple_account_get_username(account);
+  otrg_plugin_create_instag(accountname, protocol);
 }
 
 static void create_shared_prekey_v4(const otrng_client_conversation_s *conv) {
@@ -1846,7 +1848,6 @@ static int otrg_plugin_init_userstate(void) {
   g_free(instagfile);
 
   otrng_userstate = otrng_user_state_new(&callbacks_v4);
-  otrg_plugin_userstate = otrng_userstate->user_state_v3;
 
   // Read V3 and V4 private keys from files
   otrg_plugin_read_private_keys(priv3f, privf);
@@ -2027,7 +2028,6 @@ static gboolean otr_plugin_unload(PurplePlugin *handle) {
 
   otrng_user_state_free(otrng_userstate);
   otrng_userstate = NULL;
-  otrg_plugin_userstate = NULL;
 
   g_hash_table_remove_all(fingerprint_table);
   fingerprint_table = NULL;

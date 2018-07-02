@@ -2366,14 +2366,16 @@ otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList *instances,
   selection_exists = g_hash_table_lookup_extended(
       conv->data, "otr-ui_selected_ctx", NULL, &gp_instance);
 
+  OtrlUserState userstate = otrng_userstate->user_state_v3;
+
   /* Find the selected or default instance */
   if (selection_exists) {
     selected_instance = gp_instance;
-    context = otrl_context_find(otrg_plugin_userstate, context->username,
+    context = otrl_context_find(userstate, context->username,
                                 context->accountname, context->protocol,
                                 *selected_instance, 0, NULL, NULL, NULL);
   } else {
-    context = otrl_context_find(otrg_plugin_userstate, context->username,
+    context = otrl_context_find(userstate, context->username,
                                 context->accountname, context->protocol,
                                 OTRL_INSTAG_BEST, 0, NULL, NULL, NULL);
   }
