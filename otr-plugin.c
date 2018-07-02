@@ -138,7 +138,7 @@ otrng_client(const char *protocol, const char *accountname)
     //use this all over, and we use libotr userstate.
     ret->state->account_name = g_strdup(accountname);
     ret->state->protocol_name = g_strdup(protocol);
-    ret->state->pad = true;
+    otrng_client_state_set_padding(256, ret->state);
     return ret;
 }
 
@@ -152,7 +152,7 @@ purple_account_to_otrng_client(PurpleAccount *account)
     //use this all over, and we use libotr userstate.
     ret->state->account_name = g_strdup(purple_account_get_username(account));
     ret->state->protocol_name = g_strdup(purple_account_get_protocol_id(account));
-    ret->state->pad = true;
+    otrng_client_state_set_padding(256, ret->state);
     return ret;
 }
 
