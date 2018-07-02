@@ -7,13 +7,14 @@ SUBDIRS=	po
 
 plugindir=		${libdir}/pidgin
 
-plugin_LTLIBRARIES=	pidgin-otr4.la
+plugin_LTLIBRARIES=	pidgin-otrng.la
 
-pidgin_otr4_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
+pidgin_otrng_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
                         tooltipmenu.c otrng-client.c
-pidgin_otr4_la_LDFLAGS=	-module -avoid-version
-pidgin_otr4_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@
+pidgin_otrng_la_LDFLAGS=	-module -avoid-version
+pidgin_otrng_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@
 
+#TODO: Make sure windows packaging works
 EXTRA_DIST=		dialogs.h gtk-dialog.h gtk-ui.h otr-plugin.h ui.h \
 			otr-icons.h tooltipmenu.h \
 			Makefile.mingw packaging/windows/pidgin-otr.nsi \
