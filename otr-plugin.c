@@ -1807,6 +1807,16 @@ static void smp_update_v4(const otrng_smp_event_t event,
   otrg_plugin_conversation_free(conv);
 }
 
+static otrng_shared_session_state_s
+get_shared_session_state_cb(const otrng_client_conversation_s *conv) {
+  // TODO: Get those values from the conversation
+  return (otrng_shared_session_state_s){
+      .identifier1 = g_strdup("alice"),
+      .identifier2 = g_strdup("bob"),
+      .password = NULL,
+  };
+}
+
 otrng_client_callbacks_s callbacks_v4 = {
     // TODO: otrg_plugin_create_instag,
     create_privkey_v4,
@@ -1819,7 +1829,7 @@ otrng_client_callbacks_s callbacks_v4 = {
     smp_ask_for_answer_v4,
     smp_update_v4,
     NULL, // TODO: received_extra_symm_key
-    NULL, // TODO: get_shared_session_state
+    get_shared_session_state_cb,
 };
 
 static int otrg_plugin_init_userstate(void) {
