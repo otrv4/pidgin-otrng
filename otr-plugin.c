@@ -228,14 +228,14 @@ protocol_and_account_to_purple_conversation(FILE *privf)
 
 static void
 otrg_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-    otrng_user_state_sprivate_key_v4_read_FILEp(otrng_userstate, priv4,
+    otrng_user_state_private_key_v4_read_FILEp(otrng_userstate, priv4,
         protocol_and_account_to_purple_conversation);
-    otrng_user_state_sprivate_key_v3_read_FILEp(otrng_userstate, priv3);
+    otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3);
 }
 
 static void
 otrg_plugin_read_instance_tags_FILEp(FILE *instagf) {
-    otrng_user_state_sinstance_tags_read_FILEp(otrng_userstate, instagf);
+    otrng_user_state_instance_tags_read_FILEp(otrng_userstate, instagf);
 }
 
 static void
@@ -413,7 +413,7 @@ static int otrg_plugin_write_privkey_v3_FILEp(PurpleAccount *account)
 	return -1;
     }
 
-    int err = otrng_user_state_sprivate_key_v3_generate_FILEp(otrng_userstate, account, privf);
+    int err = otrng_user_state_private_key_v3_generate_FILEp(otrng_userstate, account, privf);
     fclose(privf);
 
     return err;
@@ -446,7 +446,7 @@ static int otrg_plugin_write_privkey_v4_FILEp(void)
 	return -1;
     }
 
-    int err = otrng_user_state_sprivate_key_v4_write_FILEp(otrng_userstate, privf);
+    int err = otrng_user_state_private_key_v4_write_FILEp(otrng_userstate, privf);
     fclose(privf);
 
     return err;
@@ -461,7 +461,7 @@ void otrg_plugin_create_privkey(PurpleAccount *account)
 
     waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
 
-    int err = otrng_user_state_sgenerate_private_key(otrng_userstate, account);
+    int err = otrng_user_state_generate_private_key(otrng_userstate, account);
     if (!err) {
         otrg_plugin_write_privkey_v4_FILEp();
         otrg_plugin_write_privkey_v3_FILEp(account);
@@ -1805,7 +1805,7 @@ otrg_plugin_init_userstate(void)
     g_free(storefile);
     g_free(instagfile);
 
-    otrng_userstate = otrng_user_state_snew(&callbacks_v4);
+    otrng_userstate = otrng_user_state_new(&callbacks_v4);
     otrg_plugin_userstate = otrng_userstate->userstate_v3;
 
     // Read V3 and V4 private keys from files
@@ -1975,7 +1975,7 @@ static gboolean otr_plugin_unload(PurplePlugin *handle)
     /* Stop the timer, if necessary */
     stop_start_timer(0);
 
-    otrng_user_state_sfree(otrng_userstate);
+    otrng_user_state_free(otrng_userstate);
     otrng_userstate = NULL;
     otrg_plugin_userstate = NULL;
 
