@@ -252,13 +252,13 @@ otrg_plugin_fingerprint_get_all(void)
 }
 
 otrg_plugin_fingerprint*
-otrg_plugin_fingerprint_get(const char fp[OTR4_FPRINT_HUMAN_LEN])
+otrg_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN])
 {
     return g_hash_table_lookup(fingerprint_table, fp);
 }
 
 otrg_plugin_fingerprint*
-otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN],
+otrg_plugin_fingerprint_new(const char fp[OTRNG_FPRINT_HUMAN_LEN],
     const char *protocol, const char *account, const char *peer)
 {
     otrg_plugin_fingerprint *info = malloc(sizeof(otrg_plugin_fingerprint));
@@ -266,7 +266,7 @@ otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN],
         return NULL;
 
     info->trusted = 0;
-    memcpy(info->fp, fp, OTR4_FPRINT_HUMAN_LEN);
+    memcpy(info->fp, fp, OTRNG_FPRINT_HUMAN_LEN);
     info->protocol = g_strdup(protocol);
     info->account = g_strdup(account);
     info->username = g_strdup(peer);
@@ -277,7 +277,7 @@ otrg_plugin_fingerprint_new(const char fp[OTR4_FPRINT_HUMAN_LEN],
 }
 
 void
-otrg_plugin_fingerprint_forget(const char fp[OTR4_FPRINT_HUMAN_LEN])
+otrg_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN])
 {
     g_hash_table_remove(fingerprint_table, fp);
 }
@@ -1430,7 +1430,7 @@ void otrg_plugin_read_fingerprints_FILEp(FILE *storef)
              *eol = '\0';
          }
 
-         if (strlen(fp_human) != OTR4_FPRINT_HUMAN_LEN-1) continue;
+         if (strlen(fp_human) != OTRNG_FPRINT_HUMAN_LEN-1) continue;
 
          fng = otrg_plugin_fingerprint_get(fp_human);
          if (!fng)
@@ -1691,7 +1691,7 @@ static void fingerprint_seen_v4(const otrv4_fingerprint_t fp, const otrng_client
     //TODO: use fp to determine if you have seen this fp before
     //See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
     char *buf;
-    char fp_human[OTR4_FPRINT_HUMAN_LEN];
+    char fp_human[OTRNG_FPRINT_HUMAN_LEN];
 
     otrng_fingerprint_hash_to_human(fp_human, fp);
     if (otrg_plugin_fingerprint_get(fp_human))

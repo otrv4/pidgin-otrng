@@ -13,7 +13,7 @@ otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client)
     if (otrng_client_get_our_fingerprint(our_fp, client))
         return NULL;
 
-    ret = malloc(OTR4_FPRINT_HUMAN_LEN);
+    ret = malloc(OTRNG_FPRINT_HUMAN_LEN);
     if (!ret)
         return NULL;
 

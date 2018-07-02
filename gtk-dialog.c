@@ -650,7 +650,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox, AuthSignalData *auth_
 
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 	const otrg_plugin_conversation *conv, SmpResponsePair* smppair) {
-    char our_hash[OTR4_FPRINT_HUMAN_LEN];
+    char our_hash[OTRNG_FPRINT_HUMAN_LEN];
     GtkWidget *label;
     char *label_text;
     struct vrfy_fingerprint_data *vfd;
@@ -678,15 +678,15 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
     gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-    strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
+    strncpy(our_hash, _("[none]"), OTRNG_FPRINT_HUMAN_LEN-1);
 
     otrng_client_s* client = otrng_client(conv->protocol, conv->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
-        strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
+        strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
 
     free(our_fp_human);
-    our_hash[OTR4_FPRINT_HUMAN_LEN-1] = '\0';
+    our_hash[OTRNG_FPRINT_HUMAN_LEN-1] = '\0';
 
     p = purple_find_prpl(conv->protocol);
     proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
@@ -1406,7 +1406,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data)
 static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprint)
 {
     GtkWidget *dialog;
-    char our_hash[OTR4_FPRINT_HUMAN_LEN];
+    char our_hash[OTRNG_FPRINT_HUMAN_LEN];
     char *primary;
     char *secondary;
     struct vrfy_fingerprint_data *vfd;
@@ -1416,15 +1416,15 @@ static void verify_fingerprint(GtkWindow *parent, otrg_plugin_fingerprint *fprin
     primary = g_strdup_printf(_("Verify fingerprint for %s"),
 	    fprint->username);
 
-    strncpy(our_hash, _("[none]"), OTR4_FPRINT_HUMAN_LEN-1);
+    strncpy(our_hash, _("[none]"), OTRNG_FPRINT_HUMAN_LEN-1);
 
     otrng_client_s* client = otrng_client(fprint->protocol, fprint->account);
     char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
     if (our_fp_human)
-        strncpy(our_hash, our_fp_human, OTR4_FPRINT_HUMAN_LEN);
+        strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
 
     free(our_fp_human);
-    our_hash[OTR4_FPRINT_HUMAN_LEN-1] = '\0';
+    our_hash[OTRNG_FPRINT_HUMAN_LEN-1] = '\0';
 
     secondary = g_strdup_printf(_("<small><i>%s %s\n\n</i></small>"
 	    "Fingerprint for you, %s (%s):\n%s\n\n"
