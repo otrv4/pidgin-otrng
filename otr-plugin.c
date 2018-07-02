@@ -463,8 +463,8 @@ void otrg_plugin_create_privkey(PurpleAccount *account) {
 void otrg_plugin_create_shared_prekey(PurpleAccount *account) {
   int err = otrng_user_state_generate_shared_prekey(otrng_userstate, account);
   if (!err) {
-    //TODO: SAVE to a file
-    //otrg_ui_update_fingerprint(); // Update the fingerprints VIEW
+    // TODO: SAVE to a file
+    // otrg_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
 }
 
@@ -485,8 +485,8 @@ void otrg_plugin_create_instag(const char *accountname, const char *protocol) {
   }
 
   /* Generate the instag */
-  otrl_instag_generate_FILEp(otrng_userstate->user_state_v3, instagf, accountname,
-                             protocol);
+  otrl_instag_generate_FILEp(otrng_userstate->user_state_v3, instagf,
+                             accountname, protocol);
   fclose(instagf);
 }
 
@@ -1169,8 +1169,8 @@ ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
   username = purple_conversation_get_name(conv);
 
   context =
-      otrl_context_find(otrng_userstate->user_state_v3, username, accountname, proto,
-                        their_instance, force_create, NULL, NULL, NULL);
+      otrl_context_find(otrng_userstate->user_state_v3, username, accountname,
+                        proto, their_instance, force_create, NULL, NULL, NULL);
 
   return context;
 }
@@ -1306,9 +1306,9 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
 /* Disconnect all context instances, sending a notice to the other side, if
  * appropriate. */
 void otrg_plugin_disconnect_all_instances(ConnContext *context) {
-  otrl_message_disconnect_all_instances(otrng_userstate->user_state_v3, &ui_ops, NULL,
-                                        context->accountname, context->protocol,
-                                        context->username);
+  otrl_message_disconnect_all_instances(otrng_userstate->user_state_v3, &ui_ops,
+                                        NULL, context->accountname,
+                                        context->protocol, context->username);
 }
 
 /* Disconnect a context, sending a notice to the other side, if
@@ -1678,7 +1678,7 @@ static void create_privkey_v4(const void *opdata) {
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrg_plugin_create_privkey(account);
 
-  //TODO: Move to its own callback, and add this callback to the protocol
+  // TODO: Move to its own callback, and add this callback to the protocol
   const char *protocol = purple_account_get_protocol_id(account);
   const char *accountname = purple_account_get_username(account);
   otrg_plugin_create_instag(accountname, protocol);
@@ -2085,7 +2085,7 @@ static PurplePluginInfo info = {
     0,                       /* flags          */
     NULL,                    /* dependencies   */
     PURPLE_PRIORITY_DEFAULT, /* priority       */
-    "otrng",                  /* id             */
+    "otrng",                 /* id             */
     NULL,                    /* name           */
     PIDGIN_OTR_VERSION,      /* version        */
     NULL,                    /* summary        */
