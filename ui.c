@@ -132,7 +132,7 @@ void otrng_ui_config_buddy(PurpleBuddy *buddy) {
 
 /* Load the preferences for a particular account / username */
 void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
-                       const char *name) {
+                        const char *name) {
   /* Check to see if the protocol for this account supports OTR at all. */
   const char *proto = purple_account_get_protocol_id(account);
   if (!otrng_plugin_proto_supports_otr(proto)) {

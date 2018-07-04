@@ -375,7 +375,7 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
     msg = g_strdup_printf(_("Account %s (%s) could not be found"), fp->account,
                           (p && p->info->name) ? p->info->name : _("Unknown"));
     otrng_dialog_notify_error(fp->account, fp->protocol, fp->username,
-                             _("Account not found"), msg, NULL);
+                              _("Account not found"), msg, NULL);
     g_free(msg);
     return;
   }
@@ -490,9 +490,9 @@ static void create_otroptions_buttons(struct otroptionsdata *oo,
 
 /* Load the global OTR prefs */
 static void otrng_gtk_ui_global_prefs_load(gboolean *enabledp,
-                                          gboolean *automaticp,
-                                          gboolean *onlyprivatep,
-                                          gboolean *avoidloggingotrp) {
+                                           gboolean *automaticp,
+                                           gboolean *onlyprivatep,
+                                           gboolean *avoidloggingotrp) {
   if (purple_prefs_exists("/OTR/enabled")) {
     *enabledp = purple_prefs_get_bool("/OTR/enabled");
     *automaticp = purple_prefs_get_bool("/OTR/automatic");
@@ -508,8 +508,8 @@ static void otrng_gtk_ui_global_prefs_load(gboolean *enabledp,
 
 /* Save the global OTR prefs */
 static void otrng_gtk_ui_global_prefs_save(gboolean enabled, gboolean automatic,
-                                          gboolean onlyprivate,
-                                          gboolean avoidloggingotr) {
+                                           gboolean onlyprivate,
+                                           gboolean avoidloggingotr) {
   if (!purple_prefs_exists("/OTR")) {
     purple_prefs_add_none("/OTR");
   }
@@ -529,7 +529,7 @@ static void otrng_gtk_ui_buddy_prefs_load(
 
   if (*usedefaultp) {
     otrng_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep,
-                                  avoidloggingotrp);
+                                   avoidloggingotrp);
   } else {
     *enabledp = purple_blist_node_get_bool(node, "OTR/enabled");
     *automaticp = purple_blist_node_get_bool(node, "OTR/automatic");
@@ -540,10 +540,10 @@ static void otrng_gtk_ui_buddy_prefs_load(
 
 /* Save the OTR prefs for a particular buddy */
 static void otrng_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
-                                         gboolean usedefault, gboolean enabled,
-                                         gboolean automatic,
-                                         gboolean onlyprivate,
-                                         gboolean avoidloggingotr) {
+                                          gboolean usedefault, gboolean enabled,
+                                          gboolean automatic,
+                                          gboolean onlyprivate,
+                                          gboolean avoidloggingotr) {
   PurpleBlistNode *node = &(buddy->node);
 
   purple_blist_node_set_bool(node, "OTR/overridedefault", !usedefault);
@@ -560,7 +560,7 @@ static void load_otrsettings(struct otrsettingsdata *os) {
   gboolean otravoidloggingotr;
 
   otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
-                                &otravoidloggingotr);
+                                 &otravoidloggingotr);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->enablebox), otrenabled);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->automaticbox),
@@ -870,7 +870,7 @@ static void load_buddyprefs(struct cbdata *data) {
   gboolean usedefault, enabled, automatic, onlyprivate, avoidloggingotr;
 
   otrng_gtk_ui_buddy_prefs_load(data->buddy, &usedefault, &enabled, &automatic,
-                               &onlyprivate, &avoidloggingotr);
+                                &onlyprivate, &avoidloggingotr);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->defaultbox), usedefault);
 
@@ -1000,7 +1000,7 @@ static void otrng_gtk_ui_config_buddy(PurpleBuddy *buddy) {
 
 /* Load the preferences for a particular account / username */
 static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
-                                  const char *name) {
+                                   const char *name) {
   PurpleBuddy *buddy;
   gboolean otrenabled, otrautomatic, otronlyprivate, otravoidloggingotr;
   gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate,
@@ -1012,7 +1012,7 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 
   /* Get the default policy */
   otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
-                                &otravoidloggingotr);
+                                 &otravoidloggingotr);
   otrng_gtk_ui_global_options_load(&(prefsp->show_otr_button));
 
   if (otrenabled) {
@@ -1036,8 +1036,8 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 
   /* Get the buddy-specific policy, if present */
   otrng_gtk_ui_buddy_prefs_load(buddy, &buddyusedefault, &buddyenabled,
-                               &buddyautomatic, &buddyonlyprivate,
-                               &buddyavoidloggingotr);
+                                &buddyautomatic, &buddyonlyprivate,
+                                &buddyavoidloggingotr);
 
   if (buddyusedefault)
     return;

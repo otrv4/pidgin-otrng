@@ -105,37 +105,37 @@ void otrng_dialog_cleanup(void);
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
 void otrng_dialog_notify_message(PurpleNotifyMsgType type,
-                                const char *accountname, const char *protocol,
-                                const char *username, const char *title,
-                                const char *primary, const char *secondary);
+                                 const char *accountname, const char *protocol,
+                                 const char *username, const char *title,
+                                 const char *primary, const char *secondary);
 
 /* Put up the error version of otrng_dialog_notify_message */
 void otrng_dialog_notify_error(const char *accountname, const char *protocol,
-                              const char *username, const char *title,
-                              const char *primary, const char *secondary);
+                               const char *username, const char *title,
+                               const char *primary, const char *secondary);
 
 /* Put up the warning version of otrng_dialog_notify_message */
 void otrng_dialog_notify_warning(const char *accountname, const char *protocol,
-                                const char *username, const char *title,
-                                const char *primary, const char *secondary);
+                                 const char *username, const char *title,
+                                 const char *primary, const char *secondary);
 
 /* Put up the info version of otrng_dialog_notify_message */
 void otrng_dialog_notify_info(const char *accountname, const char *protocol,
-                             const char *username, const char *title,
-                             const char *primary, const char *secondary);
+                              const char *username, const char *title,
+                              const char *primary, const char *secondary);
 
 /* Display an OTR control message for the given accountname / protocol /
  * username conversation.  Return 0 on success, non-0 on error (in which
  * case the message will be displayed inline as a received message). */
 int otrng_dialog_display_otr_message(const char *accountname,
-                                    const char *protocol, const char *username,
-                                    const char *msg, int force_create);
+                                     const char *protocol, const char *username,
+                                     const char *msg, int force_create);
 
 /* Put up a Please Wait dialog. This dialog can not be cancelled.
  * Return a handle that must eventually be passed to
  * otrng_dialog_private_key_wait_done. */
 OtrgDialogWaitHandle otrng_dialog_private_key_wait_start(const char *account,
-                                                        const char *protocol);
+                                                         const char *protocol);
 
 /* End a Please Wait dialog. */
 void otrng_dialog_private_key_wait_done(OtrgDialogWaitHandle handle);
@@ -143,8 +143,8 @@ void otrng_dialog_private_key_wait_done(OtrgDialogWaitHandle handle);
 /* Show a dialog informing the user that a correspondent (who) has sent
  * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrng_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-                                     const char *protocol, const char *who,
-                                     const unsigned char fingerprint[20]);
+                                      const char *protocol, const char *who,
+                                      const unsigned char fingerprint[20]);
 
 /* Show a dialog asking the user to verify the given fingerprint. */
 void otrng_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint);
@@ -154,12 +154,13 @@ void otrng_dialog_socialist_millionaires(const otrng_plugin_conversation *conv);
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrng_dialog_socialist_millionaires_q(const otrng_plugin_conversation *conv,
-                                          const char *question);
+void otrng_dialog_socialist_millionaires_q(
+    const otrng_plugin_conversation *conv, const char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
 void otrng_dialog_update_smp(const otrng_plugin_conversation *context,
-                            otrng_smp_event_t smp_event, double progress_level);
+                             otrng_smp_event_t smp_event,
+                             double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */
 void otrng_dialog_conversation_connected(otrng_plugin_conversation *conv);
@@ -177,7 +178,7 @@ void otrng_dialog_stillconnected(ConnContext *context);
 /* Call this if the remote user terminates his end of an ENCRYPTED
  * connection, and lets us know. */
 void otrng_dialog_finished(const char *accountname, const char *protocol,
-                          const char *username);
+                           const char *username);
 
 /* Set all OTR buttons to "sensitive" or "insensitive" as appropriate.
  * Call this when accounts are logged in or out. */

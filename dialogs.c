@@ -46,43 +46,43 @@ void otrng_dialog_cleanup(void) { ui_ops->cleanup(); }
  * keyboard focus, (b) the button is "OK" instead of "Close", and (c)
  * the labels aren't limited to 2K. */
 void otrng_dialog_notify_message(PurpleNotifyMsgType type,
-                                const char *accountname, const char *protocol,
-                                const char *username, const char *title,
-                                const char *primary, const char *secondary) {
+                                 const char *accountname, const char *protocol,
+                                 const char *username, const char *title,
+                                 const char *primary, const char *secondary) {
   ui_ops->notify_message(type, accountname, protocol, username, title, primary,
                          secondary);
 }
 
 /* Put up the error version of otrng_dialog_notify_message */
 void otrng_dialog_notify_error(const char *accountname, const char *protocol,
-                              const char *username, const char *title,
-                              const char *primary, const char *secondary) {
+                               const char *username, const char *title,
+                               const char *primary, const char *secondary) {
   otrng_dialog_notify_message(PURPLE_NOTIFY_MSG_ERROR, accountname, protocol,
-                             username, title, primary, secondary);
+                              username, title, primary, secondary);
 }
 
 /* Put up the warning version of otrng_dialog_notify_message */
 void otrng_dialog_notify_warning(const char *accountname, const char *protocol,
-                                const char *username, const char *title,
-                                const char *primary, const char *secondary) {
+                                 const char *username, const char *title,
+                                 const char *primary, const char *secondary) {
   otrng_dialog_notify_message(PURPLE_NOTIFY_MSG_WARNING, accountname, protocol,
-                             username, title, primary, secondary);
+                              username, title, primary, secondary);
 }
 
 /* Put up the info version of otrng_dialog_notify_message */
 void otrng_dialog_notify_info(const char *accountname, const char *protocol,
-                             const char *username, const char *title,
-                             const char *primary, const char *secondary) {
+                              const char *username, const char *title,
+                              const char *primary, const char *secondary) {
   otrng_dialog_notify_message(PURPLE_NOTIFY_MSG_INFO, accountname, protocol,
-                             username, title, primary, secondary);
+                              username, title, primary, secondary);
 }
 
 /* Display an OTR control message for the given accountname / protocol /
  * username conversation.  Return 0 on success, non-0 on error (in which
  * case the message will be displayed inline as a received message). */
 int otrng_dialog_display_otr_message(const char *accountname,
-                                    const char *protocol, const char *username,
-                                    const char *msg, int force_create) {
+                                     const char *protocol, const char *username,
+                                     const char *msg, int force_create) {
   return ui_ops->display_otr_message(accountname, protocol, username, msg,
                                      force_create);
 }
@@ -91,7 +91,7 @@ int otrng_dialog_display_otr_message(const char *accountname,
  * Return a handle that must eventually be passed to
  * otrng_dialog_private_key_wait_done. */
 OtrgDialogWaitHandle otrng_dialog_private_key_wait_start(const char *account,
-                                                        const char *protocol) {
+                                                         const char *protocol) {
   return ui_ops->private_key_wait_start(account, protocol);
 }
 
@@ -103,8 +103,8 @@ void otrng_dialog_private_key_wait_done(OtrgDialogWaitHandle handle) {
 /* Show a dialog informing the user that a correspondent (who) has sent
  * us a Key Exchange Message (kem) that contains an unknown fingerprint. */
 void otrng_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-                                     const char *protocol, const char *who,
-                                     const unsigned char fingerprint[20]) {
+                                      const char *protocol, const char *who,
+                                      const unsigned char fingerprint[20]) {
   ui_ops->unknown_fingerprint(us, accountname, protocol, who, fingerprint);
 }
 
@@ -114,21 +114,22 @@ void otrng_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint) {
 }
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrng_dialog_socialist_millionaires(const otrng_plugin_conversation *conv) {
+void otrng_dialog_socialist_millionaires(
+    const otrng_plugin_conversation *conv) {
   ui_ops->socialist_millionaires(conv, NULL, TRUE);
 }
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrng_dialog_socialist_millionaires_q(const otrng_plugin_conversation *conv,
-                                          const char *question) {
+void otrng_dialog_socialist_millionaires_q(
+    const otrng_plugin_conversation *conv, const char *question) {
   ui_ops->socialist_millionaires(conv, question, TRUE);
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */
 void otrng_dialog_update_smp(const otrng_plugin_conversation *context,
-                            otrng_smp_event_t smp_event,
-                            double progress_level) {
+                             otrng_smp_event_t smp_event,
+                             double progress_level) {
   ui_ops->update_smp(context, smp_event, progress_level);
 }
 
@@ -169,7 +170,7 @@ void otrng_dialog_stillconnected(ConnContext *context) {
 /* Call this if the remote user terminates his end of an ENCRYPTED
  * connection, and lets us know. */
 void otrng_dialog_finished(const char *accountname, const char *protocol,
-                          const char *username) {
+                           const char *username) {
   ui_ops->finished(accountname, protocol, username);
 }
 

@@ -81,6 +81,6 @@ void otrng_ui_config_buddy(PurpleBuddy *buddy);
 
 /* Load the preferences for a particular account / username */
 void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
-                       const char *name);
+                        const char *name);
 
 #endif

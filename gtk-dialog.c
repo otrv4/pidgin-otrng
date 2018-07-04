@@ -311,15 +311,16 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
 
     /* pass user question here */
     if (!user_question) {
-    otrng_plugin_start_smp(smppair->conv, user_question, 0,
-                          (const unsigned char *)secret, secret_len);
+      otrng_plugin_start_smp(smppair->conv, user_question, 0,
+                             (const unsigned char *)secret, secret_len);
     } else {
-    otrng_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
-                          (const unsigned char *)secret, secret_len);
+      otrng_plugin_start_smp(smppair->conv, user_question,
+                             strlen(user_question),
+                             (const unsigned char *)secret, secret_len);
     }
   } else {
     otrng_plugin_continue_smp(smppair->conv, (const unsigned char *)secret,
-                             secret_len);
+                              secret_len);
   }
 
   g_free(secret);
@@ -650,9 +651,10 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   }
 }
 
-static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
-                                           const otrng_plugin_conversation *conv,
-                                           SmpResponsePair *smppair) {
+static void
+add_to_vbox_verify_fingerprint(GtkWidget *vbox,
+                               const otrng_plugin_conversation *conv,
+                               SmpResponsePair *smppair) {
   char our_hash[OTRNG_FPRINT_HUMAN_LEN];
   GtkWidget *label;
   char *label_text;
@@ -703,7 +705,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
                                  "Purported fingerprint for %s:\n%s\n"),
                                conv->account, proto_name, our_hash,
-			       fprint->username, fprint->fp);
+                               fprint->username, fprint->fp);
 
   label = gtk_label_new(NULL);
 
@@ -1044,9 +1046,9 @@ create_smp_progress_dialog(GtkWindow *parent,
  * the labels aren't limited to 2K. */
 static void
 otrng_gtk_dialog_notify_message(PurpleNotifyMsgType type,
-                               const char *accountname, const char *protocol,
-                               const char *username, const char *title,
-                               const char *primary, const char *secondary) {
+                                const char *accountname, const char *protocol,
+                                const char *username, const char *title,
+                                const char *primary, const char *secondary) {
   create_dialog(NULL, type, title, primary, secondary, 1, NULL, NULL, NULL);
 }
 
@@ -1060,7 +1062,7 @@ struct s_OtrgDialogWait {
  * otrng_dialog_private_key_wait_done. */
 static OtrgDialogWaitHandle
 otrng_gtk_dialog_private_key_wait_start(const char *account,
-                                       const char *protocol) {
+                                        const char *protocol) {
   PurplePlugin *p;
   const char *title = _("Generating private key");
   const char *primary = _("Please wait");
@@ -1095,10 +1097,10 @@ otrng_gtk_dialog_private_key_wait_start(const char *account,
 }
 
 static int otrng_gtk_dialog_display_otr_message(const char *accountname,
-                                               const char *protocol,
-                                               const char *username,
-                                               const char *msg,
-                                               int force_create) {
+                                                const char *protocol,
+                                                const char *username,
+                                                const char *msg,
+                                                int force_create) {
   /* See if there's a conversation window we can put this in. */
   PurpleConversation *conv = otrng_plugin_userinfo_to_conv(
       accountname, protocol, username, force_create);
@@ -1112,7 +1114,8 @@ static int otrng_gtk_dialog_display_otr_message(const char *accountname,
 }
 
 /* End a Please Wait dialog. */
-static void otrng_gtk_dialog_private_key_wait_done(OtrgDialogWaitHandle handle) {
+static void
+otrng_gtk_dialog_private_key_wait_done(OtrgDialogWaitHandle handle) {
   const char *oldmarkup;
   char *newmarkup;
 
@@ -1131,8 +1134,8 @@ static void otrng_gtk_dialog_private_key_wait_done(OtrgDialogWaitHandle handle) 
 /* Inform the user that an unknown fingerprint was received. */
 static void
 otrng_gtk_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
-                                    const char *protocol, const char *who,
-                                    const unsigned char fingerprint[20]) {
+                                     const char *protocol, const char *who,
+                                     const unsigned char fingerprint[20]) {
   PurpleConversation *conv;
   char *buf;
   ConnContext *context;
@@ -1468,8 +1471,8 @@ otrng_gtk_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint) {
  * response to someone else's run of SMP. */
 static void
 otrng_gtk_dialog_socialist_millionaires(const otrng_plugin_conversation *conv,
-                                       const char *question,
-                                       gboolean responder) {
+                                        const char *question,
+                                        gboolean responder) {
   char *primary;
 
   if (conv == NULL) {
@@ -1491,9 +1494,10 @@ otrng_gtk_dialog_socialist_millionaires(const otrng_plugin_conversation *conv,
 /* Call this to update the status of an ongoing socialist millionaires
  * protocol.  Progress_level is a percentage, from 0.0 (aborted) to
  * 1.0 (complete).  Any other value represents an intermediate state. */
-static void otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
-                                       otrng_smp_event_t smp_event,
-                                       double progress_level) {
+static void
+otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
+                            otrng_smp_event_t smp_event,
+                            double progress_level) {
   PurpleConversation *conv =
       otrng_plugin_conversation_to_purple_conv(context, 0);
   GtkProgressBar *bar;
@@ -1576,7 +1580,7 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
   protocol_version = otrng_plugin_conversation_to_protocol_version(context);
 
   otrng_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
-                    context->peer);
+                     context->peer);
   if (prefs.avoid_logging_otr) {
     purple_conversation_set_logging(conv, FALSE);
   }
@@ -1634,7 +1638,7 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
             "outgoing session."),
           SESSIONS_HELPURL, _("?lang=en"));
       otrng_gtk_dialog_display_otr_message(context->account, context->protocol,
-                                          context->peer, buf, 0);
+                                           context->peer, buf, 0);
       g_free(buf);
     }
   }
@@ -1662,7 +1666,7 @@ otrng_gtk_dialog_disconnected_real(const otrng_plugin_conversation *context) {
   g_free(buf);
 
   otrng_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
-                    context->peer);
+                     context->peer);
   if (prefs.avoid_logging_otr) {
     if (purple_prefs_get_bool("/purple/logging/log_ims")) {
       purple_conversation_set_logging(conv, TRUE);
@@ -1679,8 +1683,8 @@ otrng_gtk_dialog_disconnected_real(const otrng_plugin_conversation *context) {
 /* Call this if the remote user terminates his end of an ENCRYPTED
  * connection, and lets us know. */
 static void otrng_gtk_dialog_finished(const char *accountname,
-                                     const char *protocol,
-                                     const char *username) {
+                                      const char *protocol,
+                                      const char *username) {
   /* See if there's a conversation window we can put this in. */
   PurpleAccount *account;
   PurpleConversation *conv;
@@ -2300,8 +2304,8 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data) {
           "above to select a different outgoing session."),
         get_context_instance_to_index(conv, context),
         get_context_instance_to_index(conv, recent_context));
-    otrng_gtk_dialog_display_otr_message(context->accountname, context->protocol,
-                                        context->username, buf, 0);
+    otrng_gtk_dialog_display_otr_message(
+        context->accountname, context->protocol, context->username, buf, 0);
     g_free(buf);
   }
 }
@@ -2542,7 +2546,8 @@ otr_add_buddy_top_menu(PidginConversation *gtkconv,
 
   menu = gtk_menu_new();
 
-  build_otr_menu(otrng_plugin_conversation_to_purple_conv(conv, 0), menu, level);
+  build_otr_menu(otrng_plugin_conversation_to_purple_conv(conv, 0), menu,
+                 level);
   otr_build_status_submenu(win, convctx, menu, level);
 
   if (!active_conv) {

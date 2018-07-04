@@ -58,16 +58,16 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv);
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
 ConnContext *otrng_plugin_conv_to_selected_context(PurpleConversation *conv,
-                                                  int force_create);
+                                                   int force_create);
 
 /* Given a PurpleConversation, return the selected instag. */
 otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
-                                                  otrl_instag_t default_value);
+                                                   otrl_instag_t default_value);
 
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
 void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
-                                const char *message);
+                                 const char *message);
 
 /* Generate a private key for the given accountname/protocol */
 void otrng_plugin_create_privkey(PurpleAccount *account);
@@ -99,11 +99,11 @@ void otrng_plugin_conversation_free(otrng_plugin_conversation *);
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
 void otrng_plugin_start_smp(otrng_plugin_conversation *plugin_conv,
-                           const unsigned char *question, const size_t q_len,
-                           const unsigned char *secret, size_t secretlen);
+                            const unsigned char *question, const size_t q_len,
+                            const unsigned char *secret, size_t secretlen);
 
 void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
-                              const unsigned char *secret, size_t secretlen);
+                               const unsigned char *secret, size_t secretlen);
 
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
  * are received. */
@@ -124,20 +124,20 @@ void otrng_plugin_write_fingerprints(void);
 
 /* Find the ConnContext appropriate to a given PurpleConversation. */
 ConnContext *otrng_plugin_conv_to_context(PurpleConversation *conv,
-                                         otrl_instag_t their_instance,
-                                         int force_create);
+                                          otrl_instag_t their_instance,
+                                          int force_create);
 
 /* Find the PurpleConversation appropriate to the given userinfo.  If
  * one doesn't yet exist, create it if force_create is true. */
 PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
-                                                 const char *protocol,
-                                                 const char *username,
-                                                 int force_create);
+                                                  const char *protocol,
+                                                  const char *username,
+                                                  int force_create);
 
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */
 PurpleConversation *otrng_plugin_context_to_conv(ConnContext *context,
-                                                int force_create);
+                                                 int force_create);
 
 typedef enum {
   TRUST_NOT_PRIVATE,
@@ -160,9 +160,9 @@ int otrng_plugin_conversation_to_protocol_version(
 
 static inline PurpleConversation *
 otrng_plugin_conversation_to_purple_conv(const otrng_plugin_conversation *conv,
-                                        int force) {
-  return otrng_plugin_userinfo_to_conv(conv->account, conv->protocol, conv->peer,
-                                      force);
+                                         int force) {
+  return otrng_plugin_userinfo_to_conv(conv->account, conv->protocol,
+                                       conv->peer, force);
 }
 
 typedef struct {
