@@ -311,10 +311,10 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
 
     /* pass user question here */
     if (!user_question) {
-    otrg_plugin_start_smp(smppair->conv, user_question, 0,
+    otrng_plugin_start_smp(smppair->conv, user_question, 0,
                           (const unsigned char *)secret, secret_len);
     } else {
-    otrg_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
+    otrng_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
                           (const unsigned char *)secret, secret_len);
     }
   } else {

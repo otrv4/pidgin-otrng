@@ -999,7 +999,7 @@ void otrng_plugin_conversation_free(otrng_plugin_conversation *conv) {
 void otrng_plugin_start_smp(otrng_plugin_conversation *conv,
                            const unsigned char *question, const size_t q_len,
                            const unsigned char *secret, size_t secretlen) {
-  otrng_client_s *client = otrg_plugin_conversation_to_client(conv);
+  otrng_client_s *client = otrng_plugin_conversation_to_client(conv);
   if (!client) {
     return;
   }
