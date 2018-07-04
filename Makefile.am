@@ -23,3 +23,6 @@ EXTRA_DIST=		dialogs.h gtk-dialog.h gtk-ui.h otr-plugin.h ui.h \
 			intltool-update.in Makefile.static INSTALL.mingw
 
 DISTCLEANFILES=		intltool-extract intltool-merge intltool-update
+
+code-style:
+	clang-format -style=file -i config.h *.h *.c
