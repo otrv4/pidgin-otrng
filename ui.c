@@ -53,20 +53,20 @@
 static const OtrgUiUiOps *ui_ops = NULL;
 
 /* Set the UI ops */
-void otrg_ui_set_ui_ops(const OtrgUiUiOps *ops) { ui_ops = ops; }
+void otrng_ui_set_ui_ops(const OtrgUiUiOps *ops) { ui_ops = ops; }
 
 /* Get the UI ops */
-const OtrgUiUiOps *otrg_ui_get_ui_ops(void) { return ui_ops; }
+const OtrgUiUiOps *otrng_ui_get_ui_ops(void) { return ui_ops; }
 
 /* Initialize the OTR UI subsystem */
-void otrg_ui_init(void) {
+void otrng_ui_init(void) {
   if (ui_ops != NULL) {
     ui_ops->init();
   }
 }
 
 /* Deinitialize the OTR UI subsystem */
-void otrg_ui_cleanup(void) {
+void otrng_ui_cleanup(void) {
   if (ui_ops != NULL) {
     ui_ops->cleanup();
   }
@@ -74,21 +74,21 @@ void otrg_ui_cleanup(void) {
 
 /* Call this function when the DSA key is updated; it will redraw the
  * UI, if visible. */
-void otrg_ui_update_fingerprint(void) {
+void otrng_ui_update_fingerprint(void) {
   if (ui_ops != NULL) {
     ui_ops->update_fingerprint();
   }
 }
 
 /* Update the keylist, if it's visible */
-void otrg_ui_update_keylist(void) {
+void otrng_ui_update_keylist(void) {
   if (ui_ops != NULL) {
     ui_ops->update_keylist();
   }
 }
 
 /* Drop a context to PLAINTEXT state */
-void otrg_ui_disconnect_connection(otrng_plugin_conversation *conv) {
+void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv) {
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client)
     return;
@@ -104,7 +104,7 @@ void otrg_ui_disconnect_connection(otrng_plugin_conversation *conv) {
 
 // TODO: should not this be in another file?
 /* Forget a fingerprint */
-void otrg_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
+void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
   if (fingerprint == NULL) {
     return;
   }
@@ -120,18 +120,18 @@ void otrg_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
   otrng_plugin_fingerprint_forget(fingerprint->fp);
   otrng_plugin_write_fingerprints();
 
-  otrg_ui_update_keylist();
+  otrng_ui_update_keylist();
 }
 
 /* Configure OTR for a particular buddy */
-void otrg_ui_config_buddy(PurpleBuddy *buddy) {
+void otrng_ui_config_buddy(PurpleBuddy *buddy) {
   if (ui_ops != NULL) {
     ui_ops->config_buddy(buddy);
   }
 }
 
 /* Load the preferences for a particular account / username */
-void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
+void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
                        const char *name) {
   /* Check to see if the protocol for this account supports OTR at all. */
   const char *proto = purple_account_get_protocol_id(account);

@@ -301,7 +301,7 @@ void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
         _("You are not currently connected to "
           "account %s (%s)."),
         accountname, (p && p->info->name) ? p->info->name : _("Unknown"));
-    otrg_dialog_notify_error(accountname, protocol, recipient,
+    otrng_dialog_notify_error(accountname, protocol, recipient,
                              _("Not connected"), msg, NULL);
     g_free(msg);
     return;
@@ -329,7 +329,7 @@ static void notify(void *opdata, OtrlNotifyLevel level, const char *accountname,
     break;
   }
 
-  otrg_dialog_notify_message(purplelevel, accountname, protocol, username,
+  otrng_dialog_notify_message(purplelevel, accountname, protocol, username,
                              title, primary, secondary);
 }
 
@@ -346,7 +346,7 @@ static int display_otr_message_or_notify(void *opdata, const char *accountname,
                                          OtrlNotifyLevel level,
                                          const char *title, const char *primary,
                                          const char *secondary) {
-  if (otrg_dialog_display_otr_message(accountname, protocol, username, msg,
+  if (otrng_dialog_display_otr_message(accountname, protocol, username, msg,
                                       force_create)) {
     notify(opdata, level, accountname, protocol, username, title, primary,
            secondary);
@@ -373,7 +373,7 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context) {
   if (!account)
     return policy;
 
-  otrg_ui_get_prefs(&prefs, account, context->username);
+  otrng_ui_get_prefs(&prefs, account, context->username);
   return prefs.policy;
 }
 
@@ -447,24 +447,24 @@ void otrng_plugin_create_privkey(PurpleAccount *account) {
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
 
-  waithandle = otrg_dialog_private_key_wait_start(accountname, protocol);
+  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
   int err = otrng_user_state_generate_private_key(otrng_userstate, account);
   if (!err) {
     otrng_plugin_write_privkey_v4_FILEp();
     otrng_plugin_write_privkey_v3_FILEp(account);
-    otrg_ui_update_fingerprint();
+    otrng_ui_update_fingerprint();
   }
 
   /* Mark the dialog as done. */
-  otrg_dialog_private_key_wait_done(waithandle);
+  otrng_dialog_private_key_wait_done(waithandle);
 }
 
 void otrng_plugin_create_shared_prekey(PurpleAccount *account) {
   int err = otrng_user_state_generate_shared_prekey(otrng_userstate, account);
   if (!err) {
     // TODO: SAVE to a file
-    // otrg_ui_update_fingerprint(); // Update the fingerprints VIEW
+    // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
 }
 
@@ -520,7 +520,7 @@ static void inject_message_cb(void *opdata, const char *accountname,
     char *msg =
         g_strdup_printf(_("Unknown account %s (%s)."), accountname,
                         (p && p->info->name) ? p->info->name : _("Unknown"));
-    otrg_dialog_notify_error(accountname, protocol, recipient,
+    otrng_dialog_notify_error(accountname, protocol, recipient,
                              _("Unknown account"), msg, NULL);
     g_free(msg);
     return;
@@ -528,25 +528,25 @@ static void inject_message_cb(void *opdata, const char *accountname,
   otrng_plugin_inject_message(account, recipient, message);
 }
 
-static void update_context_list_cb(void *opdata) { otrg_ui_update_keylist(); }
+static void update_context_list_cb(void *opdata) { otrng_ui_update_keylist(); }
 
 static void confirm_fingerprint_cb(void *opdata, OtrlUserState us,
                                    const char *accountname,
                                    const char *protocol, const char *username,
                                    unsigned char fingerprint[20]) {
-  otrg_dialog_unknown_fingerprint(us, accountname, protocol, username,
+  otrng_dialog_unknown_fingerprint(us, accountname, protocol, username,
                                   fingerprint);
 }
 
 static void write_fingerprints_cb(void *opdata) {
   otrng_plugin_write_fingerprints();
-  otrg_ui_update_keylist();
-  otrg_dialog_resensitize_all();
+  otrng_ui_update_keylist();
+  otrng_dialog_resensitize_all();
 }
 
 static void still_secure_cb(void *opdata, ConnContext *context, int is_reply) {
   if (is_reply == 0) {
-    otrg_dialog_stillconnected(context);
+    otrng_dialog_stillconnected(context);
   }
 }
 
@@ -1051,7 +1051,7 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   account = purple_conversation_get_account(purp_conv);
   username = purple_normalize(account, purple_conversation_get_name(purp_conv));
   OtrgUiPrefs prefs;
-  otrg_ui_get_prefs(&prefs, account, username);
+  otrng_ui_get_prefs(&prefs, account, username);
 
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client)
@@ -1079,7 +1079,7 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
   username = purple_normalize(account, purple_conversation_get_name(conv));
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
-  otrg_ui_get_prefs(&prefs, account, username);
+  otrng_ui_get_prefs(&prefs, account, username);
 
   // TODO: Use policy?
   // prefs.policy
@@ -1139,8 +1139,8 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   // tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
   // if (tlv) {
   //    /* Notify the user that the other side disconnected. */
-  //    otrg_dialog_finished(accountname, protocol, username);
-  //    otrg_ui_update_keylist();
+  //    otrng_dialog_finished(accountname, protocol, username);
+  //    otrng_ui_update_keylist();
   //}
 
   // otrl_tlv_free(tlvs);
@@ -1221,7 +1221,7 @@ static void process_conv_create(PurpleConversation *conv) {
   *msg_event = OTRL_MSGEVENT_NONE;
   purple_conversation_set_data(conv, "otr-last_msg_event", (gpointer)msg_event);
 
-  otrg_dialog_new_conv(conv);
+  otrng_dialog_new_conv(conv);
 }
 
 /* Wrapper around process_conv_create for callback purposes */
@@ -1237,7 +1237,7 @@ static void process_conv_updated(PurpleConversation *conv,
     ConnContext *context;
     OtrgUiPrefs prefs;
     PurpleAccount *account = purple_conversation_get_account(conv);
-    otrg_ui_get_prefs(&prefs, account, purple_conversation_get_name(conv));
+    otrng_ui_get_prefs(&prefs, account, purple_conversation_get_name(conv));
 
     context = otrng_plugin_conv_to_selected_context(conv, 0);
     if (context && prefs.avoid_logging_otr &&
@@ -1268,7 +1268,7 @@ static void process_conv_destroyed(PurpleConversation *conv) {
 static void process_connection_change(PurpleConnection *conn, void *data) {
   /* If we log in or out of a connection, make sure all of the OTR
    * buttons are in the appropriate sensitive/insensitive state. */
-  otrg_dialog_resensitize_all();
+  otrng_dialog_resensitize_all();
 }
 
 static void otr_options_cb(PurpleBlistNode *node, gpointer user_data) {
@@ -1276,7 +1276,7 @@ static void otr_options_cb(PurpleBlistNode *node, gpointer user_data) {
   PurpleBuddy *buddy = (PurpleBuddy *)node;
 
   /* Modify the settings for this buddy */
-  otrg_ui_config_buddy(buddy);
+  otrng_ui_config_buddy(buddy);
 }
 
 static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
@@ -1611,11 +1611,11 @@ static void mms_read_FILEp(FILE *mmsf, GHashTable *ght) {
   }
 }
 
-static void otrg_str_free(gpointer data) { g_free((char *)data); }
+static void otrng_str_free(gpointer data) { g_free((char *)data); }
 
-static void otrg_int_free(gpointer data) { g_free((int *)data); }
+static void otrng_int_free(gpointer data) { g_free((int *)data); }
 
-static void otrg_init_mms_table() {
+static void otrng_init_mms_table() {
   /* Hardcoded defaults for maximum message sizes for various
    * protocols.  These can be overridden in the user's MAXMSGSIZEFNAME
    * file. */
@@ -1630,8 +1630,8 @@ static void otrg_init_mms_table() {
   gchar *maxmsgsizefile;
   FILE *mmsf;
 
-  mms_table = g_hash_table_new_full(g_str_hash, g_str_equal, otrg_str_free,
-                                    otrg_int_free);
+  mms_table = g_hash_table_new_full(g_str_hash, g_str_equal, otrng_str_free,
+                                    otrng_int_free);
 
   for (i = 0; mmsPairs[i].protid != NULL; i++) {
     char *nextprot = g_strdup(mmsPairs[i].protid);
@@ -1653,7 +1653,7 @@ static void otrg_init_mms_table() {
   }
 }
 
-static void otrg_free_mms_table() {
+static void otrng_free_mms_table() {
   g_hash_table_destroy(mms_table);
   mms_table = NULL;
 }
@@ -1693,14 +1693,14 @@ static void create_shared_prekey_v4(const otrng_client_conversation_s *conv) {
 static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
-  otrg_dialog_conversation_connected(conv);
+  otrng_dialog_conversation_connected(conv);
   otrng_plugin_conversation_free(conv);
 }
 
 static void gone_insecure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
-  otrg_dialog_conversation_disconnected(conv);
+  otrng_dialog_conversation_disconnected(conv);
   otrng_plugin_conversation_free(conv);
 }
 
@@ -1708,7 +1708,7 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
                                 const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
-  otrg_dialog_unknown_fingerprint(cconv->client->user_state, conv->account,
+  otrng_dialog_unknown_fingerprint(cconv->client->user_state, conv->account,
                                   conv->protocol, conv->peer, fp);
   otrng_plugin_conversation_free(conv);
 }
@@ -1716,7 +1716,7 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
 static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
                                 const otrng_client_conversation_s *cconv) {
   // TODO: use fp to determine if you have seen this fp before
-  // See: otrg_dialog_unknown_fingerprint (otrg_gtk_dialog_unknown_fingerprint)
+  // See: otrng_dialog_unknown_fingerprint (otrng_gtk_dialog_unknown_fingerprint)
   char *buf;
   char fp_human[OTRNG_FPRINT_HUMAN_LEN];
 
@@ -1759,7 +1759,7 @@ static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv) {
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
-  otrg_dialog_socialist_millionaires(conv);
+  otrng_dialog_socialist_millionaires(conv);
   otrng_plugin_conversation_free(conv);
 }
 
@@ -1768,13 +1768,13 @@ static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len,
   if (!cconv)
     return;
 
-  // TODO: otrg_dialog_socialist_millionaires_q expects question to be
+  // TODO: otrng_dialog_socialist_millionaires_q expects question to be
   // a string, so it will stop at first 0 anyways. having a unsigned char does
   // not help in any way.
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
-  otrg_dialog_socialist_millionaires_q(conv, (const char *)question);
+  otrng_dialog_socialist_millionaires_q(conv, (const char *)question);
   otrng_plugin_conversation_free(conv);
 }
 
@@ -1792,12 +1792,12 @@ static void smp_update_v4(const otrng_smp_event_t event,
   case OTRNG_SMP_EVENT_ERROR:
     otrng_plugin_abort_smp(conv); // fallthrough intended
   case OTRNG_SMP_EVENT_ABORT:
-    otrg_dialog_update_smp(conv, event, 0);
+    otrng_dialog_update_smp(conv, event, 0);
     break;
   case OTRNG_SMP_EVENT_IN_PROGRESS:
   case OTRNG_SMP_EVENT_SUCCESS:
   case OTRNG_SMP_EVENT_FAILURE:
-    otrg_dialog_update_smp(conv, event, ((gdouble)progress_percent) / 100.0);
+    otrng_dialog_update_smp(conv, event, ((gdouble)progress_percent) / 100.0);
     break;
   default:
     // should be an error
@@ -1868,7 +1868,7 @@ static int otrng_plugin_init_userstate(void) {
   // Read fingerprints to OTR4 fingerprint store
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
-  otrg_ui_update_fingerprint();
+  otrng_ui_update_fingerprint();
 
   if (privf) {
     fclose(privf);
@@ -1984,13 +1984,13 @@ static gboolean otrng_plugin_load(PurplePlugin *handle) {
     return 0;
 #endif
 
-  otrg_init_mms_table();
+  otrng_init_mms_table();
   otrng_plugin_handle = handle;
   otrng_plugin_timerid = 0;
 
   otrng_plugin_watch_libpurple_events();
-  otrg_ui_init();
-  otrg_dialog_init();
+  otrng_ui_init();
+  otrng_dialog_init();
 
   purple_conversation_foreach(process_conv_create);
 
@@ -2005,10 +2005,10 @@ static gboolean otrng_plugin_unload(PurplePlugin *handle) {
 
   /* Clean up all of our state. */
 
-  purple_conversation_foreach(otrg_dialog_remove_conv);
+  purple_conversation_foreach(otrng_dialog_remove_conv);
 
-  otrg_dialog_cleanup();
-  otrg_ui_cleanup();
+  otrng_dialog_cleanup();
+  otrng_ui_cleanup();
 
   purple_signal_disconnect(core_handle, "quitting", otrng_plugin_handle,
                            PURPLE_CALLBACK(process_quitting));
@@ -2042,7 +2042,7 @@ static gboolean otrng_plugin_unload(PurplePlugin *handle) {
   g_hash_table_remove_all(fingerprint_table);
   fingerprint_table = NULL;
 
-  otrg_free_mms_table();
+  otrng_free_mms_table();
 
   return 1;
 }
@@ -2061,7 +2061,7 @@ int otrng_plugin_conversation_to_protocol_version(
 
 #ifdef USING_GTK
 
-static PidginPluginUiInfo ui_info = {otrg_gtk_ui_make_widget};
+static PidginPluginUiInfo ui_info = {otrng_gtk_ui_make_widget};
 
 #define UI_INFO &ui_info
 #define PLUGIN_TYPE PIDGIN_PLUGIN_TYPE
@@ -2109,8 +2109,8 @@ static PurplePluginInfo otrng_plugin_info = {
 static void __otrng_init_plugin(PurplePlugin *plugin) {
   /* Set up the UI ops */
 #ifdef USING_GTK
-  otrg_ui_set_ui_ops(otrg_gtk_ui_get_ui_ops());
-  otrg_dialog_set_ui_ops(otrg_gtk_dialog_get_ui_ops());
+  otrng_ui_set_ui_ops(otrng_gtk_ui_get_ui_ops());
+  otrng_dialog_set_ui_ops(otrng_gtk_dialog_get_ui_ops());
 #endif
 
 #ifndef WIN32

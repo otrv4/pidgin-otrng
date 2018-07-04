@@ -49,38 +49,38 @@ typedef struct {
 } OtrgUiUiOps;
 
 /* Set the UI ops */
-void otrg_ui_set_ui_ops(const OtrgUiUiOps *ops);
+void otrng_ui_set_ui_ops(const OtrgUiUiOps *ops);
 
 /* Get the UI ops */
-const OtrgUiUiOps *otrg_ui_get_ui_ops(void);
+const OtrgUiUiOps *otrng_ui_get_ui_ops(void);
 
 /* Initialize the UI subsystem */
-void otrg_ui_init(void);
+void otrng_ui_init(void);
 
 /* Deinitialize the UI subsystem */
-void otrg_ui_cleanup(void);
+void otrng_ui_cleanup(void);
 
 /* Call this function when the DSA key is updated; it will redraw the
  * UI. */
-void otrg_ui_update_fingerprint(void);
+void otrng_ui_update_fingerprint(void);
 
 /* Update the keylist, if it's visible */
-void otrg_ui_update_keylist(void);
+void otrng_ui_update_keylist(void);
 
 /* Send an OTR Query Message to attempt to start a connection */
-void otrg_ui_connect_connection(ConnContext *context);
+void otrng_ui_connect_connection(ConnContext *context);
 
 /* Drop a context to PLAINTEXT state */
-void otrg_ui_disconnect_connection(otrng_plugin_conversation *conv);
+void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv);
 
 /* Forget a fingerprint */
-void otrg_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint);
+void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint);
 
 /* Configure OTR for a particular buddy */
-void otrg_ui_config_buddy(PurpleBuddy *buddy);
+void otrng_ui_config_buddy(PurpleBuddy *buddy);
 
 /* Load the preferences for a particular account / username */
-void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
+void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
                        const char *name);
 
 #endif

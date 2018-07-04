@@ -118,14 +118,14 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 
 /* Call this function when the DSA key is updated; it will redraw the
  * UI, if visible. */
-static void otrg_gtk_ui_update_fingerprint(void) {
+static void otrng_gtk_ui_update_fingerprint(void) {
   if (ui_layout.accountmenu) {
     g_signal_emit_by_name(G_OBJECT(ui_layout.accountmenu), "changed");
   }
 }
 
 static void account_menu_added_removed_cb(PurpleAccount *account, void *data) {
-  otrg_gtk_ui_update_fingerprint();
+  otrng_gtk_ui_update_fingerprint();
 }
 
 static void clist_all_unselected(void) {
@@ -145,7 +145,7 @@ static void clist_all_unselected(void) {
 }
 
 /* Update the keylist, if it's visible */
-static void otrg_gtk_ui_update_keylist(void) {
+static void otrng_gtk_ui_update_keylist(void) {
   gchar *titles[5];
   int selected_row = -1;
 
@@ -374,7 +374,7 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
     PurplePlugin *p = purple_find_prpl(fp->protocol);
     msg = g_strdup_printf(_("Account %s (%s) could not be found"), fp->account,
                           (p && p->info->name) ? p->info->name : _("Unknown"));
-    otrg_dialog_notify_error(fp->account, fp->protocol, fp->username,
+    otrng_dialog_notify_error(fp->account, fp->protocol, fp->username,
                              _("Account not found"), msg, NULL);
     g_free(msg);
     return;
@@ -399,17 +399,17 @@ static void disconnect_connection(GtkWidget *widget, gpointer data) {
   conv->protocol = fp->protocol;
   conv->account = fp->account;
   conv->peer = fp->username;
-  otrg_ui_disconnect_connection(conv);
+  otrng_ui_disconnect_connection(conv);
 }
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data) {
   otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-  otrg_ui_forget_fingerprint(fingerprint);
+  otrng_ui_forget_fingerprint(fingerprint);
 }
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data) {
   otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-  otrg_dialog_verify_fingerprint(fingerprint);
+  otrng_dialog_verify_fingerprint(fingerprint);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,
@@ -489,7 +489,7 @@ static void create_otroptions_buttons(struct otroptionsdata *oo,
 }
 
 /* Load the global OTR prefs */
-static void otrg_gtk_ui_global_prefs_load(gboolean *enabledp,
+static void otrng_gtk_ui_global_prefs_load(gboolean *enabledp,
                                           gboolean *automaticp,
                                           gboolean *onlyprivatep,
                                           gboolean *avoidloggingotrp) {
@@ -507,7 +507,7 @@ static void otrg_gtk_ui_global_prefs_load(gboolean *enabledp,
 }
 
 /* Save the global OTR prefs */
-static void otrg_gtk_ui_global_prefs_save(gboolean enabled, gboolean automatic,
+static void otrng_gtk_ui_global_prefs_save(gboolean enabled, gboolean automatic,
                                           gboolean onlyprivate,
                                           gboolean avoidloggingotr) {
   if (!purple_prefs_exists("/OTR")) {
@@ -520,7 +520,7 @@ static void otrg_gtk_ui_global_prefs_save(gboolean enabled, gboolean automatic,
 }
 
 /* Load the OTR prefs for a particular buddy */
-static void otrg_gtk_ui_buddy_prefs_load(
+static void otrng_gtk_ui_buddy_prefs_load(
     PurpleBuddy *buddy, gboolean *usedefaultp, gboolean *enabledp,
     gboolean *automaticp, gboolean *onlyprivatep, gboolean *avoidloggingotrp) {
   PurpleBlistNode *node = &(buddy->node);
@@ -528,7 +528,7 @@ static void otrg_gtk_ui_buddy_prefs_load(
   *usedefaultp = !purple_blist_node_get_bool(node, "OTR/overridedefault");
 
   if (*usedefaultp) {
-    otrg_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep,
+    otrng_gtk_ui_global_prefs_load(enabledp, automaticp, onlyprivatep,
                                   avoidloggingotrp);
   } else {
     *enabledp = purple_blist_node_get_bool(node, "OTR/enabled");
@@ -539,7 +539,7 @@ static void otrg_gtk_ui_buddy_prefs_load(
 }
 
 /* Save the OTR prefs for a particular buddy */
-static void otrg_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
+static void otrng_gtk_ui_buddy_prefs_save(PurpleBuddy *buddy,
                                          gboolean usedefault, gboolean enabled,
                                          gboolean automatic,
                                          gboolean onlyprivate,
@@ -559,7 +559,7 @@ static void load_otrsettings(struct otrsettingsdata *os) {
   gboolean otronlyprivate;
   gboolean otravoidloggingotr;
 
-  otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
+  otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
                                 &otravoidloggingotr);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(os->enablebox), otrenabled);
@@ -574,7 +574,7 @@ static void load_otrsettings(struct otrsettingsdata *os) {
 }
 
 /* Load the global OTR UI options */
-static void otrg_gtk_ui_global_options_load(gboolean *showotrbuttonp) {
+static void otrng_gtk_ui_global_options_load(gboolean *showotrbuttonp) {
   if (purple_prefs_exists("/OTR/showotrbutton")) {
     *showotrbuttonp = purple_prefs_get_bool("/OTR/showotrbutton");
   } else {
@@ -583,7 +583,7 @@ static void otrg_gtk_ui_global_options_load(gboolean *showotrbuttonp) {
 }
 
 /* Save the global OTR UI options */
-static void otrg_gtk_ui_global_options_save(gboolean showotrbutton) {
+static void otrng_gtk_ui_global_options_save(gboolean showotrbutton) {
   if (!purple_prefs_exists("/OTR")) {
     purple_prefs_add_none("/OTR");
   }
@@ -596,7 +596,7 @@ static void otrg_gtk_ui_global_options_save(gboolean showotrbutton) {
 static void load_otroptions(struct otroptionsdata *oo) {
   gboolean showotrbutton;
 
-  otrg_gtk_ui_global_options_load(&showotrbutton);
+  otrng_gtk_ui_global_options_load(&showotrbutton);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->showotrbutton),
                                showotrbutton);
@@ -647,28 +647,28 @@ static void make_privkeys_ui(GtkWidget *vbox) {
   label = gtk_label_new(_("Generate"));
   gtk_container_add(GTK_CONTAINER(ui_layout.generate_button), label);
 
-  otrg_gtk_ui_update_fingerprint();
+  otrng_gtk_ui_update_fingerprint();
 
   gtk_box_pack_start(GTK_BOX(fbox), ui_layout.generate_button, FALSE, FALSE, 0);
 }
 
 /* Save the global OTR settings whenever they're clicked */
 static void otrsettings_save_cb(GtkButton *button, struct otrsettingsdata *os) {
-  otrg_gtk_ui_global_prefs_save(
+  otrng_gtk_ui_global_prefs_save(
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(os->enablebox)),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(os->automaticbox)),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(os->onlyprivatebox)),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(os->avoidloggingotrbox)));
 
-  otrg_dialog_resensitize_all();
+  otrng_dialog_resensitize_all();
 }
 
 /* Save the global OTR UI options whenever they're clicked */
 static void otroptions_save_cb(GtkButton *button, struct otroptionsdata *oo) {
-  otrg_gtk_ui_global_options_save(
+  otrng_gtk_ui_global_options_save(
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oo->showotrbutton)));
 
-  otrg_dialog_resensitize_all();
+  otrng_dialog_resensitize_all();
 }
 
 /* Make the settings UI, and pack it into the vbox */
@@ -747,7 +747,7 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
   gtk_container_add(GTK_CONTAINER(ui_layout.scrollwin), ui_layout.keylist);
   gtk_box_pack_start(GTK_BOX(vbox), ui_layout.scrollwin, TRUE, TRUE, 0);
 
-  otrg_gtk_ui_update_keylist();
+  otrng_gtk_ui_update_keylist();
 
   hbox = gtk_hbox_new(FALSE, 5);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 5);
@@ -811,7 +811,7 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
 }
 
 /* Construct the OTR UI widget */
-GtkWidget *otrg_gtk_ui_make_widget(PurplePlugin *plugin) {
+GtkWidget *otrng_gtk_ui_make_widget(PurplePlugin *plugin) {
   GtkWidget *vbox = gtk_vbox_new(FALSE, 5);
   GtkWidget *fingerprintbox = gtk_vbox_new(FALSE, 5);
   GtkWidget *configbox = gtk_vbox_new(FALSE, 5);
@@ -869,7 +869,7 @@ static void default_clicked_cb(GtkButton *button, struct cbdata *data) {
 static void load_buddyprefs(struct cbdata *data) {
   gboolean usedefault, enabled, automatic, onlyprivate, avoidloggingotr;
 
-  otrg_gtk_ui_buddy_prefs_load(data->buddy, &usedefault, &enabled, &automatic,
+  otrng_gtk_ui_buddy_prefs_load(data->buddy, &usedefault, &enabled, &automatic,
                                &onlyprivate, &avoidloggingotr);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->defaultbox), usedefault);
@@ -901,7 +901,7 @@ static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data) {
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->os.enablebox));
 
   /* Apply the changes */
-  otrg_gtk_ui_buddy_prefs_save(
+  otrng_gtk_ui_buddy_prefs_save(
       data->buddy,
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->defaultbox)),
       enabled,
@@ -910,7 +910,7 @@ static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data) {
       gtk_toggle_button_get_active(
           GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox)));
 
-  otrg_dialog_resensitize_all();
+  otrng_dialog_resensitize_all();
 }
 
 static void config_buddy_response_cb(GtkDialog *dialog, gint resp,
@@ -918,7 +918,7 @@ static void config_buddy_response_cb(GtkDialog *dialog, gint resp,
   gtk_widget_destroy(data->dialog);
 }
 
-static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy) {
+static void otrng_gtk_ui_config_buddy(PurpleBuddy *buddy) {
   GtkWidget *dialog;
   GtkWidget *label;
   char *label_text;
@@ -999,7 +999,7 @@ static void otrg_gtk_ui_config_buddy(PurpleBuddy *buddy) {
 }
 
 /* Load the preferences for a particular account / username */
-static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
+static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
                                   const char *name) {
   PurpleBuddy *buddy;
   gboolean otrenabled, otrautomatic, otronlyprivate, otravoidloggingotr;
@@ -1011,9 +1011,9 @@ static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
   prefsp->show_otr_button = FALSE;
 
   /* Get the default policy */
-  otrg_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
+  otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
                                 &otravoidloggingotr);
-  otrg_gtk_ui_global_options_load(&(prefsp->show_otr_button));
+  otrng_gtk_ui_global_options_load(&(prefsp->show_otr_button));
 
   if (otrenabled) {
     if (otrautomatic) {
@@ -1035,7 +1035,7 @@ static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
     return;
 
   /* Get the buddy-specific policy, if present */
-  otrg_gtk_ui_buddy_prefs_load(buddy, &buddyusedefault, &buddyenabled,
+  otrng_gtk_ui_buddy_prefs_load(buddy, &buddyusedefault, &buddyenabled,
                                &buddyautomatic, &buddyonlyprivate,
                                &buddyavoidloggingotr);
 
@@ -1059,19 +1059,19 @@ static void otrg_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 }
 
 /* Initialize the OTR UI subsystem */
-static void otrg_gtk_ui_init(void) { /* Nothing to do */
+static void otrng_gtk_ui_init(void) { /* Nothing to do */
 }
 
 /* Deinitialize the OTR UI subsystem */
-static void otrg_gtk_ui_cleanup(void) { /* Nothing to do */
+static void otrng_gtk_ui_cleanup(void) { /* Nothing to do */
 }
 
-static const OtrgUiUiOps gtk_ui_ui_ops = {otrg_gtk_ui_init,
-                                          otrg_gtk_ui_cleanup,
-                                          otrg_gtk_ui_update_fingerprint,
-                                          otrg_gtk_ui_update_keylist,
-                                          otrg_gtk_ui_config_buddy,
-                                          otrg_gtk_ui_get_prefs};
+static const OtrgUiUiOps gtk_ui_ui_ops = {otrng_gtk_ui_init,
+                                          otrng_gtk_ui_cleanup,
+                                          otrng_gtk_ui_update_fingerprint,
+                                          otrng_gtk_ui_update_keylist,
+                                          otrng_gtk_ui_config_buddy,
+                                          otrng_gtk_ui_get_prefs};
 
 /* Get the GTK UI ops */
-const OtrgUiUiOps *otrg_gtk_ui_get_ui_ops(void) { return &gtk_ui_ui_ops; }
+const OtrgUiUiOps *otrng_gtk_ui_get_ui_ops(void) { return &gtk_ui_ui_ops; }

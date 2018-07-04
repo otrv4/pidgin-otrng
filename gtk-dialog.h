@@ -25,6 +25,6 @@
 #include "dialogs.h"
 
 /* Get the GTK dialog UI ops */
-const OtrgDialogUiOps *otrg_gtk_dialog_get_ui_ops(void);
+const OtrgDialogUiOps *otrng_gtk_dialog_get_ui_ops(void);
 
 #endif
