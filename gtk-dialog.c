@@ -654,13 +654,14 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   PurplePlugin *p;
   char *proto_name;
 
+  const char *username = NULL;
+  otrng_plugin_fingerprint *fprint = NULL;
+
   PurpleConversation *pconv = otrng_plugin_conversation_to_purple_conv(conv, 0);
   PurpleAccount *account = purple_conversation_get_account(pconv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(pconv));
-  otrng_plugin_fingerprint *fprint =
-      otrng_plugin_fingerprint_get_active(username);
+  username = purple_normalize(account, purple_conversation_get_name(pconv));
 
+  fprint = otrng_plugin_fingerprint_get_active(username);
   if (fprint == NULL) {
     return;
   }
@@ -694,8 +695,8 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
   label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
                                  "Purported fingerprint for %s:\n%s\n"),
-                               conv->account, proto_name, our_hash, username,
-                               fprint->fp);
+                               conv->account, proto_name, our_hash,
+			       fprint->username, fprint->fp);
 
   label = gtk_label_new(NULL);
 
@@ -1402,6 +1403,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
 }
 
 // TODO: this has duplicated logic. See: add_to_vbox_verify_fingerprint
+// TODO: is this ever used? where?
 static void verify_fingerprint(GtkWindow *parent,
                                otrng_plugin_fingerprint *fprint) {
   GtkWidget *dialog;
