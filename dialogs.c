@@ -109,36 +109,36 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
 }
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint) {
+void otrg_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint) {
   ui_ops->verify_fingerprint(fprint);
 }
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv) {
+void otrg_dialog_socialist_millionaires(const otrng_plugin_conversation *conv) {
   ui_ops->socialist_millionaires(conv, NULL, TRUE);
 }
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
+void otrg_dialog_socialist_millionaires_q(const otrng_plugin_conversation *conv,
                                           const char *question) {
   ui_ops->socialist_millionaires(conv, question, TRUE);
 }
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(const otrg_plugin_conversation *context,
+void otrg_dialog_update_smp(const otrng_plugin_conversation *context,
                             otrng_smp_event_t smp_event,
                             double progress_level) {
   ui_ops->update_smp(context, smp_event, progress_level);
 }
 
-void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv) {
+void otrg_dialog_conversation_connected(otrng_plugin_conversation *conv) {
   ui_ops->connected(conv);
 }
 
 /* Call this when a context transitions to ENCRYPTED. */
 void otrg_dialog_connected(ConnContext *context) {
-  otrg_plugin_conversation conv;
+  otrng_plugin_conversation conv;
   conv.account = context->accountname;
   conv.protocol = context->protocol;
   conv.peer = context->username;
@@ -146,13 +146,13 @@ void otrg_dialog_connected(ConnContext *context) {
 }
 
 void otrg_dialog_conversation_disconnected(
-    const otrg_plugin_conversation *conv) {
+    const otrng_plugin_conversation *conv) {
   ui_ops->disconnected(conv);
 }
 
 /* Call this when a context transitions to PLAINTEXT. */
 void otrg_dialog_disconnected(ConnContext *context) {
-  otrg_plugin_conversation conv;
+  otrng_plugin_conversation conv;
   conv.account = context->accountname;
   conv.protocol = context->protocol;
   conv.peer = context->username;

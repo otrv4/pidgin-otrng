@@ -80,7 +80,7 @@ static int img_id_finished = 0;
 #define AUTH_FINGERPRINT_VERIFICATION -1
 
 typedef struct {
-  otrg_plugin_conversation *conv;
+  otrng_plugin_conversation *conv;
 
   GtkEntry *question_entry; /* The text entry field containing the user
                              * question */
@@ -222,23 +222,23 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget) {
 /* Forward declarations for the benefit of smp_message_response_cb/redraw
  * authvbox */
 static void verify_fingerprint(GtkWindow *parent,
-                               otrg_plugin_fingerprint *fprint);
+                               otrng_plugin_fingerprint *fprint);
 static void add_vrfy_fingerprint(GtkWidget *vbox, void *data);
 static struct vrfy_fingerprint_data *
-vrfy_fingerprint_data_new(otrg_plugin_fingerprint *fprint);
+vrfy_fingerprint_data_new(otrng_plugin_fingerprint *fprint);
 static void vrfy_fingerprint_destroyed(GtkWidget *w,
                                        struct vrfy_fingerprint_data *vfd);
 static void conversation_switched(PurpleConversation *conv, void *data);
 
 static GtkWidget *
 create_smp_progress_dialog(GtkWindow *parent,
-                           const otrg_plugin_conversation *context);
+                           const otrng_plugin_conversation *context);
 
 /* Called when a button is pressed on the "progress bar" smp dialog */
 static void smp_progress_response_cb(GtkDialog *dialog, gint response,
-                                     otrg_plugin_conversation *context) {
+                                     otrng_plugin_conversation *context) {
   PurpleConversation *conv =
-      otrg_plugin_conversation_to_purple_conv(context, 0);
+      otrng_plugin_conversation_to_purple_conv(context, 0);
   SMPData *smp_data = NULL;
 
   if (conv) {
@@ -249,7 +249,7 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
         GTK_PROGRESS_BAR(smp_data->smp_progress_bar));
 
     if (frac != 0.0 && frac != 1.0 && response == GTK_RESPONSE_REJECT) {
-      otrg_plugin_abort_smp(context);
+      otrng_plugin_abort_smp(context);
     }
   }
   /* In all cases, destroy the current window */
@@ -263,7 +263,7 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
     smp_data->smp_progress_dialog = NULL;
   }
 
-  otrg_plugin_conversation_free(context);
+  otrng_plugin_conversation_free(context);
 }
 
 static void display_smp_help(AuthSignalData *auth_opt_data) {
@@ -278,7 +278,7 @@ static void display_smp_help(AuthSignalData *auth_opt_data) {
                 :
                 /* Fingerprint */
                 "fingerprint");
-  purple_notify_uri(otrg_plugin_handle, helpurl);
+  purple_notify_uri(otrng_plugin_handle, helpurl);
   g_free(helpurl);
 }
 
@@ -309,10 +309,10 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
     }
 
     /* pass user question here */
-    otrg_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
+    otrng_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
                           (const unsigned char *)secret, secret_len);
   } else {
-    otrg_plugin_continue_smp(smppair->conv, (const unsigned char *)secret,
+    otrng_plugin_continue_smp(smppair->conv, (const unsigned char *)secret,
                              secret_len);
   }
 
@@ -326,7 +326,7 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
  */
 static void smp_secret_response_cb(GtkDialog *dialog, gint response,
                                    AuthSignalData *auth_opt_data) {
-  otrg_plugin_conversation *plugin_conv;
+  otrng_plugin_conversation *plugin_conv;
   PurpleConversation *conv;
   SMPData *smp_data;
   SmpResponsePair *smppair;
@@ -343,7 +343,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
   plugin_conv = smppair->conv;
 
-  conv = otrg_plugin_conversation_to_purple_conv(plugin_conv, 1);
+  conv = otrng_plugin_conversation_to_purple_conv(plugin_conv, 1);
   otrng_conversation_s *otr_conv =
       purple_conversation_to_otrng_conversation(conv);
 
@@ -363,7 +363,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
     /* Don't destroy the window */
     return;
   } else {
-    otrg_plugin_abort_smp(smppair->conv);
+    otrng_plugin_abort_smp(smppair->conv);
   }
 
   /* In all cases except HELP, destroy the current window */
@@ -379,7 +379,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
   /* Free memory */
   free(auth_opt_data);
-  otrg_plugin_conversation_free(smppair->conv);
+  otrng_plugin_conversation_free(smppair->conv);
   free(smppair);
 }
 
@@ -552,8 +552,8 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     gtk_box_pack_start(GTK_BOX(vbox), question_entry, FALSE, FALSE, 0);
   }
 
-  otrg_plugin_fingerprint *fp =
-      otrg_plugin_fingerprint_get_active(smppair->conv->peer);
+  otrng_plugin_fingerprint *fp =
+      otrng_plugin_fingerprint_get_active(smppair->conv->peer);
 
   if (fp && fp->trusted && !(smppair->responder))
     label2 = gtk_label_new(_("This buddy is already authenticated."));
@@ -628,8 +628,8 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
   auth_opt_data->two_way_entry = GTK_ENTRY(entry);
 
-  otrg_plugin_fingerprint *fp =
-      otrg_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
+  otrng_plugin_fingerprint *fp =
+      otrng_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
   if (fp && fp->trusted)
     label2 = gtk_label_new(_("This buddy is already authenticated."));
 
@@ -645,7 +645,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
 }
 
 static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
-                                           const otrg_plugin_conversation *conv,
+                                           const otrng_plugin_conversation *conv,
                                            SmpResponsePair *smppair) {
   char our_hash[OTRNG_FPRINT_HUMAN_LEN];
   GtkWidget *label;
@@ -654,12 +654,12 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   PurplePlugin *p;
   char *proto_name;
 
-  PurpleConversation *pconv = otrg_plugin_conversation_to_purple_conv(conv, 0);
+  PurpleConversation *pconv = otrng_plugin_conversation_to_purple_conv(conv, 0);
   PurpleAccount *account = purple_conversation_get_account(pconv);
   const char *username =
       purple_normalize(account, purple_conversation_get_name(pconv));
-  otrg_plugin_fingerprint *fprint =
-      otrg_plugin_fingerprint_get_active(username);
+  otrng_plugin_fingerprint *fprint =
+      otrng_plugin_fingerprint_get_active(username);
 
   if (fprint == NULL) {
     return;
@@ -777,10 +777,10 @@ static void add_other_authentication_options(GtkWidget *vbox,
 }
 
 static GtkWidget *create_smp_dialog(const char *title, const char *primary,
-                                    const otrg_plugin_conversation *pconv,
+                                    const otrng_plugin_conversation *pconv,
                                     gboolean responder, const char *question) {
   GtkWidget *dialog;
-  PurpleConversation *conv = otrg_plugin_conversation_to_purple_conv(pconv, 1);
+  PurpleConversation *conv = otrng_plugin_conversation_to_purple_conv(pconv, 1);
 
   SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
@@ -823,7 +823,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
     smppair = malloc(sizeof(SmpResponsePair));
     smppair->responder = responder;
-    smppair->conv = otrg_plugin_conversation_copy(pconv);
+    smppair->conv = otrng_plugin_conversation_copy(pconv);
 
     notebook = gtk_notebook_new();
     auth_opt_data = malloc(sizeof(AuthSignalData));
@@ -929,7 +929,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
 
 static GtkWidget *
 create_smp_progress_dialog(GtkWindow *parent,
-                           const otrg_plugin_conversation *conv) {
+                           const otrng_plugin_conversation *conv) {
   GtkWidget *dialog;
   GtkWidget *hbox;
   GtkWidget *vbox;
@@ -942,7 +942,7 @@ create_smp_progress_dialog(GtkWindow *parent,
   PurpleConversation *pconv;
   SMPData *smp_data;
 
-  pconv = otrg_plugin_conversation_to_purple_conv(conv, 1);
+  pconv = otrng_plugin_conversation_to_purple_conv(conv, 1);
   PurpleAccount *account = purple_conversation_get_account(pconv);
   const char *username =
       purple_normalize(account, purple_conversation_get_name(pconv));
@@ -1024,7 +1024,7 @@ create_smp_progress_dialog(GtkWindow *parent,
 
   g_signal_connect(G_OBJECT(dialog), "response",
                    G_CALLBACK(smp_progress_response_cb),
-                   otrg_plugin_conversation_copy(conv));
+                   otrng_plugin_conversation_copy(conv));
 
   gtk_widget_show_all(dialog);
 
@@ -1092,7 +1092,7 @@ static int otrg_gtk_dialog_display_otr_message(const char *accountname,
                                                const char *msg,
                                                int force_create) {
   /* See if there's a conversation window we can put this in. */
-  PurpleConversation *conv = otrg_plugin_userinfo_to_conv(
+  PurpleConversation *conv = otrng_plugin_userinfo_to_conv(
       accountname, protocol, username, force_create);
 
   if (!conv)
@@ -1161,7 +1161,7 @@ otrg_gtk_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
         who, AUTHENTICATE_HELPURL, _("?lang=en"));
   }
 
-  conv = otrg_plugin_userinfo_to_conv(accountname, protocol, who, TRUE);
+  conv = otrng_plugin_userinfo_to_conv(accountname, protocol, who, TRUE);
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
@@ -1264,11 +1264,11 @@ static void dialog_update_label_conv(PurpleConversation *conv,
   otr_add_buddy_top_menus(conv); // TODO: third call to build_otr_menu.
 }
 
-static void dialog_update_label_real(const otrg_plugin_conversation *context) {
+static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   PurpleAccount *account;
   PurpleConversation *conv;
 
-  TrustLevel level = otrg_plugin_conversation_to_trust(context);
+  TrustLevel level = otrng_plugin_conversation_to_trust(context);
 
   account = purple_accounts_find(context->account, context->protocol);
   if (!account)
@@ -1280,14 +1280,14 @@ static void dialog_update_label_real(const otrg_plugin_conversation *context) {
   dialog_update_label_conv(conv, level);
 }
 
-static otrg_plugin_conversation *
+static otrng_plugin_conversation *
 conn_context_to_plugin_conversation(ConnContext *context) {
   if (!context) {
     return NULL;
   }
 
-  otrg_plugin_conversation *plugin_conv =
-      malloc(sizeof(otrg_plugin_conversation));
+  otrng_plugin_conversation *plugin_conv =
+      malloc(sizeof(otrng_plugin_conversation));
   if (!plugin_conv) {
     return NULL;
   }
@@ -1300,7 +1300,7 @@ conn_context_to_plugin_conversation(ConnContext *context) {
 }
 
 struct vrfy_fingerprint_data {
-  otrg_plugin_fingerprint *fprint;
+  otrng_plugin_fingerprint *fprint;
   char *accountname, *username, *protocol;
   otrl_instag_t their_instance;
 };
@@ -1313,7 +1313,7 @@ static void vrfy_fingerprint_data_free(struct vrfy_fingerprint_data *vfd) {
 }
 
 static struct vrfy_fingerprint_data *
-vrfy_fingerprint_data_new(otrg_plugin_fingerprint *fprint) {
+vrfy_fingerprint_data_new(otrng_plugin_fingerprint *fprint) {
   struct vrfy_fingerprint_data *vfd;
 
   vfd = malloc(sizeof(*vfd));
@@ -1334,11 +1334,11 @@ static void vrfy_fingerprint_destroyed(GtkWidget *w,
 
 static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data) {
   struct vrfy_fingerprint_data *vfd = data;
-  otrg_plugin_fingerprint *fprint;
+  otrng_plugin_fingerprint *fprint;
   int oldtrust, trust;
 
   // TODO: maybe we need to get the reference again?
-  // otrg_plugin_fingerprint_get(vfd->fprint->fingerprint)
+  // otrng_plugin_fingerprint_get(vfd->fprint->fingerprint)
   fprint = vfd->fprint;
 
   if (fprint == NULL) {
@@ -1357,7 +1357,7 @@ static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data) {
 
   /* Write the new info to disk, redraw the ui, and redraw the
    * OTR buttons. */
-  otrg_plugin_write_fingerprints();
+  otrng_plugin_write_fingerprints();
   otrg_ui_update_keylist();
   otrg_dialog_resensitize_all();
 }
@@ -1403,7 +1403,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
 
 // TODO: this has duplicated logic. See: add_to_vbox_verify_fingerprint
 static void verify_fingerprint(GtkWindow *parent,
-                               otrg_plugin_fingerprint *fprint) {
+                               otrng_plugin_fingerprint *fprint) {
   GtkWidget *dialog;
   char our_hash[OTRNG_FPRINT_HUMAN_LEN];
   char *primary;
@@ -1451,14 +1451,14 @@ static void verify_fingerprint(GtkWindow *parent,
 }
 
 static void
-otrg_gtk_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint) {
+otrg_gtk_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint) {
   verify_fingerprint(NULL, fprint);
 }
 
 /* Create the SMP dialog.  responder is true if this is called in
  * response to someone else's run of SMP. */
 static void
-otrg_gtk_dialog_socialist_millionaires(const otrg_plugin_conversation *conv,
+otrg_gtk_dialog_socialist_millionaires(const otrng_plugin_conversation *conv,
                                        const char *question,
                                        gboolean responder) {
   char *primary;
@@ -1482,11 +1482,11 @@ otrg_gtk_dialog_socialist_millionaires(const otrg_plugin_conversation *conv,
 /* Call this to update the status of an ongoing socialist millionaires
  * protocol.  Progress_level is a percentage, from 0.0 (aborted) to
  * 1.0 (complete).  Any other value represents an intermediate state. */
-static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
+static void otrg_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
                                        otrng_smp_event_t smp_event,
                                        double progress_level) {
   PurpleConversation *conv =
-      otrg_plugin_conversation_to_purple_conv(context, 0);
+      otrng_plugin_conversation_to_purple_conv(context, 0);
   GtkProgressBar *bar;
   SMPData *smp_data = purple_conversation_get_data(conv, "otr-smpdata");
 
@@ -1523,11 +1523,11 @@ static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
       // each other, and not allow a single SMP to authenticate both.
       int responder = 0; // TODO: How can we know it now? We cant use
       // smp_data->smp_secret_smppair->responder (its is not available)
-      otrg_plugin_fingerprint *fp =
-          otrg_plugin_fingerprint_get_active(context->peer);
+      otrng_plugin_fingerprint *fp =
+          otrng_plugin_fingerprint_get_active(context->peer);
       if (fp && !responder) {
         fp->trusted = 1;
-        otrg_plugin_write_fingerprints();
+        otrng_plugin_write_fingerprints();
         otrg_ui_update_keylist();
         otrg_dialog_resensitize_all();
       }
@@ -1553,7 +1553,7 @@ static void otrg_gtk_dialog_update_smp(const otrg_plugin_conversation *context,
 
 /* Call this when a context transitions to ENCRYPTED. */
 static void
-otrg_gtk_dialog_connected_real(const otrg_plugin_conversation *context) {
+otrg_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
   PurpleConversation *conv;
   char *buf;
   char *format_buf;
@@ -1562,9 +1562,9 @@ otrg_gtk_dialog_connected_real(const otrg_plugin_conversation *context) {
   gboolean *is_multi_inst;
   int protocol_version;
 
-  conv = otrg_plugin_conversation_to_purple_conv(context, TRUE);
-  level = otrg_plugin_conversation_to_trust(context);
-  protocol_version = otrg_plugin_conversation_to_protocol_version(context);
+  conv = otrng_plugin_conversation_to_purple_conv(context, TRUE);
+  level = otrng_plugin_conversation_to_trust(context);
+  protocol_version = otrng_plugin_conversation_to_protocol_version(context);
 
   otrg_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
                     context->peer);
@@ -1636,12 +1636,12 @@ otrg_gtk_dialog_connected_real(const otrg_plugin_conversation *context) {
 
 /* Call this when a context transitions to PLAINTEXT. */
 static void
-otrg_gtk_dialog_disconnected_real(const otrg_plugin_conversation *context) {
+otrg_gtk_dialog_disconnected_real(const otrng_plugin_conversation *context) {
   PurpleConversation *conv;
   char *buf;
   OtrgUiPrefs prefs;
 
-  conv = otrg_plugin_conversation_to_purple_conv(context, TRUE);
+  conv = otrng_plugin_conversation_to_purple_conv(context, TRUE);
 
   PurpleAccount *account = purple_conversation_get_account(conv);
   const char *username =
@@ -1695,9 +1695,9 @@ static void otrg_gtk_dialog_finished(const char *accountname,
 
   g_free(buf);
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
-  TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+  TrustLevel level = otrng_plugin_conversation_to_trust(plugin_conv);
   free(plugin_conv);
 
   dialog_update_label_conv(conv, level);
@@ -1711,11 +1711,11 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context) {
   char *buf;
   char *format_buf;
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       conn_context_to_plugin_conversation(context);
-  TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
+  TrustLevel level = otrng_plugin_conversation_to_trust(plugin_conv);
 
-  conv = otrg_plugin_context_to_conv(context, 1);
+  conv = otrng_plugin_context_to_conv(context, 1);
 
   switch (level) {
   case TRUST_PRIVATE:
@@ -1754,7 +1754,7 @@ static void otrg_gtk_dialog_stillconnected(ConnContext *context) {
   g_free(format_buf);
 
   dialog_update_label_real(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 }
 
 /* This is called when the OTR button in the button box is clicked, or
@@ -1784,7 +1784,7 @@ static void otrg_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
 
   g_free(buf);
 
-  otrg_plugin_send_default_query_conv(conv);
+  otrng_plugin_send_default_query_conv(conv);
 }
 
 /* Called when SMP verification option selected from menu */
@@ -1797,21 +1797,21 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data) {
   if (!otrng_conversation_is_encrypted(otr_conv))
     return;
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
   otrg_gtk_dialog_socialist_millionaires(plugin_conv, NULL, FALSE);
-  otrg_plugin_conversation_free(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 }
 
 static void menu_whatsthis(GtkWidget *widget, gpointer data) {
   char *uri = g_strdup_printf("%s%s", LEVELS_HELPURL, _("?lang=en"));
-  purple_notify_uri(otrg_plugin_handle, uri);
+  purple_notify_uri(otrng_plugin_handle, uri);
   g_free(uri);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
   otrg_ui_disconnect_connection(data);
-  otrg_plugin_conversation_free(data);
+  otrng_plugin_conversation_free(data);
 }
 
 static void dialog_resensitize(PurpleConversation *conv);
@@ -1968,7 +1968,7 @@ static void otr_build_status_submenu(PidginWindow *win,
   if (convctx->convctx_type == convctx_conv) {
     conv = convctx->conv;
   } else if (convctx->convctx_type == convctx_ctx) {
-    conv = otrg_plugin_context_to_conv(convctx->context, 0);
+    conv = otrng_plugin_context_to_conv(convctx->context, 0);
   } else {
     return;
   }
@@ -2086,12 +2086,12 @@ static void otr_add_top_otr_menu(PurpleConversation *conv) {
   GtkWidget *topmenuitem;
 
   TrustLevel level = TRUST_NOT_PRIVATE;
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
   if (plugin_conv) {
-    level = otrg_plugin_conversation_to_trust(plugin_conv);
+    level = otrng_plugin_conversation_to_trust(plugin_conv);
   }
-  otrg_plugin_conversation_free(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   ConvOrContext *convctx;
   GHashTable *conv_or_ctx_map =
@@ -2222,9 +2222,9 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
       if (selected_instance) {
         *selected_instance = OTRL_INSTAG_BEST;
       }
-      context = (ConnContext *)otrg_plugin_conv_to_selected_context(conv, 1);
+      context = (ConnContext *)otrng_plugin_conv_to_selected_context(conv, 1);
 
-      recent_context = (ConnContext *)otrg_plugin_conv_to_context(
+      recent_context = (ConnContext *)otrng_plugin_conv_to_context(
           conv, OTRL_INSTAG_RECENT_RECEIVED, 0);
       if (context != recent_context) {
         gchar *buf = g_strdup_printf(
@@ -2250,10 +2250,10 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
   }
 
   pidgin_conv_switch_active_conversation(conv);
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
   dialog_update_label_real(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 }
 
 // TODO: Review this function. ConnContext was null when I had a buddy with
@@ -2261,8 +2261,8 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 // the pigdin-otr (version 3) calls "multi-instance".
 static void select_menu_ctx(GtkWidget *widget, gpointer data) {
   ConnContext *context = (ConnContext *)data;
-  PurpleConversation *conv = otrg_plugin_context_to_conv(context, 1);
-  ConnContext *recent_context = (ConnContext *)otrg_plugin_conv_to_context(
+  PurpleConversation *conv = otrng_plugin_context_to_conv(context, 1);
+  ConnContext *recent_context = (ConnContext *)otrng_plugin_conv_to_context(
       conv, (otrl_instag_t)OTRL_INSTAG_RECENT_RECEIVED, 0);
   otrl_instag_t *selected_instance =
       (otrl_instag_t *)purple_conversation_get_data(conv,
@@ -2278,10 +2278,10 @@ static void select_menu_ctx(GtkWidget *widget, gpointer data) {
   }
 
   pidgin_conv_switch_active_conversation(conv);
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
   dialog_update_label_real(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   if (is_multi_instance && *is_multi_instance && context != recent_context) {
     gchar *buf = g_strdup_printf(
@@ -2362,7 +2362,7 @@ otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList *instances,
   ConvOrContext convctx;
   GList *menu_list;
 
-  conv = otrg_plugin_context_to_conv(context, 0);
+  conv = otrng_plugin_context_to_conv(context, 0);
   selection_exists = g_hash_table_lookup_extended(
       conv->data, "otr-ui_selected_ctx", NULL, &gp_instance);
 
@@ -2415,10 +2415,10 @@ otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList *instances,
     instance_menu_item = gtk_image_menu_item_new_with_label(text);
     instance_submenu = gtk_menu_new();
 
-    otrg_plugin_conversation *plugin_conv =
+    otrng_plugin_conversation *plugin_conv =
         purple_conversation_to_plugin_conversation(conv);
-    level = otrg_plugin_conversation_to_trust(plugin_conv);
-    otrg_plugin_conversation_free(plugin_conv);
+    level = otrng_plugin_conversation_to_trust(plugin_conv);
+    otrng_plugin_conversation_free(plugin_conv);
 
     menu_image = otr_icon(NULL, level, selected);
 
@@ -2470,10 +2470,10 @@ otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList *instances,
     gtk_menu_shell_append(GTK_MENU_SHELL(menu), instance_menu_item);
   }
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
-  level = otrg_plugin_conversation_to_trust(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  level = otrng_plugin_conversation_to_trust(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   menu_image = otr_icon(NULL, level, active_conv);
   convctx.convctx_type = convctx_ctx;
@@ -2513,7 +2513,7 @@ otr_add_buddy_instances_top_menu(PidginConversation *gtkconv, GList *instances,
  */
 static void
 otr_add_buddy_top_menu(PidginConversation *gtkconv,
-                       const otrg_plugin_conversation *conv,
+                       const otrng_plugin_conversation *conv,
                        const ConvOrContext *convctx, // TODO: Remove convctx
                        gboolean active_conv, const char *username,
                        const char *accountname, int *pos) {
@@ -2528,12 +2528,12 @@ otr_add_buddy_top_menu(PidginConversation *gtkconv,
   gchar *tooltip_text;
   GtkWidget *select_ctx = NULL;
 
-  level = otrg_plugin_conversation_to_trust(conv);
+  level = otrng_plugin_conversation_to_trust(conv);
   menu_image = otr_icon(NULL, level, active_conv);
 
   menu = gtk_menu_new();
 
-  build_otr_menu(otrg_plugin_conversation_to_purple_conv(conv, 0), menu, level);
+  build_otr_menu(otrng_plugin_conversation_to_purple_conv(conv, 0), menu, level);
   otr_build_status_submenu(win, convctx, menu, level);
 
   if (!active_conv) {
@@ -2646,11 +2646,11 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
       username = g_strdup(
           purple_normalize(account, purple_conversation_get_name(currentConv)));
 
-      otrg_plugin_conversation *plugin_conv =
+      otrng_plugin_conversation *plugin_conv =
           purple_conversation_to_plugin_conversation(currentConv);
       otr_add_buddy_top_menu(gtkconv, plugin_conv, convctx, active_conv,
                              username, accountname, &pos);
-      otrg_plugin_conversation_free(plugin_conv);
+      otrng_plugin_conversation_free(plugin_conv);
       g_free(username);
     }
   }
@@ -2666,10 +2666,10 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   char *buf;
   char *status = "";
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
-  current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  current_level = otrng_plugin_conversation_to_trust(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
 
@@ -2830,10 +2830,10 @@ static void otrg_gtk_dialog_new_purple_conv(PurpleConversation *conv) {
 
   bbox = gtkconv->toolbar;
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
-  TrustLevel level = otrg_plugin_conversation_to_trust(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  TrustLevel level = otrng_plugin_conversation_to_trust(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   /* See if we're already set up */
   button = purple_conversation_get_data(conv, "otr-button");
@@ -3006,10 +3006,10 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
   TrustLevel *previous_level;
   int id;
 
-  otrg_plugin_conversation *plugin_conv =
+  otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
-  current_level = otrg_plugin_conversation_to_trust(plugin_conv);
-  otrg_plugin_conversation_free(plugin_conv);
+  current_level = otrng_plugin_conversation_to_trust(plugin_conv);
+  otrng_plugin_conversation_free(plugin_conv);
 
   previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
 
@@ -3075,8 +3075,8 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
     return 0;
   }
 
-  selected_instance = otrg_plugin_conv_to_selected_instag(conv, 0);
-  current_out = otrg_plugin_conv_to_selected_context(conv, 0);
+  selected_instance = otrng_plugin_conv_to_selected_instag(conv, 0);
+  current_out = otrng_plugin_conv_to_selected_context(conv, 0);
 
   last_received_instance =
       g_hash_table_lookup(conv->data, "otr-last_received_ctx");
@@ -3090,7 +3090,7 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
     have_received = TRUE;
   }
 
-  received_context = (ConnContext *)otrg_plugin_conv_to_context(
+  received_context = (ConnContext *)otrng_plugin_conv_to_context(
       conv, (otrl_instag_t)OTRL_INSTAG_RECENT_RECEIVED, 0);
 
   if (!received_context) {
@@ -3102,11 +3102,11 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
       selected_instance != OTRL_INSTAG_MASTER &&
       selected_instance < OTRL_MIN_VALID_INSTAG) {
 
-    otrg_plugin_conversation *plugin_conv =
+    otrng_plugin_conversation *plugin_conv =
         purple_conversation_to_plugin_conversation(conv);
     dialog_update_label_conv(conv,
-                             otrg_plugin_conversation_to_trust(plugin_conv));
-    otrg_plugin_conversation_free(plugin_conv);
+                             otrng_plugin_conversation_to_trust(plugin_conv));
+    otrng_plugin_conversation_free(plugin_conv);
   }
 
   *last_received_instance = received_context->their_instance;
@@ -3153,44 +3153,44 @@ static void otrg_gtk_dialog_init(void) {
       g_memdup(finished_png, sizeof(finished_png)), sizeof(finished_png), "");
 
   purple_signal_connect(pidgin_conversations_get_handle(),
-                        "conversation-switched", otrg_plugin_handle,
+                        "conversation-switched", otrng_plugin_handle,
                         PURPLE_CALLBACK(conversation_switched), NULL);
 
   purple_signal_connect(purple_conversations_get_handle(),
-                        "deleting-conversation", otrg_plugin_handle,
+                        "deleting-conversation", otrng_plugin_handle,
                         PURPLE_CALLBACK(conversation_destroyed), NULL);
 
   purple_signal_connect(pidgin_conversations_get_handle(),
-                        "conversation-timestamp", otrg_plugin_handle,
+                        "conversation-timestamp", otrng_plugin_handle,
                         PURPLE_CALLBACK(conversation_timestamp), NULL);
 
   purple_signal_connect(purple_conversations_get_handle(), "received-im-msg",
-                        otrg_plugin_handle,
+                        otrng_plugin_handle,
                         PURPLE_CALLBACK(check_incoming_instance_change), NULL);
 
-  purple_signal_connect(purple_get_core(), "quitting", otrg_plugin_handle,
+  purple_signal_connect(purple_get_core(), "quitting", otrng_plugin_handle,
                         PURPLE_CALLBACK(dialog_quitting), NULL);
 }
 
 /* Deinitialize the OTR dialog subsystem */
 static void otrg_gtk_dialog_cleanup(void) {
-  purple_signal_disconnect(purple_get_core(), "quitting", otrg_plugin_handle,
+  purple_signal_disconnect(purple_get_core(), "quitting", otrng_plugin_handle,
                            PURPLE_CALLBACK(dialog_quitting));
 
   purple_signal_disconnect(pidgin_conversations_get_handle(),
-                           "conversation-switched", otrg_plugin_handle,
+                           "conversation-switched", otrng_plugin_handle,
                            PURPLE_CALLBACK(conversation_switched));
 
   purple_signal_disconnect(pidgin_conversations_get_handle(),
-                           "conversation-timestamp", otrg_plugin_handle,
+                           "conversation-timestamp", otrng_plugin_handle,
                            PURPLE_CALLBACK(conversation_timestamp));
 
   purple_signal_disconnect(purple_conversations_get_handle(),
-                           "deleting-conversation", otrg_plugin_handle,
+                           "deleting-conversation", otrng_plugin_handle,
                            PURPLE_CALLBACK(conversation_destroyed));
 
   purple_signal_disconnect(purple_conversations_get_handle(), "received-im-msg",
-                           otrg_plugin_handle,
+                           otrng_plugin_handle,
                            PURPLE_CALLBACK(check_incoming_instance_change));
 
   /* If we're quitting, the imgstore will already have been destroyed

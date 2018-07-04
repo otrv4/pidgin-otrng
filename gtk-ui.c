@@ -70,7 +70,7 @@ static struct {
   GtkWidget *scrollwin;
   GtkWidget *keylist;
   gint sortcol, sortdir;
-  otrg_plugin_fingerprint *selected_fprint;
+  otrng_plugin_fingerprint *selected_fprint;
   GtkWidget *connect_button;
   GtkWidget *disconnect_button;
   GtkWidget *forget_button;
@@ -157,17 +157,17 @@ static void otrg_gtk_ui_update_keylist(void) {
   gtk_clist_freeze(GTK_CLIST(keylist));
   gtk_clist_clear(GTK_CLIST(keylist));
 
-  GList *fingerprints = otrg_plugin_fingerprint_get_all();
+  GList *fingerprints = otrng_plugin_fingerprint_get_all();
   GList *iter;
   for (iter = fingerprints; iter != NULL; iter = iter->next) {
-    otrg_plugin_conversation plugin_conv;
+    otrng_plugin_conversation plugin_conv;
     int i;
-    otrg_plugin_fingerprint *fp = iter->data;
+    otrng_plugin_fingerprint *fp = iter->data;
 
     plugin_conv.account = fp->account;
     plugin_conv.protocol = fp->protocol;
     plugin_conv.peer = fp->username;
-    TrustLevel level = otrg_plugin_conversation_to_trust(&plugin_conv);
+    TrustLevel level = otrng_plugin_conversation_to_trust(&plugin_conv);
 
     titles[0] = fp->username;
     // titles[1] = _("Unused");
@@ -203,7 +203,7 @@ static void generate(GtkWidget *widget, gpointer data) {
   if (account == NULL)
     return;
 
-  otrg_plugin_create_privkey(account);
+  otrng_plugin_create_privkey(account);
 }
 
 static void ui_destroyed(GtkObject *object) {
@@ -230,12 +230,12 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   int disconnect_sensitive = 0;
   int forget_sensitive = 0;
   int verify_sensitive = 0;
-  otrg_plugin_fingerprint *f =
+  otrng_plugin_fingerprint *f =
       gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist), row);
   // ConnContext *context_iter;
 
   otrng_conversation_s *otr_conv =
-      otrg_plugin_fingerprint_to_otr_conversation(f);
+      otrng_plugin_fingerprint_to_otr_conversation(f);
 
   if (f && otr_conv) {
     verify_sensitive = 1;
@@ -280,7 +280,7 @@ static int fngsortval(Fingerprint *f) {
 
     int is_active = 0;
     // TODO: get the correct trustlevel. See
-    // otrg_plugin_context_to_trust(ConnContext *context)
+    // otrng_plugin_context_to_trust(ConnContext *context)
     TrustLevel level = TRUST_NOT_PRIVATE;
 
     if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
@@ -288,7 +288,7 @@ static int fngsortval(Fingerprint *f) {
       is_active = 1;
     }
 
-    // level = otrg_plugin_context_to_trust(context_iter);
+    // level = otrng_plugin_context_to_trust(context_iter);
 
     if (level == TRUST_PRIVATE) {
       if (is_active) {
@@ -343,7 +343,7 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data) {
 }
 
 /* Send an OTR Query Message to attempt to start a connection */
-static void connect_connection_ui(otrg_plugin_conversation *conv) {
+static void connect_connection_ui(otrng_plugin_conversation *conv) {
   /* Send an OTR Query to the other side. */
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client)
@@ -356,7 +356,7 @@ static void connect_connection_ui(otrg_plugin_conversation *conv) {
   if (otrng_conversation_is_encrypted(otr_conv))
     return;
 
-  otrg_plugin_send_default_query(conv);
+  otrng_plugin_send_default_query(conv);
 }
 
 static void connect_connection(GtkWidget *widget, gpointer data) {
@@ -368,7 +368,7 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
     return;
   }
 
-  otrg_plugin_fingerprint *fp = ui_layout.selected_fprint;
+  otrng_plugin_fingerprint *fp = ui_layout.selected_fprint;
   account = purple_accounts_find(fp->account, fp->protocol);
   if (!account) {
     PurplePlugin *p = purple_find_prpl(fp->protocol);
@@ -380,7 +380,7 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
     return;
   }
 
-  otrg_plugin_conversation conv[1];
+  otrng_plugin_conversation conv[1];
   conv->protocol = fp->protocol;
   conv->account = fp->account;
   conv->peer = fp->username;
@@ -389,8 +389,8 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
 
 static void disconnect_connection(GtkWidget *widget, gpointer data) {
   /* Forget whatever state we've got with this context */
-  otrg_plugin_conversation conv[1];
-  otrg_plugin_fingerprint *fp = ui_layout.selected_fprint;
+  otrng_plugin_conversation conv[1];
+  otrng_plugin_fingerprint *fp = ui_layout.selected_fprint;
 
   if (!fp) {
     return;
@@ -403,12 +403,12 @@ static void disconnect_connection(GtkWidget *widget, gpointer data) {
 }
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data) {
-  otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+  otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
   otrg_ui_forget_fingerprint(fingerprint);
 }
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data) {
-  otrg_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
+  otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
   otrg_dialog_verify_fingerprint(fingerprint);
 }
 

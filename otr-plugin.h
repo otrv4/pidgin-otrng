@@ -44,7 +44,7 @@
 #define INSTAGFNAME "otr.instance_tags"
 #define MAXMSGSIZEFNAME "otr.max_message_size"
 
-extern PurplePlugin *otrg_plugin_handle;
+extern PurplePlugin *otrng_plugin_handle;
 
 extern otrng_user_state_s *otrng_userstate;
 
@@ -57,23 +57,23 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv);
 
 /* Given a PurpleConversation, return the ConnContext corresponding to the
  * selected instance tag. */
-ConnContext *otrg_plugin_conv_to_selected_context(PurpleConversation *conv,
+ConnContext *otrng_plugin_conv_to_selected_context(PurpleConversation *conv,
                                                   int force_create);
 
 /* Given a PurpleConversation, return the selected instag. */
-otrl_instag_t otrg_plugin_conv_to_selected_instag(PurpleConversation *conv,
+otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
                                                   otrl_instag_t default_value);
 
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
-void otrg_plugin_inject_message(PurpleAccount *account, const char *recipient,
+void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
                                 const char *message);
 
 /* Generate a private key for the given accountname/protocol */
-void otrg_plugin_create_privkey(PurpleAccount *account);
+void otrng_plugin_create_privkey(PurpleAccount *account);
 
 /* Generate a instance tag for the given accountname/protocol */
-void otrg_plugin_create_instag(const char *accountname, const char *protocol);
+void otrng_plugin_create_instag(const char *accountname, const char *protocol);
 
 // TODO: REPLACE by using opdata to get this information
 typedef struct {
@@ -82,61 +82,61 @@ typedef struct {
   char *peer;
   uint16_t their_instance_tag;
   uint16_t our_instance_tag;
-} otrg_plugin_conversation;
+} otrng_plugin_conversation;
 
-otrg_plugin_conversation *
+otrng_plugin_conversation *
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
 otrng_client_s *
-otrg_plugin_conversation_to_client(const otrg_plugin_conversation *conv);
+otrng_plugin_conversation_to_client(const otrng_plugin_conversation *conv);
 
-otrg_plugin_conversation *
-otrg_plugin_conversation_copy(const otrg_plugin_conversation *);
+otrng_plugin_conversation *
+otrng_plugin_conversation_copy(const otrng_plugin_conversation *);
 
-void otrg_plugin_conversation_free(otrg_plugin_conversation *);
+void otrng_plugin_conversation_free(otrng_plugin_conversation *);
 
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrg_plugin_start_smp(otrg_plugin_conversation *plugin_conv,
+void otrng_plugin_start_smp(otrng_plugin_conversation *plugin_conv,
                            const unsigned char *question, const size_t q_len,
                            const unsigned char *secret, size_t secretlen);
 
-void otrg_plugin_continue_smp(otrg_plugin_conversation *conv,
+void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
                               const unsigned char *secret, size_t secretlen);
 
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
  * are received. */
-void otrg_plugin_abort_smp(const otrg_plugin_conversation *conv);
+void otrng_plugin_abort_smp(const otrng_plugin_conversation *conv);
 
-void otrg_plugin_send_default_query(otrg_plugin_conversation *conv);
+void otrng_plugin_send_default_query(otrng_plugin_conversation *conv);
 
 /* Send the default OTR Query message to the correspondent of the given
  * conversation. */
-void otrg_plugin_send_default_query_conv(PurpleConversation *conv);
+void otrng_plugin_send_default_query_conv(PurpleConversation *conv);
 
 /* Disconnect a context, sending a notice to the other side, if
  * appropriate. */
-void otrg_plugin_disconnect(otrg_plugin_conversation *conv);
+void otrng_plugin_disconnect(otrng_plugin_conversation *conv);
 
 /* Write the fingerprints to disk. */
-void otrg_plugin_write_fingerprints(void);
+void otrng_plugin_write_fingerprints(void);
 
 /* Find the ConnContext appropriate to a given PurpleConversation. */
-ConnContext *otrg_plugin_conv_to_context(PurpleConversation *conv,
+ConnContext *otrng_plugin_conv_to_context(PurpleConversation *conv,
                                          otrl_instag_t their_instance,
                                          int force_create);
 
 /* Find the PurpleConversation appropriate to the given userinfo.  If
  * one doesn't yet exist, create it if force_create is true. */
-PurpleConversation *otrg_plugin_userinfo_to_conv(const char *accountname,
+PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
                                                  const char *protocol,
                                                  const char *username,
                                                  int force_create);
 
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */
-PurpleConversation *otrg_plugin_context_to_conv(ConnContext *context,
+PurpleConversation *otrng_plugin_context_to_conv(ConnContext *context,
                                                 int force_create);
 
 typedef enum {
@@ -147,21 +147,21 @@ typedef enum {
 } TrustLevel;
 
 TrustLevel
-otrg_plugin_conversation_to_trust(const otrg_plugin_conversation *conv);
+otrng_plugin_conversation_to_trust(const otrng_plugin_conversation *conv);
 
 /* What level of trust do we have in the privacy of this ConnContext? */
-TrustLevel otrg_plugin_context_to_trust(ConnContext *context);
+TrustLevel otrng_plugin_context_to_trust(ConnContext *context);
 
 /* Return 1 if the given protocol supports OTR, 0 otherwise. */
-int otrg_plugin_proto_supports_otr(const char *proto);
+int otrng_plugin_proto_supports_otr(const char *proto);
 
-int otrg_plugin_conversation_to_protocol_version(
-    const otrg_plugin_conversation *conv);
+int otrng_plugin_conversation_to_protocol_version(
+    const otrng_plugin_conversation *conv);
 
 static inline PurpleConversation *
-otrg_plugin_conversation_to_purple_conv(const otrg_plugin_conversation *conv,
+otrng_plugin_conversation_to_purple_conv(const otrng_plugin_conversation *conv,
                                         int force) {
-  return otrg_plugin_userinfo_to_conv(conv->account, conv->protocol, conv->peer,
+  return otrng_plugin_userinfo_to_conv(conv->account, conv->protocol, conv->peer,
                                       force);
 }
 
@@ -171,18 +171,18 @@ typedef struct {
   char *username;
   char fp[OTRNG_FPRINT_HUMAN_LEN];
   int trusted; // 0 - no, 1 - yes
-} otrg_plugin_fingerprint;
+} otrng_plugin_fingerprint;
 
-// otrg_plugin_fingerprint*
-// otrg_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
+// otrng_plugin_fingerprint*
+// otrng_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
 
 otrng_conversation_s *
-otrg_plugin_fingerprint_to_otr_conversation(otrg_plugin_fingerprint *f);
+otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f);
 
-GList *otrg_plugin_fingerprint_get_all(void);
+GList *otrng_plugin_fingerprint_get_all(void);
 
-otrg_plugin_fingerprint *otrg_plugin_fingerprint_get_active(const char *peer);
+otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer);
 
-void otrg_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
+void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
 
 #endif

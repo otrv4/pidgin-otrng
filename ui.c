@@ -88,7 +88,7 @@ void otrg_ui_update_keylist(void) {
 }
 
 /* Drop a context to PLAINTEXT state */
-void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv) {
+void otrg_ui_disconnect_connection(otrng_plugin_conversation *conv) {
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client)
     return;
@@ -99,26 +99,26 @@ void otrg_ui_disconnect_connection(otrg_plugin_conversation *conv) {
   /* Don't do anything with fingerprints other than the active one
    * if we're in the ENCRYPTED state */
   if (otrng_conversation_is_encrypted(otr_conv))
-    otrg_plugin_disconnect(conv);
+    otrng_plugin_disconnect(conv);
 }
 
 // TODO: should not this be in another file?
 /* Forget a fingerprint */
-void otrg_ui_forget_fingerprint(otrg_plugin_fingerprint *fingerprint) {
+void otrg_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
   if (fingerprint == NULL) {
     return;
   }
 
   otrng_conversation_s *otr_conv =
-      otrg_plugin_fingerprint_to_otr_conversation(fingerprint);
+      otrng_plugin_fingerprint_to_otr_conversation(fingerprint);
 
   /* Don't do anything with the active fingerprint if we're in the
    * ENCRYPTED state. */
   if (otrng_conversation_is_encrypted(otr_conv))
     return;
 
-  otrg_plugin_fingerprint_forget(fingerprint->fp);
-  otrg_plugin_write_fingerprints();
+  otrng_plugin_fingerprint_forget(fingerprint->fp);
+  otrng_plugin_write_fingerprints();
 
   otrg_ui_update_keylist();
 }
@@ -135,7 +135,7 @@ void otrg_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
                        const char *name) {
   /* Check to see if the protocol for this account supports OTR at all. */
   const char *proto = purple_account_get_protocol_id(account);
-  if (!otrg_plugin_proto_supports_otr(proto)) {
+  if (!otrng_plugin_proto_supports_otr(proto)) {
     prefsp->policy = OTRL_POLICY_NEVER;
     prefsp->avoid_logging_otr = TRUE;
     prefsp->show_otr_button = FALSE;

@@ -65,17 +65,17 @@ typedef struct {
                               const char *protocol, const char *who,
                               const unsigned char fingerprint[20]);
 
-  void (*verify_fingerprint)(otrg_plugin_fingerprint *fprint);
+  void (*verify_fingerprint)(otrng_plugin_fingerprint *fprint);
 
-  void (*socialist_millionaires)(const otrg_plugin_conversation *conv,
+  void (*socialist_millionaires)(const otrng_plugin_conversation *conv,
                                  const char *question, gboolean responder);
 
-  void (*update_smp)(const otrg_plugin_conversation *context,
+  void (*update_smp)(const otrng_plugin_conversation *context,
                      otrng_smp_event_t smp_event, double progress_level);
 
-  void (*connected)(const otrg_plugin_conversation *conv);
+  void (*connected)(const otrng_plugin_conversation *conv);
 
-  void (*disconnected)(const otrg_plugin_conversation *conv);
+  void (*disconnected)(const otrng_plugin_conversation *conv);
 
   void (*stillconnected)(ConnContext *context);
 
@@ -147,27 +147,27 @@ void otrg_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
                                      const unsigned char fingerprint[20]);
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrg_dialog_verify_fingerprint(otrg_plugin_fingerprint *fprint);
+void otrg_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint);
 
 /* Show a dialog asking the user to give an SMP secret. */
-void otrg_dialog_socialist_millionaires(const otrg_plugin_conversation *conv);
+void otrg_dialog_socialist_millionaires(const otrng_plugin_conversation *conv);
 
 /* Show a dialog asking the user to give an SMP secret, prompting with a
  * question. */
-void otrg_dialog_socialist_millionaires_q(const otrg_plugin_conversation *conv,
+void otrg_dialog_socialist_millionaires_q(const otrng_plugin_conversation *conv,
                                           const char *question);
 
 /* Update the status of an ongoing socialist millionaires protocol. */
-void otrg_dialog_update_smp(const otrg_plugin_conversation *context,
+void otrg_dialog_update_smp(const otrng_plugin_conversation *context,
                             otrng_smp_event_t smp_event, double progress_level);
 
 /* Call this when a context transitions to ENCRYPTED. */
-void otrg_dialog_conversation_connected(otrg_plugin_conversation *conv);
+void otrg_dialog_conversation_connected(otrng_plugin_conversation *conv);
 void otrg_dialog_connected(ConnContext *context);
 
 /* Call this when a context transitions to PLAINTEXT. */
 void otrg_dialog_conversation_disconnected(
-    const otrg_plugin_conversation *conv);
+    const otrng_plugin_conversation *conv);
 void otrg_dialog_disconnected(ConnContext *context);
 
 /* Call this when we receive a Key Exchange message that doesn't cause
