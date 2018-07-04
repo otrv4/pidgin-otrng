@@ -166,3 +166,9 @@ if test x$enable_linker_hardening != xno; then
 fi
 
 AC_OUTPUT([Makefile po/Makefile.in])
+
+echo \
+"----------------------------------------------------------------------------
+Thank you for installing pidgin plugin version ${PACKAGE_VERSION}.
+Installation completed in directory '${prefix}'.
+----------------------------------------------------------------------------"
