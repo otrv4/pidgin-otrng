@@ -287,8 +287,8 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
   GtkEntry *entry = smppair->entry;
 
   const char *user_question = NULL;
-  char *secret;
-  size_t secret_len;
+  char *secret = NULL;
+  size_t secret_len = 0;
 
   secret = g_strdup(gtk_entry_get_text(entry));
   secret_len = strlen(secret);
@@ -302,6 +302,7 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
 
       user_question = gtk_entry_get_text(question_entry);
 
+      // TODO: there is no strlen when NULL
       if (user_question == NULL || strlen(user_question) == 0) {
         g_free(secret);
         return 1;
@@ -309,8 +310,13 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
     }
 
     /* pass user question here */
-    otrng_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
+    if (!user_question) {
+    otrg_plugin_start_smp(smppair->conv, user_question, 0,
                           (const unsigned char *)secret, secret_len);
+    } else {
+    otrg_plugin_start_smp(smppair->conv, user_question, strlen(user_question),
+                          (const unsigned char *)secret, secret_len);
+    }
   } else {
     otrng_plugin_continue_smp(smppair->conv, (const unsigned char *)secret,
                              secret_len);

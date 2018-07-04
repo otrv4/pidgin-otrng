@@ -999,14 +999,16 @@ void otrng_plugin_conversation_free(otrng_plugin_conversation *conv) {
 void otrng_plugin_start_smp(otrng_plugin_conversation *conv,
                            const unsigned char *question, const size_t q_len,
                            const unsigned char *secret, size_t secretlen) {
-  otrng_client_s *client = otrng_plugin_conversation_to_client(conv);
-  if (!client)
+  otrng_client_s *client = otrg_plugin_conversation_to_client(conv);
+  if (!client) {
     return;
+  }
 
   char *tosend = NULL;
   if (otrng_client_smp_start(&tosend, conv->peer, question, q_len, secret,
-                             secretlen, client))
+                             secretlen, client)) {
     return; // ERROR?
+  }
 
   PurpleConversation *purp_conv = NULL;
   PurpleAccount *account = NULL;
@@ -1026,8 +1028,9 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
     return;
 
   char *tosend = NULL;
-  if (otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen, client))
+  if (otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen, client)) {
     return; // ERROR?
+  }
 
   PurpleConversation *purp_conv = NULL;
   PurpleAccount *account = NULL;
