@@ -276,9 +276,9 @@ static gboolean find_active_fingerprint(gpointer key, gpointer value,
 
   // TODO: get the "active" and not the first.
   if (!strcmp(info->username, user_data))
-    return true;
+    return TRUE;
 
-  return false;
+  return FALSE;
 }
 
 otrg_plugin_fingerprint *otrg_plugin_fingerprint_get_active(const char *peer) {
