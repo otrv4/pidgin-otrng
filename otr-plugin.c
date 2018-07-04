@@ -116,30 +116,22 @@ otrng_user_state_s *otrng_userstate = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
-GHashTable *mms_table = NULL;
+GHashTable *otrng_max_message_size_table = NULL;
 
-GHashTable *fingerprint_table = NULL;
+GHashTable *otrng_fingerprints_table = NULL;
 
-static void *protocol_and_account_to_purple_account(const char *protocol,
+static PurpleAccount *protocol_and_account_to_purple_account(const char *protocol,
                                                     const char *accountname) {
-  PurpleAccount *account = purple_accounts_find(accountname, protocol);
-  return account;
+  return purple_accounts_find(accountname, protocol);
 }
 
 otrng_client_s *otrng_client(const char *protocol, const char *accountname) {
-  void *opdata = protocol_and_account_to_purple_account(protocol, accountname);
-  if (!opdata) {
+  PurpleAccount *account = protocol_and_account_to_purple_account(protocol, accountname);
+  if (!account) {
     return NULL;
   }
 
-  otrng_client_s *ret = otrng_messaging_client_get(otrng_userstate, opdata);
-
-  // TODO: Replace by a callback. This is only necessary because libotr3 api
-  // use this all over, and we use libotr userstate.
-  ret->state->account_name = g_strdup(accountname);
-  ret->state->protocol_name = g_strdup(protocol);
-  otrng_client_state_set_padding(256, ret->state);
-  return ret;
+  return purple_account_to_otrng_client(account);
 }
 
 // TODO: REMOVE
@@ -148,9 +140,17 @@ otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
 
   // TODO: Replace by a callback. This is only necessary because libotr3 api
   // use this all over, and we use libotr userstate.
-  ret->state->account_name = g_strdup(purple_account_get_username(account));
-  ret->state->protocol_name = g_strdup(purple_account_get_protocol_id(account));
+  if (!ret->state->account_name) {
+     ret->state->account_name = g_strdup(purple_account_get_username(account));
+  }
+
+  if (!ret->state->protocol_name) {
+     ret->state->protocol_name = g_strdup(purple_account_get_protocol_id(account));
+  }
+
+  //TODO set padding from otrng_max_message_size_table
   otrng_client_state_set_padding(256, ret->state);
+
   return ret;
 }
 
@@ -233,17 +233,17 @@ static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
 }
 
 static void otrng_plugin_fingerprint_store_create() {
-  fingerprint_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+  otrng_fingerprints_table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
                                             g_destroy_plugin_fingerprint);
 }
 
 GList *otrng_plugin_fingerprint_get_all(void) {
-  return g_hash_table_get_values(fingerprint_table);
+  return g_hash_table_get_values(otrng_fingerprints_table);
 }
 
 otrng_plugin_fingerprint *
 otrng_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN]) {
-  return g_hash_table_lookup(fingerprint_table, fp);
+  return g_hash_table_lookup(otrng_fingerprints_table, fp);
 }
 
 otrng_plugin_fingerprint *
@@ -262,12 +262,12 @@ otrng_plugin_fingerprint_new(const char fp[OTRNG_FPRINT_HUMAN_LEN],
   info->username = g_strdup(peer);
 
   char *key = g_strdup(fp);
-  g_hash_table_insert(fingerprint_table, key, info);
+  g_hash_table_insert(otrng_fingerprints_table, key, info);
   return info;
 }
 
 void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]) {
-  g_hash_table_remove(fingerprint_table, fp);
+  g_hash_table_remove(otrng_fingerprints_table, fp);
 }
 
 static gboolean find_active_fingerprint(gpointer key, gpointer value,
@@ -282,7 +282,7 @@ static gboolean find_active_fingerprint(gpointer key, gpointer value,
 }
 
 otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer) {
-  return g_hash_table_find(fingerprint_table, find_active_fingerprint,
+  return g_hash_table_find(otrng_fingerprints_table, find_active_fingerprint,
                            (gpointer)peer);
 }
 
@@ -551,7 +551,7 @@ static void still_secure_cb(void *opdata, ConnContext *context, int is_reply) {
 }
 
 static int max_message_size_cb(void *opdata, ConnContext *context) {
-  void *lookup_result = g_hash_table_lookup(mms_table, context->protocol);
+  void *lookup_result = g_hash_table_lookup(otrng_max_message_size_table, context->protocol);
   if (!lookup_result) {
     return 0;
   } else {
@@ -874,11 +874,12 @@ static gboolean timer_fired_cb(gpointer data) {
 }
 
 static void process_sending_im(PurpleAccount *account, char *who,
-                               char **message, void *m) {
+                               char **message, void *ctx) {
   char *newmessage = NULL;
+  char *username = NULL;
+
   // const char *accountname = purple_account_get_username(account);
   // const char *protocol = purple_account_get_protocol_id(account);
-  char *username;
   // PurpleConversation * conv = NULL;
   // otrl_instag_t instance;
 
@@ -886,13 +887,12 @@ static void process_sending_im(PurpleAccount *account, char *who,
     return;
   }
 
-  username = g_strdup(purple_normalize(account, who));
-
   // conv = otrng_plugin_userinfo_to_conv(accountname, protocol, username, 1);
   // instance = otrng_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
-  int err = otrng_client_send(&newmessage, *message, username,
-                              purple_account_to_otrng_client(account));
+  username = g_strdup(purple_normalize(account, who));
+  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  int err = otrng_client_send(&newmessage, *message, username, otrng_client);
 
   // TODO: this message should be stored for retransmission
   if (err == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
@@ -908,11 +908,11 @@ static void process_sending_im(PurpleAccount *account, char *who,
   //}
 
   if (!err) {
-    char *ourm = g_strdup(newmessage);
     free(*message);
-    *message = ourm;
+    *message = g_strdup(newmessage);
   }
 
+  //TODO: This is probably because libotr use a different mechanism to allocate memory securely
   otrl_message_free(newmessage);
   g_free(username);
 }
@@ -1091,26 +1091,26 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
 static gboolean process_receiving_im(PurpleAccount *account, char **who,
                                      char **message, PurpleConversation *conv,
                                      PurpleMessageFlags *flags) {
+  char *username = NULL;
+  gboolean res = FALSE;
+  char *tosend = NULL;
+  char *todisplay = NULL;
+
   // OtrlTLV *tlvs = NULL;
   // OtrlTLV *tlv = NULL;
-  char *username;
-  gboolean res;
   // const char *accountname;
   // const char *protocol;
-  char *tosend;
-  char *todisplay;
 
   if (!who || !*who || !message || !*message) {
     return 0;
   }
 
-  username = g_strdup(purple_normalize(account, *who));
   // accountname = purple_account_get_username(account);
   // protocol = purple_account_get_protocol_id(account);
 
-  otrng_client_s *acc = purple_account_to_otrng_client(account);
-
-  res = otrng_client_receive(&tosend, &todisplay, *message, username, acc);
+  username = g_strdup(purple_normalize(account, *who));
+  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  res = otrng_client_receive(&tosend, &todisplay, *message, username, otrng_client);
 
   // TODO: client might optionally pass a warning here
   if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
@@ -1118,14 +1118,14 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   }
 
   if (tosend) {
+    //TODO: Should this send to the original who or to the normalized who?
     otrng_plugin_inject_message(account, username, tosend);
     free(tosend);
   }
 
   if (todisplay) {
-    char *ourm = g_strdup(todisplay);
     free(*message);
-    *message = ourm;
+    *message = g_strdup(todisplay);
   } else {
     /* If we're supposed to ignore this incoming message (because it's a
      * protocol message), set it to NULL, so that other plugins that
@@ -1142,11 +1142,9 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   //    otrng_dialog_finished(accountname, protocol, username);
   //    otrng_ui_update_keylist();
   //}
-
   // otrl_tlv_free(tlvs);
 
   free(username);
-
   return res;
 }
 
@@ -1364,7 +1362,7 @@ void otrng_plugin_write_fingerprints_v4(void) {
     return;
   }
 
-  g_hash_table_foreach(fingerprint_table, add_fingerprint_to_file, storef);
+  g_hash_table_foreach(otrng_fingerprints_table, add_fingerprint_to_file, storef);
 
   fclose(storef);
 }
@@ -1630,14 +1628,14 @@ static void otrng_init_mms_table() {
   gchar *maxmsgsizefile;
   FILE *mmsf;
 
-  mms_table = g_hash_table_new_full(g_str_hash, g_str_equal, otrng_str_free,
+  otrng_max_message_size_table = g_hash_table_new_full(g_str_hash, g_str_equal, otrng_str_free,
                                     otrng_int_free);
 
   for (i = 0; mmsPairs[i].protid != NULL; i++) {
     char *nextprot = g_strdup(mmsPairs[i].protid);
     int *nextsize = g_malloc(sizeof(int));
     *nextsize = mmsPairs[i].maxmsgsize;
-    g_hash_table_insert(mms_table, nextprot, nextsize);
+    g_hash_table_insert(otrng_max_message_size_table, nextprot, nextsize);
   }
 
   maxmsgsizefile = g_build_filename(purple_user_dir(), MAXMSGSIZEFNAME, NULL);
@@ -1646,7 +1644,7 @@ static void otrng_init_mms_table() {
     mmsf = g_fopen(maxmsgsizefile, "rt");
     /* Actually read the file here */
     if (mmsf) {
-      mms_read_FILEp(mmsf, mms_table);
+      mms_read_FILEp(mmsf, otrng_max_message_size_table);
       fclose(mmsf);
     }
     g_free(maxmsgsizefile);
@@ -1654,8 +1652,8 @@ static void otrng_init_mms_table() {
 }
 
 static void otrng_free_mms_table() {
-  g_hash_table_destroy(mms_table);
-  mms_table = NULL;
+  g_hash_table_destroy(otrng_max_message_size_table);
+  otrng_max_message_size_table = NULL;
 }
 
 // TODO: May not be necessary. Remove.
@@ -1976,25 +1974,26 @@ static void otrng_plugin_watch_libpurple_events(void) {
 
 static gboolean otrng_plugin_load(PurplePlugin *handle) {
   if (otrng_plugin_init_userstate()) {
-    return 0;
+    return FALSE;
   }
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
   if (build_beta_dialog())
-    return 0;
+    return FALSE;
 #endif
 
   otrng_init_mms_table();
   otrng_plugin_handle = handle;
   otrng_plugin_timerid = 0;
 
-  otrng_plugin_watch_libpurple_events();
   otrng_ui_init();
   otrng_dialog_init();
 
   purple_conversation_foreach(process_conv_create);
 
-  return 1;
+  otrng_plugin_watch_libpurple_events();
+
+  return TRUE;
 }
 
 static gboolean otrng_plugin_unload(PurplePlugin *handle) {
@@ -2039,8 +2038,8 @@ static gboolean otrng_plugin_unload(PurplePlugin *handle) {
   otrng_user_state_free(otrng_userstate);
   otrng_userstate = NULL;
 
-  g_hash_table_remove_all(fingerprint_table);
-  fingerprint_table = NULL;
+  g_hash_table_remove_all(otrng_fingerprints_table);
+  otrng_fingerprints_table = NULL;
 
   otrng_free_mms_table();
 

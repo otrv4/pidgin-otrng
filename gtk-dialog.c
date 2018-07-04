@@ -674,6 +674,7 @@ static void add_to_vbox_verify_fingerprint(GtkWidget *vbox,
         "to the other."),
       _("If everything matches up, you should choose <b>I have</b> "
         "in the menu below."));
+
   label = gtk_label_new(NULL);
   gtk_label_set_markup(GTK_LABEL(label), label_text);
   gtk_label_set_selectable(GTK_LABEL(label), FALSE);
