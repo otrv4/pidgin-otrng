@@ -1,18 +1,33 @@
 LIBOTRDIR?=/usr/lib
 LIBGCRYPTDIR?=/usr/lib
+LIBOTRNGDIR?=/usr/lib
+# /usr/local/lib/libgoldilocks.a ??
 
-.libs/pidgin-otr.so: FORCE
+#TODO: use libtool to generate both the dynamic and static
+.libs/pidgin-otrng.so: FORCE
 	# Build everything from the standard Makefile
 	make
+
 	# Link everything, including libotr and libgcrypt, together into
 	# a single .o file
-	ld -r  .libs/otr-plugin.o .libs/ui.o .libs/dialogs.o .libs/gtk-ui.o \
-		.libs/gtk-dialog.o .libs/tooltipmenu.o $(LIBOTRDIR)/libotr.a \
-		$(LIBGCRYPTDIR)/libgcrypt.a $(LIBGCRYPTDIR)/libgpg-error.a \
+	ld -r  .libs/otrng-plugin.o \
+		.libs/plugin-all.o \
+		.libs/ui.o \
+		.libs/dialogs.o \
+		.libs/gtk-ui.o \
+		.libs/gtk-dialog.o \
+		.libs/tooltipmenu.o \
+		.libs/otrng-client.o \
+		$(LIBOTRDIR)/libotr.a \
+		$(LIBOTRNGDIR)/libotr-ng.a \
+		$(LIBGCRYPTDIR)/libgcrypt.a \
+		$(LIBGCRYPTDIR)/libgpg-error.a \
 		-o .libs/pidgin-otr-shared.o
+
 	# Make all the libgcrypt references local to that .o file
 	objcopy -w -L '*gcry*' .libs/pidgin-otr-shared.o \
 		.libs/pidgin-otr-static.o
+
 	# Turn the .o into a .so
 	gcc -shared .libs/pidgin-otr-static.o -Wl,-soname -Wl,pidgin-otr.so \
 		-o .libs/pidgin-otr.so
