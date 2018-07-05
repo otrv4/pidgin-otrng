@@ -46,9 +46,9 @@
 #include <libotr/message.h>
 #include <libotr/privkey.h>
 
-/* purple-otr headers */
+/* pidgin-otrng headers */
 #include "dialogs.h"
-#include "otr-plugin.h"
+#include "plugin-all.h"
 
 static const OtrgUiUiOps *ui_ops = NULL;
 

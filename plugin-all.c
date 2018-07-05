@@ -47,24 +47,6 @@
 #include "gtkplugin.h"
 #endif
 
-#ifdef ENABLE_NLS
-
-#ifdef WIN32
-/* On Win32, include win32dep.h from pidgin for correct definition
- * of LOCALEDIR */
-#include "win32dep.h"
-#endif /* WIN32 */
-
-/* internationalisation header */
-#include <glib/gi18n-lib.h>
-
-#else /* ENABLE_NLS */
-
-#define _(x) (x)
-#define N_(x) (x)
-
-#endif /* ENABLE_NLS */
-
 /* libotr headers */
 #include <libotr/proto.h>
 
@@ -74,16 +56,15 @@
 #include <libotr/tlv.h>
 #include <libotr/userstate.h>
 
-/* purple-otr headers */
-#include "dialogs.h"
-#include "otr-plugin.h"
-#include "ui.h"
+/* pidgin-otrng headers */
+#include "plugin-all.h"
 
 #ifdef USING_GTK
 
 #include <glib.h>
 
-/* purple-otr GTK headers */
+/* pidgin-otr GTK headers */
+#include "i18n.h"
 #include "gtk-dialog.h"
 #include "gtk-ui.h"
 
@@ -1989,42 +1970,11 @@ static void otrng_plugin_watch_libpurple_events(void) {
                         PURPLE_CALLBACK(supply_extended_menu), NULL);
 }
 
-static gboolean otrng_plugin_load(PurplePlugin *handle) {
-  if (otrng_plugin_init_userstate()) {
-    return FALSE;
-  }
-
-#if BETA_DIALOG && defined USING_GTK /* Only for beta */
-  if (build_beta_dialog())
-    return FALSE;
-#endif
-
-  otrng_init_mms_table();
-  otrng_plugin_handle = handle;
-  otrng_plugin_timerid = 0;
-
-  otrng_ui_init();
-  otrng_dialog_init();
-
-  purple_conversation_foreach(process_conv_create);
-
-  otrng_plugin_watch_libpurple_events();
-
-  return TRUE;
-}
-
-static gboolean otrng_plugin_unload(PurplePlugin *handle) {
+static void otrng_plugin_unwatch_libpurple_events(void) {
   void *conv_handle = purple_conversations_get_handle();
   void *conn_handle = purple_connections_get_handle();
   void *blist_handle = purple_blist_get_handle();
   void *core_handle = purple_get_core();
-
-  /* Clean up all of our state. */
-
-  purple_conversation_foreach(otrng_dialog_remove_conv);
-
-  otrng_dialog_cleanup();
-  otrng_ui_cleanup();
 
   purple_signal_disconnect(core_handle, "quitting", otrng_plugin_handle,
                            PURPLE_CALLBACK(process_quitting));
@@ -2048,6 +1998,53 @@ static gboolean otrng_plugin_unload(PurplePlugin *handle) {
   purple_signal_disconnect(blist_handle, "blist-node-extended-menu",
                            otrng_plugin_handle,
                            PURPLE_CALLBACK(supply_extended_menu));
+}
+
+/* Return 1 if the given protocol supports OTR, 0 otherwise. */
+int otrng_plugin_proto_supports_otr(const char *proto) {
+  /* Right now, OTR should work on all protocols, possibly
+   * with the help of fragmentation. */
+  return 1;
+}
+
+int otrng_plugin_conversation_to_protocol_version(
+    const otrng_plugin_conversation *conv) {
+  return 4; // TODO: get this from the OTR conversation
+}
+
+gboolean otrng_plugin_load(PurplePlugin *handle) {
+  if (otrng_plugin_init_userstate()) {
+    return FALSE;
+  }
+
+#if BETA_DIALOG && defined USING_GTK /* Only for beta */
+  if (build_beta_dialog())
+    return FALSE;
+#endif
+
+  otrng_init_mms_table();
+  otrng_plugin_handle = handle;
+  otrng_plugin_timerid = 0;
+
+  otrng_ui_init();
+  otrng_dialog_init();
+
+  purple_conversation_foreach(process_conv_create);
+
+  otrng_plugin_watch_libpurple_events();
+
+  return TRUE;
+}
+
+gboolean otrng_plugin_unload(PurplePlugin *handle) {
+  otrng_plugin_unwatch_libpurple_events();
+
+  /* Clean up all of our state. */
+  purple_conversation_foreach(otrng_dialog_remove_conv);
+
+  otrng_dialog_cleanup();
+  otrng_ui_cleanup();
+
 
   /* Stop the timer, if necessary */
   stop_start_timer(0);
@@ -2063,91 +2060,5 @@ static gboolean otrng_plugin_unload(PurplePlugin *handle) {
   return 1;
 }
 
-/* Return 1 if the given protocol supports OTR, 0 otherwise. */
-int otrng_plugin_proto_supports_otr(const char *proto) {
-  /* Right now, OTR should work on all protocols, possibly
-   * with the help of fragmentation. */
-  return 1;
-}
 
-int otrng_plugin_conversation_to_protocol_version(
-    const otrng_plugin_conversation *conv) {
-  return 4; // TODO: get this from the OTR conversation
-}
 
-#ifdef USING_GTK
-
-static PidginPluginUiInfo ui_info = {otrng_gtk_ui_make_widget};
-
-#define UI_INFO &ui_info
-#define PLUGIN_TYPE PIDGIN_PLUGIN_TYPE
-
-#else
-
-#define UI_INFO NULL
-#define PLUGIN_TYPE ""
-
-#endif
-
-static PurplePluginInfo otrng_plugin_info = {
-    PURPLE_PLUGIN_MAGIC,
-
-    /* Use the 2.0.x API */
-    2, /* major version  */
-    0, /* minor version  */
-
-    PURPLE_PLUGIN_STANDARD,  /* type           */
-    PLUGIN_TYPE,             /* ui_requirement */
-    0,                       /* flags          */
-    NULL,                    /* dependencies   */
-    PURPLE_PRIORITY_DEFAULT, /* priority       */
-    "otrng",                 /* id             */
-    NULL,                    /* name           */
-    PIDGIN_OTR_VERSION,      /* version        */
-    NULL,                    /* summary        */
-    NULL,                    /* description    */
-                             /* author         */
-    "Ian Goldberg, Rob Smits,\n"
-    "\t\t\tChris Alexander, Willy Lew, Lisa Du,\n"
-    "\t\t\tNikita Borisov <otr@cypherpunks.ca>",
-    "https://otr.cypherpunks.ca/", /* homepage       */
-
-    otrng_plugin_load,   /* load           */
-    otrng_plugin_unload, /* unload         */
-    NULL,                /* destroy        */
-
-    UI_INFO, /* ui_info        */
-    NULL,    /* extra_info     */
-    NULL,    /* prefs_info     */
-    NULL     /* actions        */
-};
-
-static void __otrng_init_plugin(PurplePlugin *plugin) {
-/* Set up the UI ops */
-#ifdef USING_GTK
-  otrng_ui_set_ui_ops(otrng_gtk_ui_get_ui_ops());
-  otrng_dialog_set_ui_ops(otrng_gtk_dialog_get_ui_ops());
-#endif
-
-#ifndef WIN32
-  /* Make key generation use /dev/urandom instead of /dev/random */
-  gcry_control(GCRYCTL_ENABLE_QUICK_RANDOM, 0);
-#endif
-
-  /* Initialize the OTR library */
-  OTRNG_INIT;
-
-#ifdef ENABLE_NLS
-  bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-#endif
-
-  otrng_plugin_info.name = _("Off-the-Record Messaging nextgen");
-  otrng_plugin_info.summary = _("Provides private and secure conversations");
-  otrng_plugin_info.description =
-      _("Preserves the privacy of IM communications "
-        "by providing encryption, authentication, "
-        "deniability, and perfect forward secrecy.");
-}
-
-PURPLE_INIT_PLUGIN(otrng, __otrng_init_plugin, otrng_plugin_info)

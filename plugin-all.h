@@ -19,8 +19,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __OTRG_OTR_PLUGIN_H__
-#define __OTRG_OTR_PLUGIN_H__
+#ifndef __OTRG_PLUGIN_ALL_H__
+#define __OTRG_PLUGIN_ALL_H__
 
 /* Purple headers */
 #include "account.h"
@@ -184,5 +184,8 @@ GList *otrng_plugin_fingerprint_get_all(void);
 otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer);
 
 void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
+
+gboolean otrng_plugin_unload(PurplePlugin *handle);
+gboolean otrng_plugin_load(PurplePlugin *handle);
 
 #endif

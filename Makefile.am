@@ -9,8 +9,15 @@ plugindir=		${libdir}/pidgin
 
 plugin_LTLIBRARIES=	pidgin-otrng.la
 
-pidgin_otrng_la_SOURCES=	otr-plugin.c ui.c dialogs.c gtk-ui.c gtk-dialog.c \
-                        tooltipmenu.c otrng-client.c
+pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
+				  plugin-all.c \
+				  ui.c \
+				  dialogs.c \
+				  gtk-ui.c \
+				  gtk-dialog.c \
+				  tooltipmenu.c \
+				  otrng-client.c
+
 pidgin_otrng_la_LDFLAGS=	-module -avoid-version
 pidgin_otrng_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@
 

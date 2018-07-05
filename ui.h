@@ -22,9 +22,12 @@
 #ifndef __OTRG_UI_H__
 #define __OTRG_UI_H__
 
+#include <libotr/proto.h>
 #include <libotr/context.h>
 
-#include "otr-plugin.h"
+#include "plugin-all.h"
+
+//#include "otrng-plugin.h"
 
 /* Global and per-buddy preferences */
 typedef struct {

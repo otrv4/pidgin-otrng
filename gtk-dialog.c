@@ -61,10 +61,10 @@
 #include <libotr/privkey.h>
 #include <libotr/userstate.h>
 
-/* purple-otr headers */
+/* pidgin-otrng headers */
 #include "gtk-dialog.h"
 #include "otr-icons.h"
-#include "otr-plugin.h"
+#include "plugin-all.h"
 #include "ui.h"
 
 static GHashTable *otr_win_menus = 0;

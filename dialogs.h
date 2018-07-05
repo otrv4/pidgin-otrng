@@ -30,7 +30,7 @@
 
 #include <libotr/message.h>
 
-#include "otr-plugin.h"
+#include "plugin-all.h"
 
 /* The various help URLs */
 #define BASE_HELPURL "https://otr-help.cypherpunks.ca/" PIDGIN_OTR_VERSION "/"

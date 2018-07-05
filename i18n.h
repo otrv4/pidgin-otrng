@@ -1,8 +1,8 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2012  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2014  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
- *                           Nikita Borisov
+ *                           Lisa Du, Nikita Borisov
  *                           <otr@cypherpunks.ca>
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,17 +19,25 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __OTRG_GTK_UI_H__
-#define __OTRG_GTK_UI_H__
+#ifndef __OTRG_I18N_H__
+#define __OTRG_I18N_H__
 
-#include <gtk/gtk.h>
+#ifdef ENABLE_NLS
 
-#include "ui.h"
+#ifdef WIN32
+/* On Win32, include win32dep.h from pidgin for correct definition
+ * of LOCALEDIR */
+#include "win32dep.h"
+#endif /* WIN32 */
 
-/* Construct the GTK OTR UI widget */
-GtkWidget *otrng_gtk_ui_make_widget(PurplePlugin *plugin);
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
 
-/* Get the GTK UI ops */
-const OtrgUiUiOps *otrng_gtk_ui_get_ui_ops(void);
+#else /* ENABLE_NLS */
+
+#define _(x) (x)
+#define N_(x) (x)
+
+#endif /* ENABLE_NLS */
 
 #endif

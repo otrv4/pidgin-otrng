@@ -47,9 +47,9 @@
 #define N_(x) (x)
 #endif
 
-/* purple-otr headers */
+/* pidgin-otrng headers */
 #include "dialogs.h"
-#include "otr-plugin.h"
+#include "plugin-all.h"
 #include "ui.h"
 
 struct otrsettingsdata {
