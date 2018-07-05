@@ -8,8 +8,9 @@ char *otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client) {
   char *ret = NULL;
 
   otrng_fingerprint_p our_fp = {0};
-  if (otrng_client_get_our_fingerprint(our_fp, client))
+  if (otrng_client_get_our_fingerprint(our_fp, client)) {
     return NULL;
+}
 
   ret = malloc(OTRNG_FPRINT_HUMAN_LEN);
   if (!ret) {

@@ -130,8 +130,9 @@ static void tooltip_menu_init(TooltipMenu *tooltip_menu) {
   GtkWidget *widget = GTK_WIDGET(tooltip_menu);
   gtk_menu_item_set_right_justified(GTK_MENU_ITEM(tooltip_menu), TRUE);
 
-  if (!GTK_IS_WIDGET(tooltip_menu->tray))
+  if (!GTK_IS_WIDGET(tooltip_menu->tray)) {
     tooltip_menu->tray = gtk_hbox_new(FALSE, 0);
+}
 
   tooltip_menu->tooltips = gtk_tooltips_new();
 
@@ -189,10 +190,11 @@ static void tooltip_menu_add(TooltipMenu *tooltip_menu, GtkWidget *widget,
 
   tooltip_menu_set_tooltip(tooltip_menu, widget, tooltip);
 
-  if (prepend)
+  if (prepend) {
     gtk_box_pack_start(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
-  else
+  } else {
     gtk_box_pack_end(GTK_BOX(tooltip_menu->tray), widget, FALSE, FALSE, 0);
+}
 }
 
 void tooltip_menu_append(TooltipMenu *tooltip_menu, GtkWidget *widget,
@@ -207,8 +209,9 @@ void tooltip_menu_prepend(TooltipMenu *tooltip_menu, GtkWidget *widget,
 
 void tooltip_menu_set_tooltip(TooltipMenu *tooltip_menu, GtkWidget *widget,
                               const char *tooltip) {
-  if (!tooltip_menu->tooltips)
+  if (!tooltip_menu->tooltips) {
     return;
+}
 
   /* Should we check whether widget is a child of tooltip_menu? */
 
@@ -219,8 +222,9 @@ void tooltip_menu_set_tooltip(TooltipMenu *tooltip_menu, GtkWidget *widget,
    * case, we want to set the tooltip on the widget's parent,
    * not on the widget itself.
    */
-  if (GTK_WIDGET_NO_WINDOW(widget))
+  if (GTK_WIDGET_NO_WINDOW(widget)) {
     widget = widget->parent;
+}
 
   gtk_tooltips_set_tip(tooltip_menu->tooltips, widget, tooltip, NULL);
 }

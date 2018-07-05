@@ -90,16 +90,18 @@ void otrng_ui_update_keylist(void) {
 /* Drop a context to PLAINTEXT state */
 void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv) {
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
-  if (!client)
+  if (!client) {
     return;
+}
 
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, conv->peer, client);
 
   /* Don't do anything with fingerprints other than the active one
    * if we're in the ENCRYPTED state */
-  if (otrng_conversation_is_encrypted(otr_conv))
+  if (otrng_conversation_is_encrypted(otr_conv)) {
     otrng_plugin_disconnect(conv);
+}
 }
 
 // TODO: should not this be in another file?
@@ -114,8 +116,9 @@ void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
 
   /* Don't do anything with the active fingerprint if we're in the
    * ENCRYPTED state. */
-  if (otrng_conversation_is_encrypted(otr_conv))
+  if (otrng_conversation_is_encrypted(otr_conv)) {
     return;
+}
 
   otrng_plugin_fingerprint_forget(fingerprint->fp);
   otrng_plugin_write_fingerprints();

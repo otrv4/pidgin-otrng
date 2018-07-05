@@ -94,18 +94,21 @@ static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
 
     if (fingerprint) {
       s = g_strdup_printf(_("Fingerprint: %.80s"), fingerprint);
-      if (ui_layout.generate_button)
+      if (ui_layout.generate_button) {
         gtk_widget_set_sensitive(ui_layout.generate_button, 0);
+}
     } else {
       s = g_strdup(_("No key present"));
-      if (ui_layout.generate_button)
+      if (ui_layout.generate_button) {
         gtk_widget_set_sensitive(ui_layout.generate_button, 1);
+}
     }
     free(fingerprint);
   } else {
     s = g_strdup(_("No account available"));
-    if (ui_layout.generate_button)
+    if (ui_layout.generate_button) {
       gtk_widget_set_sensitive(ui_layout.generate_button, 0);
+}
   }
   if (fprint) {
     gtk_label_set_text(GTK_LABEL(fprint), s ? s : "");
@@ -151,8 +154,9 @@ static void otrng_gtk_ui_update_keylist(void) {
 
   GtkWidget *keylist = ui_layout.keylist;
 
-  if (keylist == NULL)
+  if (keylist == NULL) {
     return;
+}
 
   gtk_clist_freeze(GTK_CLIST(keylist));
   gtk_clist_clear(GTK_CLIST(keylist));
@@ -200,8 +204,9 @@ static void generate(GtkWidget *widget, gpointer data) {
   PurpleAccount *account;
   account = pidgin_account_option_menu_get_selected(ui_layout.accountmenu);
 
-  if (account == NULL)
+  if (account == NULL) {
     return;
+}
 
   otrng_plugin_create_privkey(account);
 }
@@ -346,15 +351,17 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data) {
 static void connect_connection_ui(otrng_plugin_conversation *conv) {
   /* Send an OTR Query to the other side. */
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
-  if (!client)
+  if (!client) {
     return;
+}
 
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, conv->peer, client);
 
   /* Don't do this if we're already ENCRYPTED */
-  if (otrng_conversation_is_encrypted(otr_conv))
+  if (otrng_conversation_is_encrypted(otr_conv)) {
     return;
+}
 
   otrng_plugin_send_default_query(conv);
 }
@@ -1031,16 +1038,18 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
   }
 
   buddy = purple_find_buddy(account, name);
-  if (!buddy)
+  if (!buddy) {
     return;
+}
 
   /* Get the buddy-specific policy, if present */
   otrng_gtk_ui_buddy_prefs_load(buddy, &buddyusedefault, &buddyenabled,
                                 &buddyautomatic, &buddyonlyprivate,
                                 &buddyavoidloggingotr);
 
-  if (buddyusedefault)
+  if (buddyusedefault) {
     return;
+}
 
   if (buddyenabled) {
     if (buddyautomatic) {
