@@ -1,27 +1,27 @@
-# Off-the-Record Messaging plugin for pidgin.
-# Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
-# 	                       Lisa Du, Nikita Borisov
-# This file is distributed under the same license as the pidgin-otr package.
-# Ian Goldberg <otr@cypherpunks.ca>, 2012
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pidgin-otr 4.0.0.nl\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-05 16:45-0300\n"
-"PO-Revision-Date: 2012-06-28 00:00+EDT\n"
-"Last-Translator: Paul Wouters <paul@cypherpunks.ca>\n"
-"Language-Team: Paul Wouters <paul@cypherpunks.ca>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
 #: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
 #: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
-msgstr "?lang=nl"
+msgstr ""
 
 #: ../gtk-dialog.c:504
 msgid ""
@@ -30,10 +30,6 @@ msgid ""
 "indicated below.  To authenticate to your buddy, enter the answer and click "
 "OK."
 msgstr ""
-"Jouw vriend probeert te detecteren of ze echt met jou aan het praten is, of "
-"met iemand die zicht probeert voor te doen als jou. Je vriend heeft je de "
-"onderstaande vraag gesteld . Beantwoord deze vraag en selecteer OK om je te "
-"authenticiteren aan je vriend."
 
 #: ../gtk-dialog.c:512
 msgid ""
@@ -42,31 +38,25 @@ msgid ""
 "your buddy to enter the answer too.  If the answers don't match, then you "
 "may be talking to an imposter."
 msgstr ""
-"Om je te authenticiteren via een vraag moet je een vraag stellen die alleen "
-"door je vriend beantwoord kan worden. Vul de vraag en het antwoord in, en "
-"wacht op je vriend's antwoord. Als zijn of haar antwoord niet klopt, dan kan "
-"het zijn dat iemand anders zich als jouw vriend voordoet."
 
 #: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
-msgstr "Dit is de vraag die door jouw vriend gesteld werd"
+msgstr ""
 
 #: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
-msgstr "Vul de vraag hier in"
+msgstr ""
 
 #: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
-msgstr "Deze vriend is al geauthenticiteerd"
+msgstr ""
 
 #: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr ""
-"Vul het geheime antwoord hier in (hoofdletters zijn verschillend van kleine "
-"letters):"
 
 #: ../gtk-dialog.c:610
 msgid ""
@@ -74,15 +64,11 @@ msgid ""
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
 msgstr ""
-"Om te autenticiteren moet je een geheim kiezen dat alleen jij en jouw vriend "
-"kennen. Vul dit geheime antwoord in, en wacht tot je vriend de vraag ook "
-"beantwoordt heeft. Als de antwoorden niet overeen komen, kan het zijn dat "
-"iemand anders zich als jouw vriend voordoet."
 
 #: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
-msgstr "vul het geheime antwoord hier in:"
+msgstr ""
 
 #: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
 msgid ""
@@ -90,25 +76,20 @@ msgid ""
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
 msgstr ""
-"Om de vingerafdruk te controleren moet je contact opnemen met je vriend, via "
-"een <i>andere<i> vertrouwde manier, zoals een telefoon of via een GPG "
-"ondertekende email. Jullie moeten dan elkaar je eigen vingerafdruk vertellen."
 
 #: ../gtk-dialog.c:683
 msgid ""
 "If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr ""
-"Als alles klopt, dan kun je nu <b>Ik heb</b> in het onderstaande menu "
-"selecteren."
 
 #: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
-msgstr "[geen]"
+msgstr ""
 
 #: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
 #: ../plugin-all.c:507
 msgid "Unknown"
-msgstr "Onbekend"
+msgstr ""
 
 #: ../gtk-dialog.c:705
 #, c-format
@@ -119,82 +100,75 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"Jouw vingerafdruk, %s (%s):\n"
-"%s\n"
-"\n"
-"Vermeende vingerafdruk van %s:\n"
-"%s\n"
 
 #: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
-msgstr "Hoe wil je jouw vriend authenticeren"
+msgstr ""
 
 #: ../gtk-dialog.c:774
 msgid "Question and answer"
-msgstr "Vraag en antwoord"
+msgstr ""
 
 #: ../gtk-dialog.c:776
 msgid "Shared secret"
-msgstr "Gedeeld geheim"
+msgstr ""
 
 #: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
-msgstr "Handmatige vingerafdruk verificatie"
+msgstr ""
 
 #: ../gtk-dialog.c:827
 msgid "_Authenticate"
-msgstr "_Authenticeer"
+msgstr ""
 
 #: ../gtk-dialog.c:858
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
 msgstr ""
-"Authenticeren van een vriend garandeert dat de persoon waarmee je aan het "
-"praten bent, daadwerkelijk de vriend is waarmee je denkt te praten."
 
 #. Translators: you are asked to authenticate yourself
 #: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
-msgstr "Authenticeer jezelf aan je vriend"
+msgstr ""
 
 #. Translators: you asked your buddy to authenticate him/herself
 #: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
-msgstr "Authenticeren van vriend"
+msgstr ""
 
 #: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
-msgstr "Authenticeren aan %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
-msgstr "Authenticeren %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
-msgstr "We wachten op de vriend..."
+msgstr ""
 
 #: ../gtk-dialog.c:1067
 msgid "Generating private key"
-msgstr "Genereer geheime sleutel"
+msgstr ""
 
 #: ../gtk-dialog.c:1068
 msgid "Please wait"
-msgstr "Een moment A.U.B."
+msgstr ""
 
 #. Create the Please Wait... dialog
 #: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
-msgstr "Genereren van geheime sleutel voor %s (%s)..."
+msgstr ""
 
 #: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
-msgstr "%s Klaar."
+msgstr ""
 
 #: ../gtk-dialog.c:1164
 #, c-format
@@ -202,8 +176,6 @@ msgid ""
 "%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
 "%s\">authenticate</a> this buddy."
 msgstr ""
-"%s benadert je vanaf een onbekende computer. Je kunt het beste je vriend "
-"opnieuw <a href=\"%s%s\">authenticeren</a>."
 
 #: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
@@ -211,31 +183,29 @@ msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
 "\">authenticate</a> this buddy."
 msgstr ""
-"%s is nog niet ge-authenticeerd. Je kunt het beste je vriend nu <a href=\"%s"
-"%s\">authenticeren</a>."
 
 #: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
 #: ../gtk-ui.c:83
 msgid "Finished"
-msgstr "Klaar"
+msgstr ""
 
 #: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
 #: ../gtk-ui.c:83
 msgid "Private"
-msgstr "Prive"
+msgstr ""
 
 #: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
 #: ../gtk-ui.c:82
 msgid "Unverified"
-msgstr "Onbekend"
+msgstr ""
 
 #: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
-msgstr "Niet prive"
+msgstr ""
 
 #: ../gtk-dialog.c:1232
 msgid "OTR"
-msgstr "OTR"
+msgstr ""
 
 #. Translators: the following four messages should give alternative
 #. * sentences. The user selects the first or second message in a combo box;
@@ -243,28 +213,28 @@ msgstr "OTR"
 #. * the fourth message will follow it.
 #: ../gtk-dialog.c:1390
 msgid "I have not"
-msgstr "Ik heb niet"
+msgstr ""
 
 #. 2nd message
 #: ../gtk-dialog.c:1392
 msgid "I have"
-msgstr "Ik heb"
+msgstr ""
 
 #. 3rd message
 #: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
-msgstr "geverificeerd dat dit inderdaad de correcte"
+msgstr ""
 
 #. 4th message
 #: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
-msgstr "vingerafdruk van %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
-msgstr "Controleer vingerafdruk voor %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1442
 #, c-format
@@ -277,88 +247,77 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"<small><i>%s %s\n"
-"\n"
-"</i></small>Vingerafdruk van you, %s (%s):\n"
-"%s\n"
-"\n"
-"Vermeende vingerafdruk van %s:\n"
-"%s\n"
 
 #: ../gtk-dialog.c:1449
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
 msgstr ""
-"Als alles klopt, kun je in het bovenstaande dialoogvenster aangeven dat je "
-"de vingerafdruk hebt <b>geverificeerd</b>."
 
 #: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
-msgstr "Controleer vingerafdruk"
+msgstr ""
 
 #: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
-msgstr "Authenticatie van %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
-msgstr "Authenticeer %s"
+msgstr ""
 
 #: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
-msgstr "Authenticeer vriend"
+msgstr ""
 
 #: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
-msgstr "Er is een fout opgetreden tijdens de authenticatie."
+msgstr ""
 
 #: ../gtk-dialog.c:1550
 msgid "Authentication successful."
-msgstr "Authenticatie successvol."
+msgstr ""
 
 #: ../gtk-dialog.c:1553
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
 msgstr ""
-"Jouw vriend heeft jou geauthenticiteerd. Wellicht wil je nu jouw vriend "
-"authenticeren door middel van jouw eigen vraag voor je vriend."
 
 #: ../gtk-dialog.c:1559
 msgid "Authentication failed."
-msgstr "Authenticatie mislukt"
+msgstr ""
 
 #: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
-msgstr "Prive gesprek met %s gestart.%s%s"
+msgstr ""
 
 #: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
-msgstr "<a href=\"%s%s\">Ongeverifieerd</a> gesprek gestart met %%s.%%s%%s"
+msgstr ""
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
 #: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
-msgstr "Onbeveiligd gesprek gestart met %s.%s%s"
+msgstr ""
 
 #: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
-msgstr " Waarschuwing: het oude versie 1 protocol wordt gebruikt"
+msgstr ""
 
 #: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
-msgstr " Jouw programma slaat dit gesprek op."
+msgstr ""
 
 #: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
-msgstr " Jouw programma slaat dit gesprek niet op."
+msgstr ""
 
 #: ../gtk-dialog.c:1635
 #, c-format
@@ -367,26 +326,22 @@ msgid ""
 "\">multiple sessions</a>. Use the icon menu above if you wish to select the "
 "outgoing session."
 msgstr ""
-"Jouw vriend is meerdere keren ingelogd en OTR heeft <a href=\"%s%s"
-"\">meerdere sessies</a> tot stand gebracht. Gebruik het OTR ikoon menu "
-"hierboven als je wilt selecteren welk uitgaand gesprek je wilt gebruiken."
 
 #: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
-msgstr "Prive gesprek met %s verloren."
+msgstr ""
 
 #: ../gtk-dialog.c:1703
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
 msgstr ""
-"%s heeft het prive gesprek afgesloten; jij kunt dat het beste nu ook doen."
 
 #: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
-msgstr "Prive gesprek met %s opnieuw tot stand gebracht.%s"
+msgstr ""
 
 #: ../gtk-dialog.c:1741
 #, c-format
@@ -394,53 +349,51 @@ msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
 msgstr ""
-"<a href=\"%s%s\">Ongeverifieerd</a>gesprek met %%s opnieuw tot stand "
-"gebracht.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
 #: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
-msgstr "Niet-prive gesprek met %s opnieuw tot stand gebracht.%s"
+msgstr ""
 
 #: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
-msgstr "Poging prive gesprek met %s opnieuw tot stand te brengen..."
+msgstr ""
 
 #: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
-msgstr "Poging een prive gesprek te starten met %s..."
+msgstr ""
 
 #: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
-msgstr "Start _prive gesprek"
+msgstr ""
 
 #: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
-msgstr "Herstart _prive gesprek"
+msgstr ""
 
 #: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
-msgstr "_Authenticiteer vriend opnieuw"
+msgstr ""
 
 #: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
-msgstr "_Authenticiteer vriend"
+msgstr ""
 
 #: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
-msgstr "Niet prive"
+msgstr ""
 
 #: ../gtk-dialog.c:2030
 msgid "_What's this?"
-msgstr "_Wat is dit?"
+msgstr ""
 
 #: ../gtk-dialog.c:2065
 msgid "_End private conversation"
-msgstr "_Stop prive gesprek"
+msgstr ""
 
 #: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
@@ -449,30 +402,27 @@ msgid ""
 "active one (%u). Your buddy may not receive your messages. Use the icon menu "
 "above to select a different outgoing session."
 msgstr ""
-"Waarschuwing: De gekozen uitgaande OTR sessie (%u) is niet de meest recente "
-"actieve sessie (%u). Je vriend kan je berichten wellicht nu niet zien. "
-"Gebruik "
 
 #: ../gtk-dialog.c:2317
 msgid "Send to most secure"
-msgstr "Stuur naar de best beveiligde"
+msgstr ""
 
 #: ../gtk-dialog.c:2319
 msgid "Send to most recent"
-msgstr "Stuur naar de meest recente"
+msgstr ""
 
 #: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
-msgstr "Sessie %u"
+msgstr ""
 
 #: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
-msgstr "Selecteer"
+msgstr ""
 
 #: ../gtk-dialog.c:2464
 msgid "Selected"
-msgstr "Geselecteerd"
+msgstr ""
 
 #: ../gtk-dialog.c:2694
 #, c-format
@@ -480,215 +430,210 @@ msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
 msgstr ""
-"De privacy status van het huidige gesprek is nu: <a href=\"%s%s\">%s</a>"
 
 #: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
-msgstr "OTR Messaging"
+msgstr ""
 
 #: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
-msgstr "Vingerafdruk: %.80s"
+msgstr ""
 
 #: ../gtk-ui.c:100
 msgid "No key present"
-msgstr "Geen sleutel gevonden"
+msgstr ""
 
 #: ../gtk-ui.c:106
 msgid "No account available"
-msgstr "Geen account beschikbaar"
+msgstr ""
 
 #: ../gtk-ui.c:175
 msgid "Yes"
-msgstr "Ja"
+msgstr ""
 
 #: ../gtk-ui.c:175
 msgid "No"
-msgstr "Nee"
+msgstr ""
 
 #: ../gtk-ui.c:375
 #, c-format
 msgid "Account %s (%s) could not be found"
-msgstr "Account %s (%s) kon niet gevonden worden"
+msgstr ""
 
 #: ../gtk-ui.c:378
 msgid "Account not found"
-msgstr "Account niet gevonden"
+msgstr ""
 
 #: ../gtk-ui.c:437
 msgid "Enable private messaging"
-msgstr "Prive gesprekken aanzetten"
+msgstr ""
 
 #: ../gtk-ui.c:440
 msgid "Automatically initiate private messaging"
-msgstr "Automatisch prive gesprekken beginnen"
+msgstr ""
 
 #: ../gtk-ui.c:442
 msgid "Require private messaging"
-msgstr "Prive gesprekken verplicht stellen"
+msgstr ""
 
 #: ../gtk-ui.c:445
 msgid "Don't log OTR conversations"
-msgstr "Bewaar geen log bestanden van prive gesprekken."
+msgstr ""
 
 #: ../gtk-ui.c:483
 msgid "Show OTR button in toolbar"
-msgstr "Laat OTR knop in de toolbar zien"
+msgstr ""
 
 #: ../gtk-ui.c:614
 msgid "My private keys"
-msgstr "Mijn prive sleutels"
+msgstr ""
 
 #: ../gtk-ui.c:623
 msgid "Key for account:"
-msgstr "Sleutel voor account:"
+msgstr ""
 
 #: ../gtk-ui.c:647
 msgid "Generate"
-msgstr "Genereer"
+msgstr ""
 
 #: ../gtk-ui.c:679
 msgid "Default OTR Settings"
-msgstr "Standaard OTR instellingen"
+msgstr ""
 
 #: ../gtk-ui.c:705
 msgid "OTR UI Options"
-msgstr "OTR UI opties"
+msgstr ""
 
 #: ../gtk-ui.c:727
 msgid "Screenname"
-msgstr "IM naam"
+msgstr ""
 
 #: ../gtk-ui.c:728
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #: ../gtk-ui.c:729
 msgid "Verified"
-msgstr "Gecontroleerd"
+msgstr ""
 
 #: ../gtk-ui.c:730
 msgid "Fingerprint"
-msgstr "Vingerafdruk"
+msgstr ""
 
 #: ../gtk-ui.c:731
 msgid "Account"
-msgstr "Account"
+msgstr ""
 
 #: ../gtk-ui.c:766
 msgid "Start private connection"
-msgstr "Start prive gesprek"
+msgstr ""
 
 #: ../gtk-ui.c:774
 msgid "End private connection"
-msgstr "Stop prive gesprek"
+msgstr ""
 
 #: ../gtk-ui.c:790
 msgid "Forget fingerprint"
-msgstr "Vergeet deze vingerafdruk"
+msgstr ""
 
 #: ../gtk-ui.c:840
 msgid "Config"
-msgstr "Configuratie"
+msgstr ""
 
 #: ../gtk-ui.c:842
 msgid "Known fingerprints"
-msgstr "Bekende vingerafdrukken"
+msgstr ""
 
 #: ../gtk-ui.c:932 ../plugin-all.c:1292
 msgid "OTR Settings"
-msgstr "OTR Instellingen"
+msgstr ""
 
 #. Set the title
 #: ../gtk-ui.c:948
 #, c-format
 msgid "OTR Settings for %s"
-msgstr "OTR Instellingen voor %s"
+msgstr ""
 
 #: ../gtk-ui.c:966
 msgid "Use default OTR settings for this buddy"
-msgstr "Gebruik de standaard OTR instellingen voor deze vriend"
+msgstr ""
 
 #: ../otrng-plugin.c:101
-#, fuzzy
 msgid "Off-the-Record Messaging nextgen"
-msgstr "Off-the-Record Messaging"
+msgstr ""
 
 #: ../otrng-plugin.c:102
 msgid "Provides private and secure conversations"
-msgstr "Ondersteuning voor veilige prive gesprekken"
+msgstr ""
 
 #: ../otrng-plugin.c:104
 msgid ""
 "Preserves the privacy of IM communications by providing encryption, "
 "authentication, deniability, and perfect forward secrecy."
 msgstr ""
-"Waarborgt de privacy van IM communicatie door gebruik van encryptie, "
-"authenticatie, het kunnen ontkennen van berichten en sessie sleutels."
 
 #: ../plugin-all.c:286
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
-msgstr "Je bent niet online met het account %s (%s)."
+msgstr ""
 
 #: ../plugin-all.c:290
 msgid "Not connected"
-msgstr "Niet online"
+msgstr ""
 
 #: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
 #, c-format
 msgid "Out of memory building filenames!\n"
-msgstr "Geen geheugen meer om bestandsnamen op te bouwen!\n"
+msgstr ""
 
 #: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
 #, c-format
 msgid "Could not write private key file\n"
-msgstr "Kon prive sleutel niet schrijven!\n"
+msgstr ""
 
 #: ../plugin-all.c:506
 #, c-format
 msgid "Unknown account %s (%s)."
-msgstr "Onbekend account %s (%s)."
+msgstr ""
 
 #: ../plugin-all.c:509
 msgid "Unknown account"
-msgstr "Onbekend account"
+msgstr ""
 
 #: ../plugin-all.c:555
 msgid "Error occurred encrypting message."
-msgstr "Fout opgetreden tijdens het versleutelen van een bericht"
+msgstr ""
 
 #: ../plugin-all.c:559
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr ""
-"Je stuurde een versleuteld bericht aan %s, maar die verwachtte dat niet."
 
 #: ../plugin-all.c:565
 msgid "You transmitted an unreadable encrypted message."
-msgstr "Je verstuurde een onleesbaar versleuteld bericht"
+msgstr ""
 
 #: ../plugin-all.c:568
 msgid "You transmitted a malformed data message."
-msgstr "Je verstuurde een misvormt bericht"
+msgstr ""
 
 #: ../plugin-all.c:581
 msgid "[resent]"
-msgstr "[opnieuw verzonden]"
+msgstr ""
 
 #: ../plugin-all.c:621
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
-msgstr "Je probeerde een niet-versleuteld bericht te sturen naar %s"
+msgstr ""
 
 #: ../plugin-all.c:626
 msgid "Attempting to start a private conversation..."
-msgstr "Probeer een prive gesprek te starten..."
+msgstr ""
 
 #: ../plugin-all.c:628
 msgid "OTR Policy Violation"
-msgstr "OTR Policy Violation"
+msgstr ""
 
 #: ../plugin-all.c:629
 msgid ""
@@ -697,95 +642,83 @@ msgid ""
 "\n"
 "Your message will be retransmitted when the private conversation starts."
 msgstr ""
-"Niet-versleutelde berichten naar deze ontvanger zijn niet toegestaan. Er "
-"wordt nu geprobeerd een prive gesprek te beginnen.\n"
-"\n"
-"Je bericht zal verzonden worden nadat een prive gesprek is gestart."
 
 #: ../plugin-all.c:639
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr ""
-"Er is een fout opgetreden tijdens het versleutelen van je bericht. Dit "
-"bericht kon niet verstuurd worden"
 
 #: ../plugin-all.c:641
 msgid "Error encrypting message"
-msgstr "Fout bij besleutelen bericht"
+msgstr ""
 
 #: ../plugin-all.c:642
 msgid "An error occurred when encrypting your message"
-msgstr "Er is een fout opgetreden tijdens het versleutelen van je bericht"
+msgstr ""
 
 #: ../plugin-all.c:643
 msgid "The message was not sent."
-msgstr "Dit bericht kon niet vestuurd worden"
+msgstr ""
 
 #: ../plugin-all.c:646
 #, c-format
 msgid "%s has already closed his/her private connection to you"
-msgstr "%s heeft het prive gesprek met jou gestopt."
+msgstr ""
 
 #: ../plugin-all.c:651
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
 msgstr ""
-"Je bericht is niet verstuurd. Je moet je prive gesprek herstarten of stoppen."
 
 #: ../plugin-all.c:654
 msgid "Private connection closed"
-msgstr "Prive gesprek afgesloten"
+msgstr ""
 
 #: ../plugin-all.c:655
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
 msgstr ""
-"Je bericht is niet verstuurd. Je moet je prive gesprek herstarten of stoppen."
 
 #: ../plugin-all.c:665
 msgid "Error setting up private conversation: Malformed message received"
-msgstr "Fout bij opzetten prive gesprek. Misvormd bericht ontvangen"
+msgstr ""
 
 #: ../plugin-all.c:669
 #, c-format
 msgid "Error setting up private conversation: %s"
-msgstr "Fout bij opzetten prive gesprek: %s"
+msgstr ""
 
 #: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
 #: ../plugin-all.c:728 ../plugin-all.c:745
 msgid "OTR Error"
-msgstr "OTR Fout"
+msgstr ""
 
 #: ../plugin-all.c:683
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
 msgstr ""
-"We ontvangen onze eigen OTR berichten. Je bent of met jezelf aan het praten, "
-"of iemand stuurt jouw versleutelde berichten terug naar jou."
 
 #: ../plugin-all.c:688
 msgid "We are receiving our own OTR messages."
-msgstr "We ontvangen onze eigen OTR berichten"
+msgstr ""
 
 #: ../plugin-all.c:689
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
 msgstr ""
-"Je bent of met jezelf aan het praten, of iemand stuurt jouw versleutelde "
-"berichten terug naar jou."
 
 #: ../plugin-all.c:694
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
-msgstr "<b>Het laatste bericht aan %s is opnieuw verzonden.<b>"
+msgstr ""
 
 #: ../plugin-all.c:699
 msgid "Message resent"
-msgstr "Bericht opnieuw gestuurd"
+msgstr ""
 
 #: ../plugin-all.c:704
 #, c-format
@@ -793,32 +726,30 @@ msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
 "currently communicating privately.</b>"
 msgstr ""
-"Het versleutelde bericht dat je van %s ontvangen hebt is onleesbaar, omdat "
-"je op dit moment geen aktief prive gesprek hebt."
 
 #: ../plugin-all.c:710
 msgid "Unreadable message"
-msgstr "Onleesbaar bericht"
+msgstr ""
 
 #: ../plugin-all.c:714
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
-msgstr "We ontvingen een onleesbaar versleuteld bericht van %s."
+msgstr ""
 
 #: ../plugin-all.c:723
 #, c-format
 msgid "We received a malformed data message from %s."
-msgstr "We ontvingen een misvormd data bericht van %s."
+msgstr ""
 
 #: ../plugin-all.c:733
 #, c-format
 msgid "Heartbeat received from %s.\n"
-msgstr "Hartslag ontvangen van %s.\n"
+msgstr ""
 
 #: ../plugin-all.c:738
 #, c-format
 msgid "Heartbeat sent to %s.\n"
-msgstr "Hartslag gestuurd naar %s.\n"
+msgstr ""
 
 #: ../plugin-all.c:749
 #, c-format
@@ -829,12 +760,12 @@ msgstr ""
 
 #: ../plugin-all.c:754
 msgid "Received unencrypted message"
-msgstr "Ontving een niet-versleuteld bericht"
+msgstr ""
 
 #: ../plugin-all.c:759
 #, c-format
 msgid "Unrecognized OTR message received from %s.\n"
-msgstr "Onbekend OTR bericht onvangen van %s.\n"
+msgstr ""
 
 #: ../plugin-all.c:770
 #, c-format
@@ -842,19 +773,16 @@ msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
 msgstr ""
-"%s heeft een bericht gestuurd dat bedoeld was voor een andere sessie. A;s je "
-"meerdere keren ingelogd bent, heeft een andere sessie waarschijnlijk het "
-"bericht ontvangen."
 
 #: ../plugin-all.c:777
 msgid "Received message for a different session"
-msgstr "Bericht ontvangen voor een andere sessie"
+msgstr ""
 
 #. 2013-01-01
 #: ../plugin-all.c:1894 ../plugin-all.c:1920
 #, c-format
 msgid "OTR PLUGIN v%s"
-msgstr "OTR PLUGIN v%s"
+msgstr ""
 
 #: ../plugin-all.c:1904
 #, c-format
@@ -863,9 +791,6 @@ msgid ""
 "as of 2013-01-01. Please look for an updated release at http://otr."
 "cypherpunks.ca/"
 msgstr ""
-"Deze test versie van Off-the-Record Messaging v%s Pidgin plugin is vanaf "
-"2013 niet meer geldig. Kijk op http://otr.cypherpunks.ca/ voor een nieuwere "
-"versie."
 
 #: ../plugin-all.c:1930
 #, c-format
@@ -874,9 +799,3 @@ msgid ""
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
 msgstr ""
-"Je hebt een beta versie van Off-the-Record Messaging v%s Pidgin plugin. Deze "
-"versie is alleen bedoeld voor ontwikkelaars om te testen. Stuur vertaal "
-"fouten naar paul@cypherpunks.ca."
-
-#~ msgid "Unused"
-#~ msgstr "Ongebruikt"

@@ -1,6 +1,6 @@
 # Off-the-Record Messaging plugin for pidgin.
 # Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
-#	                       Lisa Du, Nikita Borisov
+# 	                       Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-08 22:00+0200\n"
+"POT-Creation-Date: 2018-07-05 16:45-0300\n"
 "PO-Revision-Date: 2012-06-26 22:01+0200\n"
 "Last-Translator: Yngve Spjeld Landro <l10n@landro.net>\n"
 "Language-Team: Norsk (nynorsk) <>\n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
-#: ../gtk-dialog.c:1547 ../gtk-dialog.c:1584 ../gtk-dialog.c:1673
-#: ../gtk-dialog.c:1748 ../gtk-dialog.c:2749
+#: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
+#: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
 msgstr "?lang=nn"
 
-#: ../gtk-dialog.c:480
+#: ../gtk-dialog.c:504
 msgid ""
 "Your buddy is attempting to determine if he or she is really talking to you, "
 "or if it's someone pretending to be you.  Your buddy has asked a question, "
@@ -36,7 +36,7 @@ msgstr ""
 "nedanfor. For å autentisera deg mot vedkomande må du skriva inn svaret og "
 "klikka OK."
 
-#: ../gtk-dialog.c:487
+#: ../gtk-dialog.c:512
 msgid ""
 "To authenticate using a question, pick a question whose answer is known only "
 "to you and your buddy.  Enter this question and this answer, then wait for "
@@ -48,27 +48,27 @@ msgstr ""
 "kontakten svarer. Om svara ikkje samsvarer kan det vera at du taler med ein "
 "svindlar."
 
-#: ../gtk-dialog.c:505
+#: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
 msgstr "Dette er spørsmålet kontakten din stilte:"
 
-#: ../gtk-dialog.c:508
+#: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
 msgstr "Skriv spørsmålet her:"
 
-#: ../gtk-dialog.c:540 ../gtk-dialog.c:624
+#: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
 msgstr "Kontakten er allereie autentisert."
 
-#: ../gtk-dialog.c:552
+#: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr ""
 "Skriv inn det hemmelege svaret her (skil mellom store og små bokstavar):"
 
-#: ../gtk-dialog.c:593
+#: ../gtk-dialog.c:610
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
@@ -78,12 +78,12 @@ msgstr ""
 "kjenner til. Skriv inn løyndomen, vent deretter på at kontakten skriv det "
 "same. Om dei ikkje samsvarer kan det vera at du taler med ein svindlar."
 
-#: ../gtk-dialog.c:607
+#: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
 msgstr "Skriv løyndommen her:"
 
-#: ../gtk-dialog.c:657 ../gtk-dialog.c:1408
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
 msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
@@ -93,22 +93,21 @@ msgstr ""
 "ein <i>annan</i> autentisert kanal som t.d. telefonen eller ei gpg-signert e-"
 "postmelding. Begge må opplysa den andre om fingeravtrykket sitt."
 
-#: ../gtk-dialog.c:661
+#: ../gtk-dialog.c:683
 msgid ""
 "If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Om alt samsvarer, bør du velja <b>Eg har</b> i menyen nedanfor."
 
-#: ../gtk-dialog.c:672 ../gtk-dialog.c:1397
+#: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
 msgstr "[ingen]"
 
-#: ../gtk-dialog.c:679 ../gtk-dialog.c:1051 ../gtk-dialog.c:1404
-#: ../gtk-dialog.c:1453 ../gtk-ui.c:212 ../otr-plugin.c:127
-#: ../otr-plugin.c:300 ../ui.c:112
+#: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
+#: ../plugin-all.c:507
 msgid "Unknown"
 msgstr "Ukjend"
 
-#: ../gtk-dialog.c:680
+#: ../gtk-dialog.c:705
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -123,27 +122,27 @@ msgstr ""
 "Påstått fingeravtrykk for %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:736
+#: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
 msgstr "Korleis vil du autentisera kontakten din?"
 
-#: ../gtk-dialog.c:745
+#: ../gtk-dialog.c:774
 msgid "Question and answer"
 msgstr "Spørsmål og svar"
 
-#: ../gtk-dialog.c:748
+#: ../gtk-dialog.c:776
 msgid "Shared secret"
 msgstr "Delt løyndom"
 
-#: ../gtk-dialog.c:751
+#: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
 msgstr "Manuell stadfesting av fingeravtrykk"
 
-#: ../gtk-dialog.c:802
+#: ../gtk-dialog.c:827
 msgid "_Authenticate"
 msgstr "_Autentiser"
 
-#: ../gtk-dialog.c:836
+#: ../gtk-dialog.c:858
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
@@ -152,49 +151,49 @@ msgstr ""
 "er ved å autentisera kontakten."
 
 #. Translators: you are asked to authenticate yourself
-#: ../gtk-dialog.c:946
+#: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
 msgstr "Autentiserer deg mot kontakten din"
 
 #. Translators: you asked your buddy to authenticate him/herself
-#: ../gtk-dialog.c:948
+#: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
 msgstr "Autentiserer kontakten"
 
-#: ../gtk-dialog.c:975
+#: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
 msgstr "Autentiserer deg mot %s"
 
-#: ../gtk-dialog.c:976
+#: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
 msgstr "Autentiserer %s"
 
-#: ../gtk-dialog.c:1009
+#: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
 msgstr "Ventar på kontakten …"
 
-#: ../gtk-dialog.c:1042
+#: ../gtk-dialog.c:1067
 msgid "Generating private key"
 msgstr "Lagar den private nøkkelen"
 
-#: ../gtk-dialog.c:1043
+#: ../gtk-dialog.c:1068
 msgid "Please wait"
 msgstr "Vent …"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1054
+#: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "Lagar den private nøkkelen for %s (%s) …"
 
-#: ../gtk-dialog.c:1099
+#: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
 msgstr "%s utført."
 
-#: ../gtk-dialog.c:1139
+#: ../gtk-dialog.c:1164
 #, c-format
 msgid ""
 "%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
@@ -203,7 +202,7 @@ msgstr ""
 "%s kontaktar deg frå ei ukjend datamaskin. Du bør <a href=\"%s%s"
 "\">autentisera</a> denne kontakten."
 
-#: ../gtk-dialog.c:1143
+#: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
 msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
@@ -212,26 +211,26 @@ msgstr ""
 "%s er enno ikkje vorten autentisert. Du bør <a href=\"%s%s\">autentisera</a> "
 "denne kontakten."
 
-#: ../gtk-dialog.c:1195 ../gtk-dialog.c:1969 ../gtk-dialog.c:2745
+#: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
 #: ../gtk-ui.c:83
 msgid "Finished"
 msgstr "Avslutta"
 
-#: ../gtk-dialog.c:1196 ../gtk-dialog.c:1966 ../gtk-dialog.c:2742
-#: ../gtk-ui.c:82
+#: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
+#: ../gtk-ui.c:83
 msgid "Private"
 msgstr "Privat"
 
-#: ../gtk-dialog.c:1197 ../gtk-dialog.c:1963 ../gtk-dialog.c:2739
-#: ../gtk-ui.c:81
+#: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
+#: ../gtk-ui.c:82
 msgid "Unverified"
 msgstr "Ikkje stadfesta"
 
-#: ../gtk-dialog.c:1198 ../gtk-ui.c:80
+#: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
 msgstr "Ikkje privat"
 
-#: ../gtk-dialog.c:1201
+#: ../gtk-dialog.c:1232
 msgid "OTR"
 msgstr "OTR"
 
@@ -239,32 +238,32 @@ msgstr "OTR"
 #. * sentences. The user selects the first or second message in a combo box;
 #. * the third message, a new line, a fingerprint, a new line, and
 #. * the fourth message will follow it.
-#: ../gtk-dialog.c:1351
+#: ../gtk-dialog.c:1390
 msgid "I have not"
 msgstr "Eg har ikkje"
 
 #. 2nd message
-#: ../gtk-dialog.c:1353
+#: ../gtk-dialog.c:1392
 msgid "I have"
 msgstr "Eg har"
 
 #. 3rd message
-#: ../gtk-dialog.c:1356
+#: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
 msgstr " stadfesta at dette verkeleg er det rette"
 
 #. 4th message
-#: ../gtk-dialog.c:1366
+#: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
 msgstr "fingeravtrykket for %s."
 
-#: ../gtk-dialog.c:1393
+#: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "Stadfest fingeravtrykket for %s"
 
-#: ../gtk-dialog.c:1405
+#: ../gtk-dialog.c:1442
 #, c-format
 msgid ""
 "<small><i>%s %s\n"
@@ -283,7 +282,7 @@ msgstr ""
 "Påstått fingeravtrykk for %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1412
+#: ../gtk-dialog.c:1449
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
@@ -291,33 +290,33 @@ msgstr ""
 "Om alt samsvarer, bør du visa i vindauget ovanfor at du verkeleg <b>har</b> "
 "stadfesta fingeravtrykket."
 
-#: ../gtk-dialog.c:1418 ../gtk-ui.c:844
+#: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "Stadfest fingeravtrykket"
 
-#: ../gtk-dialog.c:1445
+#: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
 msgstr "Autentiser frå %s"
 
-#: ../gtk-dialog.c:1448
+#: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
 msgstr "Autentiser %s"
 
-#: ../gtk-dialog.c:1456
+#: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
 msgstr "Autentiser kontakten"
 
-#: ../gtk-dialog.c:1487
+#: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
 msgstr "Det oppstod ein feil under autentiseringa."
 
-#: ../gtk-dialog.c:1502
+#: ../gtk-dialog.c:1550
 msgid "Authentication successful."
 msgstr "Autentiseringa var vellykka."
 
-#: ../gtk-dialog.c:1505
+#: ../gtk-dialog.c:1553
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
@@ -325,40 +324,40 @@ msgstr ""
 "Kontakten din har autentisert deg. Du vil kanskje autentisera han/ho du òg "
 "ved å stilla ditt eige spørsmål."
 
-#: ../gtk-dialog.c:1511
+#: ../gtk-dialog.c:1559
 msgid "Authentication failed."
 msgstr "Autentiseringa feila."
 
-#: ../gtk-dialog.c:1541
+#: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
 msgstr "Privat samtale med %s er starta.%s%s"
 
-#: ../gtk-dialog.c:1545
+#: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
 msgstr "<a href=\"%s%s\">Ikkje-stadfesta</a> samtale med %%s er starta.%%s%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1553
+#: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
 msgstr "Ikkje-private samtale med %s er starta.%s%s"
 
-#: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
+#: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
 msgstr "  Åtvaring: bruker gammal protokollutgåve 1."
 
-#: ../gtk-dialog.c:1561
+#: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
 msgstr "  Klienten din loggar denne samtalen."
 
-#: ../gtk-dialog.c:1562
+#: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
 msgstr "  Klienten din loggar ikkje denne samtalen."
 
-#: ../gtk-dialog.c:1581
+#: ../gtk-dialog.c:1635
 #, c-format
 msgid ""
 "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
@@ -368,23 +367,23 @@ msgstr ""
 "Kontakten din har logga på fleire gonger og OTR har oppretta <a href=\"%s%s"
 "\">fleire økter</a>. Bruk ikonmenyen over om du vil velja den utgåande økta."
 
-#: ../gtk-dialog.c:1601
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Har mist den private samtalen med %s."
 
-#: ../gtk-dialog.c:1638
+#: ../gtk-dialog.c:1703
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
 msgstr "%s har avslutta den private samtalen med deg.Du bør gjera det same."
 
-#: ../gtk-dialog.c:1665
+#: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "Vellykka oppfrisking av den private samtalen med %s.%s"
 
-#: ../gtk-dialog.c:1670
+#: ../gtk-dialog.c:1741
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
@@ -395,50 +394,50 @@ msgstr ""
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1679
+#: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "Vellykka oppfrisking av den ikkje-private samtalen med %s.%s"
 
-#: ../gtk-dialog.c:1712
+#: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "Prøver å friska opp den private samtalen med %s …"
 
-#: ../gtk-dialog.c:1714
+#: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "Prøver å starta opp ein privat samtale med %s …"
 
-#: ../gtk-dialog.c:1899 ../gtk-dialog.c:2026
+#: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
 msgstr "Start _privat samtale"
 
-#: ../gtk-dialog.c:1900
+#: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
 msgstr "Friskar opp den _private samtalen"
 
-#: ../gtk-dialog.c:1905
+#: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
 msgstr "Re-a_utentiserer kontakten"
 
-#: ../gtk-dialog.c:1906 ../gtk-dialog.c:2030
+#: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
 msgstr "_Autentiserer kontakten"
 
-#: ../gtk-dialog.c:1960 ../gtk-dialog.c:2736
+#: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
 msgstr "Ikkje privat"
 
-#: ../gtk-dialog.c:1982
+#: ../gtk-dialog.c:2030
 msgid "_What's this?"
 msgstr "_Kva er dette?"
 
-#: ../gtk-dialog.c:2028
+#: ../gtk-dialog.c:2065
 msgid "_End private conversation"
 msgstr "Avsl_utt den private samtalen"
 
-#: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
+#: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
 msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
@@ -449,28 +448,28 @@ msgstr ""
 "(%u). Det kan vera at kontakten din ikkje mottek meldingane dine. Bruk "
 "ikonmenyen over til å velja ei anna utgåande økt."
 
-#: ../gtk-dialog.c:2271
+#: ../gtk-dialog.c:2317
 msgid "Send to most secure"
 msgstr "Send til den mest sikre"
 
-#: ../gtk-dialog.c:2273
+#: ../gtk-dialog.c:2319
 msgid "Send to most recent"
 msgstr "Send til den aller nyaste"
 
-#: ../gtk-dialog.c:2377
+#: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
 msgstr "Økt %u"
 
-#: ../gtk-dialog.c:2395 ../gtk-dialog.c:2506
+#: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
 msgstr "Vel"
 
-#: ../gtk-dialog.c:2410
+#: ../gtk-dialog.c:2464
 msgid "Selected"
 msgstr "Vald"
 
-#: ../gtk-dialog.c:2731
+#: ../gtk-dialog.c:2694
 #, c-format
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
@@ -478,195 +477,214 @@ msgid ""
 msgstr ""
 "Personvernstatusen til den gjeldande samtalen er no: <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2956
+#: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
 msgstr "OTR-meldingsteneste"
 
-#: ../gtk-ui.c:103
+#: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "Fingeravtrykk: %.80s"
 
-#: ../gtk-ui.c:107
-#, c-format
+#: ../gtk-ui.c:100
 msgid "No key present"
 msgstr "Ingen nøkkel er til stades"
 
-#: ../gtk-ui.c:112
-#, c-format
+#: ../gtk-ui.c:106
 msgid "No account available"
 msgstr "Ingen konto er tilgjengeleg"
 
-#: ../gtk-ui.c:179
-msgid "Unused"
-msgstr "Ikkje brukt"
-
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "Yes"
 msgstr "Ja"
 
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "No"
 msgstr "Nei"
 
-#: ../gtk-ui.c:473
+#: ../gtk-ui.c:375
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "Fann ikkje kontoen %s (%s)"
+
+#: ../gtk-ui.c:378
+msgid "Account not found"
+msgstr "Fann ikkje kontoen"
+
+#: ../gtk-ui.c:437
 msgid "Enable private messaging"
 msgstr "Ta i bruk privat meldingsteneste"
 
-#: ../gtk-ui.c:475
+#: ../gtk-ui.c:440
 msgid "Automatically initiate private messaging"
 msgstr "Ta automatisk i bruk privat meldingsteneste"
 
-#: ../gtk-ui.c:477
+#: ../gtk-ui.c:442
 msgid "Require private messaging"
 msgstr "Krev privat meldingsteneste"
 
-#: ../gtk-ui.c:480
+#: ../gtk-ui.c:445
 msgid "Don't log OTR conversations"
 msgstr "Logg ikkje OTR-samtalar"
 
-#: ../gtk-ui.c:524
+#: ../gtk-ui.c:483
 msgid "Show OTR button in toolbar"
 msgstr "Syn OTR-knapp på verktøylinja"
 
-#: ../gtk-ui.c:663
+#: ../gtk-ui.c:614
 msgid "My private keys"
 msgstr "Dei private nøklane mine"
 
-#: ../gtk-ui.c:672
+#: ../gtk-ui.c:623
 msgid "Key for account:"
 msgstr "Nøkkel for kontoen:"
 
-#: ../gtk-ui.c:697
+#: ../gtk-ui.c:647
 msgid "Generate"
 msgstr "Lag"
 
-#: ../gtk-ui.c:738
+#: ../gtk-ui.c:679
 msgid "Default OTR Settings"
 msgstr "Standard OTR-innstillingar"
 
-#: ../gtk-ui.c:765
+#: ../gtk-ui.c:705
 msgid "OTR UI Options"
 msgstr "OTR-grensesnittval"
 
-#: ../gtk-ui.c:788
+#: ../gtk-ui.c:727
 msgid "Screenname"
 msgstr "Kallenamn"
 
-#: ../gtk-ui.c:789
+#: ../gtk-ui.c:728
 msgid "Status"
 msgstr "Status"
 
-#: ../gtk-ui.c:790
+#: ../gtk-ui.c:729
 msgid "Verified"
 msgstr "Stadfesta"
 
-#: ../gtk-ui.c:791
+#: ../gtk-ui.c:730
 msgid "Fingerprint"
 msgstr "Fingeravtrykk"
 
-#: ../gtk-ui.c:792
+#: ../gtk-ui.c:731
 msgid "Account"
 msgstr "Konto"
 
-#: ../gtk-ui.c:828
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "Start privat tilkopling"
 
-#: ../gtk-ui.c:836
+#: ../gtk-ui.c:774
 msgid "End private connection"
 msgstr "Avslutt privat tilkoping"
 
-#: ../gtk-ui.c:852
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "Gløym fingeravtrykket"
 
-#: ../gtk-ui.c:903
+#: ../gtk-ui.c:840
 msgid "Config"
 msgstr "Innstillingar"
 
-#: ../gtk-ui.c:905
+#: ../gtk-ui.c:842
 msgid "Known fingerprints"
 msgstr "Kjende fingeravtrykk"
 
-#: ../gtk-ui.c:1003 ../otr-plugin.c:964
+#: ../gtk-ui.c:932 ../plugin-all.c:1292
 msgid "OTR Settings"
 msgstr "OTR-innstillingar"
 
 #. Set the title
-#: ../gtk-ui.c:1021
+#: ../gtk-ui.c:948
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "OTR-innstillingar for %s"
 
-#. Make the cascaded checkboxes
-#: ../gtk-ui.c:1038
+#: ../gtk-ui.c:966
 msgid "Use default OTR settings for this buddy"
 msgstr "Bruk standard OTR-innstillingar for denne kontakten"
 
-#: ../otr-plugin.c:125
+#: ../otrng-plugin.c:101
+#, fuzzy
+msgid "Off-the-Record Messaging nextgen"
+msgstr "Off-the-Record-meldingsteneste"
+
+#: ../otrng-plugin.c:102
+msgid "Provides private and secure conversations"
+msgstr "Gjev private og trygge samtalar"
+
+#: ../otrng-plugin.c:104
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr ""
+"Tek vare på personvernet ditt når du nyttar lynmeldingstenester ved å tilby "
+"kryptering, autentisering, avvising og framtidssikring (PFS)."
+
+#: ../plugin-all.c:286
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "Du er ikkje tilkopla kontoen %s (%s)."
 
-#: ../otr-plugin.c:129
+#: ../plugin-all.c:290
 msgid "Not connected"
 msgstr "Ikkje tilkopla"
 
-#: ../otr-plugin.c:212 ../otr-plugin.c:254
+#: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "Gjekk tom for minne under filnamnopplistinga!\n"
 
-#: ../otr-plugin.c:224 ../otr-plugin.c:260
+#: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "Klarte ikkje å skriva den private nøkkelfila\n"
 
-#: ../otr-plugin.c:298
+#: ../plugin-all.c:506
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "Ukjend konto %s (%s)."
 
-#: ../otr-plugin.c:302
+#: ../plugin-all.c:509
 msgid "Unknown account"
 msgstr "Ukjend konto"
 
-#: ../otr-plugin.c:364
+#: ../plugin-all.c:555
 msgid "Error occurred encrypting message."
 msgstr "Det oppstod ein feil under meldingskrypteringa."
 
-#: ../otr-plugin.c:368
+#: ../plugin-all.c:559
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr "Du sende krypterte data til %s som ikkje venta det."
 
-#: ../otr-plugin.c:374
+#: ../plugin-all.c:565
 msgid "You transmitted an unreadable encrypted message."
 msgstr "Du sende ei uleseleg kryptert melding."
 
-#: ../otr-plugin.c:377
+#: ../plugin-all.c:568
 msgid "You transmitted a malformed data message."
 msgstr "Du sende ei ugyldig datamelding."
 
-#: ../otr-plugin.c:390
+#: ../plugin-all.c:581
 msgid "[resent]"
 msgstr "[sendt om att]"
 
-#: ../otr-plugin.c:459
+#: ../plugin-all.c:621
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
 msgstr "Du prøvde å senda ei ikkje-kryptert melding til %s"
 
-#: ../otr-plugin.c:462
+#: ../plugin-all.c:626
 msgid "Attempting to start a private conversation..."
 msgstr "Prøver å starta ei privat samtale …"
 
-#: ../otr-plugin.c:464
+#: ../plugin-all.c:628
 msgid "OTR Policy Violation"
 msgstr "OTR-regelbrot"
 
-#: ../otr-plugin.c:465
+#: ../plugin-all.c:629
 msgid ""
 "Unencrypted messages to this recipient are not allowed.  Attempting to start "
 "a private conversation.\n"
@@ -678,31 +696,31 @@ msgstr ""
 "\n"
 "Meldinga di vil verta sendt om att når den private samtalen startar."
 
-#: ../otr-plugin.c:474
+#: ../plugin-all.c:639
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr ""
 "Det oppstod ein feil under krypteringa av meldinga di. Meldinga vart ikkje "
 "sendt."
 
-#: ../otr-plugin.c:476
+#: ../plugin-all.c:641
 msgid "Error encrypting message"
 msgstr "Meldinga vart ikkje kryptert"
 
-#: ../otr-plugin.c:477
+#: ../plugin-all.c:642
 msgid "An error occurred when encrypting your message"
 msgstr "Det oppstod ein feil under krypteringa av meldinga"
 
-#: ../otr-plugin.c:478
+#: ../plugin-all.c:643
 msgid "The message was not sent."
 msgstr "Meldinga vart ikkje sendt."
 
-#: ../otr-plugin.c:481
+#: ../plugin-all.c:646
 #, c-format
 msgid "%s has already closed his/her private connection to you"
 msgstr "%s har allereie lukka den private tilkoplinga til deg"
 
-#: ../otr-plugin.c:484
+#: ../plugin-all.c:651
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
@@ -710,11 +728,11 @@ msgstr ""
 "Meldinga di vart ikkje sendt. Avslutt den private samtalen eller start han "
 "om att."
 
-#: ../otr-plugin.c:487
+#: ../plugin-all.c:654
 msgid "Private connection closed"
 msgstr "Den private tilkoplinga er lukka"
 
-#: ../otr-plugin.c:488
+#: ../plugin-all.c:655
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
@@ -722,21 +740,21 @@ msgstr ""
 "Meldinga di vart ikkje sendt. Avslutt den private tilkoplinga eller frisk "
 "han opp att."
 
-#: ../otr-plugin.c:498
+#: ../plugin-all.c:665
 msgid "Error setting up private conversation: Malformed message received"
 msgstr "Klarte ikkje å laga ein privat samtale: mottok ei ugyldig melding"
 
-#: ../otr-plugin.c:502
+#: ../plugin-all.c:669
 #, c-format
 msgid "Error setting up private conversation: %s"
 msgstr "Klarte ikkje å laga ein privat samtale: %s"
 
-#: ../otr-plugin.c:509 ../otr-plugin.c:520 ../otr-plugin.c:547
-#: ../otr-plugin.c:555 ../otr-plugin.c:573
+#: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
+#: ../plugin-all.c:728 ../plugin-all.c:745
 msgid "OTR Error"
 msgstr "OTR-feil"
 
-#: ../otr-plugin.c:516
+#: ../plugin-all.c:683
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
@@ -744,11 +762,11 @@ msgstr ""
 "Vi tek i mot våre eigne OTR-meldingar. Du prøver anten å tala med deg sjølv "
 "eller så vidaresender nokon meldingane attende til deg."
 
-#: ../otr-plugin.c:520
+#: ../plugin-all.c:688
 msgid "We are receiving our own OTR messages."
 msgstr "Vi tek i mot våre eigne OTR-meldingar."
 
-#: ../otr-plugin.c:521
+#: ../plugin-all.c:689
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
@@ -756,16 +774,16 @@ msgstr ""
 "Du prøver anten å tala med deg sjølv eller så vidaresender nokon meldingane "
 "attende til deg."
 
-#: ../otr-plugin.c:526
+#: ../plugin-all.c:694
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
 msgstr "<b>Den siste meldinga til %s vart sendt om att.</b>"
 
-#: ../otr-plugin.c:530
+#: ../plugin-all.c:699
 msgid "Message resent"
 msgstr "Meldinga vart sendt på nytt"
 
-#: ../otr-plugin.c:534
+#: ../plugin-all.c:704
 #, c-format
 msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
@@ -774,31 +792,31 @@ msgstr ""
 "<b>Kan ikkje lesa den krypterte meldinga som kom frå %s sidan samtalen ikkje "
 "er privat.</b>"
 
-#: ../otr-plugin.c:539
+#: ../plugin-all.c:710
 msgid "Unreadable message"
 msgstr "Meldinga ikkje lesast"
 
-#: ../otr-plugin.c:543
+#: ../plugin-all.c:714
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
 msgstr "Vi mottok ei uleseleg kryptert melding frå %s."
 
-#: ../otr-plugin.c:551
+#: ../plugin-all.c:723
 #, c-format
 msgid "We received a malformed data message from %s."
 msgstr "Vi mottok ei ugyldig datamelding frå %s."
 
-#: ../otr-plugin.c:559
+#: ../plugin-all.c:733
 #, c-format
 msgid "Heartbeat received from %s.\n"
 msgstr "Livsteikn motteke frå %s.\n"
 
-#: ../otr-plugin.c:565
+#: ../plugin-all.c:738
 #, c-format
 msgid "Heartbeat sent to %s.\n"
 msgstr "Livsteikn sendt til %s.\n"
 
-#: ../otr-plugin.c:576
+#: ../plugin-all.c:749
 #, c-format
 msgid ""
 "<b>The following message received from %s was <i>not</i> encrypted: [</b>"
@@ -807,16 +825,16 @@ msgstr ""
 "<b>Denne meldinga, som vart motteken frå %s, var <i>ikkje</i> kryptert: [</b>"
 "%s<b>]</b>"
 
-#: ../otr-plugin.c:581
+#: ../plugin-all.c:754
 msgid "Received unencrypted message"
 msgstr "Mottok ei ikkje-kryptert melding"
 
-#: ../otr-plugin.c:587
+#: ../plugin-all.c:759
 #, c-format
 msgid "Unrecognized OTR message received from %s.\n"
 msgstr "Ukjend OTR-melding motteken frå %s.\n"
 
-#: ../otr-plugin.c:596
+#: ../plugin-all.c:770
 #, c-format
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
@@ -825,17 +843,17 @@ msgstr ""
 "%s har sendt ei melding som var meint til ei anna økt. Om du er pålogga "
 "fleire gonger, kan det vera at ei anna mottok meldinga."
 
-#: ../otr-plugin.c:602
+#: ../plugin-all.c:777
 msgid "Received message for a different session"
 msgstr "Mottok ei melding som var meint for ei anna økt"
 
 #. 2013-01-01
-#: ../otr-plugin.c:1193 ../otr-plugin.c:1220
+#: ../plugin-all.c:1894 ../plugin-all.c:1920
 #, c-format
 msgid "OTR PLUGIN v%s"
 msgstr "OTR-programtillegg v%s"
 
-#: ../otr-plugin.c:1202
+#: ../plugin-all.c:1904
 #, c-format
 msgid ""
 "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
@@ -846,7 +864,7 @@ msgstr ""
 "er ikkje gyldig etter 2013-01-01. Du finn ei oppdatert utgåve hos http://otr."
 "cypherpunks.ca/"
 
-#: ../otr-plugin.c:1229
+#: ../plugin-all.c:1930
 #, c-format
 msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
@@ -857,27 +875,5 @@ msgstr ""
 "Pidgin-programtillegg. Utgåva er berre meint for testformål og er ikkje "
 "tenkt verta nytta til vanleg bruk."
 
-#: ../otr-plugin.c:1414
-msgid "Off-the-Record Messaging"
-msgstr "Off-the-Record-meldingsteneste"
-
-#: ../otr-plugin.c:1415
-msgid "Provides private and secure conversations"
-msgstr "Gjev private og trygge samtalar"
-
-#: ../otr-plugin.c:1416
-msgid ""
-"Preserves the privacy of IM communications by providing encryption, "
-"authentication, deniability, and perfect forward secrecy."
-msgstr ""
-"Tek vare på personvernet ditt når du nyttar lynmeldingstenester ved å tilby "
-"kryptering, autentisering, avvising og framtidssikring (PFS)."
-
-#: ../ui.c:110
-#, c-format
-msgid "Account %s (%s) could not be found"
-msgstr "Fann ikkje kontoen %s (%s)"
-
-#: ../ui.c:114
-msgid "Account not found"
-msgstr "Fann ikkje kontoen"
+#~ msgid "Unused"
+#~ msgstr "Ikkje brukt"

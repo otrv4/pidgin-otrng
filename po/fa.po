@@ -1,6 +1,6 @@
 # Off-the-Record Messaging plugin for pidgin.
 # Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
-#	                       Lisa Du, Nikita Borisov
+# 	                       Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
@@ -8,93 +8,108 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.fa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-14 09:45-0400\n"
+"POT-Creation-Date: 2018-07-05 16:45-0300\n"
 "PO-Revision-Date: 2012-06-25 11:08-0400\n"
-"Last-Translator: Hooman Mohajeri Moghaddam هومن مهاجری مقدم <hmohajer@cs.uwaterloo.ca>\n"
-"Language-Team: Hooman Mohajeri Moghaddam هومن مهاجری مقدم <hmohajer@cs.uwaterloo.ca>\n"
+"Last-Translator: Hooman Mohajeri Moghaddam هومن مهاجری مقدم <hmohajer@cs."
+"uwaterloo.ca>\n"
+"Language-Team: Hooman Mohajeri Moghaddam هومن مهاجری مقدم <hmohajer@cs."
+"uwaterloo.ca>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
-#: ../gtk-dialog.c:1547 ../gtk-dialog.c:1584 ../gtk-dialog.c:1673
-#: ../gtk-dialog.c:1748 ../gtk-dialog.c:2749
+#: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
+#: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
 msgstr "?lang=fa"
 
-#: ../gtk-dialog.c:480
+#: ../gtk-dialog.c:504
 msgid ""
 "Your buddy is attempting to determine if he or she is really talking to you, "
 "or if it's someone pretending to be you.  Your buddy has asked a question, "
 "indicated below.  To authenticate to your buddy, enter the answer and click "
 "OK."
-msgstr "دوست شما قصد دارد اطمینان حاصل کند که در حال مکالمه با شماست و نه با فرد دیگری که قصد دارد خود را به جای شما معرفی نماید. دوست شما سوالی را  ‏مطرح کرده است که در زیر آمده است. برا احراز هویت خود جواب سوال را وارد نمود و کلید OK را کلیک کنید."
+msgstr ""
+"دوست شما قصد دارد اطمینان حاصل کند که در حال مکالمه با شماست و نه با فرد "
+"دیگری که قصد دارد خود را به جای شما معرفی نماید. دوست شما سوالی را  ‏مطرح "
+"کرده است که در زیر آمده است. برا احراز هویت خود جواب سوال را وارد نمود و "
+"کلید OK را کلیک کنید."
 
-#: ../gtk-dialog.c:487
+#: ../gtk-dialog.c:512
 msgid ""
 "To authenticate using a question, pick a question whose answer is known only "
 "to you and your buddy.  Enter this question and this answer, then wait for "
 "your buddy to enter the answer too.  If the answers don't match, then you "
 "may be talking to an imposter."
-msgstr "برای احراز هویت به وسیله سوال، سوالی را که جواب آن را تنها شما و دوستتان می‌دانید انتخاب کنید. این سوال و جواب را وارد کرده و منتظر شوید که دوستتان نیز جواب را وارد کند. اگر جواب درست را دریافت نکردید ممکن است که با فرد دیگری (مهاجم) در حال مکالمه باشید! "
+msgstr ""
+"برای احراز هویت به وسیله سوال، سوالی را که جواب آن را تنها شما و دوستتان "
+"می‌دانید انتخاب کنید. این سوال و جواب را وارد کرده و منتظر شوید که دوستتان "
+"نیز جواب را وارد کند. اگر جواب درست را دریافت نکردید ممکن است که با فرد "
+"دیگری (مهاجم) در حال مکالمه باشید! "
 
-#: ../gtk-dialog.c:505
+#: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
 msgstr "سوالی که توسط دوستتان پرسیده شده است:"
 
-#: ../gtk-dialog.c:508
+#: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
 msgstr "سوال را اینجا وارد نمایید:"
 
-#: ../gtk-dialog.c:540 ../gtk-dialog.c:624
+#: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
 msgstr "هویت این دوست قبلاً احراز شده است."
 
-#: ../gtk-dialog.c:552
+#: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr "جواب سوال (مخفی) را اینجا وارد نمایید (حساس به حروف کوچک و بزرگ):"
 
-#: ../gtk-dialog.c:593
+#: ../gtk-dialog.c:610
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
-msgstr "برای احراز هویت ، پیام محرمانه را که  تنها شما و دوستتان آن را می‌دانید انتخاب کنید. این پیام را وارد کرده و منتظر شوید که دوستتان نیز آن را وارد کند. اگر پیام درست را دریافت نکردید ممکن است که با فرد دیگری (مهاجم) در حال مکالمه باشید! "
+msgstr ""
+"برای احراز هویت ، پیام محرمانه را که  تنها شما و دوستتان آن را می‌دانید "
+"انتخاب کنید. این پیام را وارد کرده و منتظر شوید که دوستتان نیز آن را وارد "
+"کند. اگر پیام درست را دریافت نکردید ممکن است که با فرد دیگری (مهاجم) در حال "
+"مکالمه باشید! "
 
-
-#: ../gtk-dialog.c:607
+#: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
 msgstr "پیام محرمانه را اینجا وارد نمایید:"
 
-#: ../gtk-dialog.c:657 ../gtk-dialog.c:1408
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
 msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
-msgstr "برای اینکه دوست شما از اثرانگشت الکترونیکی شما مطلع شود از طریق یک کانال ارتباطی امن"
-"<i>دیگر</i>"
-"مانند تلفن یا ایمیلی که توسط GPG امضا شده است با او تماس بگیرید. هریک از شما باشد اثرانگشت خود را به دیگری بگویید."
+msgstr ""
+"برای اینکه دوست شما از اثرانگشت الکترونیکی شما مطلع شود از طریق یک کانال "
+"ارتباطی امن<i>دیگر</i>مانند تلفن یا ایمیلی که توسط GPG امضا شده است با او "
+"تماس بگیرید. هریک از شما باشد اثرانگشت خود را به دیگری بگویید."
 
-#: ../gtk-dialog.c:661
+#: ../gtk-dialog.c:683
 msgid ""
 "If everything matches up, you should choose <b>I have</b> in the menu below."
-msgstr "اگر همه چیز صحیح است باید در منوی زیر <b>تایید می‌کنم</b> را انتخاب نمایید."
+msgstr ""
+"اگر همه چیز صحیح است باید در منوی زیر <b>تایید می‌کنم</b> را انتخاب نمایید."
 
-#: ../gtk-dialog.c:672 ../gtk-dialog.c:1397
+#: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
 msgstr "[هیچ]"
 
-#: ../gtk-dialog.c:679 ../gtk-dialog.c:1051 ../gtk-dialog.c:1404
-#: ../gtk-dialog.c:1453 ../gtk-ui.c:212 ../otr-plugin.c:127
-#: ../otr-plugin.c:300 ../ui.c:112
+#: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
+#: ../plugin-all.c:507
 msgid "Unknown"
 msgstr "نامشخص"
 
-#: ../gtk-dialog.c:680
+#: ../gtk-dialog.c:705
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -103,123 +118,121 @@ msgid ""
 "Purported fingerprint for %s:\n"
 "%s\n"
 msgstr ""
-"اثر انگشت برای شما،  %s (%s):\n "
-"%s\n"
+"اثر انگشت برای شما،  %s (%s):\n"
+" %s\n"
 "\n"
 "اثر انگشت ادّعا شده برای %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:736
+#: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
 msgstr "چگونه قصد دارید هویت خود را به دوستتان ثابت نمایید؟"
 
-#: ../gtk-dialog.c:745
+#: ../gtk-dialog.c:774
 msgid "Question and answer"
 msgstr "پرسش و پاسخ"
 
-#: ../gtk-dialog.c:748
+#: ../gtk-dialog.c:776
 msgid "Shared secret"
 msgstr "پیام محرمانه "
 
-#: ../gtk-dialog.c:751
+#: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
 msgstr "تایید اثر انگشت به صورت دستی"
 
-#: ../gtk-dialog.c:802
+#: ../gtk-dialog.c:827
 msgid "_Authenticate"
 msgstr ""
 
-#: ../gtk-dialog.c:836
+#: ../gtk-dialog.c:858
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
-msgstr " احراز هویت یک دوست به شما این امکان را می‌دهد که اطمینان حاصل کنید که کسی با او در حال مکالمه هستید همان کسی است که ادعا می‌کند."
+msgstr ""
+" احراز هویت یک دوست به شما این امکان را می‌دهد که اطمینان حاصل کنید که کسی با "
+"او در حال مکالمه هستید همان کسی است که ادعا می‌کند."
 
 #. Translators: you are asked to authenticate yourself
-#: ../gtk-dialog.c:946
+#: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
 msgstr "در حال اثبات هویت به دوست شما"
 
 #. Translators: you asked your buddy to authenticate him/herself
-#: ../gtk-dialog.c:948
+#: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
 msgstr "در حال احراز هویت دوست شما"
 
-#: ../gtk-dialog.c:975
+#: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
 msgstr "در حال اثبات هویت به %s"
 
-#: ../gtk-dialog.c:976
+#: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
 msgstr "در حال احراز هویت %s"
 
-#: ../gtk-dialog.c:1009
+#: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
 msgstr "منتظر دوست شما..."
 
-#: ../gtk-dialog.c:1042
+#: ../gtk-dialog.c:1067
 msgid "Generating private key"
 msgstr "در حال تولید کلید خصوصی"
 
-#: ../gtk-dialog.c:1043
+#: ../gtk-dialog.c:1068
 msgid "Please wait"
 msgstr "لطفا صبر کنید"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1054
+#: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "%s (%s) در حال تولید کلید خصوصی برای "
 
-#: ../gtk-dialog.c:1099
+#: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
 msgstr " .پایان %s"
 
-#: ../gtk-dialog.c:1139
+#: ../gtk-dialog.c:1164
 #, c-format
 msgid ""
-"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
-"s\">authenticate</a> this buddy."
-msgstr " از یک کامپیوتر ناشناس در حال برقراری ارتباط با شماست. شما باید او را %s"
-"<a href=\"%s%"
-"s\">احراز حویت</a>"
-"نمایید."
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
+"%s\">authenticate</a> this buddy."
+msgstr ""
+" از یک کامپیوتر ناشناس در حال برقراری ارتباط با شماست. شما باید او را %s<a "
+"href=\"%s%s\">احراز حویت</a>نمایید."
 
-#: ../gtk-dialog.c:1143
+#: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
 msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
 "\">authenticate</a> this buddy."
-msgstr " %s هویت "
-"هنوز تایید نشده است."
-"شما باید او را "
-"<a href=\"%s%"
-"s\">احراز حویت</a>"
-"نمایید."
+msgstr ""
+" %s هویت هنوز تایید نشده است.شما باید او را <a href=\"%s%s\">احراز حویت</"
+"a>نمایید."
 
-#: ../gtk-dialog.c:1195 ../gtk-dialog.c:1969 ../gtk-dialog.c:2745
+#: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
 #: ../gtk-ui.c:83
 msgid "Finished"
 msgstr "پایان یافت"
 
-#: ../gtk-dialog.c:1196 ../gtk-dialog.c:1966 ../gtk-dialog.c:2742
-#: ../gtk-ui.c:82
+#: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
+#: ../gtk-ui.c:83
 msgid "Private"
 msgstr "محرمانه"
 
-#: ../gtk-dialog.c:1197 ../gtk-dialog.c:1963 ../gtk-dialog.c:2739
-#: ../gtk-ui.c:81
+#: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
+#: ../gtk-ui.c:82
 msgid "Unverified"
 msgstr "تایید نشده"
 
-#: ../gtk-dialog.c:1198 ../gtk-ui.c:80
+#: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
 msgstr "غیر محرمانه"
 
-#: ../gtk-dialog.c:1201
+#: ../gtk-dialog.c:1232
 msgid "OTR"
 msgstr "OTR"
 
@@ -227,32 +240,32 @@ msgstr "OTR"
 #. * sentences. The user selects the first or second message in a combo box;
 #. * the third message, a new line, a fingerprint, a new line, and
 #. * the fourth message will follow it.
-#: ../gtk-dialog.c:1351
+#: ../gtk-dialog.c:1390
 msgid "I have not"
 msgstr "تایید نمی‌کنم"
 
 #. 2nd message
-#: ../gtk-dialog.c:1353
+#: ../gtk-dialog.c:1392
 msgid "I have"
 msgstr "تایید می‌کنم"
 
 #. 3rd message
-#: ../gtk-dialog.c:1356
+#: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
 msgstr "تایید شد که این درست است"
 
 #. 4th message
-#: ../gtk-dialog.c:1366
+#: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
 msgstr "اثرانگشت برای %s"
 
-#: ../gtk-dialog.c:1393
+#: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "اثر انگشت برای %s را تایید کنید"
 
-#: ../gtk-dialog.c:1405
+#: ../gtk-dialog.c:1442
 #, c-format
 msgid ""
 "<small><i>%s %s\n"
@@ -271,573 +284,592 @@ msgstr ""
 "اثر انگشت ادّعا شده برای %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1412
+#: ../gtk-dialog.c:1449
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
-msgstr " شمااگر همه چیز درست است باید در پنجره بالا مشخص کنید که شما اثرانگشت  را"
-"<b>تایید کرده‌اید</b>."
+msgstr ""
+" شمااگر همه چیز درست است باید در پنجره بالا مشخص کنید که شما اثرانگشت  "
+"را<b>تایید کرده‌اید</b>."
 
-#: ../gtk-dialog.c:1418 ../gtk-ui.c:844
+#: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "اثر انگشت را تایید کنید"
 
-#: ../gtk-dialog.c:1445
+#: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
 msgstr "احراز هویت از طرف %s"
 
-#: ../gtk-dialog.c:1448
+#: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
 msgstr "هویت %s را تایید کنید"
 
-#: ../gtk-dialog.c:1456
+#: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
 msgstr "هویت دوست خود را تایید کنید "
 
-#: ../gtk-dialog.c:1487
+#: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
 msgstr "اشکالی در احراز هویت اتفاق افتاده است"
 
-#: ../gtk-dialog.c:1502
+#: ../gtk-dialog.c:1550
 msgid "Authentication successful."
 msgstr "احراز هویت موفقیت‌آمیز انجام شد."
 
-#: ../gtk-dialog.c:1505
+#: ../gtk-dialog.c:1553
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
-msgstr "دوست شما با موفقیت هویت شما را تایید کرده است. شما هم می‌توانید با پرسیدن سوال هویت دوستتان را تایید کنید."
+msgstr ""
+"دوست شما با موفقیت هویت شما را تایید کرده است. شما هم می‌توانید با پرسیدن "
+"سوال هویت دوستتان را تایید کنید."
 
-#: ../gtk-dialog.c:1511
+#: ../gtk-dialog.c:1559
 msgid "Authentication failed."
 msgstr "احراز هویت انجام نشد"
 
-#: ../gtk-dialog.c:1541
+#: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
 msgstr "مکالمه محرمانه با %s آغاز شد.%s%s"
 
-#: ../gtk-dialog.c:1545
+#: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
 msgstr "یک مکالمه<a href=\"%s%s\">تایید نشده</a> با %%s آغاز شد.%%s%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1553
+#: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
 msgstr "مکالمه غیر محرمانه با %s آغاز شد. %s%s"
 
-#: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
+#: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
 msgstr " هشدار: در حال استفاده از پروتکل قدیمی ۱."
 
-#: ../gtk-dialog.c:1561
+#: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
 msgstr " دستگاه شما این مکالمه را ثبت می‌کند."
 
-#: ../gtk-dialog.c:1562
+#: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
 msgstr " دستگاه شما این مکالمه را ثبت نمی‌کند."
 
-#: ../gtk-dialog.c:1581
+#: ../gtk-dialog.c:1635
 #, c-format
 msgid ""
 "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
 "\">multiple sessions</a>. Use the icon menu above if you wish to select the "
 "outgoing session."
-msgstr "ودوست شما از چند محل مختلف لاگین کرده‌است و OTR <a href=\"%s%s"
-"\">چندین نشست</a> برقرار کرده‌است. می‌توانید از منوهای بالا نشست خود را انتخاب کنید."
+msgstr ""
+"ودوست شما از چند محل مختلف لاگین کرده‌است و OTR <a href=\"%s%s\">چندین نشست</"
+"a> برقرار کرده‌است. می‌توانید از منوهای بالا نشست خود را انتخاب کنید."
 
-#: ../gtk-dialog.c:1601
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "نشست محرمانه با %s قطع شد."
 
-#: ../gtk-dialog.c:1638
+#: ../gtk-dialog.c:1703
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
-msgstr ".نشست محرمانه خود را با شما پایان داده‌است؛ شما نیز باید همین کار را انجام دهید %s"
+msgstr ""
+".نشست محرمانه خود را با شما پایان داده‌است؛ شما نیز باید همین کار را انجام "
+"دهید %s"
 
-#: ../gtk-dialog.c:1665
+#: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr " مکالمه محرمانه با %s با موفقیت رفرش شد.%s"
 
-#: ../gtk-dialog.c:1670
+#: ../gtk-dialog.c:1741
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
-msgstr "با موفقیت مکالمه <a href=\"%s%s\">تایید نشده</a> با   "
-"%%s رفرش شد.%%s"
+msgstr "با موفقیت مکالمه <a href=\"%s%s\">تایید نشده</a> با   %%s رفرش شد.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1679
+#: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr " مکالمه غیرمحرمانه با %s با موفقیت رفرش گردید. %s"
 
-#: ../gtk-dialog.c:1712
+#: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "... %s در حال تلاش برای رفرش کردن مکالمه محرمانه با"
 
-#: ../gtk-dialog.c:1714
+#: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr ".%s در حال تلاش برای رفرش کردن مکالمه محرمانه با "
 
-#: ../gtk-dialog.c:1899 ../gtk-dialog.c:2026
+#: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
 msgstr "آغاز مکالکه _محرمانه"
 
-#: ../gtk-dialog.c:1900
+#: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
 msgstr "رفرش مکالمه _محرمانه"
 
-#: ../gtk-dialog.c:1905
+#: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
 msgstr "_احراز هویت مجدد دوست"
 
-#: ../gtk-dialog.c:1906 ../gtk-dialog.c:2030
+#: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
 msgstr "_احراز هویت دوست"
 
-#: ../gtk-dialog.c:1960 ../gtk-dialog.c:2736
+#: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
 msgstr "غیر محرمانه"
 
-#: ../gtk-dialog.c:1982
+#: ../gtk-dialog.c:2030
 msgid "_What's this?"
 msgstr "_این چیست؟"
 
-#: ../gtk-dialog.c:2028
+#: ../gtk-dialog.c:2065
 msgid "_End private conversation"
 msgstr "_پایان مکالکه محرمانه"
 
-#: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
+#: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
 msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
 "active one (%u). Your buddy may not receive your messages. Use the icon menu "
 "above to select a different outgoing session."
-msgstr "هشدار: نشست خروجی"
- "OTR"
- "که هم‌اکنون انتخاب شده (%u) جدیدترین نشست فعال نیست (%u). دوست شما ممکن است پیام‌های شما را دریافت نکند. "
-"برای تغییر نشست خروجی از منوی بالا استفاده کنید."
+msgstr ""
+"هشدار: نشست خروجیOTRکه هم‌اکنون انتخاب شده (%u) جدیدترین نشست فعال نیست (%u). "
+"دوست شما ممکن است پیام‌های شما را دریافت نکند. برای تغییر نشست خروجی از منوی "
+"بالا استفاده کنید."
 
-#: ../gtk-dialog.c:2271
+#: ../gtk-dialog.c:2317
 msgid "Send to most secure"
 msgstr "به امن‌ترین بفرست"
 
-#: ../gtk-dialog.c:2273
+#: ../gtk-dialog.c:2319
 msgid "Send to most recent"
 msgstr "به جدیدترین بفرست"
 
-#: ../gtk-dialog.c:2377
+#: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
 msgstr "نشست %u"
 
-#: ../gtk-dialog.c:2395 ../gtk-dialog.c:2506
+#: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
 msgstr "انتخاب کنید"
 
-#: ../gtk-dialog.c:2410
+#: ../gtk-dialog.c:2464
 msgid "Selected"
 msgstr "انتخاب شده"
 
-#: ../gtk-dialog.c:2731
+#: ../gtk-dialog.c:2694
 #, c-format
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
-msgstr "وضعیت محرمانگی مکالمه کنونی: <a href=\"%s%s\">%s</"
-"a>"
+msgstr "وضعیت محرمانگی مکالمه کنونی: <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2956
+#: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
 msgstr "سیستم پیام‌رسانی OTR"
 
-#: ../gtk-ui.c:103
+#: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "اثر انگشت:  %.80s"
 
-#: ../gtk-ui.c:107
-#, c-format
+#: ../gtk-ui.c:100
 msgid "No key present"
 msgstr "کلیدی موجود نیست"
 
-#: ../gtk-ui.c:112
-#, c-format
+#: ../gtk-ui.c:106
 msgid "No account available"
 msgstr "اکانتی موجود نیست."
 
-#: ../gtk-ui.c:179
-msgid "Unused"
-msgstr "بلاستفاده"
-
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "Yes"
 msgstr "بلی"
 
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "No"
 msgstr "نه"
 
-#: ../gtk-ui.c:473
+#: ../gtk-ui.c:375
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "اکانت %s (%s)  پیدا نشد."
+
+#: ../gtk-ui.c:378
+msgid "Account not found"
+msgstr "اکانت پیدا نشد."
+
+#: ../gtk-ui.c:437
 msgid "Enable private messaging"
 msgstr "پیام‌دهی محرمانه را فعال کن"
 
-#: ../gtk-ui.c:475
+#: ../gtk-ui.c:440
 msgid "Automatically initiate private messaging"
 msgstr "به صورت خودکار پیام‌دهی محرمانه را فعال کن"
 
-#: ../gtk-ui.c:477
+#: ../gtk-ui.c:442
 msgid "Require private messaging"
 msgstr "پیام‌دهی محرمانه را الزامی کن"
 
-#: ../gtk-ui.c:480
+#: ../gtk-ui.c:445
 msgid "Don't log OTR conversations"
 msgstr "پیام‌های OTR را ثبت نکن"
 
-#: ../gtk-ui.c:524
+#: ../gtk-ui.c:483
 msgid "Show OTR button in toolbar"
 msgstr "دکمه OTR را در نوار ابزار نمایش بده"
 
-#: ../gtk-ui.c:663
+#: ../gtk-ui.c:614
 msgid "My private keys"
 msgstr "کلیدهای خصوصی من"
 
-#: ../gtk-ui.c:672
+#: ../gtk-ui.c:623
 msgid "Key for account:"
 msgstr "کلید برای اکانت:"
 
-#: ../gtk-ui.c:697
+#: ../gtk-ui.c:647
 msgid "Generate"
 msgstr "تولید کن"
 
-#: ../gtk-ui.c:738
+#: ../gtk-ui.c:679
 msgid "Default OTR Settings"
 msgstr "تنظیمات اولیه OTR"
 
-#: ../gtk-ui.c:765
+#: ../gtk-ui.c:705
 msgid "OTR UI Options"
 msgstr "امکانات واسط گرافیکی OTR"
 
-#: ../gtk-ui.c:788
+#: ../gtk-ui.c:727
 msgid "Screenname"
 msgstr "اسم‌نمایش"
 
-#: ../gtk-ui.c:789
+#: ../gtk-ui.c:728
 msgid "Status"
 msgstr "وضعیت"
 
-#: ../gtk-ui.c:790
+#: ../gtk-ui.c:729
 msgid "Verified"
 msgstr "تایید شده"
 
-#: ../gtk-ui.c:791
+#: ../gtk-ui.c:730
 msgid "Fingerprint"
 msgstr "اثرانگشت"
 
-#: ../gtk-ui.c:792
+#: ../gtk-ui.c:731
 msgid "Account"
 msgstr "اکانت"
 
-#: ../gtk-ui.c:828
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "مکالمه خصوصی را آغاز کن"
 
-#: ../gtk-ui.c:836
+#: ../gtk-ui.c:774
 msgid "End private connection"
-msgstr  "مکالمه خصوصی را تمام کن"
+msgstr "مکالمه خصوصی را تمام کن"
 
-#: ../gtk-ui.c:852
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "اثرانگشت را فراموش کن"
 
-#: ../gtk-ui.c:903
+#: ../gtk-ui.c:840
 msgid "Config"
 msgstr "تنظیمات"
 
-#: ../gtk-ui.c:905
+#: ../gtk-ui.c:842
 msgid "Known fingerprints"
 msgstr "اثرهای انگشت شناخته شده"
 
-#: ../gtk-ui.c:1003 ../otr-plugin.c:964
+#: ../gtk-ui.c:932 ../plugin-all.c:1292
 msgid "OTR Settings"
 msgstr "تنظیمات OTR"
 
 #. Set the title
-#: ../gtk-ui.c:1021
+#: ../gtk-ui.c:948
 #, c-format
 msgid "OTR Settings for %s"
-msgstr  "تنظیمات OTR برای %s"
+msgstr "تنظیمات OTR برای %s"
 
-#. Make the cascaded checkboxes
-#: ../gtk-ui.c:1038
+#: ../gtk-ui.c:966
 msgid "Use default OTR settings for this buddy"
 msgstr "برای این دوست تنظیمات اولیه OTR را استفاده کن"
 
-#: ../otr-plugin.c:125
+#: ../otrng-plugin.c:101
+#, fuzzy
+msgid "Off-the-Record Messaging nextgen"
+msgstr "سیستم پیام‌دهی Off-the-Record"
+
+#: ../otrng-plugin.c:102
+msgid "Provides private and secure conversations"
+msgstr "مکالمات محرمانه و امن را امکان‌پذیر می‌کند"
+
+#: ../otrng-plugin.c:104
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr ""
+"محرمانگی مکالمات IM را از طریق رمزنگاری، احراز هویت، قابلیت انکار و امکان "
+"محرمانگی رو به جلو را فراهم می‌سازد."
+
+#: ../plugin-all.c:286
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "شما در حال حاضر به اکانت %s متصل نیستید (%s)."
 
-#: ../otr-plugin.c:129
+#: ../plugin-all.c:290
 msgid "Not connected"
 msgstr "ارتباط برقرار نیست"
 
-#: ../otr-plugin.c:212 ../otr-plugin.c:254
+#: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "حافظه لازم برای ساختن نام فایل موجود نمی‌باشد! \n"
 
-#: ../otr-plugin.c:224 ../otr-plugin.c:260
+#: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "امکان نوشتن فایل کلید خصوصی نیست \n"
 
-#: ../otr-plugin.c:298
+#: ../plugin-all.c:506
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "اکانت نامشخص %s (%s)."
 
-#: ../otr-plugin.c:302
+#: ../plugin-all.c:509
 msgid "Unknown account"
 msgstr "اکانت نامشخص"
 
-#: ../otr-plugin.c:364
+#: ../plugin-all.c:555
 msgid "Error occurred encrypting message."
 msgstr "خطا در هنگام رمزکردن پیام."
 
-#: ../otr-plugin.c:368
+#: ../plugin-all.c:559
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr "شما پیامی رمز شده به %s فرستادید که انتظار آن را نداشته‌است."
 
-#: ../otr-plugin.c:374
+#: ../plugin-all.c:565
 msgid "You transmitted an unreadable encrypted message."
 msgstr "شما پیامی رمز شده فرستادید که قابل خواندن نبوده‌است."
 
-#: ../otr-plugin.c:377
+#: ../plugin-all.c:568
 msgid "You transmitted a malformed data message."
 msgstr "شما پیامی ناقص فرستاده‌اید."
 
-#: ../otr-plugin.c:390
+#: ../plugin-all.c:581
 msgid "[resent]"
 msgstr "[دوباره فرستاده شد]"
 
-#: ../otr-plugin.c:459
+#: ../plugin-all.c:621
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
 msgstr "شما تلاش کردید یک پیام رمزنشده به %s بفرستید."
 
-#: ../otr-plugin.c:462
+#: ../plugin-all.c:626
 msgid "Attempting to start a private conversation..."
 msgstr "در حال تلاش برای آغاز یک مکالمه محرمانه..."
 
-#: ../otr-plugin.c:464
+#: ../plugin-all.c:628
 msgid "OTR Policy Violation"
 msgstr "تخلف از قوانین OTR"
 
-#: ../otr-plugin.c:465
+#: ../plugin-all.c:629
 msgid ""
 "Unencrypted messages to this recipient are not allowed.  Attempting to start "
 "a private conversation.\n"
 "\n"
 "Your message will be retransmitted when the private conversation starts."
-msgstr "ارسال پیام‌های رمزنشده به این گیرنده امکان‌پذیر نمی‌باشد. در حال تلاش برای "
+msgstr ""
+"ارسال پیام‌های رمزنشده به این گیرنده امکان‌پذیر نمی‌باشد. در حال تلاش برای "
 "برقراری یک مکالمه محرمانه.\n"
 "\n"
 "پیام‌های شما پس از برقراری مکالمه محرمانه مجدداً فرستاده‌ خواهندشد."
-#: ../otr-plugin.c:474
+
+#: ../plugin-all.c:639
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr "اشکالی در رمزکردن پیام شما رخ داده‌است. پیام فرستاده نشد."
 
-#: ../otr-plugin.c:476
+#: ../plugin-all.c:641
 msgid "Error encrypting message"
 msgstr "اشکال در رمزکردن پیام "
 
-#: ../otr-plugin.c:477
+#: ../plugin-all.c:642
 msgid "An error occurred when encrypting your message"
 msgstr "اشکالی در رمزکردن پیام شما رخ داده‌است."
 
-#: ../otr-plugin.c:478
+#: ../plugin-all.c:643
 msgid "The message was not sent."
 msgstr " پیام فرستاده نشد"
 
-#: ../otr-plugin.c:481
+#: ../plugin-all.c:646
 #, c-format
 msgid "%s has already closed his/her private connection to you"
 msgstr "%s مکالمه محرمانه خود را با شما پایان داده‌است."
 
-#: ../otr-plugin.c:484
+#: ../plugin-all.c:651
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
-msgstr " پیام شما فرستاده نشد. مکالمه محرمانه خود را پایان دهید یا آن را دوباره آغاز کنید."
+msgstr ""
+" پیام شما فرستاده نشد. مکالمه محرمانه خود را پایان دهید یا آن را دوباره آغاز "
+"کنید."
 
-#: ../otr-plugin.c:487
+#: ../plugin-all.c:654
 msgid "Private connection closed"
 msgstr "ارتباط محرمانه قطع شد"
 
-#: ../otr-plugin.c:488
+#: ../plugin-all.c:655
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
-msgstr " پیام شما فرستاده نشد. ارتباط محرمانه خود را با وی پایان دهید یا آن را دوباره آغاز کنید."
+msgstr ""
+" پیام شما فرستاده نشد. ارتباط محرمانه خود را با وی پایان دهید یا آن را "
+"دوباره آغاز کنید."
 
-#: ../otr-plugin.c:498
+#: ../plugin-all.c:665
 msgid "Error setting up private conversation: Malformed message received"
 msgstr "اشکال در راه‌اندازی مکالمه محرمانه: پیام ناقص دریافت شد"
 
-#: ../otr-plugin.c:502
+#: ../plugin-all.c:669
 #, c-format
 msgid "Error setting up private conversation: %s"
 msgstr "اشکال در راه‌اندازی مکالمه محرمانه: %s"
 
-#: ../otr-plugin.c:509 ../otr-plugin.c:520 ../otr-plugin.c:547
-#: ../otr-plugin.c:555 ../otr-plugin.c:573
+#: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
+#: ../plugin-all.c:728 ../plugin-all.c:745
 msgid "OTR Error"
 msgstr "اشکال در OTR"
 
-#: ../otr-plugin.c:516
+#: ../plugin-all.c:683
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
 msgstr "شما در حال دریافت پیام‌های OTR خودتان هستید."
 
-#: ../otr-plugin.c:520
+#: ../plugin-all.c:688
 msgid "We are receiving our own OTR messages."
-msgstr "شما در حال دریافت پیام‌های OTR خودتان هستید."
-"شما در حال صحبت با خودتان هستید، یا کسی پیام‌های شما را به خودتان باز می‌گرداند."
+msgstr ""
+"شما در حال دریافت پیام‌های OTR خودتان هستید.شما در حال صحبت با خودتان هستید، "
+"یا کسی پیام‌های شما را به خودتان باز می‌گرداند."
 
-#: ../otr-plugin.c:521
+#: ../plugin-all.c:689
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
-msgstr "شما در حال صحبت با خودتان هستید، یا کسی پیام‌های شما را به خودتان باز می‌گرداند."
+msgstr ""
+"شما در حال صحبت با خودتان هستید، یا کسی پیام‌های شما را به خودتان باز "
+"می‌گرداند."
 
-#: ../otr-plugin.c:526
+#: ../plugin-all.c:694
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
 msgstr "<b>پیام قبلی به %s دوباره فرستاده شد.</b>"
 
-#: ../otr-plugin.c:530
+#: ../plugin-all.c:699
 msgid "Message resent"
 msgstr "پیام دوباره فرستاده شد"
 
-#: ../otr-plugin.c:534
+#: ../plugin-all.c:704
 #, c-format
 msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
 "currently communicating privately.</b>"
-msgstr "<b>پیام رمزشده از طرف %s قابل خواندن نیست زیرا که شما در حال مکالمه محرمانه نیستید.</b>"
+msgstr ""
+"<b>پیام رمزشده از طرف %s قابل خواندن نیست زیرا که شما در حال مکالمه محرمانه "
+"نیستید.</b>"
 
-#: ../otr-plugin.c:539
+#: ../plugin-all.c:710
 msgid "Unreadable message"
 msgstr "پیام غیرقابل خواندن"
 
-#: ../otr-plugin.c:543
+#: ../plugin-all.c:714
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
 msgstr "ما پیامی رمز شده از %s دریافت کردیم که قابل خواندن نیست."
 
-#: ../otr-plugin.c:551
+#: ../plugin-all.c:723
 #, c-format
 msgid "We received a malformed data message from %s."
 msgstr "ما پیامی ناقص از %s دریافت کردیم."
 
-#: ../otr-plugin.c:559
+#: ../plugin-all.c:733
 #, c-format
 msgid "Heartbeat received from %s.\n"
 msgstr "پیام خالی از %s دریافت شد. \n"
 
-#: ../otr-plugin.c:565
+#: ../plugin-all.c:738
 #, c-format
 msgid "Heartbeat sent to %s.\n"
 msgstr "پیام خالی به %s فرستاده شد. \n"
 
-#: ../otr-plugin.c:576
+#: ../plugin-all.c:749
 #, c-format
 msgid ""
-"<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
-"s<b>]</b>"
-msgstr ""
-"<b>پیام زیر از طرف %s دریافت شده رمز <i>نشده</i> است.  [</b>%"
-"s<b>]</b>"
-#: ../otr-plugin.c:581
+"<b>The following message received from %s was <i>not</i> encrypted: [</b>"
+"%s<b>]</b>"
+msgstr "<b>پیام زیر از طرف %s دریافت شده رمز <i>نشده</i> است.  [</b>%s<b>]</b>"
+
+#: ../plugin-all.c:754
 msgid "Received unencrypted message"
 msgstr "پیامی رمز نشده دریافت شد"
 
-#: ../otr-plugin.c:587
+#: ../plugin-all.c:759
 #, c-format
 msgid "Unrecognized OTR message received from %s.\n"
 msgstr "یک پیام ناشناخته OTR از %s دریافت شد. \n"
 
-#: ../otr-plugin.c:596
+#: ../plugin-all.c:770
 #, c-format
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
-msgstr "%s پیامی برای نشستی دیگر فرستاد است. اگر در چندجای مختلف لاگین شده اید ممکن است نشستی دیگر پیام را دریافت کرده باشد."
+msgstr ""
+"%s پیامی برای نشستی دیگر فرستاد است. اگر در چندجای مختلف لاگین شده اید ممکن "
+"است نشستی دیگر پیام را دریافت کرده باشد."
 
-#: ../otr-plugin.c:602
+#: ../plugin-all.c:777
 msgid "Received message for a different session"
 msgstr "پیامی از نشست دیگری دریافت شد"
 
 #. 2013-01-01
-#: ../otr-plugin.c:1193 ../otr-plugin.c:1220
+#: ../plugin-all.c:1894 ../plugin-all.c:1920
 #, c-format
 msgid "OTR PLUGIN v%s"
 msgstr "افزونه OTR ورژن %s"
 
-#: ../otr-plugin.c:1202
+#: ../plugin-all.c:1904
 #, c-format
 msgid ""
 "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
 "as of 2013-01-01. Please look for an updated release at http://otr."
 "cypherpunks.ca/"
-msgstr " این کپی بتا از افزونه سیستم پیام‌رسانی Off-the-Record ورژن %s برای Pidgin از تاریخ 2013-01-01 منقضی شده است.  "
-"لطفا برای دریافت نسخه ارتقاء یافته به /http://otr.cypherpunks.ca مراجع کنید "
+msgstr ""
+" این کپی بتا از افزونه سیستم پیام‌رسانی Off-the-Record ورژن %s برای Pidgin از "
+"تاریخ 2013-01-01 منقضی شده است.  لطفا برای دریافت نسخه ارتقاء یافته به /"
+"http://otr.cypherpunks.ca مراجع کنید "
 
-#: ../otr-plugin.c:1229
+#: ../plugin-all.c:1930
 #, c-format
 msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
-msgstr "شما ورژنی بتا از افزونه Off-the-Record %s برای Pidgin را فعال کرده‌اید. این ورژن تنها برای تست است و نباید برای کاربردهای عمومی استفاده شود. "
+msgstr ""
+"شما ورژنی بتا از افزونه Off-the-Record %s برای Pidgin را فعال کرده‌اید. این "
+"ورژن تنها برای تست است و نباید برای کاربردهای عمومی استفاده شود. "
 
-#: ../otr-plugin.c:1414
-msgid 	"Off-the-Record Messaging"
-msgstr "سیستم پیام‌دهی Off-the-Record"
-
-#: ../otr-plugin.c:1415
-msgid "Provides private and secure conversations"
-msgstr "مکالمات محرمانه و امن را امکان‌پذیر می‌کند"
-
-#: ../otr-plugin.c:1416
-msgid ""
-"Preserves the privacy of IM communications by providing encryption, "
-"authentication, deniability, and perfect forward secrecy."
-msgstr "محرمانگی مکالمات IM را از طریق رمزنگاری، احراز هویت، قابلیت انکار و امکان محرمانگی رو به جلو را فراهم می‌سازد."
-
-#: ../ui.c:110
-#, c-format
-msgid "Account %s (%s) could not be found"
-msgstr "اکانت %s (%s)  پیدا نشد."
-
-#: ../ui.c:114
-msgid "Account not found"
-msgstr "اکانت پیدا نشد."
+#~ msgid "Unused"
+#~ msgstr "بلاستفاده"

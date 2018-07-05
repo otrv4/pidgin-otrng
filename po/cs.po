@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-12 20:14+0100\n"
+"POT-Creation-Date: 2018-07-05 16:45-0300\n"
 "PO-Revision-Date: 2013-03-24 14:46+0100\n"
 "Last-Translator: Jaromír Karmazín\n"
 "Language-Team: Czech\n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../gtk-dialog.c:336 ../gtk-dialog.c:1144 ../gtk-dialog.c:1148
-#: ../gtk-dialog.c:1551 ../gtk-dialog.c:1588 ../gtk-dialog.c:1679
-#: ../gtk-dialog.c:1754 ../gtk-dialog.c:2769
+#: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
+#: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
 msgstr "?lang=cs"
 
-#: ../gtk-dialog.c:484
+#: ../gtk-dialog.c:504
 msgid ""
 "Your buddy is attempting to determine if he or she is really talking to you, "
 "or if it's someone pretending to be you.  Your buddy has asked a question, "
@@ -36,7 +36,7 @@ msgstr ""
 "se mohli vůči svému kamarádovi autentizovat, zadejte odpověď a klikněte na "
 "OK."
 
-#: ../gtk-dialog.c:491
+#: ../gtk-dialog.c:512
 msgid ""
 "To authenticate using a question, pick a question whose answer is known only "
 "to you and your buddy.  Enter this question and this answer, then wait for "
@@ -48,26 +48,26 @@ msgstr ""
 "vyčkejte, až váš kamarád také zadá odpověď. Pokud nebudou odpovědi stejné, "
 "je možné, že komunikujete s někým, kdo se za vašeho kamaráda vydává."
 
-#: ../gtk-dialog.c:509
+#: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
 msgstr "Toto je otázka, kterou položil váš kamarád:"
 
-#: ../gtk-dialog.c:512
+#: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
 msgstr "Sem zadejte otázku:"
 
-#: ../gtk-dialog.c:544 ../gtk-dialog.c:625
+#: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
 msgstr "Tento kamarád je již autentizován."
 
-#: ../gtk-dialog.c:554
+#: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr "Sem zadejte tajnou odpověď (rozlišují se velká a malá písmena):"
 
-#: ../gtk-dialog.c:594
+#: ../gtk-dialog.c:610
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
@@ -78,12 +78,12 @@ msgstr ""
 "kamarád. Pokud texty nebudou stejné, je možné, že komunikujete s někým, kdo "
 "se za vašeho kamaráda vydává."
 
-#: ../gtk-dialog.c:608
+#: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
 msgstr "Sem zadejte tajný text:"
 
-#: ../gtk-dialog.c:658 ../gtk-dialog.c:1413
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
 msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
@@ -93,22 +93,21 @@ msgstr ""
 "cestou, například telefonem nebo pomocí e-mailu s GPG podpisem. Každý z vás "
 "by měl svůj otisk sdělit tomu druhému."
 
-#: ../gtk-dialog.c:662
+#: ../gtk-dialog.c:683
 msgid ""
 "If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Pokud se vše shoduje, zvolte <b>Ověřil(a) jsem</b> v nabídce níže."
 
-#: ../gtk-dialog.c:673 ../gtk-dialog.c:1401
+#: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
 msgstr "[žádný]"
 
-#: ../gtk-dialog.c:681 ../gtk-dialog.c:1054 ../gtk-dialog.c:1409
-#: ../gtk-dialog.c:1457 ../gtk-ui.c:226 ../otr-plugin.c:132
-#: ../otr-plugin.c:305 ../ui.c:115
+#: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
+#: ../plugin-all.c:507
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../gtk-dialog.c:682
+#: ../gtk-dialog.c:705
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -123,27 +122,27 @@ msgstr ""
 "Údajný otisk pro účet %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:739
+#: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
 msgstr "Jakým způsobem chcete kamaráda autentizovat?"
 
-#: ../gtk-dialog.c:748
+#: ../gtk-dialog.c:774
 msgid "Question and answer"
 msgstr "Otázkou a odpovědí"
 
-#: ../gtk-dialog.c:751
+#: ../gtk-dialog.c:776
 msgid "Shared secret"
 msgstr "Společným tajemstvím"
 
-#: ../gtk-dialog.c:754
+#: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
 msgstr "Ruční kontrolou otisků"
 
-#: ../gtk-dialog.c:805
+#: ../gtk-dialog.c:827
 msgid "_Authenticate"
 msgstr "_Autentizovat"
 
-#: ../gtk-dialog.c:839
+#: ../gtk-dialog.c:858
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
@@ -152,49 +151,49 @@ msgstr ""
 "skutečně tou, za kterou se vydává."
 
 #. Translators: you are asked to authenticate yourself
-#: ../gtk-dialog.c:949
+#: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
 msgstr "Autentizujete se vůči kamarádovi"
 
 #. Translators: you asked your buddy to authenticate him/herself
-#: ../gtk-dialog.c:951
+#: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
 msgstr "Autentizujete kamaráda"
 
-#: ../gtk-dialog.c:978
+#: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
 msgstr "Autentizujete se vůči účtu %s"
 
-#: ../gtk-dialog.c:979
+#: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
 msgstr "Autentizujete účet %s"
 
-#: ../gtk-dialog.c:1012
+#: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
 msgstr "Čekám na kamaráda..."
 
-#: ../gtk-dialog.c:1045
+#: ../gtk-dialog.c:1067
 msgid "Generating private key"
 msgstr "Generuji soukromý klíč"
 
-#: ../gtk-dialog.c:1046
+#: ../gtk-dialog.c:1068
 msgid "Please wait"
 msgstr "Čekejte prosím"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1057
+#: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "Generuji soukromý klíč pro účet %s (%s)..."
 
-#: ../gtk-dialog.c:1102
+#: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
 msgstr "%s Hotovo."
 
-#: ../gtk-dialog.c:1142
+#: ../gtk-dialog.c:1164
 #, c-format
 msgid ""
 "%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
@@ -203,7 +202,7 @@ msgstr ""
 "Kamarád %s vás kontaktuje z nerozpoznaného počítače. Měli byste jej <a href="
 "\"%s%s\">autentizovat</a>."
 
-#: ../gtk-dialog.c:1146
+#: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
 msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
@@ -212,26 +211,26 @@ msgstr ""
 "Kamarád %s zatím nebyl autentizován. Měli byste jej <a href=\"%s%s"
 "\">autentizovat</a>."
 
-#: ../gtk-dialog.c:1198 ../gtk-dialog.c:1980 ../gtk-dialog.c:2765
-#: ../gtk-ui.c:86
+#: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
+#: ../gtk-ui.c:83
 msgid "Finished"
 msgstr "Dokončeno"
 
-#: ../gtk-dialog.c:1199 ../gtk-dialog.c:1977 ../gtk-dialog.c:2762
-#: ../gtk-ui.c:85
+#: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
+#: ../gtk-ui.c:83
 msgid "Private"
 msgstr "Soukromá"
 
-#: ../gtk-dialog.c:1200 ../gtk-dialog.c:1974 ../gtk-dialog.c:2759
-#: ../gtk-ui.c:84
+#: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
+#: ../gtk-ui.c:82
 msgid "Unverified"
 msgstr "Neověřená"
 
-#: ../gtk-dialog.c:1201 ../gtk-ui.c:83
+#: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
 msgstr "Bez soukromí"
 
-#: ../gtk-dialog.c:1204
+#: ../gtk-dialog.c:1232
 msgid "OTR"
 msgstr "Zabezpečení (OTR)"
 
@@ -239,32 +238,32 @@ msgstr "Zabezpečení (OTR)"
 #. * sentences. The user selects the first or second message in a combo box;
 #. * the third message, a new line, a fingerprint, a new line, and
 #. * the fourth message will follow it.
-#: ../gtk-dialog.c:1354
+#: ../gtk-dialog.c:1390
 msgid "I have not"
 msgstr "Neověřil(a) jsem"
 
 #. 2nd message
-#: ../gtk-dialog.c:1356
+#: ../gtk-dialog.c:1392
 msgid "I have"
 msgstr "Ověřil(a) jsem"
 
 #. 3rd message
-#: ../gtk-dialog.c:1359
+#: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
 msgstr ", že toto je skutečně správný"
 
 #. 4th message
-#: ../gtk-dialog.c:1369
+#: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
 msgstr "otisk účtu %s."
 
-#: ../gtk-dialog.c:1397
+#: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "Ověřit otisk účtu %s"
 
-#: ../gtk-dialog.c:1410
+#: ../gtk-dialog.c:1442
 #, c-format
 msgid ""
 "<small><i>%s %s\n"
@@ -283,7 +282,7 @@ msgstr ""
 "Údajný otisk účtu %s:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1417
+#: ../gtk-dialog.c:1449
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
@@ -291,33 +290,33 @@ msgstr ""
 "Pokud se vše shoduje, měli byste v dialogu výše zaznačit, že jste otisk "
 "<b>ověřili</b>."
 
-#: ../gtk-dialog.c:1423 ../gtk-ui.c:858
+#: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "Ověřit otisk"
 
-#: ../gtk-dialog.c:1449
+#: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
 msgstr "Autentizace od %s"
 
-#: ../gtk-dialog.c:1452
+#: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
 msgstr "Autentizovat %s"
 
-#: ../gtk-dialog.c:1460
+#: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
 msgstr "Autentizovat kamaráda"
 
-#: ../gtk-dialog.c:1491
+#: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
 msgstr "Během autentizace došlo k chybě."
 
-#: ../gtk-dialog.c:1506
+#: ../gtk-dialog.c:1550
 msgid "Authentication successful."
 msgstr "Autentizace úspěšná."
 
-#: ../gtk-dialog.c:1509
+#: ../gtk-dialog.c:1553
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
@@ -325,40 +324,40 @@ msgstr ""
 "Váš kamarád vás úspěšně autentizoval. Možná budete chtít autentizovat také "
 "vy jeho pomocí své vlastní otázky."
 
-#: ../gtk-dialog.c:1515
+#: ../gtk-dialog.c:1559
 msgid "Authentication failed."
 msgstr "Autentizace selhala."
 
-#: ../gtk-dialog.c:1545
+#: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
 msgstr "Zahájena soukromá konverzace s %s.%s%s"
 
-#: ../gtk-dialog.c:1549
+#: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
 msgstr "Zahájena <a href=\"%s%s\">neověřená</a> konverzace s %%s.%%s%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1557
+#: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
 msgstr "Zahájena konverzace bez soukromí s %s.%s%s"
 
-#: ../gtk-dialog.c:1563 ../gtk-dialog.c:1692
+#: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
 msgstr "  Varování: používám starý protokol verze 1."
 
-#: ../gtk-dialog.c:1565
+#: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
 msgstr "  Váš klient tuto konverzaci zaznamenává."
 
-#: ../gtk-dialog.c:1566
+#: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
 msgstr "  Váš klient tuto konverzaci nezaznamenává."
 
-#: ../gtk-dialog.c:1585
+#: ../gtk-dialog.c:1635
 #, c-format
 msgid ""
 "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
@@ -369,24 +368,24 @@ msgstr ""
 "relací</a>. Chcete-li si zvolit relaci pro odchozí zprávy, použijte ikonové "
 "menu nahoře."
 
-#: ../gtk-dialog.c:1605
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Soukromá konverzace s %s ztracena."
 
-#: ../gtk-dialog.c:1643
+#: ../gtk-dialog.c:1703
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
 msgstr ""
 "%s ukončil(a) svou soukromou konverzaci s vámi; měli byste učinit totéž."
 
-#: ../gtk-dialog.c:1671
+#: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "Soukromá konverzace s %s byla úspěšně obnovena.%s"
 
-#: ../gtk-dialog.c:1676
+#: ../gtk-dialog.c:1741
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
@@ -396,50 +395,50 @@ msgstr ""
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1685
+#: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "Konverzace s %s bez soukromí byla úspěšně obnovena.%s"
 
-#: ../gtk-dialog.c:1718
+#: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "Pokouším se obnovit soukromou konverzaci s %s..."
 
-#: ../gtk-dialog.c:1720
+#: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "Pokouším se zahájit soukromou konverzaci s %s..."
 
-#: ../gtk-dialog.c:1910 ../gtk-dialog.c:2032
+#: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
 msgstr "Zahájit _soukromou konverzaci"
 
-#: ../gtk-dialog.c:1911
+#: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
 msgstr "Obnovit _soukromou konverzaci"
 
-#: ../gtk-dialog.c:1916
+#: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
 msgstr "Znovu _autentizovat kamaráda"
 
-#: ../gtk-dialog.c:1917 ../gtk-dialog.c:2036
+#: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
 msgstr "_Autentizovat kamaráda"
 
-#: ../gtk-dialog.c:1971 ../gtk-dialog.c:2756
+#: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
 msgstr "Bez soukromí"
 
-#: ../gtk-dialog.c:1993
+#: ../gtk-dialog.c:2030
 msgid "_What's this?"
 msgstr "_Co to je?"
 
-#: ../gtk-dialog.c:2034
+#: ../gtk-dialog.c:2065
 msgid "_End private conversation"
 msgstr "_Ukončit soukromou konverzaci"
 
-#: ../gtk-dialog.c:2219 ../gtk-dialog.c:2270
+#: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
 msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
@@ -450,221 +449,242 @@ msgstr ""
 "byla naposledy použita (%u). Váš kamarád možná vaše zprávy neobdrží. Pomocí "
 "ikonového menu nahoře můžete zvolit jinou relaci pro odchozí zprávy."
 
-#: ../gtk-dialog.c:2286
+#: ../gtk-dialog.c:2317
 msgid "Send to most secure"
 msgstr "Poslat na nejbezpečnější"
 
-#: ../gtk-dialog.c:2288
+#: ../gtk-dialog.c:2319
 msgid "Send to most recent"
 msgstr "Poslat na naposledy použitou"
 
-#: ../gtk-dialog.c:2392
+#: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
 msgstr "Relace %u"
 
-#: ../gtk-dialog.c:2411 ../gtk-dialog.c:2522
+#: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
 msgstr "Zvolit"
 
-#: ../gtk-dialog.c:2426
+#: ../gtk-dialog.c:2464
 msgid "Selected"
 msgstr "Zvolena"
 
-#: ../gtk-dialog.c:2751
+#: ../gtk-dialog.c:2694
 #, c-format
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
 msgstr "Stav soukromí aktuální konverzace je nyní: <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2983
+#: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
 msgstr "Zabezpečená komunikace (OTR)"
 
-#: ../gtk-ui.c:106
+#: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "Otisk: %.80s"
 
-#: ../gtk-ui.c:110
+#: ../gtk-ui.c:100
 msgid "No key present"
 msgstr "Žádný klíč není přítomen"
 
-#: ../gtk-ui.c:115
+#: ../gtk-ui.c:106
 msgid "No account available"
 msgstr "Žádné účty nejsou k dispozici"
 
-#: ../gtk-ui.c:193
-msgid "Unused"
-msgstr "Nepoužíván"
-
-#: ../gtk-ui.c:222
+#: ../gtk-ui.c:175
 msgid "Yes"
 msgstr "Ano"
 
-#: ../gtk-ui.c:222
+#: ../gtk-ui.c:175
 msgid "No"
 msgstr "Ne"
 
-#: ../gtk-ui.c:487
+#: ../gtk-ui.c:375
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "Účet %s (%s) nebyl nalezen"
+
+#: ../gtk-ui.c:378
+msgid "Account not found"
+msgstr "Účet nenalezen"
+
+#: ../gtk-ui.c:437
 msgid "Enable private messaging"
 msgstr "Povolit soukromou komunikaci"
 
-#: ../gtk-ui.c:489
+#: ../gtk-ui.c:440
 msgid "Automatically initiate private messaging"
 msgstr "Automaticky zahájit soukromou komunikaci"
 
-#: ../gtk-ui.c:491
+#: ../gtk-ui.c:442
 msgid "Require private messaging"
 msgstr "Vyžadovat soukromou komunikaci"
 
-#: ../gtk-ui.c:494
+#: ../gtk-ui.c:445
 msgid "Don't log OTR conversations"
 msgstr "Nezaznamenávat soukromé konverzace"
 
-#: ../gtk-ui.c:538
+#: ../gtk-ui.c:483
 msgid "Show OTR button in toolbar"
 msgstr "Zobrazit tlačítko zabezpečení (OTR) na panelu nástrojů"
 
-#: ../gtk-ui.c:677
+#: ../gtk-ui.c:614
 msgid "My private keys"
 msgstr "Mé soukromé klíče"
 
-#: ../gtk-ui.c:686
+#: ../gtk-ui.c:623
 msgid "Key for account:"
 msgstr "Klíč pro účet:"
 
-#: ../gtk-ui.c:711
+#: ../gtk-ui.c:647
 msgid "Generate"
 msgstr "Generovat"
 
-#: ../gtk-ui.c:752
+#: ../gtk-ui.c:679
 msgid "Default OTR Settings"
 msgstr "Výchozí nastavení zabezpečení (OTR)"
 
-#: ../gtk-ui.c:779
+#: ../gtk-ui.c:705
 msgid "OTR UI Options"
 msgstr "Volby uživatelského rozhraní OTR"
 
-#: ../gtk-ui.c:802
+#: ../gtk-ui.c:727
 msgid "Screenname"
 msgstr "Jméno uživatele"
 
-#: ../gtk-ui.c:803
+#: ../gtk-ui.c:728
 msgid "Status"
 msgstr "Stav"
 
-#: ../gtk-ui.c:804
+#: ../gtk-ui.c:729
 msgid "Verified"
 msgstr "Ověřen"
 
-#: ../gtk-ui.c:805
+#: ../gtk-ui.c:730
 msgid "Fingerprint"
 msgstr "Otisk"
 
-#: ../gtk-ui.c:806
+#: ../gtk-ui.c:731
 msgid "Account"
 msgstr "Účet"
 
-#: ../gtk-ui.c:842
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "Zahájit soukromou konverzaci"
 
-#: ../gtk-ui.c:850
+#: ../gtk-ui.c:774
 msgid "End private connection"
 msgstr "Ukončit soukromou konverzaci"
 
-#: ../gtk-ui.c:866
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "Zapomenout otisk"
 
-#: ../gtk-ui.c:917
+#: ../gtk-ui.c:840
 msgid "Config"
 msgstr "Konfigurace"
 
-#: ../gtk-ui.c:919
+#: ../gtk-ui.c:842
 msgid "Known fingerprints"
 msgstr "Známé otisky"
 
-#: ../gtk-ui.c:1017 ../otr-plugin.c:1002
+#: ../gtk-ui.c:932 ../plugin-all.c:1292
 msgid "OTR Settings"
 msgstr "Nastavení zabezpečení (OTR)"
 
 #. Set the title
-#: ../gtk-ui.c:1035
+#: ../gtk-ui.c:948
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "Nastavení zabezpečení (OTR) pro účet %s"
 
-#. Make the cascaded checkboxes
-#: ../gtk-ui.c:1052
+#: ../gtk-ui.c:966
 msgid "Use default OTR settings for this buddy"
 msgstr "Použít pro tohoto kamaráda výchozí nastavení zabezpečení (OTR)"
 
-#: ../otr-plugin.c:130
+#: ../otrng-plugin.c:101
+#, fuzzy
+msgid "Off-the-Record Messaging nextgen"
+msgstr "Off-the-Record Messaging"
+
+#: ../otrng-plugin.c:102
+msgid "Provides private and secure conversations"
+msgstr "Poskytuje soukromé a zabezpečené konverzace"
+
+#: ../otrng-plugin.c:104
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr ""
+"Zachovává soukromí komunikací přes IM poskytováním šifrování, autentizace, "
+"popiratelnosti a dokonalého dopředného utajení."
+
+#: ../plugin-all.c:286
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "Momentálně nejste připojeni k účtu %s (%s)."
 
-#: ../otr-plugin.c:134
+#: ../plugin-all.c:290
 msgid "Not connected"
 msgstr "Nepřipojen"
 
-#: ../otr-plugin.c:217 ../otr-plugin.c:259
+#: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "Došla paměť při tvorbě jmen souborů!\n"
 
-#: ../otr-plugin.c:229 ../otr-plugin.c:265
+#: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "Nelze zapisovat do souboru se soukromými klíči\n"
 
-#: ../otr-plugin.c:303
+#: ../plugin-all.c:506
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "Neznámý účet %s (%s)."
 
-#: ../otr-plugin.c:307
+#: ../plugin-all.c:509
 msgid "Unknown account"
 msgstr "Neznámý účet"
 
-#: ../otr-plugin.c:369
+#: ../plugin-all.c:555
 msgid "Error occurred encrypting message."
 msgstr "Během šifrování zprávy došlo k chybě."
 
-#: ../otr-plugin.c:373
+#: ../plugin-all.c:559
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr "Poslali jste zašifrovaná data kamarádovi %s, který je neočekával."
 
-#: ../otr-plugin.c:379
+#: ../plugin-all.c:565
 msgid "You transmitted an unreadable encrypted message."
 msgstr "Odeslali jste nečitelnou šifrovanou zprávu."
 
-#: ../otr-plugin.c:382
+#: ../plugin-all.c:568
 msgid "You transmitted a malformed data message."
 msgstr "Odeslali jste zprávu s poškozenými daty."
 
-#: ../otr-plugin.c:395
+#: ../plugin-all.c:581
 msgid "[resent]"
 msgstr "[posláno znovu]"
 
-#: ../otr-plugin.c:464
+#: ../plugin-all.c:621
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
 msgstr "Pokusili jste se odeslat nešifrovanou zprávu kamarádovi %s"
 
-#: ../otr-plugin.c:467
+#: ../plugin-all.c:626
 msgid "Attempting to start a private conversation..."
 msgstr "Pokouším se zahájit soukromou konverzaci..."
 
-#: ../otr-plugin.c:469
+#: ../plugin-all.c:628
 msgid "OTR Policy Violation"
 msgstr "Porušení zásad zabezpečení (OTR)"
 
-#: ../otr-plugin.c:470
+#: ../plugin-all.c:629
 msgid ""
 "Unencrypted messages to this recipient are not allowed.  Attempting to start "
 "a private conversation.\n"
@@ -676,29 +696,29 @@ msgstr ""
 "\n"
 "Vaše zpráva bude znovu odeslána, jakmile začne soukromá konverzace."
 
-#: ../otr-plugin.c:479
+#: ../plugin-all.c:639
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr "Během šifrování zprávy došlo k chybě. Zpráva nebyla odeslána."
 
-#: ../otr-plugin.c:481
+#: ../plugin-all.c:641
 msgid "Error encrypting message"
 msgstr "Chyba při šifrování zprávy"
 
-#: ../otr-plugin.c:482
+#: ../plugin-all.c:642
 msgid "An error occurred when encrypting your message"
 msgstr "Během šifrování vaší zprávy došlo k chybě."
 
-#: ../otr-plugin.c:483
+#: ../plugin-all.c:643
 msgid "The message was not sent."
 msgstr "Zpráva nebyla odeslána."
 
-#: ../otr-plugin.c:486
+#: ../plugin-all.c:646
 #, c-format
 msgid "%s has already closed his/her private connection to you"
 msgstr "%s již ukončil(a) své soukromé spojení k vám"
 
-#: ../otr-plugin.c:489
+#: ../plugin-all.c:651
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
@@ -706,12 +726,12 @@ msgstr ""
 "Vaše zpráva nebyla odeslána. Ukončete svou soukromou konverzaci, nebo ji "
 "restartujte."
 
-#: ../otr-plugin.c:492
+#: ../plugin-all.c:654
 msgid "Private connection closed"
 msgstr "Soukromé spojení uzavřeno"
 
 # POT ERROR – "him" references no one, and should be "him or her"
-#: ../otr-plugin.c:493
+#: ../plugin-all.c:655
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
@@ -719,22 +739,22 @@ msgstr ""
 "Vaše zpráva nebyla odeslána. Buď ukončete svoje soukromé spojení, nebo jej "
 "obnovte."
 
-#: ../otr-plugin.c:503
+#: ../plugin-all.c:665
 msgid "Error setting up private conversation: Malformed message received"
 msgstr ""
 "Došlo k chybě při zakládání soukromé konverzace: Přijata poškozená zpráva"
 
-#: ../otr-plugin.c:507
+#: ../plugin-all.c:669
 #, c-format
 msgid "Error setting up private conversation: %s"
 msgstr "Chyba při zakládání soukromé konverzace: %s"
 
-#: ../otr-plugin.c:514 ../otr-plugin.c:525 ../otr-plugin.c:552
-#: ../otr-plugin.c:560 ../otr-plugin.c:578
+#: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
+#: ../plugin-all.c:728 ../plugin-all.c:745
 msgid "OTR Error"
 msgstr "Chyba zabezpečení (OTR)"
 
-#: ../otr-plugin.c:521
+#: ../plugin-all.c:683
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
@@ -742,27 +762,27 @@ msgstr ""
 "Přijímáme své vlastní zabezpečené zprávy. Buď se snažíte psát sobě samé(mu), "
 "nebo vám někdo vrací vaše vlastní zprávy."
 
-#: ../otr-plugin.c:525
+#: ../plugin-all.c:688
 msgid "We are receiving our own OTR messages."
 msgstr "Přijímáme své vlastní zabezpečené zprávy."
 
-#: ../otr-plugin.c:526
+#: ../plugin-all.c:689
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
 msgstr ""
 "Buď se snažíte psát sobě samé(mu), nebo vám někdo vrací vaše vlastní zprávy."
 
-#: ../otr-plugin.c:531
+#: ../plugin-all.c:694
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
 msgstr "<b>Poslední zpráva pro %s byla znovu odeslána.</p>"
 
-#: ../otr-plugin.c:535
+#: ../plugin-all.c:699
 msgid "Message resent"
 msgstr "Zpráva odeslána znovu"
 
-#: ../otr-plugin.c:539
+#: ../plugin-all.c:704
 #, c-format
 msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
@@ -771,31 +791,31 @@ msgstr ""
 "<b>Šifrovaná zpráva přijatá od %s je nečitelná, protože momentálně "
 "nekomunikujete soukromě.</b>"
 
-#: ../otr-plugin.c:544
+#: ../plugin-all.c:710
 msgid "Unreadable message"
 msgstr "Nečitelná zpráva"
 
-#: ../otr-plugin.c:548
+#: ../plugin-all.c:714
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
 msgstr "Obdrželi jsme nečitelnou zašifrovanou zprávu od %s."
 
-#: ../otr-plugin.c:556
+#: ../plugin-all.c:723
 #, c-format
 msgid "We received a malformed data message from %s."
 msgstr "Obdrželi jsme poškozenou datovou zprávu od %s."
 
-#: ../otr-plugin.c:564
+#: ../plugin-all.c:733
 #, c-format
 msgid "Heartbeat received from %s.\n"
 msgstr "Přijata známka života od %s.\n"
 
-#: ../otr-plugin.c:570
+#: ../plugin-all.c:738
 #, c-format
 msgid "Heartbeat sent to %s.\n"
 msgstr "Odeslána známka života pro %s.\n"
 
-#: ../otr-plugin.c:581
+#: ../plugin-all.c:749
 #, c-format
 msgid ""
 "<b>The following message received from %s was <i>not</i> encrypted: [</b>"
@@ -804,16 +824,16 @@ msgstr ""
 "<b>Následující zpráva, přijatá od %s, <i>nebyla</i> šifrována: [</b>%s<b>]</"
 "b>"
 
-#: ../otr-plugin.c:586
+#: ../plugin-all.c:754
 msgid "Received unencrypted message"
 msgstr "Přijata nešifrovaná zpráva"
 
-#: ../otr-plugin.c:592
+#: ../plugin-all.c:759
 #, c-format
 msgid "Unrecognized OTR message received from %s.\n"
 msgstr "Přijata nerozpoznaná zabezpečená zpráva od %s.\n"
 
-#: ../otr-plugin.c:601
+#: ../plugin-all.c:770
 #, c-format
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
@@ -822,17 +842,17 @@ msgstr ""
 "%s odeslal(a) zprávu určenou pro jinou relaci. Pokud jste přihlášeni "
 "vícenásobně, možná tuto zprávu přijala některá jiná relace."
 
-#: ../otr-plugin.c:607
+#: ../plugin-all.c:777
 msgid "Received message for a different session"
 msgstr "Obdržena zpráva pro jinou relaci"
 
 #. 2013-01-01
-#: ../otr-plugin.c:1232 ../otr-plugin.c:1259
+#: ../plugin-all.c:1894 ../plugin-all.c:1920
 #, c-format
 msgid "OTR PLUGIN v%s"
 msgstr "OTR PLUGIN v%s"
 
-#: ../otr-plugin.c:1241
+#: ../plugin-all.c:1904
 #, c-format
 msgid ""
 "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
@@ -843,7 +863,7 @@ msgstr ""
 "Pidgin vypršela platnost 1.1.2013. Prosím hledejte aktualizovanou verzi na "
 "http://otr.cypherpunks.ca/"
 
-#: ../otr-plugin.c:1268
+#: ../plugin-all.c:1930
 #, c-format
 msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
@@ -854,27 +874,5 @@ msgstr ""
 "Pidgin. Tato verze je určena pouze pro testovací účely a není vhodná pro "
 "všeobecné použití."
 
-#: ../otr-plugin.c:1459
-msgid "Off-the-Record Messaging"
-msgstr "Off-the-Record Messaging"
-
-#: ../otr-plugin.c:1460
-msgid "Provides private and secure conversations"
-msgstr "Poskytuje soukromé a zabezpečené konverzace"
-
-#: ../otr-plugin.c:1461
-msgid ""
-"Preserves the privacy of IM communications by providing encryption, "
-"authentication, deniability, and perfect forward secrecy."
-msgstr ""
-"Zachovává soukromí komunikací přes IM poskytováním šifrování, autentizace, "
-"popiratelnosti a dokonalého dopředného utajení."
-
-#: ../ui.c:113
-#, c-format
-msgid "Account %s (%s) could not be found"
-msgstr "Účet %s (%s) nebyl nalezen"
-
-#: ../ui.c:117
-msgid "Account not found"
-msgstr "Účet nenalezen"
+#~ msgid "Unused"
+#~ msgstr "Nepoužíván"

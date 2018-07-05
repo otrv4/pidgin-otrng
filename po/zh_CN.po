@@ -1,6 +1,6 @@
 # Off-the-Record Messaging plugin for pidgin.
 # Copyright (C) 2004-2012 Ian Goldberg, Rob Smits, Chris Alexander, Willy Lew,
-#	                       Lisa Du, Nikita Borisov
+# 	                       Lisa Du, Nikita Borisov
 # This file is distributed under the same license as the pidgin-otr package.
 # Ian Goldberg <otr@cypherpunks.ca>, 2012
 #
@@ -8,105 +8,100 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0.zh_CN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-14 09:45-0400\n"
+"POT-Creation-Date: 2018-07-05 16:45-0300\n"
 "PO-Revision-Date:  2012-06-17 13:45-0400\n"
 "Last-Translator: Bisheng Liu <bisheng.liu@uwaterloo.ca>\n"
 "Language-Team: Bisheng Liu <bisheng.liu@uwaterloo.ca>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gtk-dialog.c:332 ../gtk-dialog.c:1141 ../gtk-dialog.c:1145
-#: ../gtk-dialog.c:1547 ../gtk-dialog.c:1584 ../gtk-dialog.c:1673
-#: ../gtk-dialog.c:1748 ../gtk-dialog.c:2749
+#: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
+#: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
 msgstr "?lang=zh_CN"
 
-#: ../gtk-dialog.c:480
+#: ../gtk-dialog.c:504
 msgid ""
 "Your buddy is attempting to determine if he or she is really talking to you, "
 "or if it's someone pretending to be you.  Your buddy has asked a question, "
 "indicated below.  To authenticate to your buddy, enter the answer and click "
 "OK."
 msgstr ""
-"你的好友正在尝试判断他是否真的是与你在交谈, "
-"而不是与一个伪装成你的人. 你的好友请你回答如下问题以验证你的身份, "
-"请输入答案并点击 "
-"OK. "
+"你的好友正在尝试判断他是否真的是与你在交谈, 而不是与一个伪装成你的人. 你的好"
+"友请你回答如下问题以验证你的身份, 请输入答案并点击 OK. "
 
-#: ../gtk-dialog.c:487
+#: ../gtk-dialog.c:512
 msgid ""
 "To authenticate using a question, pick a question whose answer is known only "
 "to you and your buddy.  Enter this question and this answer, then wait for "
 "your buddy to enter the answer too.  If the answers don't match, then you "
 "may be talking to an imposter."
 msgstr ""
-"若采用提问方式来验证好友身份, 请选择一个只有你和好友才知道答案的问题. "
-"先输入这个问题和答案, 然后等待你的好友回答这个问题. "
-"如果你们的答案不一致, "
-"那么你可能正在与一个伪装成你好友的人交谈."
+"若采用提问方式来验证好友身份, 请选择一个只有你和好友才知道答案的问题. 先输入"
+"这个问题和答案, 然后等待你的好友回答这个问题. 如果你们的答案不一致, 那么你可"
+"能正在与一个伪装成你好友的人交谈."
 
-#: ../gtk-dialog.c:505
+#: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
 msgstr "这是你的好友所提出的问题:"
 
-#: ../gtk-dialog.c:508
+#: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
 msgstr "在此处输入问题:"
 
-#: ../gtk-dialog.c:540 ../gtk-dialog.c:624
+#: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
 msgstr "该好友已通过认证."
 
-#: ../gtk-dialog.c:552
+#: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr "在此处输入问题的答案(区分大小写):"
 
-#: ../gtk-dialog.c:593
+#: ../gtk-dialog.c:610
 msgid ""
 "To authenticate, pick a secret known only to you and your buddy.  Enter this "
 "secret, then wait for your buddy to enter it too.  If the secrets don't "
 "match, then you may be talking to an imposter."
 msgstr ""
-"为验证好友身份, 请选择一个只有你与好友知道的秘密. "
-"先输入这个秘密, 然后等待你的好友也输入该秘密. 如果你们的输入不一致, "
-"那么你可能正在与一个伪装成你好友的人交谈."
+"为验证好友身份, 请选择一个只有你与好友知道的秘密. 先输入这个秘密, 然后等待你"
+"的好友也输入该秘密. 如果你们的输入不一致, 那么你可能正在与一个伪装成你好友的"
+"人交谈."
 
-#: ../gtk-dialog.c:607
+#: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
 msgstr "在此处输入秘密:"
 
-#: ../gtk-dialog.c:657 ../gtk-dialog.c:1408
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
 msgid ""
 "To verify the fingerprint, contact your buddy via some <i>other</i> "
 "authenticated channel, such as the telephone or GPG-signed email.  Each of "
 "you should tell your fingerprint to the other."
 msgstr ""
-"为验证身份指纹, 请通过 <i>其他</i> "
-"可靠渠道联系你的好友, 例如通过电话或者GPG签名的email. "
-"你们应该把各自的身份指纹告诉对方. "
+"为验证身份指纹, 请通过 <i>其他</i> 可靠渠道联系你的好友, 例如通过电话或者GPG"
+"签名的email. 你们应该把各自的身份指纹告诉对方. "
 
-#: ../gtk-dialog.c:661
+#: ../gtk-dialog.c:683
 msgid ""
 "If everything matches up, you should choose <b>I have</b> in the menu below."
-msgstr ""
-"如果一切都匹配, 你应该在以下菜单中选择 <b>我已经</b>. "
+msgstr "如果一切都匹配, 你应该在以下菜单中选择 <b>我已经</b>. "
 
-#: ../gtk-dialog.c:672 ../gtk-dialog.c:1397
+#: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
 msgstr "[无]"
 
-#: ../gtk-dialog.c:679 ../gtk-dialog.c:1051 ../gtk-dialog.c:1404
-#: ../gtk-dialog.c:1453 ../gtk-ui.c:212 ../otr-plugin.c:127
-#: ../otr-plugin.c:300 ../ui.c:112
+#: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
+#: ../plugin-all.c:507
 msgid "Unknown"
 msgstr "未知"
 
-#: ../gtk-dialog.c:680
+#: ../gtk-dialog.c:705
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -121,115 +116,112 @@ msgstr ""
 "所声称的属于 %s 的身份指纹:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:736
+#: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
 msgstr "你选择如何来验证好友的身份?"
 
-#: ../gtk-dialog.c:745
+#: ../gtk-dialog.c:774
 msgid "Question and answer"
 msgstr "提问和回答"
 
-#: ../gtk-dialog.c:748
+#: ../gtk-dialog.c:776
 msgid "Shared secret"
 msgstr "共享的秘密"
 
-#: ../gtk-dialog.c:751
+#: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
 msgstr "手动的身份指纹认证"
 
-#: ../gtk-dialog.c:802
+#: ../gtk-dialog.c:827
 msgid "_Authenticate"
 msgstr "_认证"
 
-#: ../gtk-dialog.c:836
+#: ../gtk-dialog.c:858
 msgid ""
 "Authenticating a buddy helps ensure that the person you are talking to is "
 "who he or she claims to be."
-msgstr ""
-"认证好友身份有助于确保你所正在交谈的对象"
-"是他所声称的那个人."
+msgstr "认证好友身份有助于确保你所正在交谈的对象是他所声称的那个人."
 
 #. Translators: you are asked to authenticate yourself
-#: ../gtk-dialog.c:946
+#: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
 msgstr "正在向好友认证"
 
 #. Translators: you asked your buddy to authenticate him/herself
-#: ../gtk-dialog.c:948
+#: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
 msgstr "正在认证好友"
 
-#: ../gtk-dialog.c:975
+#: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
 msgstr "正在向 %s 认证"
 
-#: ../gtk-dialog.c:976
+#: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
 msgstr "正在认证 %s"
 
-#: ../gtk-dialog.c:1009
+#: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
 msgstr "正在等待好友回复..."
 
-#: ../gtk-dialog.c:1042
+#: ../gtk-dialog.c:1067
 msgid "Generating private key"
 msgstr "正在生成密钥"
 
-#: ../gtk-dialog.c:1043
+#: ../gtk-dialog.c:1068
 msgid "Please wait"
 msgstr "请等待"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1054
+#: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "正在为 %s (%s) 生成密钥..."
 
-#: ../gtk-dialog.c:1099
+#: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
 msgstr "%s 完成."
 
-#: ../gtk-dialog.c:1139
+#: ../gtk-dialog.c:1164
 #, c-format
 msgid ""
-"%s is contacting you from an unrecognized computer.  You should <a href=\"%s%"
-"s\">authenticate</a> this buddy."
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
+"%s\">authenticate</a> this buddy."
 msgstr ""
-"%s 正在使用一台无法识别的计算机与你联系. 你应该d <a href=\"%s%"
-"s\">认证</a> 该好友的身份."
+"%s 正在使用一台无法识别的计算机与你联系. 你应该d <a href=\"%s%s\">认证</a> 该"
+"好友的身份."
 
-#: ../gtk-dialog.c:1143
+#: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
 msgid ""
 "%s has not been authenticated yet.  You should <a href=\"%s%s"
 "\">authenticate</a> this buddy."
 msgstr ""
-"%s 的身份还没有经过认证. 你应该 <a href=\"%s%s"
-"\">认证</a> 该好友的身份. "
+"%s 的身份还没有经过认证. 你应该 <a href=\"%s%s\">认证</a> 该好友的身份. "
 
-#: ../gtk-dialog.c:1195 ../gtk-dialog.c:1969 ../gtk-dialog.c:2745
+#: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
 #: ../gtk-ui.c:83
 msgid "Finished"
 msgstr "已完成"
 
-#: ../gtk-dialog.c:1196 ../gtk-dialog.c:1966 ../gtk-dialog.c:2742
-#: ../gtk-ui.c:82
+#: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
+#: ../gtk-ui.c:83
 msgid "Private"
 msgstr "保密的"
 
-#: ../gtk-dialog.c:1197 ../gtk-dialog.c:1963 ../gtk-dialog.c:2739
-#: ../gtk-ui.c:81
+#: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
+#: ../gtk-ui.c:82
 msgid "Unverified"
 msgstr "未认证的"
 
-#: ../gtk-dialog.c:1198 ../gtk-ui.c:80
+#: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
 msgstr "不保密的"
 
-#: ../gtk-dialog.c:1201
+#: ../gtk-dialog.c:1232
 msgid "OTR"
 msgstr "OTR"
 
@@ -237,32 +229,32 @@ msgstr "OTR"
 #. * sentences. The user selects the first or second message in a combo box;
 #. * the third message, a new line, a fingerprint, a new line, and
 #. * the fourth message will follow it.
-#: ../gtk-dialog.c:1351
+#: ../gtk-dialog.c:1390
 msgid "I have not"
 msgstr "我还没有"
 
 #. 2nd message
-#: ../gtk-dialog.c:1353
+#: ../gtk-dialog.c:1392
 msgid "I have"
 msgstr "我已经"
 
 #. 3rd message
-#: ../gtk-dialog.c:1356
+#: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
 msgstr "确认这是正确的"
 
 #. 4th message
-#: ../gtk-dialog.c:1366
+#: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
 msgstr "属于 %s 的身份指纹."
 
-#: ../gtk-dialog.c:1393
+#: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "认证属于 %s 的身份指纹"
 
-#: ../gtk-dialog.c:1405
+#: ../gtk-dialog.c:1442
 #, c-format
 msgid ""
 "<small><i>%s %s\n"
@@ -281,601 +273,575 @@ msgstr ""
 "所声称的属于 %s 的身份指纹: \n"
 "%s\n"
 
-#: ../gtk-dialog.c:1412
+#: ../gtk-dialog.c:1449
 msgid ""
 "If everything matches up, you should indicate in the above dialog that you "
 "<b>have</b> verified the fingerprint."
 msgstr ""
-"如果一切都匹配, 你应该在以上对话框中表明你 "
-"<b>已经</b> 认证了该身份指纹."
+"如果一切都匹配, 你应该在以上对话框中表明你 <b>已经</b> 认证了该身份指纹."
 
-#: ../gtk-dialog.c:1418 ../gtk-ui.c:844
+#: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "认证身份指纹"
 
-#: ../gtk-dialog.c:1445
+#: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
 msgstr "来自 %s 的认证"
 
-#: ../gtk-dialog.c:1448
+#: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
 msgstr "认证 %s"
 
-#: ../gtk-dialog.c:1456
+#: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
 msgstr "认证好友"
 
-#: ../gtk-dialog.c:1487
+#: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
 msgstr "在认证过程中发生了一个错误."
 
-#: ../gtk-dialog.c:1502
+#: ../gtk-dialog.c:1550
 msgid "Authentication successful."
 msgstr "认证成功."
 
-#: ../gtk-dialog.c:1505
+#: ../gtk-dialog.c:1553
 msgid ""
 "Your buddy has successfully authenticated you.  You may want to authenticate "
 "your buddy as well by asking your own question."
 msgstr ""
-"你的好友已经成功地认证了你的身份. 你可以类似地提出一个你自己的问题"
-"来认证该好友的身份."
+"你的好友已经成功地认证了你的身份. 你可以类似地提出一个你自己的问题来认证该好"
+"友的身份."
 
-#: ../gtk-dialog.c:1511
+#: ../gtk-dialog.c:1559
 msgid "Authentication failed."
 msgstr "认证失败."
 
-#: ../gtk-dialog.c:1541
+#: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
 msgstr "与 %s 的私密对话开始.%s%s"
 
-#: ../gtk-dialog.c:1545
+#: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
 msgstr "<a href=\"%s%s\">未认证的</a> 与 %%s 的对话开始.%%s%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1553
+#: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
 msgstr "不保密的与 %s 的对话开始.%s%s"
 
-#: ../gtk-dialog.c:1559 ../gtk-dialog.c:1686
+#: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
 msgstr "  警告: 正在使用旧的协议版本 1."
 
-#: ../gtk-dialog.c:1561
+#: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
 msgstr "  你的客户端正在记录这段对话."
 
-#: ../gtk-dialog.c:1562
+#: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
 msgstr "  你的客户端没有在记录这段对话."
 
-#: ../gtk-dialog.c:1581
+#: ../gtk-dialog.c:1635
 #, c-format
 msgid ""
 "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
 "\">multiple sessions</a>. Use the icon menu above if you wish to select the "
 "outgoing session."
 msgstr ""
-"你的好友登录了多次, OTR已经建立了 <a href=\"%s%s"
-"\">多个会话</a>. 如果你想选择其中一个会话, 请使用以上的图标菜单."
+"你的好友登录了多次, OTR已经建立了 <a href=\"%s%s\">多个会话</a>. 如果你想选择"
+"其中一个会话, 请使用以上的图标菜单."
 
-#: ../gtk-dialog.c:1601
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "与 %s 的私密对话丢失."
 
-#: ../gtk-dialog.c:1638
+#: ../gtk-dialog.c:1703
 #, c-format
 msgid ""
 "%s has ended his/her private conversation with you; you should do the same."
-msgstr ""
-"%s 已经结束了与你的私密对话; 你也应该采取同样操作."
+msgstr "%s 已经结束了与你的私密对话; 你也应该采取同样操作."
 
-#: ../gtk-dialog.c:1665
+#: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "成功地刷新了与 %s 的私密对话.%s"
 
-#: ../gtk-dialog.c:1670
+#: ../gtk-dialog.c:1741
 #, c-format
 msgid ""
 "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
 "%%s.%%s"
-msgstr ""
-"成功地刷新了 <a href=\"%s%s\">未认证的</a> 对话与"
-"%%s.%%s"
+msgstr "成功地刷新了 <a href=\"%s%s\">未认证的</a> 对话与%%s.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1679
+#: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
 msgstr "成功地刷新了与 %s 的不私密对话.%s"
 
-#: ../gtk-dialog.c:1712
+#: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "正在尝试刷新与 %s 的私密对话..."
 
-#: ../gtk-dialog.c:1714
+#: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "正在尝试启动与 %s 的私密对话..."
 
-#: ../gtk-dialog.c:1899 ../gtk-dialog.c:2026
+#: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
 msgstr "启动 _私密 对话"
 
-#: ../gtk-dialog.c:1900
+#: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
 msgstr "刷新 _私密 对话"
 
-#: ../gtk-dialog.c:1905
+#: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
 msgstr "重_认证 好友身份"
 
-#: ../gtk-dialog.c:1906 ../gtk-dialog.c:2030
+#: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
 msgstr "_认证 好友身份"
 
-#: ../gtk-dialog.c:1960 ../gtk-dialog.c:2736
+#: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
 msgstr "不保密的"
 
-#: ../gtk-dialog.c:1982
+#: ../gtk-dialog.c:2030
 msgid "_What's this?"
 msgstr "_这是什么?"
 
-#: ../gtk-dialog.c:2028
+#: ../gtk-dialog.c:2065
 msgid "_End private conversation"
 msgstr "_结束私密对话"
 
-#: ../gtk-dialog.c:2207 ../gtk-dialog.c:2255
+#: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
 msgid ""
 "Warning: The selected outgoing OTR session (%u) is not the most recently "
 "active one (%u). Your buddy may not receive your messages. Use the icon menu "
 "above to select a different outgoing session."
 msgstr ""
-"警告: 所选择的OTR会话 (%u) 不是最近"
-"活跃的会话 (%u). 你的好友可能无法接受到你的消息. 请使用以上的图标菜单"
-"来选择一个不同的会话. "
+"警告: 所选择的OTR会话 (%u) 不是最近活跃的会话 (%u). 你的好友可能无法接受到你"
+"的消息. 请使用以上的图标菜单来选择一个不同的会话. "
 
-#: ../gtk-dialog.c:2271
+#: ../gtk-dialog.c:2317
 msgid "Send to most secure"
 msgstr "发送给最安全的"
 
-#: ../gtk-dialog.c:2273
+#: ../gtk-dialog.c:2319
 msgid "Send to most recent"
 msgstr "发送给最近的"
 
-#: ../gtk-dialog.c:2377
+#: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
 msgstr "会话 %u"
 
-#: ../gtk-dialog.c:2395 ../gtk-dialog.c:2506
+#: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
 msgstr "选择"
 
-#: ../gtk-dialog.c:2410
+#: ../gtk-dialog.c:2464
 msgid "Selected"
 msgstr "已选择的"
 
-#: ../gtk-dialog.c:2731
+#: ../gtk-dialog.c:2694
 #, c-format
 msgid ""
 "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
 "a>"
-msgstr ""
-"当前会话的隐私状态是 <a href=\"%s%s\">%s</"
-"a>"
+msgstr "当前会话的隐私状态是 <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2956
+#: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
 msgstr "OTR消息中"
 
-#: ../gtk-ui.c:103
+#: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "身份指纹: %.80s"
 
-#: ../gtk-ui.c:107
-#, c-format
+#: ../gtk-ui.c:100
 msgid "No key present"
 msgstr "当前无密钥"
 
-#: ../gtk-ui.c:112
-#, c-format
+#: ../gtk-ui.c:106
 msgid "No account available"
 msgstr "无可用帐号"
 
-#: ../gtk-ui.c:179
-msgid "Unused"
-msgstr "未使用"
-
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "Yes"
 msgstr "是"
 
-#: ../gtk-ui.c:208
+#: ../gtk-ui.c:175
 msgid "No"
 msgstr "否"
 
-#: ../gtk-ui.c:473
+#: ../gtk-ui.c:375
+#, c-format
+msgid "Account %s (%s) could not be found"
+msgstr "无法找到帐号 %s (%s)"
+
+#: ../gtk-ui.c:378
+msgid "Account not found"
+msgstr "无法找到帐号"
+
+#: ../gtk-ui.c:437
 msgid "Enable private messaging"
 msgstr "启动私密消息"
 
-#: ../gtk-ui.c:475
+#: ../gtk-ui.c:440
 msgid "Automatically initiate private messaging"
 msgstr "自动启用私密消息"
 
-#: ../gtk-ui.c:477
+#: ../gtk-ui.c:442
 msgid "Require private messaging"
 msgstr "要求私密消息"
 
-#: ../gtk-ui.c:480
+#: ../gtk-ui.c:445
 msgid "Don't log OTR conversations"
 msgstr "不记录OTR交谈"
 
-#: ../gtk-ui.c:524
+#: ../gtk-ui.c:483
 msgid "Show OTR button in toolbar"
 msgstr "在工具条显示OTR按钮"
 
-#: ../gtk-ui.c:663
+#: ../gtk-ui.c:614
 msgid "My private keys"
 msgstr "我的私钥"
 
-#: ../gtk-ui.c:672
+#: ../gtk-ui.c:623
 msgid "Key for account:"
 msgstr "私钥属于帐号:"
 
-#: ../gtk-ui.c:697
+#: ../gtk-ui.c:647
 msgid "Generate"
 msgstr "生成"
 
-#: ../gtk-ui.c:738
+#: ../gtk-ui.c:679
 msgid "Default OTR Settings"
 msgstr "默认OTR设置"
 
-#: ../gtk-ui.c:765
+#: ../gtk-ui.c:705
 msgid "OTR UI Options"
 msgstr "OTR界面选项"
 
-#: ../gtk-ui.c:788
+#: ../gtk-ui.c:727
 msgid "Screenname"
 msgstr "昵称"
 
-#: ../gtk-ui.c:789
+#: ../gtk-ui.c:728
 msgid "Status"
 msgstr "状态"
 
-#: ../gtk-ui.c:790
+#: ../gtk-ui.c:729
 msgid "Verified"
 msgstr "已认证"
 
-#: ../gtk-ui.c:791
+#: ../gtk-ui.c:730
 msgid "Fingerprint"
 msgstr "身份指纹"
 
-#: ../gtk-ui.c:792
+#: ../gtk-ui.c:731
 msgid "Account"
 msgstr "帐号"
 
-#: ../gtk-ui.c:828
+#: ../gtk-ui.c:766
 msgid "Start private connection"
 msgstr "启动私密连接"
 
-#: ../gtk-ui.c:836
+#: ../gtk-ui.c:774
 msgid "End private connection"
 msgstr "结束私密连接"
 
-#: ../gtk-ui.c:852
+#: ../gtk-ui.c:790
 msgid "Forget fingerprint"
 msgstr "忘记身份指纹"
 
-#: ../gtk-ui.c:903
+#: ../gtk-ui.c:840
 msgid "Config"
 msgstr "配置"
 
-#: ../gtk-ui.c:905
+#: ../gtk-ui.c:842
 msgid "Known fingerprints"
 msgstr "已知的身份指纹"
 
-#: ../gtk-ui.c:1003 ../otr-plugin.c:964
+#: ../gtk-ui.c:932 ../plugin-all.c:1292
 msgid "OTR Settings"
 msgstr "OTR设置"
 
 #. Set the title
-#: ../gtk-ui.c:1021
+#: ../gtk-ui.c:948
 #, c-format
 msgid "OTR Settings for %s"
 msgstr "属于 %s 的OTR设置"
 
-#. Make the cascaded checkboxes
-#: ../gtk-ui.c:1038
+#: ../gtk-ui.c:966
 msgid "Use default OTR settings for this buddy"
 msgstr "对该好友采用默认的OTR设置"
 
-#: ../otr-plugin.c:125
+#: ../otrng-plugin.c:101
+#, fuzzy
+msgid "Off-the-Record Messaging nextgen"
+msgstr "Off-the-Record Messaging"
+
+#: ../otrng-plugin.c:102
+msgid "Provides private and secure conversations"
+msgstr "提供私密安全的对话"
+
+#: ../otrng-plugin.c:104
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr "通过加密来保护即时通信的隐私, 认证, 可抵赖性, 和完美的正向安全."
+
+#: ../plugin-all.c:286
 #, c-format
 msgid "You are not currently connected to account %s (%s)."
 msgstr "当前你没有连接到帐号 %s (%s)."
 
-#: ../otr-plugin.c:129
+#: ../plugin-all.c:290
 msgid "Not connected"
 msgstr "未连接"
 
-#: ../otr-plugin.c:212 ../otr-plugin.c:254
+#: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
 #, c-format
 msgid "Out of memory building filenames!\n"
 msgstr "创建文件名内存溢出!\n"
 
-#: ../otr-plugin.c:224 ../otr-plugin.c:260
+#: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
 #, c-format
 msgid "Could not write private key file\n"
 msgstr "无法写密钥文件\n"
 
-#: ../otr-plugin.c:298
+#: ../plugin-all.c:506
 #, c-format
 msgid "Unknown account %s (%s)."
 msgstr "未知帐号 %s (%s)."
 
-#: ../otr-plugin.c:302
+#: ../plugin-all.c:509
 msgid "Unknown account"
 msgstr "未知帐号"
 
-#: ../otr-plugin.c:364
+#: ../plugin-all.c:555
 msgid "Error occurred encrypting message."
 msgstr "在加密消息时出错."
 
-#: ../otr-plugin.c:368
+#: ../plugin-all.c:559
 #, c-format
 msgid "You sent encrypted data to %s, who wasn't expecting it."
 msgstr "你向没有准备的 %s 发送了加密的消息."
 
-#: ../otr-plugin.c:374
+#: ../plugin-all.c:565
 msgid "You transmitted an unreadable encrypted message."
 msgstr "你发送了一条不可读的加密消息."
 
-#: ../otr-plugin.c:377
+#: ../plugin-all.c:568
 msgid "You transmitted a malformed data message."
 msgstr "你发送了一条异常的数据消息."
 
-#: ../otr-plugin.c:390
+#: ../plugin-all.c:581
 msgid "[resent]"
 msgstr "[重新发送]"
 
-#: ../otr-plugin.c:459
+#: ../plugin-all.c:621
 #, c-format
 msgid "You attempted to send an unencrypted message to %s"
 msgstr "你尝试向 %s 发送一条未加密的消息"
 
-#: ../otr-plugin.c:462
+#: ../plugin-all.c:626
 msgid "Attempting to start a private conversation..."
 msgstr "尝试启动一个私密的对话..."
 
-#: ../otr-plugin.c:464
+#: ../plugin-all.c:628
 msgid "OTR Policy Violation"
 msgstr "OTR策略侵犯"
 
-#: ../otr-plugin.c:465
+#: ../plugin-all.c:629
 msgid ""
 "Unencrypted messages to this recipient are not allowed.  Attempting to start "
 "a private conversation.\n"
 "\n"
 "Your message will be retransmitted when the private conversation starts."
 msgstr ""
-"不允许向对方发送未加密的消息. 正尝试启动"
-"一个私密的对话.\n"
+"不允许向对方发送未加密的消息. 正尝试启动一个私密的对话.\n"
 "\n"
 "当私密对话启动后, 你的消息将会被重新发送."
 
-#: ../otr-plugin.c:474
+#: ../plugin-all.c:639
 msgid ""
 "An error occurred when encrypting your message.  The message was not sent."
 msgstr "在消息加密过程中出错. 该消息未被发送."
 
-#: ../otr-plugin.c:476
+#: ../plugin-all.c:641
 msgid "Error encrypting message"
 msgstr "在加密消息时出错"
 
-#: ../otr-plugin.c:477
+#: ../plugin-all.c:642
 msgid "An error occurred when encrypting your message"
 msgstr "在加密你的消息时出错"
 
-#: ../otr-plugin.c:478
+#: ../plugin-all.c:643
 msgid "The message was not sent."
 msgstr "该消息未被发送."
 
-#: ../otr-plugin.c:481
+#: ../plugin-all.c:646
 #, c-format
 msgid "%s has already closed his/her private connection to you"
 msgstr "%s 已经关闭了与你的私密连接"
 
-#: ../otr-plugin.c:484
+#: ../plugin-all.c:651
 msgid ""
 "Your message was not sent.  Either end your private conversation, or restart "
 "it."
-msgstr ""
-"你的消息没有被发送. 请结束你的当前私密对话，或重启"
-"该对话."
+msgstr "你的消息没有被发送. 请结束你的当前私密对话，或重启该对话."
 
-#: ../otr-plugin.c:487
+#: ../plugin-all.c:654
 msgid "Private connection closed"
 msgstr "私密连接关闭"
 
-#: ../otr-plugin.c:488
+#: ../plugin-all.c:655
 msgid ""
 "Your message was not sent.  Either close your private connection to him, or "
 "refresh it."
-msgstr ""
-"你的消息没有被发送. 请关闭你与对方的私密连接，或"
-"刷新该连接."
+msgstr "你的消息没有被发送. 请关闭你与对方的私密连接，或刷新该连接."
 
-#: ../otr-plugin.c:498
+#: ../plugin-all.c:665
 msgid "Error setting up private conversation: Malformed message received"
 msgstr "建立私密对话出错: 收到异常消息"
 
-#: ../otr-plugin.c:502
+#: ../plugin-all.c:669
 #, c-format
 msgid "Error setting up private conversation: %s"
 msgstr "建立私密对话出错: %s"
 
-#: ../otr-plugin.c:509 ../otr-plugin.c:520 ../otr-plugin.c:547
-#: ../otr-plugin.c:555 ../otr-plugin.c:573
+#: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
+#: ../plugin-all.c:728 ../plugin-all.c:745
 msgid "OTR Error"
 msgstr "OTR出错"
 
-#: ../otr-plugin.c:516
+#: ../plugin-all.c:683
 msgid ""
 "We are receiving our own OTR messages.  You are either trying to talk to "
 "yourself, or someone is reflecting your messages back at you."
 msgstr ""
-"收到了自己的OTR消息. 或者你正在与"
-"自己交谈, 或者有人正在把你的消息返送给你."
+"收到了自己的OTR消息. 或者你正在与自己交谈, 或者有人正在把你的消息返送给你."
 
-#: ../otr-plugin.c:520
+#: ../plugin-all.c:688
 msgid "We are receiving our own OTR messages."
 msgstr "正在接受自己的OTR消息"
 
-#: ../otr-plugin.c:521
+#: ../plugin-all.c:689
 msgid ""
 "You are either trying to talk to yourself, or someone is reflecting your "
 "messages back at you."
-msgstr ""
-"或者你正在与自己交谈, 或者有人正在把你的消息"
-"返送给你."
+msgstr "或者你正在与自己交谈, 或者有人正在把你的消息返送给你."
 
-#: ../otr-plugin.c:526
+#: ../plugin-all.c:694
 #, c-format
 msgid "<b>The last message to %s was resent.</b>"
 msgstr "<b>给 %s 的最后一条消息被重新发送.</b>"
 
-#: ../otr-plugin.c:530
+#: ../plugin-all.c:699
 msgid "Message resent"
 msgstr "消息被重新发送"
 
-#: ../otr-plugin.c:534
+#: ../plugin-all.c:704
 #, c-format
 msgid ""
 "<b>The encrypted message received from %s is unreadable, as you are not "
 "currently communicating privately.</b>"
-msgstr ""
-"<b>来自 %s 的加密消息不可读, 因为你们"
-"当前没有在私密地交流.</b>"
+msgstr "<b>来自 %s 的加密消息不可读, 因为你们当前没有在私密地交流.</b>"
 
-#: ../otr-plugin.c:539
+#: ../plugin-all.c:710
 msgid "Unreadable message"
 msgstr "不可读的消息"
 
-#: ../otr-plugin.c:543
+#: ../plugin-all.c:714
 #, c-format
 msgid "We received an unreadable encrypted message from %s."
 msgstr "收到了一条来自 %s 的不可读的加密的消息."
 
-#: ../otr-plugin.c:551
+#: ../plugin-all.c:723
 #, c-format
 msgid "We received a malformed data message from %s."
 msgstr "收到了一条来自 %s 的异常的数据消息."
 
-#: ../otr-plugin.c:559
+#: ../plugin-all.c:733
 #, c-format
 msgid "Heartbeat received from %s.\n"
 msgstr "收到了来自 %s 的心跳消息.\n"
 
-#: ../otr-plugin.c:565
+#: ../plugin-all.c:738
 #, c-format
 msgid "Heartbeat sent to %s.\n"
 msgstr "心跳消息已发送给 %s.\n"
 
-#: ../otr-plugin.c:576
+#: ../plugin-all.c:749
 #, c-format
 msgid ""
-"<b>The following message received from %s was <i>not</i> encrypted: [</b>%"
-"s<b>]</b>"
-msgstr ""
-"<b>以下来自 %s 的消息 <i>没有</i> 被加密: [</b>%"
-"s<b>]</b>"
+"<b>The following message received from %s was <i>not</i> encrypted: [</b>"
+"%s<b>]</b>"
+msgstr "<b>以下来自 %s 的消息 <i>没有</i> 被加密: [</b>%s<b>]</b>"
 
-#: ../otr-plugin.c:581
+#: ../plugin-all.c:754
 msgid "Received unencrypted message"
 msgstr "收到未加密的消息"
 
-#: ../otr-plugin.c:587
+#: ../plugin-all.c:759
 #, c-format
 msgid "Unrecognized OTR message received from %s.\n"
 msgstr "收到来自 %s 的无法识别的OTR消息.\n"
 
-#: ../otr-plugin.c:596
+#: ../plugin-all.c:770
 #, c-format
 msgid ""
 "%s has sent a message intended for a different session. If you are logged in "
 "multiple times, another session may have received the message."
 msgstr ""
-"%s 已经向另一个不同的会话发送了一条消息. 如果你登录了"
-"多次, 另一个会话可能接收到了该消息."
+"%s 已经向另一个不同的会话发送了一条消息. 如果你登录了多次, 另一个会话可能接收"
+"到了该消息."
 
-#: ../otr-plugin.c:602
+#: ../plugin-all.c:777
 msgid "Received message for a different session"
 msgstr "收到了另一会话的消息"
 
 #. 2013-01-01
-#: ../otr-plugin.c:1193 ../otr-plugin.c:1220
+#: ../plugin-all.c:1894 ../plugin-all.c:1920
 #, c-format
 msgid "OTR PLUGIN v%s"
 msgstr "OTR 插件 v%s"
 
-#: ../otr-plugin.c:1202
+#: ../plugin-all.c:1904
 #, c-format
 msgid ""
 "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
 "as of 2013-01-01. Please look for an updated release at http://otr."
 "cypherpunks.ca/"
 msgstr ""
-"这个 Off-the-Record Messaging v%s Pidgin 插件的测试版本已于"
-"2013-01-01过期. 请在 http://otr."
-"cypherpunks.ca/ 找到更新版本"
+"这个 Off-the-Record Messaging v%s Pidgin 插件的测试版本已于2013-01-01过期. 请"
+"在 http://otr.cypherpunks.ca/ 找到更新版本"
 
-#: ../otr-plugin.c:1229
+#: ../plugin-all.c:1930
 #, c-format
 msgid ""
 "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
 "plugin. This version is intended for testing purposes only and is not for "
 "general purpose use."
 msgstr ""
-"你正在使用一个 Off-the-Record Messaging v%s Pidgin "
-"插件的测试版本. 该版本只用于测试目的, 不适用于"
-"一般用途使用."
+"你正在使用一个 Off-the-Record Messaging v%s Pidgin 插件的测试版本. 该版本只用"
+"于测试目的, 不适用于一般用途使用."
 
-#: ../otr-plugin.c:1414
-msgid "Off-the-Record Messaging"
-msgstr "Off-the-Record Messaging"
-
-#: ../otr-plugin.c:1415
-msgid "Provides private and secure conversations"
-msgstr "提供私密安全的对话"
-
-#: ../otr-plugin.c:1416
-msgid ""
-"Preserves the privacy of IM communications by providing encryption, "
-"authentication, deniability, and perfect forward secrecy."
-msgstr ""
-"通过加密来保护即时通信的隐私, "
-"认证, 可抵赖性, 和完美的正向安全."
-
-#: ../ui.c:110
-#, c-format
-msgid "Account %s (%s) could not be found"
-msgstr "无法找到帐号 %s (%s)"
-
-#: ../ui.c:114
-msgid "Account not found"
-msgstr "无法找到帐号"
+#~ msgid "Unused"
+#~ msgstr "未使用"

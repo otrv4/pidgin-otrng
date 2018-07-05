@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pidgin-otr 4.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-08 11:53+0300\n"
+"POT-Creation-Date: 2018-07-05 16:45-0300\n"
 "PO-Revision-Date: 2013-04-15 14:52+0200\n"
 "Last-Translator: Mikko Harhanen <gitti@mikkoharhanen.fi>\n"
 "Language-Team: Finnish\n"
@@ -18,80 +18,94 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../gtk-dialog.c:336
-#: ../gtk-dialog.c:1144
-#: ../gtk-dialog.c:1148
-#: ../gtk-dialog.c:1551
-#: ../gtk-dialog.c:1588
-#: ../gtk-dialog.c:1679
-#: ../gtk-dialog.c:1754
-#: ../gtk-dialog.c:2769
+#: ../gtk-dialog.c:271 ../gtk-dialog.c:1167 ../gtk-dialog.c:1172
+#: ../gtk-dialog.c:1596 ../gtk-dialog.c:1639 ../gtk-dialog.c:1744
+#: ../gtk-dialog.c:1820 ../gtk-dialog.c:2712 ../plugin-all.c:1738
 msgid "?lang=en"
 msgstr "?lang=fi"
 
-#: ../gtk-dialog.c:484
-msgid "Your buddy is attempting to determine if he or she is really talking to you, or if it's someone pretending to be you.  Your buddy has asked a question, indicated below.  To authenticate to your buddy, enter the answer and click OK."
-msgstr "Tuttavasi yrittää selvittää, keskusteleeko hän sinun vai jonkun sinua esittävän kanssa. Tuttavasi on esittänyt alla olevan kysymyksen. Jotta todentaisit itsesi tuttavallesi, syötä vastaus ja napsauta OK-painiketta."
+#: ../gtk-dialog.c:504
+msgid ""
+"Your buddy is attempting to determine if he or she is really talking to you, "
+"or if it's someone pretending to be you.  Your buddy has asked a question, "
+"indicated below.  To authenticate to your buddy, enter the answer and click "
+"OK."
+msgstr ""
+"Tuttavasi yrittää selvittää, keskusteleeko hän sinun vai jonkun sinua "
+"esittävän kanssa. Tuttavasi on esittänyt alla olevan kysymyksen. Jotta "
+"todentaisit itsesi tuttavallesi, syötä vastaus ja napsauta OK-painiketta."
 
-#: ../gtk-dialog.c:491
-msgid "To authenticate using a question, pick a question whose answer is known only to you and your buddy.  Enter this question and this answer, then wait for your buddy to enter the answer too.  If the answers don't match, then you may be talking to an imposter."
-msgstr "Jotta todentaisit tuttavan kysymyksellä, valitse kysymys, jonka vastauksen vain sinä ja tuttavasi tiedätte. Syötä tällainen kysymys ja vastaus sekä odota tuttavasi vastausta. Jos vastaukset eivät täsmää, saatat keskustella huijarin kanssa."
+#: ../gtk-dialog.c:512
+msgid ""
+"To authenticate using a question, pick a question whose answer is known only "
+"to you and your buddy.  Enter this question and this answer, then wait for "
+"your buddy to enter the answer too.  If the answers don't match, then you "
+"may be talking to an imposter."
+msgstr ""
+"Jotta todentaisit tuttavan kysymyksellä, valitse kysymys, jonka vastauksen "
+"vain sinä ja tuttavasi tiedätte. Syötä tällainen kysymys ja vastaus sekä "
+"odota tuttavasi vastausta. Jos vastaukset eivät täsmää, saatat keskustella "
+"huijarin kanssa."
 
-#: ../gtk-dialog.c:509
+#: ../gtk-dialog.c:529
 #, c-format
 msgid "This is the question asked by your buddy:"
 msgstr "Tässä on tuttavasi esittämä kysymys:"
 
-#: ../gtk-dialog.c:512
+#: ../gtk-dialog.c:532
 #, c-format
 msgid "Enter question here:"
 msgstr "Syötä kysymys tähän:"
 
-#: ../gtk-dialog.c:544
-#: ../gtk-dialog.c:625
+#: ../gtk-dialog.c:566 ../gtk-dialog.c:641
 msgid "This buddy is already authenticated."
 msgstr "Tämä tuttava on jo todennettu."
 
-#: ../gtk-dialog.c:554
+#: ../gtk-dialog.c:571
 #, c-format
 msgid "Enter secret answer here (case sensitive):"
 msgstr "Syötä salainen vastaus tänne (kirjainkoolla merkitystä):"
 
-#: ../gtk-dialog.c:594
-msgid "To authenticate, pick a secret known only to you and your buddy.  Enter this secret, then wait for your buddy to enter it too.  If the secrets don't match, then you may be talking to an imposter."
-msgstr "Valitse todentamiseen salaisuus, jonka vain sinä ja tuttavasi tiedätte. Syötä tämä salaisuus ja odota, että tuttavasi syöttää sen myös. Jos salaisuudet eivät täsmää, saatat keskustella huijarin kanssa."
+#: ../gtk-dialog.c:610
+msgid ""
+"To authenticate, pick a secret known only to you and your buddy.  Enter this "
+"secret, then wait for your buddy to enter it too.  If the secrets don't "
+"match, then you may be talking to an imposter."
+msgstr ""
+"Valitse todentamiseen salaisuus, jonka vain sinä ja tuttavasi tiedätte. "
+"Syötä tämä salaisuus ja odota, että tuttavasi syöttää sen myös. Jos "
+"salaisuudet eivät täsmää, saatat keskustella huijarin kanssa."
 
-#: ../gtk-dialog.c:608
+#: ../gtk-dialog.c:624
 #, c-format
 msgid "Enter secret here:"
 msgstr "Syötä salaisuus tähän:"
 
-#: ../gtk-dialog.c:658
-#: ../gtk-dialog.c:1413
-msgid "To verify the fingerprint, contact your buddy via some <i>other</i> authenticated channel, such as the telephone or GPG-signed email.  Each of you should tell your fingerprint to the other."
-msgstr "Jotta varmentaisit sormenjäljen, ota yhteyttä tuttavaasi <i>toisella</i> varmennetulla kanavalla kuten puhelimella tai GPG-allekirjoitetulla sähköpostilla. Kummankin teistä tulisi kertoa sormenjälkensä toisilleen."
+#: ../gtk-dialog.c:679 ../gtk-dialog.c:1445
+msgid ""
+"To verify the fingerprint, contact your buddy via some <i>other</i> "
+"authenticated channel, such as the telephone or GPG-signed email.  Each of "
+"you should tell your fingerprint to the other."
+msgstr ""
+"Jotta varmentaisit sormenjäljen, ota yhteyttä tuttavaasi <i>toisella</i> "
+"varmennetulla kanavalla kuten puhelimella tai GPG-allekirjoitetulla "
+"sähköpostilla. Kummankin teistä tulisi kertoa sormenjälkensä toisilleen."
 
-#: ../gtk-dialog.c:662
-msgid "If everything matches up, you should choose <b>I have</b> in the menu below."
+#: ../gtk-dialog.c:683
+msgid ""
+"If everything matches up, you should choose <b>I have</b> in the menu below."
 msgstr "Jos kaikki täsmää, valitse <b>Olen</b> alla olevasta valikosta."
 
-#: ../gtk-dialog.c:673
-#: ../gtk-dialog.c:1401
+#: ../gtk-dialog.c:693 ../gtk-dialog.c:1431
 msgid "[none]"
 msgstr "[ei mitään]"
 
-#: ../gtk-dialog.c:681
-#: ../gtk-dialog.c:1054
-#: ../gtk-dialog.c:1409
-#: ../gtk-dialog.c:1457
-#: ../gtk-ui.c:226
-#: ../otr-plugin.c:132
-#: ../otr-plugin.c:305
-#: ../ui.c:115
+#: ../gtk-dialog.c:704 ../gtk-dialog.c:1076 ../gtk-ui.c:376 ../plugin-all.c:288
+#: ../plugin-all.c:507
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../gtk-dialog.c:682
+#: ../gtk-dialog.c:705
 #, c-format
 msgid ""
 "Fingerprint for you, %s (%s):\n"
@@ -106,110 +120,115 @@ msgstr ""
 "Tuttavan %s väitetty sormenjälki:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:739
+#: ../gtk-dialog.c:766
 msgid "How would you like to authenticate your buddy?"
 msgstr "Miten haluat todentaa tuttavasi?"
 
-#: ../gtk-dialog.c:748
+#: ../gtk-dialog.c:774
 msgid "Question and answer"
 msgstr "Kysymys ja vastaus"
 
-#: ../gtk-dialog.c:751
+#: ../gtk-dialog.c:776
 msgid "Shared secret"
 msgstr "Jaettu salaisuus"
 
-#: ../gtk-dialog.c:754
+#: ../gtk-dialog.c:779
 msgid "Manual fingerprint verification"
 msgstr "Itse varmennettu sormenjälki"
 
-#: ../gtk-dialog.c:805
+#: ../gtk-dialog.c:827
 msgid "_Authenticate"
 msgstr "_Todenna"
 
-#: ../gtk-dialog.c:839
-msgid "Authenticating a buddy helps ensure that the person you are talking to is who he or she claims to be."
-msgstr "Tuttavan todennus auttaa varmistamaan, että toinen osapuoli on todella se henkilö, joksi hän itseään väittää."
+#: ../gtk-dialog.c:858
+msgid ""
+"Authenticating a buddy helps ensure that the person you are talking to is "
+"who he or she claims to be."
+msgstr ""
+"Tuttavan todennus auttaa varmistamaan, että toinen osapuoli on todella se "
+"henkilö, joksi hän itseään väittää."
 
 #. Translators: you are asked to authenticate yourself
-#: ../gtk-dialog.c:949
+#: ../gtk-dialog.c:973
 msgid "Authenticating to Buddy"
 msgstr "Todennetaan tuttavalle"
 
 #. Translators: you asked your buddy to authenticate him/herself
-#: ../gtk-dialog.c:951
+#: ../gtk-dialog.c:976
 msgid "Authenticating Buddy"
 msgstr "Todennetaan tuttavaa"
 
-#: ../gtk-dialog.c:978
+#: ../gtk-dialog.c:1000
 #, c-format
 msgid "Authenticating to %s"
 msgstr "Todennetaan tuttavalle %s"
 
-#: ../gtk-dialog.c:979
+#: ../gtk-dialog.c:1001
 #, c-format
 msgid "Authenticating %s"
 msgstr "Todennetaan tuttavaa %s"
 
-#: ../gtk-dialog.c:1012
+#: ../gtk-dialog.c:1033
 msgid "Waiting for buddy..."
 msgstr "Odotetaan tuttavaa..."
 
-#: ../gtk-dialog.c:1045
+#: ../gtk-dialog.c:1067
 msgid "Generating private key"
 msgstr "Luodaan yksityinen avain"
 
-#: ../gtk-dialog.c:1046
+#: ../gtk-dialog.c:1068
 msgid "Please wait"
 msgstr "Ole hyvä ja odota"
 
 #. Create the Please Wait... dialog
-#: ../gtk-dialog.c:1057
+#: ../gtk-dialog.c:1079
 #, c-format
 msgid "Generating private key for %s (%s)..."
 msgstr "Luodaan yksityistä avainta henkilölle %s (%s)̣̣…"
 
-#: ../gtk-dialog.c:1102
+#: ../gtk-dialog.c:1123
 #, c-format
 msgid "%s Done."
 msgstr "%s Valmis."
 
-#: ../gtk-dialog.c:1142
+#: ../gtk-dialog.c:1164
 #, c-format
-msgid "%s is contacting you from an unrecognized computer.  You should <a href=\"%s%s\">authenticate</a> this buddy."
-msgstr "%s ottaa sinuun yhteyttä tuntemattomasta tietokoneesta. Sinun kannattaa <a href=\"%s%s\">todentaa</a> tuttavasi."
+msgid ""
+"%s is contacting you from an unrecognized computer.  You should <a href=\"%s"
+"%s\">authenticate</a> this buddy."
+msgstr ""
+"%s ottaa sinuun yhteyttä tuntemattomasta tietokoneesta. Sinun kannattaa <a "
+"href=\"%s%s\">todentaa</a> tuttavasi."
 
-#: ../gtk-dialog.c:1146
+#: ../gtk-dialog.c:1170 ../plugin-all.c:1736
 #, c-format
-msgid "%s has not been authenticated yet.  You should <a href=\"%s%s\">authenticate</a> this buddy."
-msgstr "Tuttavaa %s ei ole vielä todennettu. Sinun kannattaisi <a href=\"%s%s\">todentaa</a> tuttavasi."
+msgid ""
+"%s has not been authenticated yet.  You should <a href=\"%s%s"
+"\">authenticate</a> this buddy."
+msgstr ""
+"Tuttavaa %s ei ole vielä todennettu. Sinun kannattaisi <a href=\"%s%s"
+"\">todentaa</a> tuttavasi."
 
-#: ../gtk-dialog.c:1198
-#: ../gtk-dialog.c:1980
-#: ../gtk-dialog.c:2765
-#: ../gtk-ui.c:86
+#: ../gtk-dialog.c:1225 ../gtk-dialog.c:2018 ../gtk-dialog.c:2708
+#: ../gtk-ui.c:83
 msgid "Finished"
 msgstr "Valmis"
 
-#: ../gtk-dialog.c:1199
-#: ../gtk-dialog.c:1977
-#: ../gtk-dialog.c:2762
-#: ../gtk-ui.c:85
+#: ../gtk-dialog.c:1227 ../gtk-dialog.c:2015 ../gtk-dialog.c:2705
+#: ../gtk-ui.c:83
 msgid "Private"
 msgstr "Yksityinen"
 
-#: ../gtk-dialog.c:1200
-#: ../gtk-dialog.c:1974
-#: ../gtk-dialog.c:2759
-#: ../gtk-ui.c:84
+#: ../gtk-dialog.c:1228 ../gtk-dialog.c:2012 ../gtk-dialog.c:2702
+#: ../gtk-ui.c:82
 msgid "Unverified"
 msgstr "Varmentamaton"
 
-#: ../gtk-dialog.c:1201
-#: ../gtk-ui.c:83
+#: ../gtk-dialog.c:1229 ../gtk-ui.c:82
 msgid "Not private"
 msgstr "Ei yksityinen"
 
-#: ../gtk-dialog.c:1204
+#: ../gtk-dialog.c:1232
 msgid "OTR"
 msgstr "OTR"
 
@@ -217,32 +236,32 @@ msgstr "OTR"
 #. * sentences. The user selects the first or second message in a combo box;
 #. * the third message, a new line, a fingerprint, a new line, and
 #. * the fourth message will follow it.
-#: ../gtk-dialog.c:1354
+#: ../gtk-dialog.c:1390
 msgid "I have not"
 msgstr "En ole"
 
 #. 2nd message
-#: ../gtk-dialog.c:1356
+#: ../gtk-dialog.c:1392
 msgid "I have"
 msgstr "Olen"
 
 #. 3rd message
-#: ../gtk-dialog.c:1359
+#: ../gtk-dialog.c:1395
 msgid " verified that this is in fact the correct"
 msgstr " varmentanut, että tämä on oikea"
 
 #. 4th message
-#: ../gtk-dialog.c:1369
+#: ../gtk-dialog.c:1405
 #, c-format
 msgid "fingerprint for %s."
 msgstr "sormenjälki tuttavalleni %s."
 
-#: ../gtk-dialog.c:1397
+#: ../gtk-dialog.c:1429
 #, c-format
 msgid "Verify fingerprint for %s"
 msgstr "Varmenna tuttavan %s sormenjälki"
 
-#: ../gtk-dialog.c:1410
+#: ../gtk-dialog.c:1442
 #, c-format
 msgid ""
 "<small><i>%s %s\n"
@@ -261,538 +280,604 @@ msgstr ""
 "Tuttavan %s väitetty sormenjälki:\n"
 "%s\n"
 
-#: ../gtk-dialog.c:1417
-msgid "If everything matches up, you should indicate in the above dialog that you <b>have</b> verified the fingerprint."
-msgstr "Jos kaikki täsmää, sinun tulisi osoittaa yllä olevalla valinnalla, että <b>olet</b> varmentanut sormenjäljen."
+#: ../gtk-dialog.c:1449
+msgid ""
+"If everything matches up, you should indicate in the above dialog that you "
+"<b>have</b> verified the fingerprint."
+msgstr ""
+"Jos kaikki täsmää, sinun tulisi osoittaa yllä olevalla valinnalla, että "
+"<b>olet</b> varmentanut sormenjäljen."
 
-#: ../gtk-dialog.c:1423
-#: ../gtk-ui.c:858
+#: ../gtk-dialog.c:1456 ../gtk-ui.c:782
 msgid "Verify fingerprint"
 msgstr "Varmenna sormenjälki"
 
-#: ../gtk-dialog.c:1449
+#: ../gtk-dialog.c:1483
 #, c-format
 msgid "Authentication from %s"
 msgstr "Todennus tuttavalta %s"
 
-#: ../gtk-dialog.c:1452
+#: ../gtk-dialog.c:1485
 #, c-format
 msgid "Authenticate %s"
 msgstr "Todenna tuttava %s"
 
-#: ../gtk-dialog.c:1460
+#: ../gtk-dialog.c:1488
 msgid "Authenticate Buddy"
 msgstr "Todenna tuttava"
 
-#: ../gtk-dialog.c:1491
+#: ../gtk-dialog.c:1522
 msgid "An error occurred during authentication."
 msgstr "Tapahtui virhe todentamisen aikana."
 
-#: ../gtk-dialog.c:1506
+#: ../gtk-dialog.c:1550
 msgid "Authentication successful."
 msgstr "Todennus onnistui."
 
-#: ../gtk-dialog.c:1509
-msgid "Your buddy has successfully authenticated you.  You may want to authenticate your buddy as well by asking your own question."
-msgstr "Tuttavasi on onnistuneesti todentanut sinut. Saatat myös itse haluta todentaa tuttavasi kysymyksesi avulla."
+#: ../gtk-dialog.c:1553
+msgid ""
+"Your buddy has successfully authenticated you.  You may want to authenticate "
+"your buddy as well by asking your own question."
+msgstr ""
+"Tuttavasi on onnistuneesti todentanut sinut. Saatat myös itse haluta "
+"todentaa tuttavasi kysymyksesi avulla."
 
-#: ../gtk-dialog.c:1515
+#: ../gtk-dialog.c:1559
 msgid "Authentication failed."
 msgstr "Todennus epäonnistui."
 
-#: ../gtk-dialog.c:1545
+#: ../gtk-dialog.c:1590
 #, c-format
 msgid "Private conversation with %s started.%s%s"
 msgstr "Yksityinen keskustelu alkoi tuttavan %s kanssa.%s%s"
 
-#: ../gtk-dialog.c:1549
+#: ../gtk-dialog.c:1594
 #, c-format
 msgid "<a href=\"%s%s\">Unverified</a> conversation with %%s started.%%s%%s"
-msgstr "<a href=\"%s%s\">Varmentamaton</a> keskustelu alkoi tuttavan %%s kanssa.%%s%%s"
+msgstr ""
+"<a href=\"%s%s\">Varmentamaton</a> keskustelu alkoi tuttavan %%s kanssa.%%s"
+"%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1557
+#: ../gtk-dialog.c:1602
 #, c-format
 msgid "Not private conversation with %s started.%s%s"
 msgstr "Ei yksityinen keskustelu alkoi tuttavan %s kanssa.%s%s"
 
-#: ../gtk-dialog.c:1563
-#: ../gtk-dialog.c:1692
+#: ../gtk-dialog.c:1612 ../gtk-dialog.c:1760
 msgid "  Warning: using old protocol version 1."
 msgstr "  Varoitus: käytetään yhteyskäytännön vanhaa versiota 1."
 
-#: ../gtk-dialog.c:1565
+#: ../gtk-dialog.c:1615
 msgid "  Your client is logging this conversation."
 msgstr "  Asiakasohjelmasi kirjaa tämän keskustelun."
 
-#: ../gtk-dialog.c:1566
+#: ../gtk-dialog.c:1616
 msgid "  Your client is not logging this conversation."
 msgstr "  Asiakasohjelmasi ei kirjaa tätä keskustelua."
 
-#: ../gtk-dialog.c:1585
+#: ../gtk-dialog.c:1635
 #, c-format
-msgid "Your buddy is logged in multiple times and OTR has established <a href=\"%s%s\">multiple sessions</a>. Use the icon menu above if you wish to select the outgoing session."
-msgstr "Tuttavasi on kirjautunut useamman kerran, ja OTR on muodostanut <a href=\"%s%s\">useita istuntoja</a>. Käytä yllä olevaa valikkokuvaketta, jos haluat haluat valita lähtevän liikenteen istunnon."
+msgid ""
+"Your buddy is logged in multiple times and OTR has established <a href=\"%s%s"
+"\">multiple sessions</a>. Use the icon menu above if you wish to select the "
+"outgoing session."
+msgstr ""
+"Tuttavasi on kirjautunut useamman kerran, ja OTR on muodostanut <a href=\"%s"
+"%s\">useita istuntoja</a>. Käytä yllä olevaa valikkokuvaketta, jos haluat "
+"haluat valita lähtevän liikenteen istunnon."
 
-#: ../gtk-dialog.c:1605
+#: ../gtk-dialog.c:1662
 #, c-format
 msgid "Private conversation with %s lost."
 msgstr "Yksityinen keskustelu katkesi tuttavan %s kanssa."
 
-#: ../gtk-dialog.c:1643
+#: ../gtk-dialog.c:1703
 #, c-format
-msgid "%s has ended his/her private conversation with you; you should do the same."
-msgstr "%s on lopettanut yksityisen keskustelun kanssasi, ja sinun tulisi tehdä samoin."
+msgid ""
+"%s has ended his/her private conversation with you; you should do the same."
+msgstr ""
+"%s on lopettanut yksityisen keskustelun kanssasi, ja sinun tulisi tehdä "
+"samoin."
 
-#: ../gtk-dialog.c:1671
+#: ../gtk-dialog.c:1735
 #, c-format
 msgid "Successfully refreshed the private conversation with %s.%s"
 msgstr "Yksityinen keskustelu päivitettiin onnistuneesti tuttavan %s kanssa.%s"
 
-#: ../gtk-dialog.c:1676
+#: ../gtk-dialog.c:1741
 #, c-format
-msgid "Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with %%s.%%s"
-msgstr "<a href=\"%s%s\">Varmentamaton</a> keskustelu päivitettiin onnistuneesti tuttavan %%s kanssa.%%s"
+msgid ""
+"Successfully refreshed the <a href=\"%s%s\">unverified</a> conversation with "
+"%%s.%%s"
+msgstr ""
+"<a href=\"%s%s\">Varmentamaton</a> keskustelu päivitettiin onnistuneesti "
+"tuttavan %%s kanssa.%%s"
 
 #. This last case should never happen, since we know
 #. * we're in ENCRYPTED.
-#: ../gtk-dialog.c:1685
+#: ../gtk-dialog.c:1750
 #, c-format
 msgid "Successfully refreshed the not private conversation with %s.%s"
-msgstr "Ei yksityinen keskustelu päivitettiin onnistuneesti tuttavan %s kanssa.%s"
+msgstr ""
+"Ei yksityinen keskustelu päivitettiin onnistuneesti tuttavan %s kanssa.%s"
 
-#: ../gtk-dialog.c:1718
+#: ../gtk-dialog.c:1786
 #, c-format
 msgid "Attempting to refresh the private conversation with %s..."
 msgstr "Yritetään päivittää yksityinen keskustelu tuttavan %s kanssa…"
 
-#: ../gtk-dialog.c:1720
+#: ../gtk-dialog.c:1788
 #, c-format
 msgid "Attempting to start a private conversation with %s..."
 msgstr "Yritetään aloittaa yksityinen keskustelu tuttavan %s kanssa…"
 
-#: ../gtk-dialog.c:1910
-#: ../gtk-dialog.c:2032
+#: ../gtk-dialog.c:1948 ../gtk-dialog.c:2063
 msgid "Start _private conversation"
 msgstr "Aloita _yksityinen keskustelu"
 
-#: ../gtk-dialog.c:1911
+#: ../gtk-dialog.c:1949
 msgid "Refresh _private conversation"
 msgstr "Päivitä _yksityinen keskustelu"
 
-#: ../gtk-dialog.c:1916
+#: ../gtk-dialog.c:1954
 msgid "Re_authenticate buddy"
 msgstr "_Todenna tuttava uudelleen"
 
-#: ../gtk-dialog.c:1917
-#: ../gtk-dialog.c:2036
+#: ../gtk-dialog.c:1955 ../gtk-dialog.c:2067
 msgid "_Authenticate buddy"
 msgstr "_Todenna tuttava"
 
-#: ../gtk-dialog.c:1971
-#: ../gtk-dialog.c:2756
+#: ../gtk-dialog.c:2009 ../gtk-dialog.c:2699
 msgid "Not Private"
 msgstr "Ei yksityinen"
 
-#: ../gtk-dialog.c:1993
+#: ../gtk-dialog.c:2030
 msgid "_What's this?"
 msgstr "_Mitä tämä tarkoittaa?"
 
-#: ../gtk-dialog.c:2034
+#: ../gtk-dialog.c:2065
 msgid "_End private conversation"
 msgstr "_Lopeta yksityinen keskustelu"
 
-#: ../gtk-dialog.c:2219
-#: ../gtk-dialog.c:2270
+#: ../gtk-dialog.c:2244 ../gtk-dialog.c:2301
 #, c-format
-msgid "Warning: The selected outgoing OTR session (%u) is not the most recently active one (%u). Your buddy may not receive your messages. Use the icon menu above to select a different outgoing session."
-msgstr "Varoitus: Valittu lähtevän liikenteen OTR-istunto (%u) ei ole viimeisin käytössä ollut (%u). Tuttavasi ei välttämättä saa viestejäsi. Käytä yllä olevaa valikkokuvaketta valitaksesi lähtevän liikenteen istunto."
+msgid ""
+"Warning: The selected outgoing OTR session (%u) is not the most recently "
+"active one (%u). Your buddy may not receive your messages. Use the icon menu "
+"above to select a different outgoing session."
+msgstr ""
+"Varoitus: Valittu lähtevän liikenteen OTR-istunto (%u) ei ole viimeisin "
+"käytössä ollut (%u). Tuttavasi ei välttämättä saa viestejäsi. Käytä yllä "
+"olevaa valikkokuvaketta valitaksesi lähtevän liikenteen istunto."
 
-#: ../gtk-dialog.c:2286
+#: ../gtk-dialog.c:2317
 msgid "Send to most secure"
 msgstr "Lähetä turvallisimmalle"
 
-#: ../gtk-dialog.c:2288
+#: ../gtk-dialog.c:2319
 msgid "Send to most recent"
 msgstr "Lähetä viimeisimmälle"
 
-#: ../gtk-dialog.c:2392
+#: ../gtk-dialog.c:2426
 #, c-format
 msgid "Session %u"
 msgstr "Istunto %u"
 
-#: ../gtk-dialog.c:2411
-#: ../gtk-dialog.c:2522
+#: ../gtk-dialog.c:2451 ../gtk-dialog.c:2554
 msgid "Select"
 msgstr "Valitse"
 
-#: ../gtk-dialog.c:2426
+#: ../gtk-dialog.c:2464
 msgid "Selected"
 msgstr "Valittu"
 
-#: ../gtk-dialog.c:2751
+#: ../gtk-dialog.c:2694
 #, c-format
-msgid "The privacy status of the current conversation is now: <a href=\"%s%s\">%s</a>"
-msgstr "Tämän hetkisen keskustelun yksityisyyden tila on: <a href=\"%s%s\">%s</a>"
+msgid ""
+"The privacy status of the current conversation is now: <a href=\"%s%s\">%s</"
+"a>"
+msgstr ""
+"Tämän hetkisen keskustelun yksityisyyden tila on: <a href=\"%s%s\">%s</a>"
 
-#: ../gtk-dialog.c:2983
+#: ../gtk-dialog.c:2922
 msgid "OTR Messaging"
 msgstr "OTR-viestintä"
 
-#: ../gtk-ui.c:106
+#: ../gtk-ui.c:96
 #, c-format
 msgid "Fingerprint: %.80s"
 msgstr "Sormenjälki: %.80s"
 
-#: ../gtk-ui.c:110
+#: ../gtk-ui.c:100
 msgid "No key present"
 msgstr "Ei avainta saatavilla"
 
-#: ../gtk-ui.c:115
+#: ../gtk-ui.c:106
 msgid "No account available"
 msgstr "Ei tiliä saatavilla"
 
-#: ../gtk-ui.c:193
-msgid "Unused"
-msgstr "Käyttämätön"
-
-#: ../gtk-ui.c:222
+#: ../gtk-ui.c:175
 msgid "Yes"
 msgstr "Kyllä"
 
-#: ../gtk-ui.c:222
+#: ../gtk-ui.c:175
 msgid "No"
 msgstr "Ei"
 
-#: ../gtk-ui.c:487
-msgid "Enable private messaging"
-msgstr "Ota yksityinen viestintä käyttöön"
-
-#: ../gtk-ui.c:489
-msgid "Automatically initiate private messaging"
-msgstr "Aloita yksityinen viestintä automaattisesti"
-
-#: ../gtk-ui.c:491
-msgid "Require private messaging"
-msgstr "Vaadi yksityistä viestintää"
-
-#: ../gtk-ui.c:494
-msgid "Don't log OTR conversations"
-msgstr "Älä kirjaa OTR-keskusteluja lokiin"
-
-#: ../gtk-ui.c:538
-msgid "Show OTR button in toolbar"
-msgstr "Näytä OTR-painike työkalupalkissa"
-
-#: ../gtk-ui.c:677
-msgid "My private keys"
-msgstr "Yksityiset avaimeni"
-
-#: ../gtk-ui.c:686
-msgid "Key for account:"
-msgstr "Avain tilille:"
-
-#: ../gtk-ui.c:711
-msgid "Generate"
-msgstr "Luo"
-
-#: ../gtk-ui.c:752
-msgid "Default OTR Settings"
-msgstr "OTR:n oletusasetukset"
-
-#: ../gtk-ui.c:779
-msgid "OTR UI Options"
-msgstr "OTR:n ulkoasuasetukset"
-
-#: ../gtk-ui.c:802
-msgid "Screenname"
-msgstr "Käyttäjänimi"
-
-#: ../gtk-ui.c:803
-msgid "Status"
-msgstr "Tila"
-
-#: ../gtk-ui.c:804
-msgid "Verified"
-msgstr "Varmennettu"
-
-#: ../gtk-ui.c:805
-msgid "Fingerprint"
-msgstr "Sormenjälki"
-
-#: ../gtk-ui.c:806
-msgid "Account"
-msgstr "Tili"
-
-#: ../gtk-ui.c:842
-msgid "Start private connection"
-msgstr "Aloita yksityinen yhteys"
-
-#: ../gtk-ui.c:850
-msgid "End private connection"
-msgstr "Lopeta yksityinen yhteys"
-
-#: ../gtk-ui.c:866
-msgid "Forget fingerprint"
-msgstr "Unohda sormenjälki"
-
-#: ../gtk-ui.c:917
-msgid "Config"
-msgstr "Asetukset"
-
-#: ../gtk-ui.c:919
-msgid "Known fingerprints"
-msgstr "Tunnetut sormenjäljet"
-
-#: ../gtk-ui.c:1017
-#: ../otr-plugin.c:1002
-msgid "OTR Settings"
-msgstr "OTR:n asetukset"
-
-#. Set the title
-#: ../gtk-ui.c:1035
-#, c-format
-msgid "OTR Settings for %s"
-msgstr "OTR:n asetukset kohteelle %s"
-
-#. Make the cascaded checkboxes
-#: ../gtk-ui.c:1052
-msgid "Use default OTR settings for this buddy"
-msgstr "Käytä OTR:n oletusasetuksia tämän tuttavan kanssa"
-
-#: ../otr-plugin.c:130
-#, c-format
-msgid "You are not currently connected to account %s (%s)."
-msgstr "Et ole parhaillaan yhdistettynä tiliin %s (%s)."
-
-#: ../otr-plugin.c:134
-msgid "Not connected"
-msgstr "Ei yhteyttä"
-
-#: ../otr-plugin.c:217
-#: ../otr-plugin.c:259
-#, c-format
-msgid "Out of memory building filenames!\n"
-msgstr "Muisti loppui, kun tiedostonimiä luotiin!\n"
-
-#: ../otr-plugin.c:229
-#: ../otr-plugin.c:265
-#, c-format
-msgid "Could not write private key file\n"
-msgstr "Ei voitu kirjoittaa yksityisen avaimen tiedostoa\n"
-
-#: ../otr-plugin.c:303
-#, c-format
-msgid "Unknown account %s (%s)."
-msgstr "Tuntematon tili %s (%s)."
-
-#: ../otr-plugin.c:307
-msgid "Unknown account"
-msgstr "Tuntematon tili"
-
-#: ../otr-plugin.c:369
-msgid "Error occurred encrypting message."
-msgstr "Tapahtui virhe, kun viestiä salattiin."
-
-#: ../otr-plugin.c:373
-#, c-format
-msgid "You sent encrypted data to %s, who wasn't expecting it."
-msgstr "Lähetit salattua tietoa tuttavalle %s, joka ei odottanut sitä."
-
-#: ../otr-plugin.c:379
-msgid "You transmitted an unreadable encrypted message."
-msgstr "Lähetit lukemiskelvottoman salatun viestin"
-
-#: ../otr-plugin.c:382
-msgid "You transmitted a malformed data message."
-msgstr "Lähetit epämuodostunutta viestidataa."
-
-#: ../otr-plugin.c:395
-msgid "[resent]"
-msgstr "[uudelleen lähetetty]"
-
-#: ../otr-plugin.c:464
-#, c-format
-msgid "You attempted to send an unencrypted message to %s"
-msgstr "Yritit lähettää salaamattoman viestin kohteelle %s"
-
-#: ../otr-plugin.c:467
-msgid "Attempting to start a private conversation..."
-msgstr "Yritetään käynnistää yksityinen keskustelụ…"
-
-#: ../otr-plugin.c:469
-msgid "OTR Policy Violation"
-msgstr "OTR:n menettelytavan rikkomus"
-
-#: ../otr-plugin.c:470
-msgid ""
-"Unencrypted messages to this recipient are not allowed.  Attempting to start a private conversation.\n"
-"\n"
-"Your message will be retransmitted when the private conversation starts."
-msgstr ""
-"Salaamattomat viestit eivät ole sallittuja tälle vastaanottajalle. Yritetään käynnistää yksityinen keskustelu.\n"
-"\n"
-"Viestisi lähetetään uudelleen, kun yksityinen keskustelu käynnistyy."
-
-#: ../otr-plugin.c:479
-msgid "An error occurred when encrypting your message.  The message was not sent."
-msgstr "Tapahtui virhe, kun viestiä salattiin. Viestiä ei lähetetty."
-
-#: ../otr-plugin.c:481
-msgid "Error encrypting message"
-msgstr "Virhe viestin salaamisessa"
-
-#: ../otr-plugin.c:482
-msgid "An error occurred when encrypting your message"
-msgstr "Tapahtui virhe, kun viestiä salattiin"
-
-#: ../otr-plugin.c:483
-msgid "The message was not sent."
-msgstr "Viestiä ei lähetetty."
-
-#: ../otr-plugin.c:486
-#, c-format
-msgid "%s has already closed his/her private connection to you"
-msgstr "%s on jo sulkenut yksityisen yhteyden kanssasi."
-
-#: ../otr-plugin.c:489
-msgid "Your message was not sent.  Either end your private conversation, or restart it."
-msgstr "Viestiäsi ei lähetetty. Joko lopeta yksityinen keskustelu tai käynnistä se uudelleen."
-
-#: ../otr-plugin.c:492
-msgid "Private connection closed"
-msgstr "Yksityinen yhteys suljettu"
-
-#: ../otr-plugin.c:493
-msgid "Your message was not sent.  Either close your private connection to him, or refresh it."
-msgstr "Viestiäsi ei ole lähetetty. Joko sulje tai päivitä tuttavaasi oleva yksityinen yhteys."
-
-#: ../otr-plugin.c:503
-msgid "Error setting up private conversation: Malformed message received"
-msgstr "Virhe yksityisen keskustelun järjestämisessä: Epämuodostunut viesti vastaanotettu"
-
-#: ../otr-plugin.c:507
-#, c-format
-msgid "Error setting up private conversation: %s"
-msgstr "Virhe yksityisen keskustelun järjestämisessä: %s"
-
-#: ../otr-plugin.c:514
-#: ../otr-plugin.c:525
-#: ../otr-plugin.c:552
-#: ../otr-plugin.c:560
-#: ../otr-plugin.c:578
-msgid "OTR Error"
-msgstr "OTR-virhe"
-
-#: ../otr-plugin.c:521
-msgid "We are receiving our own OTR messages.  You are either trying to talk to yourself, or someone is reflecting your messages back at you."
-msgstr "Vastaanotamme sinun omia OTR-viestejäsi. Joko yrität keskustella itsesi kanssa, tai joku toinen lähettää viestisi sinulle takaisin."
-
-#: ../otr-plugin.c:525
-msgid "We are receiving our own OTR messages."
-msgstr "Vastaanotamme sinun omia OTR-viestejäsi."
-
-#: ../otr-plugin.c:526
-msgid "You are either trying to talk to yourself, or someone is reflecting your messages back at you."
-msgstr "Joko yrität keskustella itsesi kanssa tai joku toinen lähettää viestisi sinulle takaisin."
-
-#: ../otr-plugin.c:531
-#, c-format
-msgid "<b>The last message to %s was resent.</b>"
-msgstr "<b>Viimeinen viesti tuttavalle %s lähetettiin uudelleen.</b>"
-
-#: ../otr-plugin.c:535
-msgid "Message resent"
-msgstr "Viesti lähetetty uudelleen"
-
-#: ../otr-plugin.c:539
-#, c-format
-msgid "<b>The encrypted message received from %s is unreadable, as you are not currently communicating privately.</b>"
-msgstr "<b>Tuttavalta %s saamasi salattu viesti on lukukelvoton, sillä ette keskustele parhaillaan yksityisesti.</b>"
-
-#: ../otr-plugin.c:544
-msgid "Unreadable message"
-msgstr "Lukukelvoton viesti"
-
-#: ../otr-plugin.c:548
-#, c-format
-msgid "We received an unreadable encrypted message from %s."
-msgstr "Vastaanotimme lukukelvottoman viestin tuttavalta %s."
-
-#: ../otr-plugin.c:556
-#, c-format
-msgid "We received a malformed data message from %s."
-msgstr "Vastaanotimme epämuodostunutta viestitietoa tuttavalta %s."
-
-#: ../otr-plugin.c:564
-#, c-format
-msgid "Heartbeat received from %s.\n"
-msgstr "Heartbeat vastaanotettu kohteesta %s.\n"
-
-#: ../otr-plugin.c:570
-#, c-format
-msgid "Heartbeat sent to %s.\n"
-msgstr "Heartbeat lähetetty kohteeseen %s.\n"
-
-#: ../otr-plugin.c:581
-#, c-format
-msgid "<b>The following message received from %s was <i>not</i> encrypted: [</b>%s<b>]</b>"
-msgstr "<b>Seuraava tuttavalta %s saatu viesti <i>ei</i> ollut salattu: [</b>%s<b>]</b>"
-
-#: ../otr-plugin.c:586
-msgid "Received unencrypted message"
-msgstr "Vastaanotettu salaamaton viesti"
-
-#: ../otr-plugin.c:592
-#, c-format
-msgid "Unrecognized OTR message received from %s.\n"
-msgstr "Tuntematon OTR-viesti vastaanotettu tuttavalta %s.\n"
-
-#: ../otr-plugin.c:601
-#, c-format
-msgid "%s has sent a message intended for a different session. If you are logged in multiple times, another session may have received the message."
-msgstr "%s on lähettänyt viestin, joka on tarkoitettu toista istuntoa varten. Jos olet kirjautunut useamman kerran, toinen istunto on saattanut vastaanottaa viestin."
-
-#: ../otr-plugin.c:607
-msgid "Received message for a different session"
-msgstr "Vastaanotettu toisen istunnon viesti"
-
-#. 2013-01-01
-#: ../otr-plugin.c:1232
-#: ../otr-plugin.c:1259
-#, c-format
-msgid "OTR PLUGIN v%s"
-msgstr "OTR-LIITÄNNÄINEN v%s"
-
-#: ../otr-plugin.c:1241
-#, c-format
-msgid "This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired as of 2013-01-01. Please look for an updated release at http://otr.cypherpunks.ca/"
-msgstr "Tämä Off the record -viestinnän Pidgin-liitännäisen beetaversio %s on erääntynyt 2013-01-01. Etsi uudempaa versiota osoitteesta: http://otr.cypherpunks.ca/"
-
-#: ../otr-plugin.c:1268
-#, c-format
-msgid "You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin plugin. This version is intended for testing purposes only and is not for general purpose use."
-msgstr "Olet ottanut Off the record -viestinnän Pidgin-liitännäisen beetaversion %s käyttöön. Tämä versio on tarkoitettu vain testi- eikä yleiseen käyttöön."
-
-#: ../otr-plugin.c:1459
-msgid "Off-the-Record Messaging"
-msgstr "Off the record -viestintä"
-
-#: ../otr-plugin.c:1460
-msgid "Provides private and secure conversations"
-msgstr "Tekee yksityiset ja suojatut keskustelut mahdollisiksi"
-
-#: ../otr-plugin.c:1461
-msgid "Preserves the privacy of IM communications by providing encryption, authentication, deniability, and perfect forward secrecy."
-msgstr "Varjelee pikaviestinnässä yksityisyyttä salauksen, todentamisen, olemassaolon kiistettävyyden ja perfect forward secrecy -suojauksen turvin."
-
-#: ../ui.c:113
+#: ../gtk-ui.c:375
 #, c-format
 msgid "Account %s (%s) could not be found"
 msgstr "Tiliä %s (%s) ei löytynyt"
 
-#: ../ui.c:117
+#: ../gtk-ui.c:378
 msgid "Account not found"
 msgstr "Tiliä ei löytynyt"
 
+#: ../gtk-ui.c:437
+msgid "Enable private messaging"
+msgstr "Ota yksityinen viestintä käyttöön"
+
+#: ../gtk-ui.c:440
+msgid "Automatically initiate private messaging"
+msgstr "Aloita yksityinen viestintä automaattisesti"
+
+#: ../gtk-ui.c:442
+msgid "Require private messaging"
+msgstr "Vaadi yksityistä viestintää"
+
+#: ../gtk-ui.c:445
+msgid "Don't log OTR conversations"
+msgstr "Älä kirjaa OTR-keskusteluja lokiin"
+
+#: ../gtk-ui.c:483
+msgid "Show OTR button in toolbar"
+msgstr "Näytä OTR-painike työkalupalkissa"
+
+#: ../gtk-ui.c:614
+msgid "My private keys"
+msgstr "Yksityiset avaimeni"
+
+#: ../gtk-ui.c:623
+msgid "Key for account:"
+msgstr "Avain tilille:"
+
+#: ../gtk-ui.c:647
+msgid "Generate"
+msgstr "Luo"
+
+#: ../gtk-ui.c:679
+msgid "Default OTR Settings"
+msgstr "OTR:n oletusasetukset"
+
+#: ../gtk-ui.c:705
+msgid "OTR UI Options"
+msgstr "OTR:n ulkoasuasetukset"
+
+#: ../gtk-ui.c:727
+msgid "Screenname"
+msgstr "Käyttäjänimi"
+
+#: ../gtk-ui.c:728
+msgid "Status"
+msgstr "Tila"
+
+#: ../gtk-ui.c:729
+msgid "Verified"
+msgstr "Varmennettu"
+
+#: ../gtk-ui.c:730
+msgid "Fingerprint"
+msgstr "Sormenjälki"
+
+#: ../gtk-ui.c:731
+msgid "Account"
+msgstr "Tili"
+
+#: ../gtk-ui.c:766
+msgid "Start private connection"
+msgstr "Aloita yksityinen yhteys"
+
+#: ../gtk-ui.c:774
+msgid "End private connection"
+msgstr "Lopeta yksityinen yhteys"
+
+#: ../gtk-ui.c:790
+msgid "Forget fingerprint"
+msgstr "Unohda sormenjälki"
+
+#: ../gtk-ui.c:840
+msgid "Config"
+msgstr "Asetukset"
+
+#: ../gtk-ui.c:842
+msgid "Known fingerprints"
+msgstr "Tunnetut sormenjäljet"
+
+#: ../gtk-ui.c:932 ../plugin-all.c:1292
+msgid "OTR Settings"
+msgstr "OTR:n asetukset"
+
+#. Set the title
+#: ../gtk-ui.c:948
+#, c-format
+msgid "OTR Settings for %s"
+msgstr "OTR:n asetukset kohteelle %s"
+
+#: ../gtk-ui.c:966
+msgid "Use default OTR settings for this buddy"
+msgstr "Käytä OTR:n oletusasetuksia tämän tuttavan kanssa"
+
+#: ../otrng-plugin.c:101
+#, fuzzy
+msgid "Off-the-Record Messaging nextgen"
+msgstr "Off the record -viestintä"
+
+#: ../otrng-plugin.c:102
+msgid "Provides private and secure conversations"
+msgstr "Tekee yksityiset ja suojatut keskustelut mahdollisiksi"
+
+#: ../otrng-plugin.c:104
+msgid ""
+"Preserves the privacy of IM communications by providing encryption, "
+"authentication, deniability, and perfect forward secrecy."
+msgstr ""
+"Varjelee pikaviestinnässä yksityisyyttä salauksen, todentamisen, "
+"olemassaolon kiistettävyyden ja perfect forward secrecy -suojauksen turvin."
+
+#: ../plugin-all.c:286
+#, c-format
+msgid "You are not currently connected to account %s (%s)."
+msgstr "Et ole parhaillaan yhdistettynä tiliin %s (%s)."
+
+#: ../plugin-all.c:290
+msgid "Not connected"
+msgstr "Ei yhteyttä"
+
+#: ../plugin-all.c:373 ../plugin-all.c:406 ../plugin-all.c:462
+#, c-format
+msgid "Out of memory building filenames!\n"
+msgstr "Muisti loppui, kun tiedostonimiä luotiin!\n"
+
+#: ../plugin-all.c:386 ../plugin-all.c:419 ../plugin-all.c:468
+#, c-format
+msgid "Could not write private key file\n"
+msgstr "Ei voitu kirjoittaa yksityisen avaimen tiedostoa\n"
+
+#: ../plugin-all.c:506
+#, c-format
+msgid "Unknown account %s (%s)."
+msgstr "Tuntematon tili %s (%s)."
+
+#: ../plugin-all.c:509
+msgid "Unknown account"
+msgstr "Tuntematon tili"
+
+#: ../plugin-all.c:555
+msgid "Error occurred encrypting message."
+msgstr "Tapahtui virhe, kun viestiä salattiin."
+
+#: ../plugin-all.c:559
+#, c-format
+msgid "You sent encrypted data to %s, who wasn't expecting it."
+msgstr "Lähetit salattua tietoa tuttavalle %s, joka ei odottanut sitä."
+
+#: ../plugin-all.c:565
+msgid "You transmitted an unreadable encrypted message."
+msgstr "Lähetit lukemiskelvottoman salatun viestin"
+
+#: ../plugin-all.c:568
+msgid "You transmitted a malformed data message."
+msgstr "Lähetit epämuodostunutta viestidataa."
+
+#: ../plugin-all.c:581
+msgid "[resent]"
+msgstr "[uudelleen lähetetty]"
+
+#: ../plugin-all.c:621
+#, c-format
+msgid "You attempted to send an unencrypted message to %s"
+msgstr "Yritit lähettää salaamattoman viestin kohteelle %s"
+
+#: ../plugin-all.c:626
+msgid "Attempting to start a private conversation..."
+msgstr "Yritetään käynnistää yksityinen keskustelụ…"
+
+#: ../plugin-all.c:628
+msgid "OTR Policy Violation"
+msgstr "OTR:n menettelytavan rikkomus"
+
+#: ../plugin-all.c:629
+msgid ""
+"Unencrypted messages to this recipient are not allowed.  Attempting to start "
+"a private conversation.\n"
+"\n"
+"Your message will be retransmitted when the private conversation starts."
+msgstr ""
+"Salaamattomat viestit eivät ole sallittuja tälle vastaanottajalle. Yritetään "
+"käynnistää yksityinen keskustelu.\n"
+"\n"
+"Viestisi lähetetään uudelleen, kun yksityinen keskustelu käynnistyy."
+
+#: ../plugin-all.c:639
+msgid ""
+"An error occurred when encrypting your message.  The message was not sent."
+msgstr "Tapahtui virhe, kun viestiä salattiin. Viestiä ei lähetetty."
+
+#: ../plugin-all.c:641
+msgid "Error encrypting message"
+msgstr "Virhe viestin salaamisessa"
+
+#: ../plugin-all.c:642
+msgid "An error occurred when encrypting your message"
+msgstr "Tapahtui virhe, kun viestiä salattiin"
+
+#: ../plugin-all.c:643
+msgid "The message was not sent."
+msgstr "Viestiä ei lähetetty."
+
+#: ../plugin-all.c:646
+#, c-format
+msgid "%s has already closed his/her private connection to you"
+msgstr "%s on jo sulkenut yksityisen yhteyden kanssasi."
+
+#: ../plugin-all.c:651
+msgid ""
+"Your message was not sent.  Either end your private conversation, or restart "
+"it."
+msgstr ""
+"Viestiäsi ei lähetetty. Joko lopeta yksityinen keskustelu tai käynnistä se "
+"uudelleen."
+
+#: ../plugin-all.c:654
+msgid "Private connection closed"
+msgstr "Yksityinen yhteys suljettu"
+
+#: ../plugin-all.c:655
+msgid ""
+"Your message was not sent.  Either close your private connection to him, or "
+"refresh it."
+msgstr ""
+"Viestiäsi ei ole lähetetty. Joko sulje tai päivitä tuttavaasi oleva "
+"yksityinen yhteys."
+
+#: ../plugin-all.c:665
+msgid "Error setting up private conversation: Malformed message received"
+msgstr ""
+"Virhe yksityisen keskustelun järjestämisessä: Epämuodostunut viesti "
+"vastaanotettu"
+
+#: ../plugin-all.c:669
+#, c-format
+msgid "Error setting up private conversation: %s"
+msgstr "Virhe yksityisen keskustelun järjestämisessä: %s"
+
+#: ../plugin-all.c:677 ../plugin-all.c:687 ../plugin-all.c:719
+#: ../plugin-all.c:728 ../plugin-all.c:745
+msgid "OTR Error"
+msgstr "OTR-virhe"
+
+#: ../plugin-all.c:683
+msgid ""
+"We are receiving our own OTR messages.  You are either trying to talk to "
+"yourself, or someone is reflecting your messages back at you."
+msgstr ""
+"Vastaanotamme sinun omia OTR-viestejäsi. Joko yrität keskustella itsesi "
+"kanssa, tai joku toinen lähettää viestisi sinulle takaisin."
+
+#: ../plugin-all.c:688
+msgid "We are receiving our own OTR messages."
+msgstr "Vastaanotamme sinun omia OTR-viestejäsi."
+
+#: ../plugin-all.c:689
+msgid ""
+"You are either trying to talk to yourself, or someone is reflecting your "
+"messages back at you."
+msgstr ""
+"Joko yrität keskustella itsesi kanssa tai joku toinen lähettää viestisi "
+"sinulle takaisin."
+
+#: ../plugin-all.c:694
+#, c-format
+msgid "<b>The last message to %s was resent.</b>"
+msgstr "<b>Viimeinen viesti tuttavalle %s lähetettiin uudelleen.</b>"
+
+#: ../plugin-all.c:699
+msgid "Message resent"
+msgstr "Viesti lähetetty uudelleen"
+
+#: ../plugin-all.c:704
+#, c-format
+msgid ""
+"<b>The encrypted message received from %s is unreadable, as you are not "
+"currently communicating privately.</b>"
+msgstr ""
+"<b>Tuttavalta %s saamasi salattu viesti on lukukelvoton, sillä ette "
+"keskustele parhaillaan yksityisesti.</b>"
+
+#: ../plugin-all.c:710
+msgid "Unreadable message"
+msgstr "Lukukelvoton viesti"
+
+#: ../plugin-all.c:714
+#, c-format
+msgid "We received an unreadable encrypted message from %s."
+msgstr "Vastaanotimme lukukelvottoman viestin tuttavalta %s."
+
+#: ../plugin-all.c:723
+#, c-format
+msgid "We received a malformed data message from %s."
+msgstr "Vastaanotimme epämuodostunutta viestitietoa tuttavalta %s."
+
+#: ../plugin-all.c:733
+#, c-format
+msgid "Heartbeat received from %s.\n"
+msgstr "Heartbeat vastaanotettu kohteesta %s.\n"
+
+#: ../plugin-all.c:738
+#, c-format
+msgid "Heartbeat sent to %s.\n"
+msgstr "Heartbeat lähetetty kohteeseen %s.\n"
+
+#: ../plugin-all.c:749
+#, c-format
+msgid ""
+"<b>The following message received from %s was <i>not</i> encrypted: [</b>"
+"%s<b>]</b>"
+msgstr ""
+"<b>Seuraava tuttavalta %s saatu viesti <i>ei</i> ollut salattu: [</b>%s<b>]</"
+"b>"
+
+#: ../plugin-all.c:754
+msgid "Received unencrypted message"
+msgstr "Vastaanotettu salaamaton viesti"
+
+#: ../plugin-all.c:759
+#, c-format
+msgid "Unrecognized OTR message received from %s.\n"
+msgstr "Tuntematon OTR-viesti vastaanotettu tuttavalta %s.\n"
+
+#: ../plugin-all.c:770
+#, c-format
+msgid ""
+"%s has sent a message intended for a different session. If you are logged in "
+"multiple times, another session may have received the message."
+msgstr ""
+"%s on lähettänyt viestin, joka on tarkoitettu toista istuntoa varten. Jos "
+"olet kirjautunut useamman kerran, toinen istunto on saattanut vastaanottaa "
+"viestin."
+
+#: ../plugin-all.c:777
+msgid "Received message for a different session"
+msgstr "Vastaanotettu toisen istunnon viesti"
+
+#. 2013-01-01
+#: ../plugin-all.c:1894 ../plugin-all.c:1920
+#, c-format
+msgid "OTR PLUGIN v%s"
+msgstr "OTR-LIITÄNNÄINEN v%s"
+
+#: ../plugin-all.c:1904
+#, c-format
+msgid ""
+"This beta copy of the Off-the-Record Messaging v%s Pidgin plugin has expired "
+"as of 2013-01-01. Please look for an updated release at http://otr."
+"cypherpunks.ca/"
+msgstr ""
+"Tämä Off the record -viestinnän Pidgin-liitännäisen beetaversio %s on "
+"erääntynyt 2013-01-01. Etsi uudempaa versiota osoitteesta: http://otr."
+"cypherpunks.ca/"
+
+#: ../plugin-all.c:1930
+#, c-format
+msgid ""
+"You have enabled a beta version of the Off-the-Record Messaging v%s Pidgin "
+"plugin. This version is intended for testing purposes only and is not for "
+"general purpose use."
+msgstr ""
+"Olet ottanut Off the record -viestinnän Pidgin-liitännäisen beetaversion %s "
+"käyttöön. Tämä versio on tarkoitettu vain testi- eikä yleiseen käyttöön."
+
+#~ msgid "Unused"
+#~ msgstr "Käyttämätön"
