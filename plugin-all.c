@@ -1827,11 +1827,15 @@ otrng_client_callbacks_s callbacks_v4 = {
 };
 
 static int otrng_plugin_init_userstate(void) {
-  gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
-  gchar *privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
-  gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
-  gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+  gchar *privkeyfile = NULL;
+  gchar *privkeyfile3 = NULL;
+  gchar *storefile = NULL;
+  gchar *instagfile = NULL;
+
+  privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
+  privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
+  storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
+  instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
 
   if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile) {
     g_free(privkeyfile);
@@ -1862,8 +1866,16 @@ static int otrng_plugin_init_userstate(void) {
   // Read fingerprints to OTR4 fingerprint store
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
-  otrng_ui_update_fingerprint();
+  otrng_ui_update_fingerprint(); // Updates the view
 
+  // TODO: Read client profile from disk
+  // TODO: Read prekey profile from disk
+  // TODO: Read shared prekey from disk
+  // TODO: Read prekey pairs from disk
+
+  if (priv3f) {
+    fclose(priv3f);
+  }
   if (privf) {
     fclose(privf);
   }
