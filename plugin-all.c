@@ -1889,6 +1889,15 @@ static int otrng_plugin_init_userstate(void) {
   return 0;
 }
 
+static void otrng_plugin_cleanup_userstate(void) {
+  g_hash_table_remove_all(otrng_fingerprints_table);
+  otrng_ui_update_fingerprint(); // Updates the view
+  otrng_fingerprints_table = NULL;
+
+  otrng_user_state_free(otrng_userstate);
+  otrng_userstate = NULL;
+}
+
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */
 static int build_beta_dialog(void) {
   GtkWidget *dialog;
@@ -2060,13 +2069,10 @@ gboolean otrng_plugin_unload(PurplePlugin *handle) {
   /* Stop the timer, if necessary */
   stop_start_timer(0);
 
-  otrng_user_state_free(otrng_userstate);
-  otrng_userstate = NULL;
-
-  g_hash_table_remove_all(otrng_fingerprints_table);
-  otrng_fingerprints_table = NULL;
-
+  otrng_plugin_handle = NULL;
   otrng_free_mms_table();
 
-  return 1;
+  otrng_plugin_cleanup_userstate();
+
+  return TRUE;
 }
