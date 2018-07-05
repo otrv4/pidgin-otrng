@@ -22,8 +22,8 @@
 #ifndef __OTRG_UI_H__
 #define __OTRG_UI_H__
 
-#include <libotr/proto.h>
 #include <libotr/context.h>
+#include <libotr/proto.h>
 
 #include "plugin-all.h"
 

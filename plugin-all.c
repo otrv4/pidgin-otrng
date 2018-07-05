@@ -64,9 +64,9 @@
 #include <glib.h>
 
 /* pidgin-otr GTK headers */
-#include "i18n.h"
 #include "gtk-dialog.h"
 #include "gtk-ui.h"
+#include "i18n.h"
 
 /* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 0
@@ -2045,7 +2045,6 @@ gboolean otrng_plugin_unload(PurplePlugin *handle) {
   otrng_dialog_cleanup();
   otrng_ui_cleanup();
 
-
   /* Stop the timer, if necessary */
   stop_start_timer(0);
 
@@ -2059,6 +2058,3 @@ gboolean otrng_plugin_unload(PurplePlugin *handle) {
 
   return 1;
 }
-
-
-
