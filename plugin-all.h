@@ -48,7 +48,7 @@ extern PurplePlugin *otrng_plugin_handle;
 
 extern otrng_user_state_s *otrng_userstate;
 
-otrng_client_s *otrng_client(const char *accountname, const char *protocol);
+otrng_client_s *otrng_client(const char *protocol, const char *accountname);
 
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account);
 
@@ -62,7 +62,7 @@ ConnContext *otrng_plugin_conv_to_selected_context(PurpleConversation *conv,
 
 /* Given a PurpleConversation, return the selected instag. */
 otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
-                                                   otrl_instag_t default_value);
+                                                   otrl_instag_t default_val);
 
 /* Send an IM from the given account to the given recipient.  Display an
  * error dialog if that account isn't currently logged in. */
@@ -98,7 +98,7 @@ void otrng_plugin_conversation_free(otrng_plugin_conversation *);
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
-void otrng_plugin_start_smp(otrng_plugin_conversation *plugin_conv,
+void otrng_plugin_start_smp(otrng_plugin_conversation *conv,
                             const unsigned char *question, const size_t q_len,
                             const unsigned char *secret, size_t secretlen);
 

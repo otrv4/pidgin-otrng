@@ -338,9 +338,9 @@ static int display_otr_message_or_notify(void *opdata, const char *accountname,
     notify(opdata, level, accountname, protocol, username, title, primary,
            secondary);
     return 1;
-  } else {
-    return 0;
   }
+    return 0;
+
 }
 
 static void log_message(void *opdata, const char *message) {
@@ -545,9 +545,9 @@ static int max_message_size_cb(void *opdata, ConnContext *context) {
       g_hash_table_lookup(otrng_max_message_size_table, context->protocol);
   if (!lookup_result) {
     return 0;
-  } else {
-    return *((int *)lookup_result);
   }
+    return *((int *)lookup_result);
+
 }
 
 static const char *otr_error_message_cb(void *opdata, ConnContext *context,

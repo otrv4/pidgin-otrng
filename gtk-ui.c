@@ -299,9 +299,9 @@ static int fngsortval(Fingerprint *f) {
       if (is_active) {
         result = 0;
         break;
-      } else {
-        result = result > 100 ? 100 : result;
       }
+        result = result > 100 ? 100 : result;
+
     } else if (level == TRUST_UNVERIFIED) {
       if (is_active) {
         result = 1;

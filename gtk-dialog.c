@@ -232,7 +232,7 @@ static void conversation_switched(PurpleConversation *conv, void *data);
 
 static GtkWidget *
 create_smp_progress_dialog(GtkWindow *parent,
-                           const otrng_plugin_conversation *context);
+                           const otrng_plugin_conversation *conv);
 
 /* Called when a button is pressed on the "progress bar" smp dialog */
 static void smp_progress_response_cb(GtkDialog *dialog, gint response,
@@ -1530,7 +1530,7 @@ otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
     gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                        _("An error occurred during authentication."));
     return;
-  } else if (progress_level == 1.0) {
+  } if (progress_level == 1.0) {
     /* If the counter reaches 1.0, the protocol is complete */
     GtkDialog *dialog = GTK_DIALOG(smp_data->smp_progress_dialog);
 
