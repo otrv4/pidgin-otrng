@@ -357,7 +357,7 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
   if (response == GTK_RESPONSE_ACCEPT && smppair->entry) {
     if (!otrng_conversation_is_encrypted(otr_conv)) {
       return;
-}
+    }
 
     if (start_or_continue_smp(smppair)) {
       return;
@@ -485,7 +485,7 @@ static GtkWidget *create_dialog(GtkWindow *parent, PurpleNotifyMsgType type,
 
   if (labelp) {
     *labelp = label;
-}
+  }
   return dialog;
 }
 
@@ -566,7 +566,7 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 
   if (fp && fp->trusted && !(smppair->responder)) {
     label2 = gtk_label_new(_("This buddy is already authenticated."));
-}
+  }
 
   /* Leave a blank line */
   gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
@@ -642,7 +642,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
       otrng_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
   if (fp && fp->trusted) {
     label2 = gtk_label_new(_("This buddy is already authenticated."));
-}
+  }
 
   gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 
@@ -700,7 +700,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
   if (our_fp_human) {
     strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
-}
+  }
 
   free(our_fp_human);
   our_hash[OTRNG_FPRINT_HUMAN_LEN - 1] = '\0';
@@ -1112,7 +1112,7 @@ static int otrng_gtk_dialog_display_otr_message(const char *accountname,
 
   if (!conv) {
     return -1;
-}
+  }
 
   purple_conversation_write(conv, NULL, msg, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
@@ -1290,12 +1290,12 @@ static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   account = purple_accounts_find(context->account, context->protocol);
   if (!account) {
     return;
-}
+  }
   conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
                                                context->peer, account);
   if (!conv) {
     return;
-}
+  }
   dialog_update_label_conv(conv, level);
 }
 
@@ -1442,7 +1442,7 @@ static void verify_fingerprint(GtkWindow *parent,
   char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
   if (our_fp_human) {
     strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
-}
+  }
 
   free(our_fp_human);
   our_hash[OTRNG_FPRINT_HUMAN_LEN - 1] = '\0';
@@ -1530,7 +1530,8 @@ otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
     gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                        _("An error occurred during authentication."));
     return;
-  } if (progress_level == 1.0) {
+  }
+  if (progress_level == 1.0) {
     /* If the counter reaches 1.0, the protocol is complete */
     GtkDialog *dialog = GTK_DIALOG(smp_data->smp_progress_dialog);
 
@@ -1702,13 +1703,13 @@ static void otrng_gtk_dialog_finished(const char *accountname,
   account = purple_accounts_find(accountname, protocol);
   if (!account) {
     return;
-}
+  }
 
   conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username,
                                                account);
   if (!conv) {
     return;
-}
+  }
 
   buf = g_strdup_printf(
       _("%s has ended his/her private conversation with "
@@ -1820,7 +1821,7 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data) {
 
   if (!otrng_conversation_is_encrypted(otr_conv)) {
     return;
-}
+  }
 
   otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
@@ -1949,7 +1950,7 @@ static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query,
 
   if (!conv) {
     return;
-}
+  }
 
   insecure = purple_conversation_get_data(conv, "otr-private") ? 0 : 1;
   authen = purple_conversation_get_data(conv, "otr-authenticated") ? 1 : 0;
@@ -2071,7 +2072,7 @@ static void build_otr_menu(PurpleConversation *conv, GtkWidget *menu,
                            TrustLevel level) {
   if (!conv) {
     return;
-}
+  }
 
   GtkWidget *buddymenuquery =
       gtk_menu_item_new_with_mnemonic(_("Start _private conversation"));
@@ -2128,7 +2129,7 @@ static void otr_add_top_otr_menu(PurpleConversation *conv) {
 
   if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) {
     return;
-}
+  }
 
   topmenuitem = gtk_menu_item_new_with_label("OTR");
   topmenu = gtk_menu_new();
@@ -2186,7 +2187,7 @@ static GList *otr_get_full_buddy_list(PurpleConversation *conv) {
 
           if (!PURPLE_BLIST_NODE_IS_BUDDY(node)) {
             continue;
-}
+          }
 
           account = purple_buddy_get_account(buddy);
           if (purple_account_is_connected(account)) {
@@ -2739,7 +2740,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
 static void conversation_switched(PurpleConversation *conv, void *data) {
   if (conv == NULL) {
     return;
-}
+  }
 
   otrng_gtk_dialog_new_purple_conv(conv);
 }
@@ -2759,7 +2760,7 @@ static void conversation_destroyed(PurpleConversation *conv, void *data) {
 
   if (menu) {
     gtk_object_destroy(GTK_OBJECT(menu));
-}
+  }
 
   conv_or_ctx_map = purple_conversation_get_data(conv, "otr-convorctx");
   g_hash_table_destroy(conv_or_ctx_map);
@@ -2848,7 +2849,7 @@ static void otrng_gtk_dialog_new_purple_conv(PurpleConversation *conv) {
   /* Do nothing if this isn't an IM conversation */
   if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) {
     return;
-}
+  }
 
   /* Get the prefs */
   account = purple_conversation_get_account(conv);
@@ -2975,12 +2976,12 @@ static void otrng_gtk_dialog_remove_conv(PurpleConversation *conv) {
   /* Do nothing if this isn't an IM conversation */
   if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) {
     return;
-}
+  }
 
   button = purple_conversation_get_data(conv, "otr-button");
   if (button) {
     gtk_object_destroy(GTK_OBJECT(button));
-}
+  }
 
   conversation_destroyed(conv, NULL);
 }
@@ -2996,7 +2997,7 @@ static void dialog_resensitize(PurpleConversation *conv) {
   /* Do nothing if this isn't an IM conversation */
   if (purple_conversation_get_type(conv) != PURPLE_CONV_TYPE_IM) {
     return;
-}
+  }
 
   account = purple_conversation_get_account(conv);
   name = purple_conversation_get_name(conv);
@@ -3010,7 +3011,7 @@ static void dialog_resensitize(PurpleConversation *conv) {
   button = purple_conversation_get_data(conv, "otr-button");
   if (!button) {
     return;
-}
+  }
   if (account) {
     connection = purple_account_get_connection(account);
     if (connection) {

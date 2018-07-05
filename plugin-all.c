@@ -163,7 +163,7 @@ otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f) {
   client = otrng_client(f->protocol, f->account);
   if (!client) {
     return NULL;
-}
+  }
 
   return otrng_client_get_conversation(0, f->username, client);
 }
@@ -262,7 +262,7 @@ static gboolean find_active_fingerprint(gpointer key, gpointer value,
   // TODO: get the "active" and not the first.
   if (!strcmp(info->username, user_data)) {
     return TRUE;
-}
+  }
 
   return FALSE;
 }
@@ -339,8 +339,7 @@ static int display_otr_message_or_notify(void *opdata, const char *accountname,
            secondary);
     return 1;
   }
-    return 0;
-
+  return 0;
 }
 
 static void log_message(void *opdata, const char *message) {
@@ -359,7 +358,7 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context) {
   account = purple_accounts_find(context->accountname, context->protocol);
   if (!account) {
     return policy;
-}
+  }
 
   otrng_ui_get_prefs(&prefs, account, context->username);
   return prefs.policy;
@@ -491,12 +490,12 @@ static int is_logged_in_cb(void *opdata, const char *accountname,
   account = purple_accounts_find(accountname, protocol);
   if (!account) {
     return -1;
-}
+  }
 
   buddy = purple_find_buddy(account, recipient);
   if (!buddy) {
     return -1;
-}
+  }
 
   return (PURPLE_BUDDY_IS_ONLINE(buddy));
 }
@@ -546,8 +545,7 @@ static int max_message_size_cb(void *opdata, ConnContext *context) {
   if (!lookup_result) {
     return 0;
   }
-    return *((int *)lookup_result);
-
+  return *((int *)lookup_result);
 }
 
 static const char *otr_error_message_cb(void *opdata, ConnContext *context,
@@ -1019,7 +1017,7 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
   otrng_client_s *client = otrng_plugin_conversation_to_client(conv);
   if (!client) {
     return;
-}
+  }
 
   char *tosend = NULL;
   if (otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen,
@@ -1054,7 +1052,7 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client) {
     return;
-}
+  }
 
   // TODO: Use policy?
   // prefs.policy
@@ -1160,7 +1158,7 @@ ConnContext *otrng_plugin_conv_to_context(PurpleConversation *conv,
 
   if (!conv) {
     return NULL;
-}
+  }
 
   account = purple_conversation_get_account(conv);
   accountname = purple_account_get_username(account);
@@ -1287,14 +1285,14 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
 
   if (!PURPLE_BLIST_NODE_IS_BUDDY(node)) {
     return;
-}
+  }
 
   /* Extract the account, and then the protocol, for this buddy */
   buddy = (PurpleBuddy *)node;
   acct = buddy->account;
   if (acct == NULL) {
     return;
-}
+  }
   proto = purple_account_get_protocol_id(acct);
   if (!otrng_plugin_proto_supports_otr(proto)) {
     return;
@@ -1328,7 +1326,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
   client = otrng_client(conv->protocol, conv->account);
   if (!client) {
     return;
-}
+  }
 
   purp_conv = otrng_plugin_userinfo_to_conv(conv->account, conv->protocol,
                                             conv->peer, 1);
@@ -1336,7 +1334,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
 
   if (!otrng_client_disconnect(&msg, conv->peer, client)) {
     otrng_plugin_inject_message(account, conv->peer, msg);
-}
+  }
 
   free(msg);
 }
@@ -1448,13 +1446,13 @@ void otrng_plugin_read_fingerprints_FILEp(FILE *storef) {
 
     if (strlen(fp_human) != OTRNG_FPRINT_HUMAN_LEN - 1) {
       continue;
-}
+    }
 
     fng = otrng_plugin_fingerprint_get(fp_human);
     if (!fng) {
       fng = otrng_plugin_fingerprint_new(fp_human, protocol, accountname,
                                          username);
-}
+    }
 
     if (!fng) {
       continue;
@@ -1476,7 +1474,7 @@ PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
   account = purple_accounts_find(accountname, protocol);
   if (account == NULL) {
     return NULL;
-}
+  }
 
   conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username,
                                                account);
@@ -1506,19 +1504,19 @@ otrng_plugin_conversation_to_trust(const otrng_plugin_conversation *conv) {
   otrng_client_s *client = otrng_client(conv->protocol, conv->account);
   if (!client) {
     return level;
-}
+  }
 
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(1, conv->peer, client);
 
   if (!otr_conv) {
     return level;
-}
+  }
 
   // Use OTR3 if available
   if (otr_conv->conn->running_version == 3) {
     return otrng_plugin_context_to_trust(otr_conv->conn->v3_conn->ctx);
-}
+  }
 
   otrng_plugin_fingerprint *fp =
       otrng_plugin_fingerprint_get_active(conv->peer);
@@ -1677,7 +1675,7 @@ static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
   PurpleAccount *account = (PurpleAccount *)conv->client->client_id;
   if (!account) {
     return NULL;
-}
+  }
 
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
@@ -1737,7 +1735,7 @@ static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
   otrng_fingerprint_hash_to_human(fp_human, fp);
   if (otrng_plugin_fingerprint_get(fp_human)) {
     return;
-}
+  }
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
@@ -1771,7 +1769,7 @@ static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
 static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv) {
   if (!cconv) {
     return;
-}
+  }
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
@@ -1783,7 +1781,7 @@ static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len,
                                   const otrng_client_conversation_s *cconv) {
   if (!cconv) {
     return;
-}
+  }
 
   // TODO: otrng_dialog_socialist_millionaires_q expects question to be
   // a string, so it will stop at first 0 anyways. having a unsigned char does
@@ -1800,7 +1798,7 @@ static void smp_update_v4(const otrng_smp_event_t event,
                           const otrng_client_conversation_s *cconv) {
   if (!cconv) {
     return;
-}
+  }
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
