@@ -121,17 +121,6 @@ otrng_client_s *otrng_client(const char *protocol, const char *accountname) {
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
   otrng_client_s *ret = otrng_messaging_client_get(otrng_userstate, account);
 
-  // TODO: Replace by a callback. This is only necessary because libotr3 api
-  // use this all over, and we use libotr userstate.
-  if (!ret->state->account_name) {
-    ret->state->account_name = g_strdup(purple_account_get_username(account));
-  }
-
-  if (!ret->state->protocol_name) {
-    ret->state->protocol_name =
-        g_strdup(purple_account_get_protocol_id(account));
-  }
-
   // TODO set padding from otrng_max_message_size_table
   otrng_client_state_set_padding(256, ret->state);
 
@@ -1833,6 +1822,21 @@ get_shared_session_state_cb(const otrng_client_conversation_s *conv) {
   };
 }
 
+static int get_account_and_protocol_cb(char **account_name,
+                                       char **protocol_name,
+                                       const void *client_id) {
+  PurpleAccount *account = (PurpleAccount *)client_id;
+
+  if (!client_id) {
+    return 1;
+  }
+
+  *account_name = g_strdup(purple_account_get_username(account));
+  *protocol_name = g_strdup(purple_account_get_protocol_id(account));
+
+  return 0;
+}
+
 otrng_client_callbacks_s callbacks_v4 = {
     // TODO: otrng_plugin_create_instag,
     create_privkey_v4,
@@ -1846,6 +1850,7 @@ otrng_client_callbacks_s callbacks_v4 = {
     smp_update_v4,
     NULL, // TODO: received_extra_symm_key
     get_shared_session_state_cb,
+    get_account_and_protocol_cb,
 };
 
 static int otrng_plugin_init_userstate(void) {
