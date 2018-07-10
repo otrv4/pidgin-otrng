@@ -1674,7 +1674,7 @@ static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
 }
 
 static void create_privkey_v4(const void *opdata) {
-  // TODO: discards const
+  // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrng_plugin_create_privkey(account);
 
@@ -1684,9 +1684,9 @@ static void create_privkey_v4(const void *opdata) {
   otrng_plugin_create_instag(accountname, protocol);
 }
 
-static void create_shared_prekey_v4(const otrng_client_conversation_s *conv) {
+static void create_shared_prekey_v4(const void *opdata) {
   // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)conv->client->client_id;
+  PurpleAccount *account = (PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);
 }
 
