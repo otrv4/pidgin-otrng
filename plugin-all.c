@@ -848,6 +848,7 @@ static OtrlMessageAppOps ui_ops = {policy_cb,
 
 /* Called by the glib main loop, as set up by stop_start_timer */
 static gboolean timer_fired_cb(gpointer data) {
+  // TODO: There should be an equivalent for this
   otrl_message_poll(otrng_userstate->user_state_v3, &ui_ops, NULL);
   return TRUE;
 }
@@ -1289,6 +1290,7 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
 /* Disconnect all context instances, sending a notice to the other side, if
  * appropriate. */
 void otrng_plugin_disconnect_all_instances(ConnContext *context) {
+  // TODO: There should be an equivalent for this
   otrl_message_disconnect_all_instances(otrng_userstate->user_state_v3, &ui_ops,
                                         NULL, context->accountname,
                                         context->protocol, context->username);
