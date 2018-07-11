@@ -1125,15 +1125,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
     *message = NULL;
   }
 
-  // TODO: This should be done in gone_insecure_cb
-  // tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
-  // if (tlv) {
-  //    /* Notify the user that the other side disconnected. */
-  //    otrng_dialog_finished(accountname, protocol, username);
-  //    otrng_ui_update_keylist();
-  //}
-  // otrl_tlv_free(tlvs);
-
   free(username);
   return res;
 }
@@ -1703,6 +1694,7 @@ static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
 static void gone_insecure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
+  // TODO: ensure otrng_ui_update_keylist() is called here.
   otrng_dialog_conversation_disconnected(conv);
   otrng_plugin_conversation_free(conv);
 }
