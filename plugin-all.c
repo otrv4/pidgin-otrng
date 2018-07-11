@@ -1834,7 +1834,7 @@ static int get_account_and_protocol_cb(char **account_name,
 }
 
 otrng_client_callbacks_s callbacks_v4 = {
-    // TODO: otrng_plugin_create_instag,
+    get_account_and_protocol_cb,
     create_privkey_v4,
     create_shared_prekey_v4,
     gone_secure_v4,
@@ -1846,7 +1846,6 @@ otrng_client_callbacks_s callbacks_v4 = {
     smp_update_v4,
     NULL, // TODO: received_extra_symm_key
     get_shared_session_state_cb,
-    get_account_and_protocol_cb,
 };
 
 static int otrng_plugin_init_userstate(void) {
