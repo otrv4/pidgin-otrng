@@ -1023,6 +1023,8 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
   free(tosend);
 }
 
+#define OTRG_PLUGIN_DEFAULT_QUERY "?OTRv34?"
+
 void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   PurpleConversation *purp_conv = NULL;
   PurpleAccount *account = NULL;
@@ -1047,30 +1049,31 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   // prefs.policy
   msg = otrng_client_query_message(conv->peer, "", client);
 
-  otrng_plugin_inject_message(account, conv->peer, msg ? msg : "?OTRv34?");
+  otrng_plugin_inject_message(account, conv->peer,
+                              msg ? msg : OTRG_PLUGIN_DEFAULT_QUERY);
   free(msg);
 }
 
 /* Send the default OTR Query message to the correspondent of the given
  * conversation. */
 void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
-  PurpleAccount *account;
-  const char *username;
-  // const char *accountname;
-  char *msg;
+  PurpleAccount *account = NULL;
+  const char *peer = NULL;
+  char *msg = NULL;
   OtrgUiPrefs prefs;
 
   account = purple_conversation_get_account(conv);
   // accountname = purple_account_get_username(account);
-  username = purple_normalize(account, purple_conversation_get_name(conv));
+  peer = purple_normalize(account, purple_conversation_get_name(conv));
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
-  otrng_ui_get_prefs(&prefs, account, username);
+  otrng_ui_get_prefs(&prefs, account, peer);
 
   // TODO: Use policy?
   // prefs.policy
-  msg = otrng_client_query_message(username, "", client);
-  otrng_plugin_inject_message(account, username, msg ? msg : "?OTRv34?");
+  msg = otrng_client_query_message(peer, "", client);
+  otrng_plugin_inject_message(account, peer,
+                              msg ? msg : OTRG_PLUGIN_DEFAULT_QUERY);
   free(msg);
 }
 
@@ -1831,7 +1834,8 @@ static int get_account_and_protocol_cb(char **account_name,
     return 1;
   }
 
-  *account_name = g_strdup(purple_account_get_username(account));
+  *account_name =
+      g_strdup(purple_normalize(account, purple_account_get_username(account)));
   *protocol_name = g_strdup(purple_account_get_protocol_id(account));
 
   return 0;
