@@ -73,7 +73,7 @@ void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
 void otrng_plugin_create_privkey(PurpleAccount *account);
 
 /* Generate a instance tag for the given accountname/protocol */
-void otrng_plugin_create_instag(const char *accountname, const char *protocol);
+void otrng_plugin_create_instag(PurpleAccount *account);
 
 // TODO: REPLACE by using opdata to get this information
 typedef struct {

@@ -445,7 +445,7 @@ void otrng_plugin_create_shared_prekey(PurpleAccount *account) {
 }
 
 /* Generate a instance tag for the given accountname/protocol */
-void otrng_plugin_create_instag(const char *accountname, const char *protocol) {
+void otrng_plugin_create_instag(PurpleAccount *account) {
   FILE *instagf;
 
   gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
@@ -461,14 +461,16 @@ void otrng_plugin_create_instag(const char *accountname, const char *protocol) {
   }
 
   /* Generate the instag */
-  otrl_instag_generate_FILEp(otrng_userstate->user_state_v3, instagf,
-                             accountname, protocol);
+  otrng_user_state_instag_generate_generate_FILEp(otrng_userstate, account, instagf);
+
   fclose(instagf);
 }
 
-static void create_instag_cb(void *opdata, const char *accountname,
-                             const char *protocol) {
-  otrng_plugin_create_instag(accountname, protocol);
+static void create_instag_cb(const void *opdata) {
+  // TODO: discards const
+  PurpleAccount *account = (PurpleAccount *)opdata;
+
+  otrng_plugin_create_instag(account);
 }
 
 static int is_logged_in_cb(void *opdata, const char *accountname,
@@ -841,7 +843,7 @@ static OtrlMessageAppOps ui_ops = {policy_cb,
                                    resent_msg_prefix_free_cb,
                                    NULL, // handle_smp_event_cb,
                                    handle_msg_event_cb,
-                                   create_instag_cb,
+                                   NULL, //create_instag_cb
                                    NULL, /* convert_data */
                                    NULL, /* convert_data_free */
                                    timer_control_cb};
@@ -1673,11 +1675,6 @@ static void create_privkey_v4(const void *opdata) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrng_plugin_create_privkey(account);
-
-  // TODO: Move to its own callback, and add this callback to the protocol
-  const char *protocol = purple_account_get_protocol_id(account);
-  const char *accountname = purple_account_get_username(account);
-  otrng_plugin_create_instag(accountname, protocol);
 }
 
 static void create_shared_prekey_v4(const void *opdata) {
@@ -1835,10 +1832,11 @@ static int get_account_and_protocol_cb(char **account_name,
   return 0;
 }
 
-otrng_client_callbacks_s callbacks_v4 = {
+static otrng_client_callbacks_s callbacks_v4 = {
     get_account_and_protocol_cb,
     create_privkey_v4,
     create_shared_prekey_v4,
+    create_instag_cb,
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
