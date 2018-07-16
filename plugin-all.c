@@ -1340,7 +1340,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
                                             conv->peer, 1);
   account = purple_conversation_get_account(purp_conv);
 
-  if (otrng_client_disconnect(&msg, conv->peer, client)) {
+  if (!otrng_client_disconnect(&msg, conv->peer, client)) {
     otrng_plugin_inject_message(account, conv->peer, msg);
   }
 
