@@ -69,8 +69,11 @@ otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
 void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
                                  const char *message);
 
-/* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey(PurpleAccount *account);
+/* Generate a V4 private key */
+void otrng_plugin_create_privkey_v4(PurpleAccount *account);
+
+/* Generate a V3 private key */
+void otrng_plugin_create_privkey_v3(PurpleAccount *account);
 
 /* Generate a instance tag for the given accountname/protocol */
 void otrng_plugin_create_instag(PurpleAccount *account);

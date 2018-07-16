@@ -481,7 +481,8 @@ void otrng_plugin_create_instag(PurpleAccount *account) {
   fclose(instagf);
 }
 
-static void create_privkey_cb(const void *opdata) {
+static void create_privkey_cb(void *opdata, const char *account_name,
+                              const char *protocol_name) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrng_plugin_create_privkey_v3(account);
@@ -1697,6 +1698,12 @@ static void create_privkey_v4(const void *opdata) {
   otrng_plugin_create_privkey_v4(account);
 }
 
+static void create_privkey_v3(const void *opdata) {
+  // TODO: This discards const qualifier
+  PurpleAccount *account = (PurpleAccount *)opdata;
+  otrng_plugin_create_privkey_v3(account);
+}
+
 static void create_shared_prekey_v4(const void *opdata) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
@@ -1855,7 +1862,7 @@ static int get_account_and_protocol_cb(char **account_name,
 static otrng_client_callbacks_s callbacks_v4 = {
     get_account_and_protocol_cb,
     create_privkey_v4,
-    create_privkey_cb,
+    create_privkey_v3,
     create_shared_prekey_v4,
     create_instag_cb,
     gone_secure_v4,

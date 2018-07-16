@@ -208,7 +208,8 @@ static void generate(GtkWidget *widget, gpointer data) {
     return;
   }
 
-  otrng_plugin_create_privkey(account);
+  otrng_plugin_create_privkey_v4(account);
+  otrng_plugin_create_privkey_v3(account);
 }
 
 static void ui_destroyed(GtkObject *object) {
