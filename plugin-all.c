@@ -418,7 +418,7 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
 }
 
 /* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey(PurpleAccount *account) {
+void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
@@ -428,9 +428,23 @@ void otrng_plugin_create_privkey(PurpleAccount *account) {
   int err = otrng_user_state_generate_private_key(otrng_userstate, account);
   if (!err) {
     otrng_plugin_write_privkey_v4_FILEp();
-    otrng_plugin_write_privkey_v3_FILEp(account);
     otrng_ui_update_fingerprint();
   }
+
+  /* Mark the dialog as done. */
+  otrng_dialog_private_key_wait_done(waithandle);
+}
+
+/* Generate a private key for the given accountname/protocol */
+void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
+  OtrgDialogWaitHandle waithandle;
+  const char *accountname = purple_account_get_username(account);
+  const char *protocol = purple_account_get_protocol_id(account);
+
+  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
+
+  otrng_plugin_write_privkey_v3_FILEp(account);
+  otrng_ui_update_fingerprint();
 
   /* Mark the dialog as done. */
   otrng_dialog_private_key_wait_done(waithandle);
@@ -461,15 +475,21 @@ void otrng_plugin_create_instag(PurpleAccount *account) {
   }
 
   /* Generate the instag */
-  otrng_user_state_instag_generate_generate_FILEp(otrng_userstate, account, instagf);
+  otrng_user_state_instag_generate_generate_FILEp(otrng_userstate, account,
+                                                  instagf);
 
   fclose(instagf);
+}
+
+static void create_privkey_cb(const void *opdata) {
+  // TODO: This discards const qualifier
+  PurpleAccount *account = (PurpleAccount *)opdata;
+  otrng_plugin_create_privkey_v3(account);
 }
 
 static void create_instag_cb(const void *opdata) {
   // TODO: discards const
   PurpleAccount *account = (PurpleAccount *)opdata;
-
   otrng_plugin_create_instag(account);
 }
 
@@ -820,7 +840,7 @@ static void timer_control_cb(void *opdata, unsigned int interval) {
 }
 
 static OtrlMessageAppOps ui_ops = {policy_cb,
-                                   NULL, // create_privkey_cb,
+                                   create_privkey_cb, // create_privkey_cb,
                                    is_logged_in_cb,
                                    inject_message_cb,
                                    update_context_list_cb,
@@ -843,7 +863,7 @@ static OtrlMessageAppOps ui_ops = {policy_cb,
                                    resent_msg_prefix_free_cb,
                                    NULL, // handle_smp_event_cb,
                                    handle_msg_event_cb,
-                                   NULL, //create_instag_cb
+                                   NULL, // create_instag_cb
                                    NULL, /* convert_data */
                                    NULL, /* convert_data_free */
                                    timer_control_cb};
@@ -1674,7 +1694,7 @@ static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
 static void create_privkey_v4(const void *opdata) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
-  otrng_plugin_create_privkey(account);
+  otrng_plugin_create_privkey_v4(account);
 }
 
 static void create_shared_prekey_v4(const void *opdata) {
@@ -1835,6 +1855,7 @@ static int get_account_and_protocol_cb(char **account_name,
 static otrng_client_callbacks_s callbacks_v4 = {
     get_account_and_protocol_cb,
     create_privkey_v4,
+    create_privkey_cb,
     create_shared_prekey_v4,
     create_instag_cb,
     gone_secure_v4,
