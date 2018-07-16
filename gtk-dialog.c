@@ -302,7 +302,6 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
 
       user_question = gtk_entry_get_text(question_entry);
 
-      // TODO: there is no strlen when NULL
       if (user_question == NULL || strlen(user_question) == 0) {
         g_free(secret);
         return 1;
