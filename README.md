@@ -1,4 +1,6 @@
 # Off-the-Record Messaging plugin for pidgin
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fotrv4%2Fpidgin-otrng.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fotrv4%2Fpidgin-otrng?ref=badge_shield)
+
 
 v4.0.2, 9 Mar 2016
 
@@ -311,3 +313,6 @@ The Off-the-Record Messaging plugin for pidgin is covered by the following
     packaged with this plugin; if you cannot find it, write to the Free
     Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     02110-1301 USA
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fotrv4%2Fpidgin-otrng.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fotrv4%2Fpidgin-otrng?ref=badge_large)
