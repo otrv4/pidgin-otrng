@@ -3,7 +3,7 @@ AM_CFLAGS+=	-DUSING_GTK -DPURPLE_PLUGINS \
 		-DPIDGIN_OTR_VERSION=\"@VERSION@\" \
 		-DLOCALEDIR=\"$(datadir)/locale\"
 
-SUBDIRS=	po
+SUBDIRS=	po test
 
 plugindir=		${libdir}/pidgin
 
@@ -33,3 +33,6 @@ DISTCLEANFILES=		intltool-extract intltool-merge intltool-update
 
 code-style:
 	clang-format -style=file -i config.h *.h *.c
+
+test: check
+	test/test

@@ -37,6 +37,7 @@ m4/ltversion.m4
 m4/lt~obsolete.m4
 m4/intltool.m4
 
+po/pidgin-otrng.pot
 pidgin-otr4.pot
 po/Makefile.in.in
 po/*.gmo
@@ -44,3 +45,8 @@ po/Makefile
 po/POTFILES
 po/stamp-it
 stamp-h1
+
+test/Makefile
+test/Makefile.in
+test/test
+test/test-test.o
