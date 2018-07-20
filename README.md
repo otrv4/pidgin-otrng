@@ -1,5 +1,7 @@
 # Off-the-Record Messaging plugin for pidgin
 
+[![Build Status](https://travis-ci.org/otrv4/pidgin-otrng.svg?branch=master)](https://travis-ci.org/otrv4/pidgin-otrng)
+
 v4.0.2, 9 Mar 2016
 
 This is a pidgin plugin which implements Off-the-Record (OTRv4) Messaging, in
