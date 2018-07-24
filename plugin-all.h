@@ -38,6 +38,7 @@
 
 #define PRIVKEYFNAMEv4 "otr4.private_key"
 #define STOREFNAMEv4 "otr4.fingerprints"
+#define CLIENTPROFILEFNAME "otr4.client_profile"
 
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"

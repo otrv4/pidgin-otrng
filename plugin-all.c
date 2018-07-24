@@ -206,6 +206,12 @@ static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
   otrng_user_state_instance_tags_read_FILEp(otrng_userstate, instagf);
 }
 
+static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
+  otrng_user_state_client_profile_read_FILEp(
+      otrng_userstate, profiles_filep,
+      protocol_and_account_to_purple_conversation);
+}
+
 static void otrng_plugin_fingerprint_store_create() {
   otrng_fingerprints_table = g_hash_table_new_full(
       g_str_hash, g_str_equal, g_free, g_destroy_plugin_fingerprint);
@@ -417,6 +423,38 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
   return err;
 }
 
+static int otrng_plugin_write_client_profile_FILEp(void) {
+#ifndef WIN32
+  mode_t mask;
+#endif /* WIN32 */
+  FILE *filep;
+
+  gchar *file_name =
+      g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
+  if (!file_name) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+  filep = g_fopen(file_name, "w+b");
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+
+  g_free(file_name);
+  if (!filep) {
+    fprintf(stderr, _("Could not write client profile file\n"));
+    return -1;
+  }
+
+  int err = otrng_user_state_client_profile_write_FILEp(otrng_userstate, filep);
+  fclose(filep);
+
+  return err;
+}
+
 /* Generate a private key for the given accountname/protocol */
 void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
@@ -448,6 +486,14 @@ void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
 
   /* Mark the dialog as done. */
   otrng_dialog_private_key_wait_done(waithandle);
+}
+
+void otrng_plugin_create_client_profile(PurpleAccount *account) {
+  int err = otrng_user_state_generate_client_profile(otrng_userstate, account);
+  if (!err) {
+    otrng_plugin_write_client_profile_FILEp();
+    // TODO: Update the UI if the client is displayed in the UI
+  }
 }
 
 void otrng_plugin_create_shared_prekey(PurpleAccount *account) {
@@ -1704,7 +1750,14 @@ static void create_privkey_v3(const void *opdata) {
   otrng_plugin_create_privkey_v3(account);
 }
 
-static void create_shared_prekey_v4(const void *opdata) {
+static void create_client_profile(struct otrng_client_state_s *state,
+                                  const void *opdata) {
+  // TODO: This discards const qualifier
+  PurpleAccount *account = (PurpleAccount *)opdata;
+  otrng_plugin_create_client_profile(account);
+}
+
+static void create_shared_prekey(const void *opdata) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);
@@ -1861,10 +1914,11 @@ static int get_account_and_protocol_cb(char **account_name,
 
 static otrng_client_callbacks_s callbacks_v4 = {
     get_account_and_protocol_cb,
-    create_privkey_v4,
-    create_privkey_v3,
-    create_shared_prekey_v4,
     create_instag_cb,
+    create_privkey_v3,
+    create_privkey_v4,
+    create_client_profile,
+    create_shared_prekey,
     gone_secure_v4,
     gone_insecure_v4,
     fingerprint_seen_v4,
@@ -1881,17 +1935,22 @@ static int otrng_plugin_init_userstate(void) {
   gchar *privkeyfile3 = NULL;
   gchar *storefile = NULL;
   gchar *instagfile = NULL;
+  gchar *client_profile_filename = NULL;
 
   privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
   storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+  client_profile_filename =
+      g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
 
-  if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile) {
+  if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile ||
+      !client_profile_filename) {
     g_free(privkeyfile);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
+    g_free(client_profile_filename);
     return 1;
   }
 
@@ -1899,19 +1958,24 @@ static int otrng_plugin_init_userstate(void) {
   FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
+  FILE *client_profile_filep = g_fopen(client_profile_filename, "rb");
 
   g_free(privkeyfile);
   g_free(privkeyfile3);
   g_free(storefile);
   g_free(instagfile);
+  g_free(client_profile_filename);
 
   otrng_userstate = otrng_user_state_new(&callbacks_v4);
+
+  // Read instance tags to both V4 and V3 libraries' storage
+  otrng_plugin_read_instance_tags_FILEp(instagf);
 
   // Read V3 and V4 private keys from files
   otrng_plugin_read_private_keys(priv3f, privf);
 
-  // Read instance tags to both V4 and V3 libraries' storage
-  otrng_plugin_read_instance_tags_FILEp(instagf);
+  // Read client profile
+  otrng_plugin_read_client_profile(client_profile_filep);
 
   // Read fingerprints to OTR4 fingerprint store
   otrng_plugin_fingerprint_store_create();
@@ -1934,6 +1998,9 @@ static int otrng_plugin_init_userstate(void) {
   }
   if (instagf) {
     fclose(instagf);
+  }
+  if (client_profile_filep) {
+    fclose(client_profile_filep);
   }
 
   return 0;
