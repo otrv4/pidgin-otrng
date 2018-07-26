@@ -10,6 +10,7 @@ plugindir=		${libdir}/pidgin
 plugin_LTLIBRARIES=	pidgin-otrng.la
 
 pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
+				  prekey-plugin.c \
 				  plugin-all.c \
 				  ui.c \
 				  dialogs.c \

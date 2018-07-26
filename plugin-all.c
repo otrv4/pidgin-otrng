@@ -58,12 +58,13 @@
 
 /* pidgin-otrng headers */
 #include "plugin-all.h"
+#include "prekey-plugin.h"
 
 #ifdef USING_GTK
 
 #include <glib.h>
 
-/* pidgin-otr GTK headers */
+/* pidgin-otrng GTK headers */
 #include "gtk-dialog.h"
 #include "gtk-ui.h"
 #include "i18n.h"
@@ -2171,10 +2172,16 @@ gboolean otrng_plugin_load(PurplePlugin *handle) {
 
   otrng_plugin_watch_libpurple_events();
 
+  // Loads prekey plugin
+  otrng_prekey_plugin_load(handle);
+
   return TRUE;
 }
 
 gboolean otrng_plugin_unload(PurplePlugin *handle) {
+  // Unload prekey plugin
+  otrng_prekey_plugin_unload(handle);
+
   otrng_plugin_unwatch_libpurple_events();
 
   /* Clean up all of our state. */
