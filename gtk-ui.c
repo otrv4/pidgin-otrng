@@ -359,7 +359,7 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, conv->peer, client);
 
-  /* Don't do this if we're already ENCRYPTED */
+  /* Don't send if we're already ENCRYPTED */
   if (otrng_conversation_is_encrypted(otr_conv)) {
     return;
   }
@@ -771,7 +771,7 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
   ui_layout.connect_button = gtk_button_new();
   gtk_signal_connect(GTK_OBJECT(ui_layout.connect_button), "clicked",
                      GTK_SIGNAL_FUNC(connect_connection), NULL);
-  label = gtk_label_new(_("Start private connection"));
+  label = gtk_label_new(_("Start private conversation"));
   gtk_container_add(GTK_CONTAINER(ui_layout.connect_button), label);
   gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.connect_button, 0, 1, 0,
                             1);
@@ -779,7 +779,7 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
   ui_layout.disconnect_button = gtk_button_new();
   gtk_signal_connect(GTK_OBJECT(ui_layout.disconnect_button), "clicked",
                      GTK_SIGNAL_FUNC(disconnect_connection), NULL);
-  label = gtk_label_new(_("End private connection"));
+  label = gtk_label_new(_("End private conversation"));
   gtk_container_add(GTK_CONTAINER(ui_layout.disconnect_button), label);
   gtk_table_attach_defaults(GTK_TABLE(table), ui_layout.disconnect_button, 0, 1,
                             1, 2);
