@@ -364,6 +364,7 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
     return;
   }
 
+  // TODO: here if offline, it should ask for the prekey message
   otrng_plugin_send_default_query(conv);
 }
 
@@ -705,6 +706,7 @@ static void make_settings_ui(GtkWidget *vbox) {
                    G_CALLBACK(otrsettings_save_cb), &(ui_layout.os));
 }
 
+// TODO: maybe here is the problem Reinaldo reported
 /* Make the options UI, and pack it into the vbox */
 static void make_options_ui(GtkWidget *vbox) {
   GtkWidget *fbox;
