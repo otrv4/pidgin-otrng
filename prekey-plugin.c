@@ -4,20 +4,26 @@
 #include "connection.h"
 #include "prpl.h"
 
+#include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
 
 extern otrng_user_state_s *otrng_userstate;
 
+// TODO: Query the server from service discovery and fallback to
+//"prekeys.<domainpart>" server.
+#ifdef DEFAULT_PREKEYS_SERVER
+static const char *prekeys_server_identity = DEFAULT_PREKEYS_SERVER;
+#else
+static const char *prekeys_server_identity = "";
+#endif
+
 otrng_prekey_client_s *otrng_plugin_get_prekey_client(PurpleAccount *account) {
-  // TODO: Probably needs the info from the service discovery
-  //- Service identifier
-  //- Service fingerprint
   otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
   if (!client) {
     return NULL;
   }
 
-  return otrng_client_get_prekey_client(client);
+  return otrng_client_get_prekey_client(prekeys_server_identity, client);
 }
 
 gboolean otrng_plugin_receive_prekey_protocol_message(char **tosend,
@@ -35,14 +41,6 @@ gboolean otrng_plugin_receive_prekey_protocol_message(char **tosend,
 }
 
 static void account_signed_on_cb(PurpleConnection *conn, void *data) {
-  // TODO: Query the server from service discovery and fallback to
-  //"prekeys.<domainpart>" server.
-#ifdef DEFAULT_PREKEYS_SERVER
-  const char *prekeys_server = DEFAULT_PREKEYS_SERVER;
-#else
-  const char *prekeys_server = "";
-#endif
-
   PurpleAccount *account = purple_connection_get_account(conn);
   char *message = NULL;
 
@@ -53,7 +51,7 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
   }
 
   message = otrng_prekey_client_request_storage_status(prekey_client);
-  serv_send_im(conn, prekeys_server, message, 0);
+  serv_send_im(conn, prekey_client->server_identity, message, 0);
   free(message);
 }
 

@@ -1180,6 +1180,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
     // TODO: client might optionally pass a warning here
     if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
+      // TODO: Needs to free tosend AND todisplay
       return 1;
     }
   }
