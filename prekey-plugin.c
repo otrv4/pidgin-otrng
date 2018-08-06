@@ -50,7 +50,12 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
     return;
   }
 
+  // 1. Publish prekeys
+  // message = otrng_prekey_client_publish_prekeys(prekey_client);
+
+  // 2. Retrieve the status of storage for yourself
   message = otrng_prekey_client_request_storage_status(prekey_client);
+
   serv_send_im(conn, prekey_client->server_identity, message, 0);
   free(message);
 }
