@@ -21,16 +21,16 @@
 
 #include "otrng-plugin.h"
 
-#include "dialogs.h"
-#include "i18n.h"
-#include "ui.h"
+#include <dialogs.h>
+#include <i18n.h>
+#include <ui.h>
 
 #ifdef USING_GTK
 /* purple GTK headers */
-#include "gtkplugin.h"
+#include <gtkplugin.h>
 
-#include "gtk-dialog.h"
-#include "gtk-ui.h"
+#include <gtk-dialog.h>
+#include <gtk-ui.h>
 
 static PidginPluginUiInfo ui_info = {otrng_gtk_ui_make_widget};
 
