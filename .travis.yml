@@ -30,6 +30,7 @@ addons:
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
+  - mkdir -p ${PREFIX}
   - export LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH}
   - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   - wget https://sourceforge.net/projects/pidgin/files/Pidgin/2.13.0/pidgin-2.13.0.tar.bz2/download -O ${PREFIX}/pidgin.tar.bz2
