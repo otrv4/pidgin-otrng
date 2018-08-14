@@ -40,6 +40,34 @@ gboolean otrng_plugin_receive_prekey_protocol_message(char **tosend,
   return otrng_prekey_client_receive(tosend, server, message, prekey_client);
 }
 
+static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
+                                    char **message, PurpleConversation *conv,
+                                    PurpleMessageFlags *flags) {
+
+  if (!who || !*who || !message || !*message) {
+    return 0;
+  }
+
+  char *username = g_strdup(purple_normalize(account, *who));
+
+  char *tosend = NULL;
+  gboolean ignore = otrng_plugin_receive_prekey_protocol_message(
+      &tosend, username, *message, account);
+  free(username);
+
+  if (tosend) {
+    // TODO: Should this send to the original who or to the normalized who?
+    otrng_plugin_inject_message(account, *who, tosend);
+    free(tosend);
+  }
+
+  // We consumed the message
+  free(*message);
+  *message = NULL;
+
+  return ignore;
+}
+
 static void account_signed_on_cb(PurpleConnection *conn, void *data) {
   PurpleAccount *account = purple_connection_get_account(conn);
   char *message = NULL;
@@ -72,9 +100,22 @@ gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {
   purple_signal_connect(purple_connections_get_handle(), "signed-on", handle,
                         PURPLE_CALLBACK(account_signed_on_cb), NULL);
 
+  /* Process received prekey protocol messages */
+  purple_signal_connect(purple_conversations_get_handle(), "receiving-im-msg",
+                        handle, PURPLE_CALLBACK(receiving_im_msg_cb), NULL);
+
   // Do the same on the already connected accounts
   // GList *connections = purple_connections_get_all();
   return TRUE;
 }
 
-gboolean otrng_prekey_plugin_unload(PurplePlugin *handle) { return TRUE; }
+gboolean otrng_prekey_plugin_unload(PurplePlugin *handle) {
+
+  purple_signal_disconnect(purple_conversations_get_handle(),
+                           "receiving-im-msg", handle,
+                           PURPLE_CALLBACK(receiving_im_msg_cb));
+
+  purple_signal_disconnect(purple_connections_get_handle(), "signed-on", handle,
+                           PURPLE_CALLBACK(account_signed_on_cb));
+  return TRUE;
+}

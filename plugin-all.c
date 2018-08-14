@@ -1167,22 +1167,14 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
   username = g_strdup(purple_normalize(account, *who));
 
-  // Potentially handles messages from the prekey protocol
-  // Needs to happen BEFORE the regular otrng_receive() call because we dont
-  // want the prekey protocol messages to be displayed as plaintext
-  if (otrng_plugin_receive_prekey_protocol_message(&tosend, username, *message,
-                                                   account)) {
-    res = TRUE; // The message was processed and should be ignored
-  } else {
-    otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
-    res = otrng_client_receive(&tosend, &todisplay, *message, username,
-                               otrng_client);
+  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  res = otrng_client_receive(&tosend, &todisplay, *message, username,
+                             otrng_client);
 
-    // TODO: client might optionally pass a warning here
-    if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
-      // TODO: Needs to free tosend AND todisplay
-      return 1;
-    }
+  // TODO: client might optionally pass a warning here
+  if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
+    // TODO: Needs to free tosend AND todisplay
+    return 1;
   }
 
   if (tosend) {
