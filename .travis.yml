@@ -27,17 +27,15 @@ addons:
     - libgtk2.0-dev
     - pidgin-dev
     - libpurple-dev
+    - libotr5-dev
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
   - mkdir -p ${PREFIX}
   - export LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH}
   - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  - wget https://sourceforge.net/projects/pidgin/files/Pidgin/2.13.0/pidgin-2.13.0.tar.bz2/download -O ${PREFIX}/pidgin.tar.bz2
-  - pushd ${PREFIX} && tar xjvf pidgin.tar.bz2 && popd
+  - curl https://sourceforge.net/projects/pidgin/files/Pidgin/2.13.0/pidgin-2.13.0.tar.bz2/download | tar xjf - -C ${PREFIX}
   - mkdir .deps
-  - git clone --depth=1 https://bugs.otr.im/lib/libotr.git .deps/libotr
-  - pushd .deps/libotr && ./bootstrap && ./configure --prefix=$PREFIX && make && make install && popd
   # Dependencies for libotr-ng
   - curl https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.26.tar.bz2 | tar xjf - -C .deps
   - pushd .deps/libgpg-error-1.26 && ./configure --prefix=$PREFIX && make && make install && popd
