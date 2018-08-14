@@ -1982,7 +1982,6 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
 
-  // TODO: Read client profile from disk
   // TODO: Read prekey profile from disk
   // TODO: Read shared prekey from disk
   // TODO: Read prekey pairs from disk
