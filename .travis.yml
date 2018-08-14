@@ -29,7 +29,7 @@ addons:
     - libpurple-dev
     - libotr5-dev
     - libgpg-error-dev
-    - libgcrypt20-dev
+    - libgcrypt-dev
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
