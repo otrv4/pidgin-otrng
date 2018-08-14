@@ -33,17 +33,17 @@
 #include <gcrypt.h>
 
 /* purple headers */
-#include "core.h"
-#include "gtkconv.h"
-#include "gtkimhtml.h"
-#include "gtkmenutray.h"
-#include "gtkutils.h"
-#include "notify.h"
-#include "pidginstock.h"
-#include "plugin.h"
-#include "tooltipmenu.h"
-#include "util.h"
-#include "version.h"
+#include <core.h>
+#include <gtkconv.h>
+#include <gtkimhtml.h>
+#include <gtkmenutray.h>
+#include <gtkutils.h>
+#include <notify.h>
+#include <pidginstock.h>
+#include <plugin.h>
+#include <tooltipmenu.h>
+#include <util.h>
+#include <version.h>
 
 #ifdef ENABLE_NLS
 /* internationalisation headers */

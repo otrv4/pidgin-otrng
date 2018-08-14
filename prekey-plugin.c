@@ -1,8 +1,8 @@
 #include "prekey-plugin.h"
 
 /* libpurple */
-#include "connection.h"
-#include "prpl.h"
+#include <connection.h>
+#include <prpl.h>
 
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>

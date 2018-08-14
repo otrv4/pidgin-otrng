@@ -35,16 +35,16 @@
 #include <gcrypt.h>
 
 /* purple headers */
-#include "core.h"
-#include "debug.h"
-#include "notify.h"
-#include "pidgin.h"
-#include "util.h"
-#include "version.h"
+#include <core.h>
+#include <debug.h>
+#include <notify.h>
+#include <pidgin.h>
+#include <util.h>
+#include <version.h>
 
 #ifdef USING_GTK
 /* purple GTK headers */
-#include "gtkplugin.h"
+#include <gtkplugin.h>
 #endif
 
 /* libotr headers */

@@ -27,7 +27,7 @@
 #ifdef WIN32
 /* On Win32, include win32dep.h from pidgin for correct definition
  * of LOCALEDIR */
-#include "win32dep.h"
+#include <win32dep.h>
 #endif /* WIN32 */
 
 /* internationalisation header */

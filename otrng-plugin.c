@@ -21,9 +21,9 @@
 
 #include "otrng-plugin.h"
 
-#include <dialogs.h>
-#include <i18n.h>
-#include <ui.h>
+#include "dialogs.h"
+#include "i18n.h"
+#include "ui.h"
 
 #ifdef USING_GTK
 /* purple GTK headers */

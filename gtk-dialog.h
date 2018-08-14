@@ -22,7 +22,7 @@
 #ifndef __OTRG_GTK_DIALOG_H__
 #define __OTRG_GTK_DIALOG_H__
 
-#include "dialogs.h"
+#include <dialogs.h>
 
 /* Get the GTK dialog UI ops */
 const OtrgDialogUiOps *otrng_gtk_dialog_get_ui_ops(void);

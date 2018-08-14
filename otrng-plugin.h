@@ -23,7 +23,7 @@
 #define __OTRG_OTRNG_PLUGIN_H__
 
 /* Purple headers */
-#include "account.h"
-#include "plugin.h"
+#include <account.h>
+#include <plugin.h>
 
 #endif

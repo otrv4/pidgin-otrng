@@ -30,8 +30,8 @@
 #include <stdlib.h>
 
 /* purple headers */
-#include "account.h"
-#include "util.h"
+#include <account.h>
+#include <util.h>
 
 #ifdef ENABLE_NLS
 /* internationalisation header */

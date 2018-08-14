@@ -23,7 +23,7 @@
 #include "config.h"
 #endif
 
-#include "dialogs.h"
+#include <dialogs.h>
 
 /* system headers */
 #include <stdlib.h>

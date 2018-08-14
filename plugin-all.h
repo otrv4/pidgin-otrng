@@ -23,8 +23,8 @@
 #define __OTRG_PLUGIN_ALL_H__
 
 /* Purple headers */
-#include "account.h"
-#include "plugin.h"
+#include <account.h>
+#include <plugin.h>
 
 /* libotr headers */
 #include <libotr/context.h>

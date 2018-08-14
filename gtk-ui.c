@@ -34,10 +34,10 @@
 #include <libotr/privkey.h>
 
 /* purple headers */
-#include "account.h"
-#include "gtkutils.h"
-#include "notify.h"
-#include "util.h"
+#include <account.h>
+#include <gtkutils.h>
+#include <notify.h>
+#include <util.h>
 
 #ifdef ENABLE_NLS
 /* internationalisation header */
