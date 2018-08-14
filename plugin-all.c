@@ -942,6 +942,14 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
   username = g_strdup(purple_normalize(account, who));
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+
+  PurpleBuddy *buddy = purple_find_buddy(account, username);
+  if (buddy && purple_account_supports_offline_message(account, buddy) &&
+      !PURPLE_BUDDY_IS_ONLINE(buddy)) {
+    // Try to send an offline message
+    printf("Should try to send an offline message to %s\n", username);
+  }
+
   int err = otrng_client_send(&newmessage, *message, username, otrng_client);
 
   // TODO: this message should be stored for retransmission
