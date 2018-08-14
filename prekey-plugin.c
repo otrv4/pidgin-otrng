@@ -17,19 +17,56 @@ static const char *prekeys_server_identity = DEFAULT_PREKEYS_SERVER;
 static const char *prekeys_server_identity = "";
 #endif
 
-otrng_prekey_client_s *otrng_plugin_get_prekey_client(PurpleAccount *account) {
+static void notify_error_cb(int error, void *ctx) {
+  printf("prekey server: an error happened\n");
+}
+
+static void
+storage_status_received_cb(const otrng_prekey_storage_status_message_s *msg,
+                           void *ctx) {
+  printf("prekey server: we still have %d prekeys stored\n",
+         msg->stored_prekeys);
+}
+
+static void success_received_cb(void *ctx) {
+  printf("prekey server: received success\n");
+}
+
+static void no_prekey_in_storage_received_cb(void *ctx) {
+  printf("prekey server: there are no prekey in storage for the requested "
+         "recipient\n");
+}
+
+static void
+prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
+                             uint8_t num_ensembles, void *ctx) {
+  printf("prekey server: we received %d ensembles\n", num_ensembles);
+}
+
+static otrng_prekey_client_callbacks_s prekey_client_cb = {
+    .ctx = NULL,
+    .notify_error = notify_error_cb,
+    .storage_status_received = storage_status_received_cb,
+    .success_received = success_received_cb,
+    .no_prekey_in_storage_received = no_prekey_in_storage_received_cb,
+    .prekey_ensembles_received = prekey_ensembles_received_cb,
+};
+
+static otrng_prekey_client_s *
+otrng_plugin_get_prekey_client(PurpleAccount *account) {
   otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
   if (!client) {
     return NULL;
   }
 
-  return otrng_client_get_prekey_client(prekeys_server_identity, client);
+  return otrng_client_get_prekey_client(prekeys_server_identity,
+                                        &prekey_client_cb, client);
 }
 
-gboolean otrng_plugin_receive_prekey_protocol_message(char **tosend,
-                                                      const char *server,
-                                                      const char *message,
-                                                      PurpleAccount *account) {
+static gboolean
+otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
+                                             const char *message,
+                                             PurpleAccount *account) {
   otrng_prekey_client_s *prekey_client = NULL;
 
   prekey_client = otrng_plugin_get_prekey_client(account);
@@ -38,6 +75,19 @@ gboolean otrng_plugin_receive_prekey_protocol_message(char **tosend,
   }
 
   return otrng_prekey_client_receive(tosend, server, message, prekey_client);
+}
+
+static void send_message(PurpleAccount *account, const char *recipient,
+                         const char *message) {
+  PurpleConnection *connection = purple_account_get_connection(account);
+  if (!connection) {
+    // Not connected
+    return;
+  }
+
+  // TODO: Should this send to the original recipient or to the normalized
+  // recipient?
+  serv_send_im(connection, recipient, message, 0);
 }
 
 static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
@@ -56,14 +106,15 @@ static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
   free(username);
 
   if (tosend) {
-    // TODO: Should this send to the original who or to the normalized who?
-    otrng_plugin_inject_message(account, *who, tosend);
+    send_message(account, *who, tosend);
     free(tosend);
   }
 
   // We consumed the message
-  free(*message);
-  *message = NULL;
+  if (ignore) {
+    free(*message);
+    *message = NULL;
+  }
 
   return ignore;
 }
