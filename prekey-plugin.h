@@ -1,6 +1,6 @@
 /* Purple headers */
-#include <plugin.h>
 #include <account.h>
+#include <plugin.h>
 
 #include <libotr-ng/prekey_client.h>
 
