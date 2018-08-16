@@ -823,7 +823,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
     AuthSignalData *auth_opt_data;
 
     smp_data->their_instance = pconv->their_instance_tag;
-    icon_name = PIDGIN_STOCK_DIALOG_INFO;
+    icon_name = PIDGIN_STOCK_DIALOG_QUESTION;
     img = gtk_image_new_from_stock(
         icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
@@ -1534,6 +1534,9 @@ otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
 
     gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                        _("An error occurred during authentication."));
+    gtk_image_set_from_stock(
+        GTK_IMAGE(smp_data->smp_progress_image), PIDGIN_STOCK_DIALOG_ERROR,
+        gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     return;
   }
   if (progress_level == 1.0) {
