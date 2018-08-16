@@ -99,6 +99,7 @@ typedef struct dialog_context_data {
   GtkWidget *smp_progress_dialog;
   GtkWidget *smp_progress_bar;
   GtkWidget *smp_progress_label;
+  GtkWidget *smp_progress_image;
   otrl_instag_t their_instance;
 } SMPData;
 
@@ -144,6 +145,7 @@ static void close_progress_window(SMPData *smp_data) {
   smp_data->smp_progress_dialog = NULL;
   smp_data->smp_progress_bar = NULL;
   smp_data->smp_progress_label = NULL;
+  smp_data->smp_progress_image = NULL;
 }
 
 static void otrng_gtk_dialog_free_smp_data(PurpleConversation *conv) {
@@ -173,6 +175,7 @@ static SMPData *otrng_gtk_dialog_add_smp_data(PurpleConversation *conv) {
   smp_data->smp_progress_dialog = NULL;
   smp_data->smp_progress_bar = NULL;
   smp_data->smp_progress_label = NULL;
+  smp_data->smp_progress_image = NULL;
   /* Chosen as initialized value since libotr should never allow
    * this as a "their_instance" value */
   smp_data->their_instance = OTRL_INSTAG_BEST;
@@ -950,7 +953,7 @@ create_smp_progress_dialog(GtkWindow *parent,
   GtkWidget *label;
   GtkWidget *proglabel;
   GtkWidget *bar;
-  GtkWidget *img = NULL;
+  GtkWidget *progimg = NULL;
   char *label_text, *label_pat;
   const char *icon_name = NULL;
   PurpleConversation *pconv;
@@ -960,11 +963,6 @@ create_smp_progress_dialog(GtkWindow *parent,
   PurpleAccount *account = purple_conversation_get_account(pconv);
   const char *username =
       purple_normalize(account, purple_conversation_get_name(pconv));
-
-  icon_name = PIDGIN_STOCK_DIALOG_INFO;
-  img = gtk_image_new_from_stock(
-      icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
-  gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
 
   // TODO: How to get this?
   // This came from context->smstate->received_question
@@ -997,7 +995,7 @@ create_smp_progress_dialog(GtkWindow *parent,
   vbox = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), hbox);
 
-  gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox), NULL, FALSE, FALSE, 0);
 
   label_pat = g_strdup_printf("<span weight=\"bold\" size=\"larger\">"
                               "%s</span>\n",
@@ -1021,6 +1019,13 @@ create_smp_progress_dialog(GtkWindow *parent,
   gtk_misc_set_alignment(GTK_MISC(proglabel), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), proglabel, FALSE, FALSE, 0);
 
+  icon_name = PIDGIN_STOCK_DIALOG_INFO;
+  progimg = gtk_image_new_from_stock(
+      icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
+  gtk_misc_set_alignment(GTK_MISC(progimg), 0, 0);
+
+  gtk_box_pack_start(GTK_BOX(hbox), progimg, FALSE, FALSE, 0);
+
   /* Create the progress bar */
   bar = gtk_progress_bar_new();
   gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(bar), 0.1);
@@ -1033,6 +1038,7 @@ create_smp_progress_dialog(GtkWindow *parent,
     smp_data->smp_progress_dialog = dialog;
     smp_data->smp_progress_bar = bar;
     smp_data->smp_progress_label = proglabel;
+    smp_data->smp_progress_image = progimg;
   }
   gtk_label_set_text(GTK_LABEL(proglabel), _("Waiting for buddy..."));
 
@@ -1566,6 +1572,9 @@ otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
     } else {
       gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                          _("Authentication failed."));
+      gtk_image_set_from_stock(
+          GTK_IMAGE(smp_data->smp_progress_image), PIDGIN_STOCK_DIALOG_ERROR,
+          gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     }
   } else {
     /* Clear the progress label */

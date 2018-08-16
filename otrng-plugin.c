@@ -51,17 +51,18 @@ static PurplePluginInfo otrng_plugin_info = {
     2, /* major version  */
     0, /* minor version  */
 
-    PURPLE_PLUGIN_STANDARD,  /* type           */
-    PLUGIN_TYPE,             /* ui_requirement */
-    0,                       /* flags          */
-    NULL,                    /* dependencies   */
-    PURPLE_PRIORITY_DEFAULT, /* priority       */
-    "otrng",                 /* id             */
-    NULL,                    /* name           */
-    PIDGIN_OTR_VERSION,      /* version        */
-    NULL,                    /* summary        */
-    NULL,                    /* description    */
-                             /* author         */
+    PURPLE_PLUGIN_STANDARD,           /* type           */
+    PLUGIN_TYPE, /* ui_requirement */ // perhaps we cannot have ui?
+    0,                                /* flags          */
+    NULL,                             /* dependencies   */
+    PURPLE_PRIORITY_DEFAULT,          /* priority       */
+    "otrng", /* id             */     // TODO: this should change:
+    // check: https://developer.pidgin.im/wiki/CHowTo/ChoosingPluginIds
+    NULL,               /* name           */
+    PIDGIN_OTR_VERSION, /* version        */
+    NULL,               /* summary        */
+    NULL,               /* description    */
+                        /* author         */
     "Ian Goldberg, Rob Smits,\n"
     "\t\t\tChris Alexander, Willy Lew, Lisa Du,\n"
     "\t\t\tNikita Borisov <otr@cypherpunks.ca>",
@@ -71,10 +72,10 @@ static PurplePluginInfo otrng_plugin_info = {
     otrng_plugin_unload, /* unload         */
     NULL,                /* destroy        */
 
-    UI_INFO, /* ui_info        */
-    NULL,    /* extra_info     */
-    NULL,    /* prefs_info     */
-    NULL     /* actions        */
+    UI_INFO,                   /* ui_info        */
+    NULL,                      /* extra_info     */
+    NULL, /* prefs_info     */ // maybe this?
+    NULL                       /* actions        */
 };
 
 static void __otrng_init_plugin(PurplePlugin *plugin) {
