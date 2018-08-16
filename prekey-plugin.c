@@ -9,6 +9,19 @@
 
 extern otrng_user_state_s *otrng_userstate;
 
+static void send_message(PurpleAccount *account, const char *recipient,
+                         const char *message) {
+  PurpleConnection *connection = purple_account_get_connection(account);
+  if (!connection) {
+    // Not connected
+    return;
+  }
+
+  // TODO: Should this send to the original recipient or to the normalized
+  // recipient?
+  serv_send_im(connection, recipient, message, 0);
+}
+
 // TODO: Query the server from service discovery and fallback to
 //"prekeys.<domainpart>" server.
 #ifdef DEFAULT_PREKEYS_SERVER
@@ -37,10 +50,63 @@ static void no_prekey_in_storage_received_cb(void *ctx) {
          "recipient\n");
 }
 
+static void send_offline_messages_to_each_ensemble(
+    prekey_ensemble_s *const *const ensembles, uint8_t num_ensembles,
+    otrng_plugin_offline_message_ctx *ctx) {
+
+  PurpleAccount *account = ctx->account;
+  const char *message = ctx->message;
+  const char *recipient = ctx->recipient;
+
+  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  if (!client) {
+    return;
+  }
+
+  for (int i = 0; i < num_ensembles; i++) {
+    if (!otrng_prekey_ensemble_validate(ensembles[i])) {
+      printf("The ensemble %d is not valid\n", i);
+      continue;
+    }
+
+    char *to_send = NULL;
+    if (otrng_client_send_non_interactive_auth(&to_send, ensembles[i],
+                                               recipient, client)) {
+      // TODO: error
+      continue;
+    }
+
+    send_message(account, recipient, to_send);
+    free(to_send);
+
+    if (otrng_client_send(&to_send, message, recipient, client)) {
+      // TODO: error
+      continue;
+    }
+
+    send_message(account, recipient, to_send);
+    free(to_send);
+  }
+
+  // 1. Build a offline message for each received ensemble
+  // 2. Send each message through the network
+  // 3. Send a single query message (dependencia na outra direção).
+}
+
 static void
 prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
                              uint8_t num_ensembles, void *ctx) {
   printf("prekey server: we received %d ensembles\n", num_ensembles);
+
+  if (!ctx) {
+    printf("Invalid NULL context\n");
+  }
+
+  otrng_plugin_offline_message_ctx *c = ctx;
+  send_offline_messages_to_each_ensemble(ensembles, num_ensembles, c);
+  free(c->message);
+  free(c->recipient);
+  free(c);
 }
 
 static otrng_prekey_client_callbacks_s prekey_client_cb = {
@@ -52,8 +118,7 @@ static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .prekey_ensembles_received = prekey_ensembles_received_cb,
 };
 
-static otrng_prekey_client_s *
-otrng_plugin_get_prekey_client(PurpleAccount *account) {
+otrng_prekey_client_s *otrng_plugin_get_prekey_client(PurpleAccount *account) {
   otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
   if (!client) {
     return NULL;
@@ -75,19 +140,6 @@ otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
   }
 
   return otrng_prekey_client_receive(tosend, server, message, prekey_client);
-}
-
-static void send_message(PurpleAccount *account, const char *recipient,
-                         const char *message) {
-  PurpleConnection *connection = purple_account_get_connection(account);
-  if (!connection) {
-    // Not connected
-    return;
-  }
-
-  // TODO: Should this send to the original recipient or to the normalized
-  // recipient?
-  serv_send_im(connection, recipient, message, 0);
 }
 
 static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
@@ -129,15 +181,18 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
     return;
   }
 
+  // DISABLED
+  return;
+
   // 1. Publish prekeys
-  //  message = otrng_prekey_client_publish_prekeys(prekey_client);
+  message = otrng_prekey_client_publish_prekeys(prekey_client);
 
   // 2. Retrieve the status of storage for yourself
   // message = otrng_prekey_client_request_storage_status(prekey_client);
 
   // 3. Retrieve prekey ensembles for us
-  message = otrng_prekey_client_retrieve_prekeys("bob@localhost", "45",
-                                                 prekey_client);
+  // message = otrng_prekey_client_retrieve_prekeys("bob@localhost", "45",
+  // prekey_client);
 
   serv_send_im(conn, prekey_client->server_identity, message, 0);
   free(message);
