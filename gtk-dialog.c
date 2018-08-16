@@ -823,7 +823,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
     AuthSignalData *auth_opt_data;
 
     smp_data->their_instance = pconv->their_instance_tag;
-    icon_name = PIDGIN_STOCK_DIALOG_QUESTION;
+    icon_name = PIDGIN_STOCK_DIALOG_AUTH;
     img = gtk_image_new_from_stock(
         icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
@@ -1040,7 +1040,12 @@ create_smp_progress_dialog(GtkWindow *parent,
     smp_data->smp_progress_label = proglabel;
     smp_data->smp_progress_image = progimg;
   }
+
   gtk_label_set_text(GTK_LABEL(proglabel), _("Waiting for buddy..."));
+
+  gtk_image_set_from_stock(
+      GTK_IMAGE(smp_data->smp_progress_image), PIDGIN_STOCK_DIALOG_AUTH,
+      gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
 
   g_signal_connect(G_OBJECT(dialog), "response",
                    G_CALLBACK(smp_progress_response_cb),
@@ -1566,6 +1571,9 @@ otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
       if (fp && fp->trusted) {
         gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                            _("Authentication successful."));
+        gtk_image_set_from_stock(
+            GTK_IMAGE(smp_data->smp_progress_image), PIDGIN_STOCK_DIALOG_INFO,
+            gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
       } else {
         gtk_label_set_text(GTK_LABEL(smp_data->smp_progress_label),
                            _("Your buddy has successfully authenticated you.  "
