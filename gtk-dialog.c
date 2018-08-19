@@ -499,6 +499,7 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
   GtkWidget *label;
   GtkWidget *label2 = NULL;
   char *label_text;
+  char *label_text_2;
 
   SmpResponsePair *smppair = auth_opt_data->smppair;
 
@@ -518,6 +519,16 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
           "question and this answer, then wait for your buddy to "
           "enter the answer too.  If the answers "
           "don't match, then you may be talking to an imposter."));
+  }
+
+  otrng_plugin_fingerprint *fp =
+      otrng_plugin_fingerprint_get_active(smppair->conv->peer);
+
+  if (fp && fp->trusted && !(smppair->responder)) {
+    label_text_2 = g_strdup_printf("<b>\n%s\n</b>",
+                                   _("This buddy is already authenticated."));
+    label2 = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label2), label_text_2);
   }
 
   label = gtk_label_new(NULL);
@@ -563,13 +574,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
     gtk_box_pack_start(GTK_BOX(vbox), question_entry, FALSE, FALSE, 0);
   }
 
-  otrng_plugin_fingerprint *fp =
-      otrng_plugin_fingerprint_get_active(smppair->conv->peer);
-
-  if (fp && fp->trusted && !(smppair->responder)) {
-    label2 = gtk_label_new(_("This buddy is already authenticated."));
-  }
-
   /* Leave a blank line */
   gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
 
@@ -609,6 +613,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   GtkWidget *label;
   GtkWidget *label2 = NULL;
   char *label_text;
+  char *label_text_2;
 
   label_text = g_strdup_printf(
       "<small><i>\n%s\n</i></small>",
@@ -626,6 +631,22 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
+  otrng_plugin_fingerprint *fp =
+      otrng_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
+  if (fp && fp->trusted) {
+    label_text_2 = g_strdup_printf("<b>\n%s\n</b>",
+                                   _("This buddy is already authenticated."));
+    label2 = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label2), label_text_2);
+  }
+
+  /* Leave a blank line */
+  gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
+
+  if (label2) {
+    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
+  }
   label_text = g_strdup_printf(_("Enter secret here:"));
   label = gtk_label_new(label_text);
   gtk_label_set_selectable(GTK_LABEL(label), FALSE);
@@ -640,21 +661,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   gtk_entry_set_activates_default(GTK_ENTRY(entry), TRUE);
   auth_opt_data->two_way_entry = GTK_ENTRY(entry);
 
-  otrng_plugin_fingerprint *fp =
-      otrng_plugin_fingerprint_get_active(auth_opt_data->smppair->conv->peer);
-  if (fp && fp->trusted) {
-    label2 = gtk_label_new(_("This buddy is already authenticated."));
-  }
-
   gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-
-  /* Leave a blank line */
-  gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-
-  if (label2) {
-    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-  }
 }
 
 static void
