@@ -1,5 +1,27 @@
 #include "prekey-plugin.h"
 
+/* If we're using glib on Windows, we need to use g_fopen to open files.
+ * On other platforms, it's also safe to use it.  If we're not using
+ * glib, just use fopen. */
+#ifdef USING_GTK
+/* If we're cross-compiling, this might be wrong, so fix it. */
+#ifdef WIN32
+#undef G_OS_UNIX
+#define G_OS_WIN32
+#endif
+#include <glib/gstdio.h>
+#else
+#define g_fopen fopen
+#endif
+
+#ifdef ENABLE_NLS
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
+#else
+#define _(x) (x)
+#define N_(x) (x)
+#endif
+
 /* libpurple */
 #include <connection.h>
 #include <prpl.h>
@@ -109,6 +131,70 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
   free(c);
 }
 
+#define PREKEYSFNAME "otr4.prekey_messages"
+
+static int
+build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
+                                    void *ctx) {
+
+  if (!ctx) {
+    printf("received invalid ctx\n");
+    return 0;
+  }
+
+  FILE *privf = NULL;
+  gchar *prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
+  if (!prekeysfile) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return 0;
+  }
+
+  privf = g_fopen(prekeysfile, "w+b");
+  g_free(prekeysfile);
+
+#ifndef WIN32
+  mode_t mask = umask(0077);
+  umask(mask);
+#endif /* WIN32 */
+
+  if (!privf) {
+    fprintf(stderr, _("Could not write prekey messages file\n"));
+    return 0;
+  }
+
+  PurpleAccount *account = ctx;
+
+  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  if (!client) {
+    return 0;
+  }
+
+  msg->num_prekey_messages = 5;
+  msg->prekey_messages =
+      otrng_client_build_prekey_messages(msg->num_prekey_messages, client);
+
+  if (!msg->prekey_messages) {
+    return 0;
+  }
+
+  const client_profile_s *client_profile =
+      otrng_client_state_get_client_profile(client->state);
+  const otrng_prekey_profile_s *prekey_profile =
+      otrng_client_state_get_prekey_profile(client->state);
+
+  // We decide in our plugin to always publish the profiles.
+  // That may not be the case.
+  msg->client_profile = malloc(sizeof(client_profile_s));
+  otrng_client_profile_copy(msg->client_profile, client_profile);
+
+  msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
+  otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
+
+  otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, privf);
+  fclose(privf);
+  return 1;
+}
+
 static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .ctx = NULL,
     .notify_error = notify_error_cb,
@@ -116,6 +202,7 @@ static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .success_received = success_received_cb,
     .no_prekey_in_storage_received = no_prekey_in_storage_received_cb,
     .prekey_ensembles_received = prekey_ensembles_received_cb,
+    .build_prekey_publication_message = build_prekey_publication_message_cb,
 };
 
 otrng_prekey_client_s *otrng_plugin_get_prekey_client(PurpleAccount *account) {
@@ -181,8 +268,7 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
     return;
   }
 
-  // DISABLED
-  return;
+  prekey_client->callbacks->ctx = account;
 
   // 1. Publish prekeys
   message = otrng_prekey_client_publish_prekeys(prekey_client);
