@@ -68,6 +68,7 @@
 #include "gtk-dialog.h"
 #include "gtk-ui.h"
 #include "i18n.h"
+#include "prekey-discovery.h"
 
 /* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 0
@@ -2211,11 +2212,14 @@ gboolean otrng_plugin_load(PurplePlugin *handle) {
 
   // Loads prekey plugin
   otrng_prekey_plugin_load(handle);
+  otrng_plugin_prekey_discovery_load();
 
   return TRUE;
 }
 
 gboolean otrng_plugin_unload(PurplePlugin *handle) {
+  otrng_plugin_prekey_discovery_unload();
+
   // Unload prekey plugin
   otrng_prekey_plugin_unload(handle);
 

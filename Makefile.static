@@ -18,6 +18,8 @@ LIBOTRNGDIR?=/usr/lib
 		.libs/gtk-dialog.o \
 		.libs/tooltipmenu.o \
 		.libs/otrng-client.o \
+		.libs/prekey-discovery.o \
+		.libs/prekey-discovery-jabber.o \
 		$(LIBOTRDIR)/libotr.a \
 		$(LIBOTRNGDIR)/libotr-ng.a \
 		$(LIBGCRYPTDIR)/libgcrypt.a \
@@ -33,4 +35,3 @@ LIBOTRNGDIR?=/usr/lib
 		-o .libs/pidgin-otr.so
 
 FORCE:
-

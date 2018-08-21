@@ -14,6 +14,8 @@ plugin_LTLIBRARIES=	pidgin-otrng.la
 
 pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
 				  prekey-plugin.c \
+				  prekey-discovery.c \
+				  prekey-discovery-jabber.c \
 				  plugin-all.c \
 				  ui.c \
 				  dialogs.c \
@@ -27,7 +29,7 @@ pidgin_otrng_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@
 
 #TODO: Make sure windows packaging works
 EXTRA_DIST=		dialogs.h gtk-dialog.h gtk-ui.h otr-plugin.h ui.h \
-			otr-icons.h tooltipmenu.h \
+			otr-icons.h tooltipmenu.h prekey-discovery.h prekey-discovery-jabber.h \
 			Makefile.mingw packaging/windows/pidgin-otr.nsi \
 			packaging/fedora/pidgin-otr.spec po/Makefile.mingw \
 			po/README intltool-extract.in intltool-merge.in \
