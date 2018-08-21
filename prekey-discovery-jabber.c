@@ -7,6 +7,7 @@
 #include "signal.h"
 
 #include <stdio.h>
+#include <string.h>
 
 static GHashTable *iq_callbacks = NULL;
 static gboolean iq_listening = FALSE;
@@ -24,9 +25,10 @@ static char *generate_next_id() {
 }
 
 static unsigned char *hex_to_bytes(const char *hex, size_t len) {
+    size_t count;
     char *pos = (char *)hex;
     unsigned char *result = malloc(len /2);
-    for (size_t count = 0; count < len/2; count++) {
+    for (count = 0; count < len/2; count++) {
         sscanf(pos, "%2hhx", &result[count]);
         pos += 2;
     }
@@ -181,17 +183,18 @@ xmpp_iq_received(PurpleConnection *pc, const char *type, const char *id,
 // It is the callers responsibility to free this
 // If no delimiters are found it's assumed the full string is the domain
 static char *get_domain_from_jid(const char* jid) {
+    char *current;
     char *start = (char *)jid;
     int len = 0;
 
-    for(char *current = start; current; current++) {
+    for(current = start; current; current++) {
         if(*current == '@') {
             start = current+1;
             break;
         }
     }
 
-    for(char *current = start; current; current++) {
+    for(current = start; current; current++) {
         if(*current == '/') {
             break;
         }
