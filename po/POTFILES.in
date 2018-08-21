@@ -10,5 +10,7 @@ otrng-plugin.c
 otrng-plugin.h
 plugin-all.c
 plugin-all.h
+prekey-plugin.c
+prekey-plugin.h
 ui.c
 ui.h
