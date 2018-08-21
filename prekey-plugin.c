@@ -85,7 +85,8 @@ static void send_offline_messages_to_each_ensemble(
     return;
   }
 
-  for (int i = 0; i < num_ensembles; i++) {
+  int i;
+  for (i = 0; i < num_ensembles; i++) {
     if (!otrng_prekey_ensemble_validate(ensembles[i])) {
       printf("The ensemble %d is not valid\n", i);
       continue;
