@@ -14,7 +14,7 @@ typedef struct {
     char fingerprint[FINGERPRINT_LENGTH];
 } otrng_plugin_prekey_server;
 
-typedef void (*PrekeyServerResult)(otrng_plugin_prekey_server*);
+typedef void (*PrekeyServerResult)(otrng_plugin_prekey_server*, void*);
 
 /**
  * This function will try to look up prekey servers for the account
@@ -24,7 +24,8 @@ typedef void (*PrekeyServerResult)(otrng_plugin_prekey_server*);
  * the values inside.
  */
 int otrng_plugin_lookup_prekey_servers_for_self(PurpleAccount *account,
-                                                PrekeyServerResult result_cb);
+                                                PrekeyServerResult result_cb,
+                                                void *context);
 
 /**
  * This function will try to look up prekey servers for the buddy given.
@@ -35,7 +36,8 @@ int otrng_plugin_lookup_prekey_servers_for_self(PurpleAccount *account,
  */
 int otrng_plugin_lookup_prekey_servers_for(PurpleAccount *account,
                                            const char *who,
-                                           PrekeyServerResult result_cb);
+                                           PrekeyServerResult result_cb,
+                                           void *context);
 
 /**
  * Has to be called to initialize this part of the plugin.

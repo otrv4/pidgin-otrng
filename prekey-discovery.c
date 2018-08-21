@@ -6,15 +6,17 @@
 #include "prekey-discovery-jabber.h"
 
 int otrng_plugin_lookup_prekey_servers_for_self(PurpleAccount *account,
-                                                PrekeyServerResult result_cb) {
+                                                PrekeyServerResult result_cb,
+                                                void *context) {
     const char *username = purple_account_get_username(account);
     return otrng_plugin_lookup_prekey_servers_for(account, username,
-                                                  result_cb);
+                                                  result_cb, context);
 }
 
 int otrng_plugin_lookup_prekey_servers_for(PurpleAccount *account,
                                            const char *who,
-                                           PrekeyServerResult result_cb) {
+                                           PrekeyServerResult result_cb,
+                                           void *context) {
     if(result_cb == NULL) {
         return 0;
     }
@@ -23,7 +25,7 @@ int otrng_plugin_lookup_prekey_servers_for(PurpleAccount *account,
 
     if(purple_strequal(protocol, "prpl-jabber")) {
         return otrng_plugin_jabber_lookup_prekey_servers_for(account, who,
-                                                             result_cb);
+                                                             result_cb, context);
     }
 
     return 0;

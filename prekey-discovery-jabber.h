@@ -18,12 +18,14 @@ typedef void (*XmppIqCallback)(PurpleConnection *pc, const char *type,
 typedef struct {
     XmppIqCallback next;
     PrekeyServerResult result_cb;
+    void *context;
 } otrng_plugin_prekey_discovery_status;
 
 // returns 1 on success and 0 on failure
 int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
                                                   const char *who,
-                                                  PrekeyServerResult result_cb);
+                                                  PrekeyServerResult result_cb,
+                                                  void *context);
 
 void otrng_plugin_prekey_discovery_jabber_load();
 void otrng_plugin_prekey_discovery_jabber_unload();

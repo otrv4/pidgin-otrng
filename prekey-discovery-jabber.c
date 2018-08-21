@@ -46,7 +46,7 @@ report_found_prekey_server(otrng_plugin_prekey_discovery_status *iq_status,
     res->identity = g_strdup(jid);
     memcpy(res->fingerprint, bytefingerprint, FINGERPRINT_LENGTH);
 
-    iq_status->result_cb(res);
+    iq_status->result_cb(res, iq_status->context);
 
     free(bytefingerprint);
 }
@@ -105,6 +105,7 @@ find_connection_information_for(PurpleConnection *pc, const char *jid,
         malloc(sizeof(otrng_plugin_prekey_discovery_status));
     new_iq_handle->next = receive_prekey_connection_information;
     new_iq_handle->result_cb = iq_status->result_cb;
+    new_iq_handle->context = iq_status->context;
 
     send_iq(pc, jid, NS_DISCO_ITEMS, new_iq_handle);
 }
@@ -136,6 +137,7 @@ investigate_server_item(PurpleConnection *pc, const char *jid,
         malloc(sizeof(otrng_plugin_prekey_discovery_status));
     new_iq_handle->next = receive_server_info;
     new_iq_handle->result_cb = iq_status->result_cb;
+    new_iq_handle->context = iq_status->context;
     send_iq(pc, jid, NS_DISCO_INFO, new_iq_handle);
 }
 
@@ -170,6 +172,7 @@ xmpp_iq_received(PurpleConnection *pc, const char *type, const char *id,
         malloc(sizeof(otrng_plugin_prekey_discovery_status));
     copy->next = iq_status->next;
     copy->result_cb = iq_status->result_cb;
+    copy->context = iq_status->context;
 
 	g_hash_table_remove(iq_callbacks, id);
 
@@ -213,7 +216,8 @@ static char *get_domain_from_jid(const char* jid) {
 int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
                                                   const char *who,
                                                   PrekeyServerResult
-                                                  result_cb) {
+                                                  result_cb,
+                                                  void *context) {
     PurplePlugin *prpl = purple_plugins_find_with_id("prpl-jabber");
     if(prpl == NULL) {
         return 0;
@@ -230,6 +234,7 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
         malloc(sizeof(otrng_plugin_prekey_discovery_status));
     iq_handle->next = receive_server_items;
     iq_handle->result_cb = result_cb;
+    iq_handle->context = context;
 
     if(!iq_listening) {
         purple_signal_connect(prpl, "jabber-receiving-iq", iq_handle,
