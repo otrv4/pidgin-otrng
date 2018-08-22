@@ -282,7 +282,7 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
   message = otrng_prekey_client_publish_prekeys(prekey_client);
 
   // 2. Retrieve the status of storage for yourself
-  // message = otrng_prekey_client_request_storage_status(prekey_client);
+  // message = otrng_prekey_client_request_storage_information(prekey_client);
 
   // 3. Retrieve prekey ensembles for us
   // message = otrng_prekey_client_retrieve_prekeys("bob@localhost", "45",
