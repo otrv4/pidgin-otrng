@@ -1623,28 +1623,24 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
 
   switch (level) {
   case TRUST_PRIVATE:
-    format_buf = g_strdup(_("Private conversation with %s started.%s%s"));
+    format_buf = g_strdup(_("Private conversation started.%s%s"));
     break;
 
   case TRUST_UNVERIFIED:
     format_buf = g_strdup_printf(_("<a href=\"%s%s\">Unverified</a> "
-                                   "conversation with %%s started.%%s%%s"),
+                                   "conversation started.%%s%%s"),
                                  UNVERIFIED_HELPURL, _("?lang=en"));
     break;
 
   default:
     /* This last case should never happen, since we know
      * we're in ENCRYPTED. */
-    format_buf = g_strdup(_("Not private conversation with %s "
-                            "started.%s%s"));
+    format_buf = g_strdup(_("Not private conversation started.%s%s"));
     break;
   }
 
-  PurpleAccount *account = purple_conversation_get_account(conv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(conv));
   buf = g_strdup_printf(
-      format_buf, username,
+      format_buf,
       protocol_version == 1 ? _("  Warning: using old "
                                 "protocol version 1.")
                             : "",
@@ -1692,14 +1688,11 @@ otrng_gtk_dialog_disconnected_real(const otrng_plugin_conversation *context) {
 
   conv = otrng_plugin_conversation_to_purple_conv(context, TRUE);
 
-  PurpleAccount *account = purple_conversation_get_account(conv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(conv));
-  buf = g_strdup_printf(_("Private conversation with %s ended."), username);
+  buf = _("Private conversation lost.");
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
-  g_free(buf);
+  /*TODO: check if free(buf) is needed*/
 
   otrng_ui_get_prefs(&prefs, purple_conversation_get_account(conv),
                      context->peer);
@@ -1811,8 +1804,8 @@ static void otrng_gtk_dialog_stillconnected(ConnContext *context) {
 /* This is called when the OTR button in the button box is clicked, or
  * when the appropriate context menu item is selected. */
 static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
-  const char *format;
   char *buf;
+
   PurpleConversation *conv = data;
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
 
@@ -1821,19 +1814,14 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   }
 
   if (purple_conversation_get_data(conv, "otr-private")) {
-    format = _("Attempting to refresh the private conversation with %s...");
+    buf = _("Attempting to refresh the private conversation");
   } else {
-    format = _("Attempting to start a private conversation with %s...");
+    buf = _("Attempting to start a private conversation");
   }
-
-  PurpleAccount *account = purple_conversation_get_account(conv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(conv));
-  buf = g_strdup_printf(format, username);
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
-  g_free(buf);
+  /*TODO: check if free(buf) is needed*/
 
   otrng_plugin_send_default_query_conv(conv);
 }
