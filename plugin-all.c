@@ -460,6 +460,7 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
 /* Generate a private key for the given accountname/protocol */
 void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
+
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
 
@@ -1778,6 +1779,7 @@ static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
   return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
 }
 
+// TODO: there is no account
 static void create_privkey_v4(const void *opdata) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)opdata;

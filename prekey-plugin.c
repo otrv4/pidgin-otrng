@@ -53,23 +53,28 @@ static const char *prekeys_server_identity = "";
 #endif
 
 static void notify_error_cb(int error, void *ctx) {
-  printf("prekey server: an error happened\n");
+  printf("Prekey Server: an error happened.\n");
 }
 
 static void
 storage_status_received_cb(const otrng_prekey_storage_status_message_s *msg,
                            void *ctx) {
-  printf("prekey server: we still have %d prekeys stored\n",
+  printf("Prekey Server: we still have %d prekeys stored.\n",
          msg->stored_prekeys);
 }
 
 static void success_received_cb(void *ctx) {
-  printf("prekey server: received success\n");
+  printf("Prekey Server: received success\n");
+}
+
+static void failure_received_cb(void *ctx) {
+  printf("Prekey Server: something happened. We were unable to process the "
+         "request.\n");
 }
 
 static void no_prekey_in_storage_received_cb(void *ctx) {
-  printf("prekey server: there are no prekey in storage for the requested "
-         "recipient\n");
+  printf("Prekey server: there are no prekey in storage for the requested "
+         "recipient.\n");
 }
 
 static void send_offline_messages_to_each_ensemble(
@@ -88,7 +93,7 @@ static void send_offline_messages_to_each_ensemble(
   int i;
   for (i = 0; i < num_ensembles; i++) {
     if (!otrng_prekey_ensemble_validate(ensembles[i])) {
-      printf("The ensemble %d is not valid\n", i);
+      printf("The Prekey Ensemble %d is not valid\n", i);
       continue;
     }
 
@@ -119,13 +124,14 @@ static void send_offline_messages_to_each_ensemble(
 static void
 prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
                              uint8_t num_ensembles, void *ctx) {
-  printf("prekey server: we received %d ensembles\n", num_ensembles);
+  printf("\nPrekey Server: we received %d ensembles.\n", num_ensembles);
 
   if (!ctx) {
     printf("Invalid NULL context\n");
   }
 
   otrng_plugin_offline_message_ctx *c = ctx;
+
   send_offline_messages_to_each_ensemble(ensembles, num_ensembles, c);
   free(c->message);
   free(c->recipient);
@@ -201,6 +207,7 @@ static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .notify_error = notify_error_cb,
     .storage_status_received = storage_status_received_cb,
     .success_received = success_received_cb,
+    .failure_received = failure_received_cb,
     .no_prekey_in_storage_received = no_prekey_in_storage_received_cb,
     .prekey_ensembles_received = prekey_ensembles_received_cb,
     .build_prekey_publication_message = build_prekey_publication_message_cb,
