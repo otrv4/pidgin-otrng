@@ -10,11 +10,11 @@
 #define FINGERPRINT_LENGTH 56
 
 typedef struct {
-    char *identity;
-    char fingerprint[FINGERPRINT_LENGTH];
+  char *identity;
+  char fingerprint[FINGERPRINT_LENGTH];
 } otrng_plugin_prekey_server;
 
-typedef void (*PrekeyServerResult)(otrng_plugin_prekey_server*, void*);
+typedef void (*PrekeyServerResult)(otrng_plugin_prekey_server *, void *);
 
 /**
  * This function will try to look up prekey servers for the account
@@ -48,6 +48,5 @@ void otrng_plugin_prekey_discovery_load();
  * Has to be called to uninitialize this part of the plugin.
  */
 void otrng_plugin_prekey_discovery_unload();
-
 
 #endif /* _PREKEY_DISCOVERY_H_ */

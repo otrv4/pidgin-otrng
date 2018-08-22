@@ -1695,7 +1695,7 @@ otrng_gtk_dialog_disconnected_real(const otrng_plugin_conversation *context) {
   PurpleAccount *account = purple_conversation_get_account(conv);
   const char *username =
       purple_normalize(account, purple_conversation_get_name(conv));
-  buf = g_strdup_printf(_("Private conversation with %s lost."), username);
+  buf = g_strdup_printf(_("Private conversation with %s ended."), username);
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
