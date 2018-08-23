@@ -1,61 +1,91 @@
-REQUIREMENTS
+# Requirements
 
 To compile the OTR plugin for pidgin, you'll need at least:
- - libgpg-error 1.0  [ftp://ftp.gnupg.org/gcrypt/libgpg-error/]
- - libgcrypt 1.2.0   [ftp://ftp.gnupg.org/gcrypt/libgcrypt/]
- - libotr 4.0.0      [https://otr.cypherpunks.ca/]
- - glib 2.6          [http://www.gtk.org/download/]
- - gtk+ 2.6          [http://www.gtk.org/download/]
- - pidgin 2.x        [http://pidgin.im/]
 
-You'll also need the usual autotools, such as automake-1.9, autoreconf,
-libtool, intltool, etc.
+- [libgpg-error 1.0](ftp://ftp.gnupg.org/gcrypt/libgpg-error/)
+- [libgcrypt 1.2.0](ftp://ftp.gnupg.org/gcrypt/libgcrypt/)
+- [libotr-ng](https://github.com/otrv4/libotr-ng)
+- [glib 2.6](http://www.gtk.org/download/)
+- [gtk+ 2.6](http://www.gtk.org/download/)
+- [pidgin 2.x](http://pidgin.im/)
 
-If you install these with a package manager, you'll probably need the
--dev or -devel versions of the packages.
+You'll also need the usual autotools, such as `automake`, `autoreconf`,
+`libtool` and `intltool`.
 
-COMPILING (non-Win32)
+If you install these with a package manager, you'll need the
+`-dev` or `-devel` versions of the packages.
 
-If you're got a CVS copy, you will need to regenerate the configure
-script using:
+## Installing the requirements on Deiban/Ubuntu systems
 
-    intltoolize --force --copy
-    autoreconf -s -i
+    sudo apt install build-essential automake autoconf libtool intltool libgpg-error-dev libgcrypt20-dev libglib2.0-dev libgtk-3-dev pidgin-dev
 
-[If you installed libotr.m4 somewhere that autoreconf can't find it,
-you can try putting "ACLOCAL_FLAGS= -I /path/to/share/aclocal" at the
-top of Makefile.am.]
+### Install libotr-ng
 
-Once you have the configure script (which comes with the source
-deistribution), run it with any options that may be necessary for your
-system.  Some examples:
+First, install [libgoldilocks](https://github.com/otrv4/libgoldilocks) as a
+dependency of `libotr-ng`
 
-Linux:
-    ./configure --prefix=/usr --mandir=/usr/share/man
+    git clone https://github.com/otrv4/libgoldilocks
+    cd libgoldilocks
+    ./autogen.sh && ./configure && make && sudo make install
 
-NETBSD:
+Then install `libotr-ng` itself
+
+    git clone https://github.com/otrv4/libotr-ng
+    cd libotr-ng
+    ./autogen.sh && ./configure && make && sudo make install
+
+
+# Building the plugin
+
+## Linux
+
+    git clone https://github.com/otrv4/pidgin-otrng.git
+    cd pidgin-otrng
+    ./autogen.sh
+
+Until prekey server discovery is implemented you need to pass the prekey server to test
+as a compiler flag
+
+    CC="gcc" CFLAGS="-ggdb3 -O0 -DDEFAULT_PREKEYS_SERVER='\"prekey.YOUR.XMPP.DOMAIN\"'" ./configure
+
+
+## NetBSD
+
     CPPFLAGS="-I/usr/pkg/include" LDFLAGS="-R/usr/pkg/lib -L/usr/pkg/lib" \
 	./configure --prefix=/usr/pkg
 
 Once the configure script writes a Makefile, you should be able to just
-run "make".
+run
+
+    make
 
 If you want a plugin that has libgcrypt linked statically, use
-"make -f Makefile.static".  Makefile.static assumes libotr.a and libgcrypt.a
-are available in /usr/lib.  If they're somewhere else, use something like
-"LIBOTRDIR=/usr/local/lib make -f Makefile.static".
+`make -f Makefile.static`. `Makefile.static` assumes `libotr.a` and `libgcrypt.a`
+are available in `/usr/lib`.  If they're somewhere else, use something like
+`LIBOTRDIR=/usr/local/lib make -f Makefile.static`.
 
-COMPILING (Win32)
+
+## Windows
 
 Use the provided Makefile.mingw:
 
     make -f Makefile.mingw
 
-See INSTALL.mingw for a script to try to do everything for you,
+See `INSTALL.mingw` for a script to try to do everything for you,
 including all of the dependencies.
 
-INSTALLATION
+# Installing the plugin
 
-You should be able to simply do "make install".  If you want to install
-somewhere other than / (this is useful for package creators), use
-something like "make DESTDIR=/path/to/install/to install".
+    make install
+
+If you want to install somewhere other than `/` (this is useful
+for package creators), use something like
+
+    make DESTDIR=/path/to/install/to install
+
+# Make plugin available to pidgin
+
+Link the built plugin files to your `~/.purple/plugins` directory
+
+    ln -s /usr/local/lib/pidgin/pidgin-otrng.la ~/.purple/plugins/pidgin-otrng.la
+    ln -s /usr/local/lib/pidgin/pidgin-otrng.so ~/.purple/plugins/pidgin-otrng.so
