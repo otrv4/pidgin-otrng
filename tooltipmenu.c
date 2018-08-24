@@ -112,7 +112,8 @@ static void tooltip_menu_finalize(GObject *obj) {
   G_OBJECT_CLASS(parent_class)->finalize(obj);
 }
 
-static void tooltip_menu_class_init(TooltipMenuClass *klass) {
+static void tooltip_menu_class_init(void *g_class, void *unused) {
+    TooltipMenuClass *klass = g_class;
   GObjectClass *object_class = G_OBJECT_CLASS(klass);
   GParamSpec *pspec;
 
@@ -126,7 +127,8 @@ static void tooltip_menu_class_init(TooltipMenuClass *klass) {
   g_object_class_install_property(object_class, PROP_BOX, pspec);
 }
 
-static void tooltip_menu_init(TooltipMenu *tooltip_menu) {
+static void tooltip_menu_init(GTypeInstance *instance, void *unused) {
+  TooltipMenu *tooltip_menu = (TooltipMenu *)instance;
   GtkWidget *widget = GTK_WIDGET(tooltip_menu);
   gtk_menu_item_set_right_justified(GTK_MENU_ITEM(tooltip_menu), TRUE);
 
@@ -153,12 +155,12 @@ GType tooltip_menu_get_gtype(void) {
     static const GTypeInfo info = {sizeof(TooltipMenuClass),
                                    NULL,
                                    NULL,
-                                   (GClassInitFunc)tooltip_menu_class_init,
+                                   tooltip_menu_class_init,
                                    NULL,
                                    NULL,
                                    sizeof(TooltipMenu),
                                    0,
-                                   (GInstanceInitFunc)tooltip_menu_init,
+                                   tooltip_menu_init,
                                    NULL};
 
     type = g_type_register_static(GTK_TYPE_MENU_ITEM, "TooltipMenu", &info, 0);

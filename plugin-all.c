@@ -1910,13 +1910,22 @@ static void smp_update_v4(const otrng_smp_event_t event,
 
   switch (event) {
   case OTRNG_SMP_EVENT_CHEATED:
+    otrng_plugin_abort_smp(conv);
+    otrng_dialog_update_smp(conv, event, 0);
+    break;
   case OTRNG_SMP_EVENT_ERROR:
-    otrng_plugin_abort_smp(conv); // fallthrough intended
+    otrng_plugin_abort_smp(conv);
+    otrng_dialog_update_smp(conv, event, 0);
+    break;
   case OTRNG_SMP_EVENT_ABORT:
     otrng_dialog_update_smp(conv, event, 0);
     break;
   case OTRNG_SMP_EVENT_IN_PROGRESS:
+    otrng_dialog_update_smp(conv, event, ((gdouble)progress_percent) / 100.0);
+    break;
   case OTRNG_SMP_EVENT_SUCCESS:
+    otrng_dialog_update_smp(conv, event, ((gdouble)progress_percent) / 100.0);
+    break;
   case OTRNG_SMP_EVENT_FAILURE:
     otrng_dialog_update_smp(conv, event, ((gdouble)progress_percent) / 100.0);
     break;

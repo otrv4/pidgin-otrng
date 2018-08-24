@@ -313,12 +313,13 @@ static int start_or_continue_smp(SmpResponsePair *smppair) {
 
     /* pass user question here */
     if (!user_question) {
-      otrng_plugin_start_smp(smppair->conv, user_question, 0,
+      otrng_plugin_start_smp(smppair->conv,
+                             (const unsigned char *)user_question, 0,
                              (const unsigned char *)secret, secret_len);
     } else {
-      otrng_plugin_start_smp(smppair->conv, user_question,
-                             strlen(user_question),
-                             (const unsigned char *)secret, secret_len);
+      otrng_plugin_start_smp(
+          smppair->conv, (const unsigned char *)user_question,
+          strlen(user_question), (const unsigned char *)secret, secret_len);
     }
   } else {
     otrng_plugin_continue_smp(smppair->conv, (const unsigned char *)secret,
@@ -3121,14 +3122,12 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
   otrl_instag_t selected_instance;
   gboolean have_received = FALSE;
   ConnContext *received_context = NULL;
-  ConnContext *current_out = NULL;
 
   if (!conv || !conv->data) {
     return 0;
   }
 
   selected_instance = otrng_plugin_conv_to_selected_instag(conv, 0);
-  current_out = otrng_plugin_conv_to_selected_context(conv, 0);
 
   last_received_instance =
       g_hash_table_lookup(conv->data, "otr-last_received_ctx");
