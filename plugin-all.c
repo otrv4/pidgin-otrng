@@ -73,7 +73,7 @@
 /* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 0
 
-#if BETA_DIALOG && defined USING_GTK /* Only for beta */
+#if defined USING_GTK
 #include "gtkblist.h"
 #endif
 
@@ -2200,8 +2200,53 @@ int otrng_plugin_conversation_to_protocol_version(
   return 4; // TODO: get this from the OTR conversation
 }
 
+#if defined USING_GTK
+static void warn_otrv3_installed(void) {
+  GtkWidget *dialog;
+  GtkWidget *dialog_text;
+  PidginBuddyList *blist;
+  gchar *buf = NULL;
+
+  blist = pidgin_blist_get_default_gtk_blist();
+
+  buf = g_strdup_printf(_("OTRNG PLUGIN v%s"), PIDGIN_OTR_VERSION);
+  dialog = gtk_dialog_new_with_buttons(buf, GTK_WINDOW(blist->window),
+                                       GTK_DIALOG_MODAL |
+                                           GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
+  dialog_text = gtk_label_new(NULL);
+  gtk_widget_set_size_request(dialog_text, 550, 300);
+  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+  g_free(buf);
+  buf = g_strdup_printf(
+      _("You have enabled two conflicing plugins providing "
+        "different versions of the Off-the-Record Messaging plugin. "
+        "It is recommended that you go to Tools->Plugins and disable "
+        "the plugin named \"Off-the-Record Messaging\", while leaving "
+        "the plugin named \"Off-the-Record Messaging nextgen\" enabled, "
+        "and then restart. "
+        "Not doing so could produce unwanted effects, including crashes."));
+  gtk_label_set_text(GTK_LABEL(dialog_text), buf);
+  gtk_widget_show(dialog_text);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text, TRUE, TRUE,
+                     0);
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+  g_free(buf);
+}
+#endif
+
 gboolean otrng_plugin_load(PurplePlugin *handle) {
-  if (otrng_plugin_init_userstate()) {
+  PurplePlugin *plug = purple_plugins_find_with_id("otr");
+  if(plug != NULL && purple_plugin_is_loaded(plug)) {
+#if defined USING_GTK
+      warn_otrv3_installed();
+#endif
+      return FALSE;
+  }
+
+
+    if (otrng_plugin_init_userstate()) {
     return FALSE;
   }
 
