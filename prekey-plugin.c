@@ -53,7 +53,7 @@ static const char *prekeys_server_identity = "";
 #endif
 
 static void notify_error_cb(int error, void *ctx) {
-  printf("Prekey Server: an error happened.\n");
+  printf("Prekey Server: an error happened: %d \n", error);
 }
 
 static void
@@ -133,6 +133,8 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
   otrng_plugin_offline_message_ctx *c = ctx;
 
   send_offline_messages_to_each_ensemble(ensembles, num_ensembles, c);
+
+  // TODO: this can be causing the crash
   free(c->message);
   free(c->recipient);
   free(c);
@@ -143,7 +145,6 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
 static int
 build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
                                     void *ctx) {
-
   if (!ctx) {
     printf("received invalid ctx\n");
     return 0;
@@ -176,7 +177,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  msg->num_prekey_messages = 5;
+  msg->num_prekey_messages = 5; // TODO: how is this chosen?
   msg->prekey_messages =
       otrng_client_build_prekey_messages(msg->num_prekey_messages, client);
 
@@ -189,8 +190,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   const otrng_prekey_profile_s *prekey_profile =
       otrng_client_state_get_prekey_profile(client->state);
 
-  // We decide in our plugin to always publish the profiles.
-  // That may not be the case.
+  // TODO: only publish when needed.
   msg->client_profile = malloc(sizeof(client_profile_s));
   otrng_client_profile_copy(msg->client_profile, client_profile);
 
