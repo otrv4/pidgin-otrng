@@ -113,7 +113,7 @@ static void tooltip_menu_finalize(GObject *obj) {
 }
 
 static void tooltip_menu_class_init(void *g_class, void *unused) {
-    TooltipMenuClass *klass = g_class;
+  TooltipMenuClass *klass = g_class;
   GObjectClass *object_class = G_OBJECT_CLASS(klass);
   GParamSpec *pspec;
 

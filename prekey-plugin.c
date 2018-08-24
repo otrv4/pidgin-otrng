@@ -53,28 +53,52 @@ static const char *prekeys_server_identity = "";
 #endif
 
 static void notify_error_cb(int error, void *ctx) {
-  printf("Prekey Server: an error happened: %d \n", error);
+  printf("\nPrekey Server: an error happened: %d \n", error);
 }
 
 static void
 storage_status_received_cb(const otrng_prekey_storage_status_message_s *msg,
                            void *ctx) {
-  printf("Prekey Server: we still have %d prekeys stored.\n",
+  printf("\nPrekey Server: we have %d prekey messages stored.\n",
          msg->stored_prekeys);
 }
 
 static void success_received_cb(void *ctx) {
-  printf("Prekey Server: received success\n");
+  printf("\nPrekey Server: received success\n");
 }
 
 static void failure_received_cb(void *ctx) {
-  printf("Prekey Server: something happened. We were unable to process the "
+  printf("\nPrekey Server: something happened. We were unable to process the "
          "request.\n");
 }
 
 static void no_prekey_in_storage_received_cb(void *ctx) {
-  printf("Prekey server: there are no prekey in storage for the requested "
+  printf("\nPrekey server: there are no prekey in storage for the requested "
          "recipient.\n");
+}
+
+static void low_prekey_messages_in_storage_cb(char *server_identity,
+                                              void *ctx) {
+  printf("\nPrekey server: Publishing prekey messages.\n");
+
+  PurpleAccount *account = ctx;
+
+  PurpleConnection *connection = purple_account_get_connection(account);
+  if (!connection) {
+    // Not connected
+    return;
+  }
+
+  otrng_prekey_client_s *prekey_client =
+      otrng_plugin_get_prekey_client(account);
+  if (!prekey_client) {
+    return;
+  }
+
+  char *message = NULL;
+  message = otrng_prekey_client_publish_prekeys(prekey_client);
+
+  serv_send_im(connection, server_identity, message, 0);
 }
 
 static void send_offline_messages_to_each_ensemble(
@@ -209,6 +233,7 @@ static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .success_received = success_received_cb,
     .failure_received = failure_received_cb,
     .no_prekey_in_storage_received = no_prekey_in_storage_received_cb,
+    .low_prekey_messages_in_storage = low_prekey_messages_in_storage_cb,
     .prekey_ensembles_received = prekey_ensembles_received_cb,
     .build_prekey_publication_message = build_prekey_publication_message_cb,
 };
@@ -278,15 +303,13 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
 
   prekey_client->callbacks->ctx = account;
 
+  message = otrng_prekey_client_request_storage_information(prekey_client);
+
   // 1. Publish prekeys
-  message = otrng_prekey_client_publish_prekeys(prekey_client);
+  // message = otrng_prekey_client_publish_prekeys(prekey_client);
 
   // 2. Retrieve the status of storage for yourself
   // message = otrng_prekey_client_request_storage_information(prekey_client);
-
-  // 3. Retrieve prekey ensembles for us
-  // message = otrng_prekey_client_retrieve_prekeys("bob@localhost", "45",
-  // prekey_client);
 
   serv_send_im(conn, prekey_client->server_identity, message, 0);
   free(message);
