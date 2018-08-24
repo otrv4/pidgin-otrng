@@ -1658,11 +1658,11 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
   is_multi_inst = (gboolean *)purple_conversation_get_data(
       conv, "otr-conv_multi_instances");
 
-  if (*is_multi_inst) {
+  if (is_multi_inst && *is_multi_inst) {
     gboolean *have_warned_instances =
         (gboolean *)purple_conversation_get_data(conv, "otr-warned_instances");
 
-    if (!*have_warned_instances) {
+    if (have_warned_instances && !*have_warned_instances) {
       *have_warned_instances = TRUE;
       buf = g_strdup_printf(
           _("Your buddy is logged in multiple times and"
