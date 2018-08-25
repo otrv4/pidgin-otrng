@@ -73,18 +73,19 @@ static void failure_received_cb(void *ctx) {
 }
 
 static void no_prekey_in_storage_received_cb(void *ctx) {
-  printf("\nPrekey server: there are no prekey in storage for the requested "
+  printf("\nPrekey Server: there are no prekey in storage for the requested "
          "recipient.\n");
 }
 
 static void low_prekey_messages_in_storage_cb(char *server_identity,
                                               void *ctx) {
-  printf("\nPrekey server: Publishing prekey messages.\n");
+  printf("\nPrekey Server: Publishing prekey messages.\n");
 
   PurpleAccount *account = ctx;
 
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
+    printf("\n No connection \n");
     // Not connected
     return;
   }
@@ -92,6 +93,7 @@ static void low_prekey_messages_in_storage_cb(char *server_identity,
   otrng_prekey_client_s *prekey_client =
       otrng_plugin_get_prekey_client(account);
   if (!prekey_client) {
+    printf("\n No prekey client \n");
     return;
   }
 
@@ -151,7 +153,7 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
   printf("\nPrekey Server: we received %d ensembles.\n", num_ensembles);
 
   if (!ctx) {
-    printf("Invalid NULL context\n");
+    printf("\n Invalid NULL context\n");
   }
 
   otrng_plugin_offline_message_ctx *c = ctx;
