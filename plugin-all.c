@@ -979,7 +979,6 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
     // 2. Send one offline message for each received prekey ensemble
     // 3. Send one query message to the person
-    free(*message);
     return;
   }
 
