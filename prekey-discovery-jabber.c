@@ -243,7 +243,7 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
 
   free(server);
   free(nwho);
-  return 0;
+  return 1;
 }
 
 void otrng_plugin_prekey_discovery_jabber_load() {

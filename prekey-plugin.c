@@ -29,6 +29,8 @@
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
 
+#include "prekey-discovery.h"
+
 // TODO: why is this global?
 extern otrng_user_state_s *otrng_userstate;
 
@@ -44,14 +46,6 @@ static void send_message(PurpleAccount *account, const char *recipient,
   // recipient?
   serv_send_im(connection, recipient, message, 0);
 }
-
-// TODO: Query the server from service discovery and fallback to
-//"prekeys.<domainpart>" server.
-#ifdef DEFAULT_PREKEYS_SERVER
-static const char *prekeys_server_identity = DEFAULT_PREKEYS_SERVER;
-#else
-static const char *prekeys_server_identity = "";
-#endif
 
 static void notify_error_cb(int error, void *ctx) {
   printf("\nPrekey Server: an error happened: %d \n", error);
@@ -78,20 +72,15 @@ static void no_prekey_in_storage_received_cb(void *ctx) {
          "recipient.\n");
 }
 
-static void low_prekey_messages_in_storage_cb(char *server_identity,
-                                              void *ctx) {
-  printf("\nPrekey Server: Publishing prekey messages.\n");
-
-  PurpleAccount *account = ctx;
-
+static void get_prekey_client_for_low_prekey_messages(
+    PurpleAccount *account, otrng_client_s *client,
+    otrng_prekey_client_s *prekey_client, void *ctx) {
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
     printf("\n No connection. \n");
     return;
   }
 
-  otrng_prekey_client_s *prekey_client =
-      otrng_plugin_get_prekey_client(account);
   if (!prekey_client) {
     printf("\n No prekey client. \n");
     return;
@@ -100,7 +89,14 @@ static void low_prekey_messages_in_storage_cb(char *server_identity,
   char *message = NULL;
   message = otrng_prekey_client_publish_prekeys(prekey_client);
 
-  serv_send_im(connection, server_identity, message, 0);
+  serv_send_im(connection, prekey_client->server_identity, message, 0);
+}
+
+static void low_prekey_messages_in_storage_cb(char *server_identity,
+                                              void *ctx) {
+  printf("\nPrekey Server: Publishing prekey messages.\n");
+  otrng_plugin_get_prekey_client(ctx, get_prekey_client_for_low_prekey_messages,
+                                 NULL);
 }
 
 static void send_offline_messages_to_each_ensemble(
@@ -241,14 +237,65 @@ static otrng_prekey_client_callbacks_s prekey_client_cb = {
     .build_prekey_publication_message = build_prekey_publication_message_cb,
 };
 
-otrng_prekey_client_s *otrng_plugin_get_prekey_client(PurpleAccount *account) {
+typedef struct {
+  PurpleAccount *account;
+  otrng_client_s *client;
+  int found;
+  WithPrekeyClient next;
+  void *ctx;
+} lookup_prekey_server_for_prekey_client_ctx_s;
+
+static void
+found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
+                                             void *ctx) {
+  lookup_prekey_server_for_prekey_client_ctx_s *cc = ctx;
+  const char *prekey_server_identity = srv->identity;
+  free(srv);
+
+  otrng_prekey_client_s *pclient = otrng_client_get_prekey_client(
+      prekey_server_identity, &prekey_client_cb, cc->client);
+  if (cc->found == 0) {
+    cc->next(cc->account, cc->client, pclient, cc->ctx);
+  }
+  cc->found++;
+}
+
+static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
   otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
   if (!client) {
     return NULL;
   }
+  return client->prekey_client;
+}
 
-  return otrng_client_get_prekey_client(prekeys_server_identity,
-                                        &prekey_client_cb, client);
+void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
+                                    void *uctx) {
+  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  if (!client) {
+    cb(account, client, NULL, uctx);
+  } else {
+    if (client->prekey_client) {
+      cb(account, client, client->prekey_client, uctx);
+    } else {
+      /* TOOD: this ctx will leak -  */
+      /*     we don't know how to make it not, right now */
+      lookup_prekey_server_for_prekey_client_ctx_s *ctx =
+          malloc(sizeof(lookup_prekey_server_for_prekey_client_ctx_s));
+      if (!ctx) {
+        cb(account, client, NULL, uctx);
+      } else {
+        ctx->account = account;
+        ctx->client = client;
+        ctx->found = 0;
+        ctx->next = cb;
+        ctx->ctx = uctx;
+        if (!otrng_plugin_lookup_prekey_servers_for_self(
+                account, found_plugin_prekey_server_for_prekey_client, ctx)) {
+          cb(account, client, NULL, uctx);
+        }
+      }
+    }
+  }
 }
 
 static gboolean
@@ -257,7 +304,7 @@ otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
                                              PurpleAccount *account) {
   otrng_prekey_client_s *prekey_client = NULL;
 
-  prekey_client = otrng_plugin_get_prekey_client(account);
+  prekey_client = get_cached_prekey_client(account);
   if (!prekey_client) {
     return FALSE;
   }
@@ -294,13 +341,17 @@ static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
   return ignore;
 }
 
-static void account_signed_on_cb(PurpleConnection *conn, void *data) {
-  PurpleAccount *account = purple_connection_get_account(conn);
+static void get_prekey_client_for_account_signed_on(
+    PurpleAccount *account, otrng_client_s *client,
+    otrng_prekey_client_s *prekey_client, void *ctx) {
   char *message = NULL;
-
-  otrng_prekey_client_s *prekey_client =
-      otrng_plugin_get_prekey_client(account);
   if (!prekey_client) {
+    return;
+  }
+
+  PurpleConnection *connection = purple_account_get_connection(account);
+  if (!connection) {
+    printf("\n No connection. \n");
     return;
   }
 
@@ -314,8 +365,13 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
   // 2. Retrieve the status of storage for yourself
   // message = otrng_prekey_client_request_storage_information(prekey_client);
 
-  serv_send_im(conn, prekey_client->server_identity, message, 0);
+  serv_send_im(connection, prekey_client->server_identity, message, 0);
   free(message);
+}
+
+static void account_signed_on_cb(PurpleConnection *conn, void *data) {
+  otrng_plugin_get_prekey_client(purple_connection_get_account(conn),
+                                 get_prekey_client_for_account_signed_on, NULL);
 }
 
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {

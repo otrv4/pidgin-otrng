@@ -925,6 +925,46 @@ static gboolean timer_fired_cb(gpointer data) {
   return TRUE;
 }
 
+typedef struct {
+  char *username;
+  char **message;
+} prekey_client_offline_message_ctx_s;
+
+static void get_prekey_client_for_sending_offline_message(
+    PurpleAccount *account, otrng_client_s *client,
+    otrng_prekey_client_s *prekey_client, void *xctx) {
+  prekey_client_offline_message_ctx_s *c = xctx;
+
+  // Try to send an offline message
+  printf("Should try to send an offline message to %s\n", c->username);
+
+  // 1. get prekey ensemble for this person
+  if (!prekey_client) {
+    return;
+  }
+
+  otrng_plugin_offline_message_ctx *ctx =
+      malloc(sizeof(otrng_plugin_offline_message_ctx));
+  ctx->account = account;
+  ctx->message = g_strdup(*c->message);
+  ctx->recipient = c->username;
+
+  // TODO: This should probably be passed as a parameter to
+  // otrng_prekey_client_retrieve_prekeys
+  prekey_client->callbacks->ctx = ctx;
+
+  // TODO: here we should NOT user the server identity from the prekey_client
+  //    since it will only work if we're on the same server
+  char *send_to_prekey_server =
+      otrng_prekey_client_retrieve_prekeys(c->username, "4", prekey_client);
+  otrng_plugin_inject_message(account, prekey_client->server_identity,
+                              send_to_prekey_server);
+  free(send_to_prekey_server);
+
+  // 2. Send one offline message for each received prekey ensemble
+  // 3. Send one query message to the person
+}
+
 static void process_sending_im(PurpleAccount *account, char *who,
                                char **message, void *ctx) {
   char *newmessage = NULL;
@@ -943,45 +983,20 @@ static void process_sending_im(PurpleAccount *account, char *who,
   // instance = otrng_plugin_conv_to_selected_instag(conv, OTRL_INSTAG_BEST);
 
   username = g_strdup(purple_normalize(account, who));
-  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
 
   PurpleBuddy *buddy = purple_find_buddy(account, username);
   if (buddy && purple_account_supports_offline_message(account, buddy) &&
       !PURPLE_BUDDY_IS_ONLINE(buddy)) { // AND STATE != ENCRYPTED
-    // Try to send an offline message
-    printf("Should try to send an offline message to %s\n", username);
+    prekey_client_offline_message_ctx_s *ctx =
+        malloc(sizeof(prekey_client_offline_message_ctx_s));
+    ctx->username = username;
+    ctx->message = message;
 
-    // 0. Use service discovery to find this person's prekey server
-    // TODO
-
-    // 1. get prekey ensemble for this person
-    otrng_prekey_client_s *prekey_client =
-        otrng_plugin_get_prekey_client(account);
-    if (!prekey_client) {
-      return;
-    }
-
-    otrng_plugin_offline_message_ctx *ctx =
-        malloc(sizeof(otrng_plugin_offline_message_ctx));
-    ctx->account = account;
-    ctx->message = g_strdup(*message);
-    ctx->recipient = g_strdup(username);
-
-    // TODO: This should probably be passed as a parameter to
-    // otrng_prekey_client_retrieve_prekeys
-    prekey_client->callbacks->ctx = ctx;
-
-    char *send_to_prekey_server =
-        otrng_prekey_client_retrieve_prekeys(username, "4", prekey_client);
-    otrng_plugin_inject_message(account, prekey_client->server_identity,
-                                send_to_prekey_server);
-    free(send_to_prekey_server);
-
-    // 2. Send one offline message for each received prekey ensemble
-    // 3. Send one query message to the person
+    otrng_plugin_get_prekey_client(
+        account, get_prekey_client_for_sending_offline_message, ctx);
     return;
   }
-
+  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
   int err = otrng_client_send(&newmessage, *message, username, otrng_client);
 
   // TODO: this message should be stored for retransmission
