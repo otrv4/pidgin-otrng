@@ -29,6 +29,7 @@
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
 
+// TODO: why is this global?
 extern otrng_user_state_s *otrng_userstate;
 
 static void send_message(PurpleAccount *account, const char *recipient,
@@ -85,15 +86,14 @@ static void low_prekey_messages_in_storage_cb(char *server_identity,
 
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
-    printf("\n No connection \n");
-    // Not connected
+    printf("\n No connection. \n");
     return;
   }
 
   otrng_prekey_client_s *prekey_client =
       otrng_plugin_get_prekey_client(account);
   if (!prekey_client) {
-    printf("\n No prekey client \n");
+    printf("\n No prekey client. \n");
     return;
   }
 
@@ -170,9 +170,10 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
 
 static int
 build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
+                                    unsigned int max_published_prekey_msg,
                                     void *ctx) {
   if (!ctx) {
-    printf("received invalid ctx\n");
+    printf("Received invalid ctx\n");
     return 0;
   }
 
@@ -203,7 +204,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  msg->num_prekey_messages = 5; // TODO: how is this chosen?
+  msg->num_prekey_messages = max_published_prekey_msg;
   msg->prekey_messages =
       otrng_client_build_prekey_messages(msg->num_prekey_messages, client);
 

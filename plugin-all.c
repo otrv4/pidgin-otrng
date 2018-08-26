@@ -2237,15 +2237,14 @@ static void warn_otrv3_installed(void) {
 
 gboolean otrng_plugin_load(PurplePlugin *handle) {
   PurplePlugin *plug = purple_plugins_find_with_id("otr");
-  if(plug != NULL && purple_plugin_is_loaded(plug)) {
+  if (plug != NULL && purple_plugin_is_loaded(plug)) {
 #if defined USING_GTK
-      warn_otrv3_installed();
+    warn_otrv3_installed();
 #endif
-      return FALSE;
+    return FALSE;
   }
 
-
-    if (otrng_plugin_init_userstate()) {
+  if (otrng_plugin_init_userstate()) {
     return FALSE;
   }
 
