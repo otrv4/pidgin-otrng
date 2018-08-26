@@ -37,7 +37,7 @@ if [[ -f $LIBOTR_DIR/src/.libs/libotr.so ]]; then
     pushd $LIBOTR_DIR && make install && popd
 else
     git clone --depth=1 https://bugs.otr.im/lib/libotr.git $LIBOTR_DIR
-    pushd $LIBOTR_DIR && ./bootstrap && ./configure && make && make install && popd
+    pushd $LIBOTR_DIR && ./bootstrap && ./configure --prefix=$PREFIX && make && make install && popd
 fi
 
 if [[ -f $LIBGOLDILOCKS_DIR/src/.libs/libgoldilocks.so ]]; then
