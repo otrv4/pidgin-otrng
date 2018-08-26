@@ -37,6 +37,7 @@ before_install:
   - export LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH}
   - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   - ./travis_before_script.sh
+  - rm -rf .deps/libotr-ng
   - git clone --depth=1 https://github.com/otrv4/libotr-ng.git .deps/libotr-ng
   - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
 
