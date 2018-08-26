@@ -44,12 +44,10 @@ script:
   - cd ${PREFIX}/pidgin-2.13.0/pidgin/plugins
   - mv ${TRAVIS_BUILD_DIR} ${PREFIX}/pidgin-2.13.0/pidgin/plugins/
   - OLD_TRAVIS_BUILD_DIR=${TRAVIS_BUILD_DIR}
-  - echo ${TRAVIS_BUILD_DIR}
-  - echo ${OLD_TRAVIS_BUILD_DIR}
   - TRAVIS_BUILD_DIR=${PREFIX}/pidgin-2.13.0/pidgin/plugins/`basename ${TRAVIS_BUILD_DIR}`
   - cd ${TRAVIS_BUILD_DIR}
   - echo -e "ACLOCAL_FLAGS= -I ${PREFIX}/share/aclocal\n$(cat Makefile.am)" > Makefile.am
   - ./autogen.sh
   - ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib
   - make && make test
-  - mv ${TRAVIS_BUILD_DIR} `basename ${OLD_TRAVIS_BUILD_DIR}`
+  - mv ${TRAVIS_BUILD_DIR} ${OLD_TRAVIS_BUILD_DIR}
