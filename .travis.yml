@@ -1,5 +1,8 @@
 language: c
-cache: ccache
+cache:
+  - ccache: true
+  - directories:
+      - .deps
 
 notifications:
   irc:
@@ -33,19 +36,7 @@ before_install:
   - mkdir -p ${PREFIX}
   - export LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH}
   - export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-  - curl -L https://sourceforge.net/projects/pidgin/files/Pidgin/2.13.0/pidgin-2.13.0.tar.bz2/download | tar xjf - -C ${PREFIX}
-  - mkdir .deps
-  - git clone --depth=1 https://bugs.otr.im/lib/libotr.git .deps/libotr
-  - pushd .deps/libotr && ./bootstrap && ./configure --prefix=$PREFIX && make && make install && popd
-  # Dependencies for libotr-ng
-  - curl https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.26.tar.bz2 | tar xjf - -C .deps
-  - pushd .deps/libgpg-error-1.26 && ./configure --prefix=$PREFIX && make && make install && popd
-  - curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.1.tar.bz2 | tar xjf - -C .deps
-  - pushd .deps/libgcrypt-1.8.1 && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
-  - curl https://download.libsodium.org/libsodium/releases/LATEST.tar.gz | tar xzf - -C .deps
-  - pushd .deps/libsodium-stable && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
-  - git clone --depth=1 https://github.com/otrv4/libgoldilocks .deps/libgoldilocks
-  - pushd .deps/libgoldilocks && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install && popd
+  - ./travis_before_script.sh
   - git clone --depth=1 https://github.com/otrv4/libotr-ng.git .deps/libotr-ng
   - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
 
@@ -58,4 +49,3 @@ script:
   - ./autogen.sh
   - ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib
   - make && make test
-
