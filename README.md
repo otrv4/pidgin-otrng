@@ -288,7 +288,6 @@ otr-dev:
     https://lists.cypherpunks.ca/mailman/listinfo/otr-dev/
     Discussion of OTR Messaging software development.
 
-
 ## License
 
 The Off-the-Record Messaging plugin for pidgin is covered by the following
