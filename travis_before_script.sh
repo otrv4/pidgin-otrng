@@ -19,8 +19,12 @@ else
     (cd $GPG_ERROR_DIR && ./configure --prefix=$PREFIX && make && make install)
 fi
 
-curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.1.tar.bz2 | tar xjf - -C .deps
-(cd $LIBGCRYPT_DIR && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX && make && make install)
+if [[ -f $LIBGCRYPT_DIR/src/.libs/libgcrypt.so ]]; then
+    (cd $LIBGCRYPT_DIR && make install)
+else
+    curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.1.tar.bz2 | tar xjf - -C .deps
+    (cd $LIBGCRYPT_DIR && ./configure && make && make install)
+fi
 
 if [[ -f $LIBSODIUM_DIR/src/libsodium/.libs/libsodium.so ]]; then
     (cd $LIBSODIUM_DIR && make install)
@@ -29,17 +33,21 @@ else
     (cd $LIBSODIUM_DIR && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install)
 fi
 
-if [[ ! -e $LIBOTR_DIR ]]; then
-    git clone --depth=1 https://bugs.otr.im/lib/libotr.git $LIBOTR_DIR
+if [[ -f $LIBOTR_DIR/src/.libs/libotr.so ]]; then
+    (cd $LIBOTR_DIR && make install)
+else
+    if [[ ! -e $LIBOTR_DIR ]]; then
+        git clone --depth=1 https://bugs.otr.im/lib/libotr.git $LIBOTR_DIR
+    fi
+    (cd $LIBOTR_DIR && ./bootstrap && ./configure && make && make install)
 fi
-(cd $LIBOTR_DIR && ./bootstrap && ./configure && make && sudo make install)
 
 if [[ -f $LIBGOLDILOCKS_DIR/src/.libs/libgoldilocks.so ]]; then
-    (cd $LIBGOLDILOCKS_DIR && sudo make install)
+    (cd $LIBGOLDILOCKS_DIR && make install)
 else
     rm -rf $LIBGOLDILOCKS_DIR
     git clone --depth=1 https://github.com/otrv4/libgoldilocks $LIBGOLDILOCKS_DIR
-    (cd $LIBGOLDILOCKS_DIR && ./autogen.sh && ./configure && make && sudo make install)
+    (cd $LIBGOLDILOCKS_DIR && ./autogen.sh && ./configure && make && make install)
 fi
 
 if [[ ! -f .deps/pidgin.tar.bz2 ]]; then
