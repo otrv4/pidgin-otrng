@@ -2001,6 +2001,7 @@ static int otrng_plugin_init_userstate(void) {
   gchar *storefile = NULL;
   gchar *instagfile = NULL;
   gchar *client_profile_filename = NULL;
+  gchar *prekeysfile = NULL;
 
   privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
@@ -2008,14 +2009,16 @@ static int otrng_plugin_init_userstate(void) {
   instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
   client_profile_filename =
       g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
+  prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
 
   if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile ||
-      !client_profile_filename) {
+      !client_profile_filename || !prekeysfile) {
     g_free(privkeyfile);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
     g_free(client_profile_filename);
+    g_free(prekeysfile);
     return 1;
   }
 
@@ -2024,12 +2027,14 @@ static int otrng_plugin_init_userstate(void) {
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
   FILE *client_profile_filep = g_fopen(client_profile_filename, "rb");
+  FILE *prekeyf = g_fopen(prekeysfile, "rb");
 
   g_free(privkeyfile);
   g_free(privkeyfile3);
   g_free(storefile);
   g_free(instagfile);
   g_free(client_profile_filename);
+  g_free(prekeysfile);
 
   otrng_userstate = otrng_user_state_new(&callbacks_v4);
 
@@ -2046,10 +2051,11 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
+  otrng_user_state_prekeys_read_FILEp(otrng_userstate, prekeyf, protocol_and_account_to_purple_conversation);
 
   // TODO: Read prekey profile from disk
   // TODO: Read shared prekey from disk
-  // TODO: Read prekey pairs from disk
+
 
   if (priv3f) {
     fclose(priv3f);
@@ -2066,6 +2072,10 @@ static int otrng_plugin_init_userstate(void) {
   if (client_profile_filep) {
     fclose(client_profile_filep);
   }
+  if (prekeyf) {
+    fclose(prekeyf);
+  }
+
 
   return 0;
 }

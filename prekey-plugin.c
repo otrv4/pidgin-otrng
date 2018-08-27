@@ -173,14 +173,14 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  FILE *privf = NULL;
+  FILE *prekeyf = NULL;
   gchar *prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
   if (!prekeysfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return 0;
   }
 
-  privf = g_fopen(prekeysfile, "w+b");
+  prekeyf = g_fopen(prekeysfile, "w+b");
   g_free(prekeysfile);
 
 #ifndef WIN32
@@ -188,7 +188,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   umask(mask);
 #endif /* WIN32 */
 
-  if (!privf) {
+  if (!prekeyf) {
     fprintf(stderr, _("Could not write prekey messages file\n"));
     return 0;
   }
@@ -220,8 +220,8 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
   otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
 
-  otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, privf);
-  fclose(privf);
+  otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, prekeyf);
+  fclose(prekeyf);
   return 1;
 }
 
