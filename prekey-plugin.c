@@ -274,6 +274,9 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
   if (!client) {
     cb(account, client, NULL, uctx);
   } else {
+    /* you can set here some preferences */
+    // otrng_client_state_set_minimum_stored_prekey_msg(100, client->state);
+
     if (client->prekey_client) {
       cb(account, client, client->prekey_client, uctx);
     } else {
