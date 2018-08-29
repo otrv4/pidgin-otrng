@@ -965,6 +965,32 @@ static void get_prekey_client_for_sending_offline_message(
   // 3. Send one query message to the person
 }
 
+int otrng_plugin_buddy_is_offline(PurpleAccount *account, PurpleBuddy *buddy) {
+  return buddy && purple_account_supports_offline_message(account, buddy) &&
+         !PURPLE_BUDDY_IS_ONLINE(buddy);
+}
+
+void otrng_plugin_send_empty_data_message(const char *username,
+                                          PurpleAccount *account) {
+  prekey_client_offline_message_ctx_s *ctx =
+      malloc(sizeof(prekey_client_offline_message_ctx_s));
+  if (!ctx) {
+    return;
+  }
+
+  ctx->username = g_strdup(purple_normalize(account, username));
+  ctx->message = malloc(sizeof(char *));
+  if (!ctx->message) {
+    free(ctx);
+    return;
+  }
+  *ctx->message = "\0";
+
+  otrng_plugin_get_prekey_client(
+      account, get_prekey_client_for_sending_offline_message, ctx);
+  return;
+}
+
 static void process_sending_im(PurpleAccount *account, char *who,
                                char **message, void *ctx) {
   char *newmessage = NULL;
@@ -985,8 +1011,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
   username = g_strdup(purple_normalize(account, who));
 
   PurpleBuddy *buddy = purple_find_buddy(account, username);
-  if (buddy && purple_account_supports_offline_message(account, buddy) &&
-      !PURPLE_BUDDY_IS_ONLINE(buddy)) { // AND STATE != ENCRYPTED
+  if (otrng_plugin_buddy_is_offline(account, buddy)) { // AND STATE != ENCRYPTED
     prekey_client_offline_message_ctx_s *ctx =
         malloc(sizeof(prekey_client_offline_message_ctx_s));
     ctx->username = username;

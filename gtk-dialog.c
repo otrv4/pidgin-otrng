@@ -1821,8 +1821,18 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   }
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
-
   /*TODO: check if free(buf) is needed*/
+
+  // TODO: check if is in encrypted state already
+  PurpleAccount *account = purple_conversation_get_account(conv);
+  const char *peer =
+      purple_normalize(account, purple_conversation_get_name(conv));
+  PurpleBuddy *buddy = purple_find_buddy(account, peer);
+
+  if (otrng_plugin_buddy_is_offline(account, buddy)) {
+    otrng_plugin_send_empty_data_message(peer, account);
+    return;
+  }
 
   otrng_plugin_send_default_query_conv(conv);
 }
