@@ -1210,6 +1210,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   gboolean res = FALSE;
   char *tosend = NULL;
   char *todisplay = NULL;
+  otrng_bool should_ignore = otrng_false;
 
   // OtrlTLV *tlvs = NULL;
   // OtrlTLV *tlv = NULL;
@@ -1224,9 +1225,11 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
   res = otrng_client_receive(&tosend, &todisplay, *message, username,
-                             otrng_client);
+                             otrng_client, &should_ignore);
 
   // TODO: client might optionally pass a warning here
+  // TODO: this will likely not work correctly at all, since otrng_result
+  // doesn't have that kind of result
   if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
     // TODO: Needs to free tosend AND todisplay
     return 1;
@@ -1251,7 +1254,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   }
 
   free(username);
-  return res;
+  return should_ignore == otrng_true;
 }
 
 // TODO: Remove me
@@ -1961,20 +1964,20 @@ get_shared_session_state_cb(const otrng_client_conversation_s *conv) {
   };
 }
 
-static int get_account_and_protocol_cb(char **account_name,
-                                       char **protocol_name,
-                                       const void *client_id) {
+static otrng_result get_account_and_protocol_cb(char **account_name,
+                                                char **protocol_name,
+                                                const void *client_id) {
   PurpleAccount *account = (PurpleAccount *)client_id;
 
   if (!client_id) {
-    return 1;
+    return OTRNG_ERROR;
   }
 
   *account_name =
       g_strdup(purple_normalize(account, purple_account_get_username(account)));
   *protocol_name = g_strdup(purple_account_get_protocol_id(account));
 
-  return 0;
+  return OTRNG_SUCCESS;
 }
 
 static otrng_client_callbacks_s callbacks_v4 = {
