@@ -2054,11 +2054,11 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
-  otrng_user_state_prekeys_read_FILEp(otrng_userstate, prekeyf, protocol_and_account_to_purple_conversation);
+  otrng_user_state_prekeys_read_FILEp(
+      otrng_userstate, prekeyf, protocol_and_account_to_purple_conversation);
 
   // TODO: Read prekey profile from disk
   // TODO: Read shared prekey from disk
-
 
   if (priv3f) {
     fclose(priv3f);
@@ -2078,7 +2078,6 @@ static int otrng_plugin_init_userstate(void) {
   if (prekeyf) {
     fclose(prekeyf);
   }
-
 
   return 0;
 }
