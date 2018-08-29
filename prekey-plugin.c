@@ -220,6 +220,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
   otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
 
+  // TODO: check the return value
   otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, prekeyf);
   fclose(prekeyf);
   return 1;

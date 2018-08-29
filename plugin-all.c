@@ -199,16 +199,21 @@ static const void *protocol_and_account_to_purple_conversation(FILE *privf) {
 }
 
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
+  // TODO: check the return value
   otrng_user_state_private_key_v4_read_FILEp(
       otrng_userstate, priv4, protocol_and_account_to_purple_conversation);
-  otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3);
+  if (!otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3)) {
+    // TODO: error?
+  };
 }
 
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
+  // TODO: check the return value
   otrng_user_state_instance_tags_read_FILEp(otrng_userstate, instagf);
 }
 
 static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
+  // TODO: check the return value
   otrng_user_state_client_profile_read_FILEp(
       otrng_userstate, profiles_filep,
       protocol_and_account_to_purple_conversation);
@@ -386,6 +391,7 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
     return -1;
   }
 
+  // TODO: check this return value
   int err = otrng_user_state_private_key_v3_generate_FILEp(otrng_userstate,
                                                            account, privf);
   fclose(privf);
@@ -466,8 +472,8 @@ void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
 
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
-  int err = otrng_user_state_generate_private_key(otrng_userstate, account);
-  if (!err) {
+  if (otrng_user_state_generate_private_key(otrng_userstate, account)) {
+    // TODO: check the return value
     otrng_plugin_write_privkey_v4_FILEp();
     otrng_ui_update_fingerprint();
   }
@@ -484,6 +490,7 @@ void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
 
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
+  // TODO: check the return value
   otrng_plugin_write_privkey_v3_FILEp(account);
   otrng_ui_update_fingerprint();
 
@@ -492,16 +499,15 @@ void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
 }
 
 void otrng_plugin_create_client_profile(PurpleAccount *account) {
-  int err = otrng_user_state_generate_client_profile(otrng_userstate, account);
-  if (!err) {
+  if (otrng_user_state_generate_client_profile(otrng_userstate, account))
+    // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
-    // TODO: Update the UI if the client is displayed in the UI
-  }
+  // TODO: Update the UI if the client is displayed in the UI
+}
 }
 
 void otrng_plugin_create_shared_prekey(PurpleAccount *account) {
-  int err = otrng_user_state_generate_shared_prekey(otrng_userstate, account);
-  if (!err) {
+  if (otrng_user_state_generate_shared_prekey(otrng_userstate, account)) {
     // TODO: SAVE to a file
     // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
@@ -524,6 +530,7 @@ void otrng_plugin_create_instag(PurpleAccount *account) {
   }
 
   /* Generate the instag */
+  // TODO: check the return value
   otrng_user_state_instag_generate_generate_FILEp(otrng_userstate, account,
                                                   instagf);
 
@@ -1136,8 +1143,8 @@ void otrng_plugin_start_smp(otrng_plugin_conversation *conv,
   }
 
   char *tosend = NULL;
-  if (otrng_client_smp_start(&tosend, conv->peer, question, q_len, secret,
-                             secretlen, client)) {
+  if (!otrng_client_smp_start(&tosend, conv->peer, question, q_len, secret,
+                              secretlen, client)) {
     return; // ERROR?
   }
 
@@ -1160,8 +1167,8 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
   }
 
   char *tosend = NULL;
-  if (otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen,
-                               client)) {
+  if (!otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen,
+                                client)) {
     return; // ERROR?
   }
 
@@ -1469,7 +1476,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
                                             conv->peer, 1);
   account = purple_conversation_get_account(purp_conv);
 
-  if (!otrng_client_disconnect(&msg, conv->peer, client)) {
+  if (otrng_client_disconnect(&msg, conv->peer, client)) {
     otrng_plugin_inject_message(account, conv->peer, msg);
   }
 
@@ -2079,6 +2086,7 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
+                                 // TODO: check the return value
   otrng_user_state_prekeys_read_FILEp(
       otrng_userstate, prekeyf, protocol_and_account_to_purple_conversation);
 
