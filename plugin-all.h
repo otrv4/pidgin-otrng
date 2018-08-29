@@ -94,8 +94,8 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
 
 int otrng_plugin_buddy_is_offline(PurpleAccount *account, PurpleBuddy *buddy);
 
-void otrng_plugin_send_empty_data_message(const char *username,
-                                          PurpleAccount *account);
+void otrng_plugin_send_non_interactive_auth(const char *username,
+                                            PurpleAccount *account);
 
 otrng_client_s *
 otrng_plugin_conversation_to_client(const otrng_plugin_conversation *conv);

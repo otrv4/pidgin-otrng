@@ -970,7 +970,7 @@ int otrng_plugin_buddy_is_offline(PurpleAccount *account, PurpleBuddy *buddy) {
          !PURPLE_BUDDY_IS_ONLINE(buddy);
 }
 
-void otrng_plugin_send_empty_data_message(const char *username,
+void otrng_plugin_send_non_interactive_auth(const char *username,
                                           PurpleAccount *account) {
   prekey_client_offline_message_ctx_s *ctx =
       malloc(sizeof(prekey_client_offline_message_ctx_s));
