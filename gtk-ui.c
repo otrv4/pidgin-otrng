@@ -208,6 +208,7 @@ static void generate(GtkWidget *widget, gpointer data) {
     return;
   }
 
+  // Do we actually have to create both keys at the same time?
   otrng_plugin_create_privkey_v4(account);
   otrng_plugin_create_privkey_v3(account);
 }

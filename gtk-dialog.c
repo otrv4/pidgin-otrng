@@ -1173,6 +1173,8 @@ otrng_gtk_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
   if (context) {
     Fingerprint *fp = context->fingerprint_root.next;
     while (fp) {
+      // TODO: this need sto be fixed for checking against new style OTRNG
+      // fingerprints
       if (memcmp(fingerprint, fp->fingerprint, 20)) {
         /* This is a previously seen fingerprint for this user,
          * different from the one we were passed. */

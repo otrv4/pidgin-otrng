@@ -72,13 +72,13 @@ void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
                                  const char *message);
 
 /* Generate a V4 private key */
-void otrng_plugin_create_privkey_v4(PurpleAccount *account);
+void otrng_plugin_create_privkey_v4(const PurpleAccount *account);
 
 /* Generate a V3 private key */
-void otrng_plugin_create_privkey_v3(PurpleAccount *account);
+void otrng_plugin_create_privkey_v3(const PurpleAccount *account);
 
 /* Generate a instance tag for the given accountname/protocol */
-void otrng_plugin_create_instag(PurpleAccount *account);
+void otrng_plugin_create_instag(const PurpleAccount *account);
 
 // TODO: REPLACE by using opdata to get this information
 typedef struct {

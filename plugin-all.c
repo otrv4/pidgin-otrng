@@ -199,24 +199,32 @@ static const void *protocol_and_account_to_purple_conversation(FILE *privf) {
 }
 
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-  // TODO: check the return value
-  otrng_user_state_private_key_v4_read_FILEp(
-      otrng_userstate, priv4, protocol_and_account_to_purple_conversation);
+  if (otrng_failed(otrng_user_state_private_key_v4_read_FILEp(
+          otrng_userstate, priv4,
+          protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    return;
+  }
   if (!otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3)) {
     // TODO: error?
   };
 }
 
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
-  // TODO: check the return value
-  otrng_user_state_instance_tags_read_FILEp(otrng_userstate, instagf);
+  if (otrng_failed(otrng_user_state_instance_tags_read_FILEp(otrng_userstate,
+                                                             instagf))) {
+    // TODO: react better on failure
+    return;
+  }
 }
 
 static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
-  // TODO: check the return value
-  otrng_user_state_client_profile_read_FILEp(
-      otrng_userstate, profiles_filep,
-      protocol_and_account_to_purple_conversation);
+  if (otrng_failed(otrng_user_state_client_profile_read_FILEp(
+          otrng_userstate, profiles_filep,
+          protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    return;
+  }
 }
 
 static void otrng_plugin_fingerprint_store_create() {
@@ -391,9 +399,11 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
     return -1;
   }
 
-  // TODO: check this return value
-  int err = otrng_user_state_private_key_v3_generate_FILEp(otrng_userstate,
-                                                           account, privf);
+  int err = 0;
+  if (otrng_failed(otrng_user_state_private_key_v3_generate_FILEp(
+          otrng_userstate, account, privf))) {
+    err = -1;
+  }
   fclose(privf);
 
   return err;
@@ -425,7 +435,11 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
     return -1;
   }
 
-  int err = otrng_user_state_private_key_v4_write_FILEp(otrng_userstate, privf);
+  int err = 0;
+  if (otrng_failed(otrng_user_state_private_key_v4_write_FILEp(otrng_userstate,
+                                                               privf))) {
+    err = -1;
+  }
   fclose(privf);
 
   return err;
@@ -457,14 +471,18 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
     return -1;
   }
 
-  int err = otrng_user_state_client_profile_write_FILEp(otrng_userstate, filep);
+  int err = 0;
+  if (otrng_failed(otrng_user_state_client_profile_write_FILEp(otrng_userstate,
+                                                               filep))) {
+    err = -1;
+  }
   fclose(filep);
 
   return err;
 }
 
 /* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
+void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
 
   const char *accountname = purple_account_get_username(account);
@@ -472,7 +490,8 @@ void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
 
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
-  if (otrng_user_state_generate_private_key(otrng_userstate, account)) {
+  if (otrng_succeeded(otrng_user_state_generate_private_key(
+          otrng_userstate, (PurpleAccount *)account))) {
     // TODO: check the return value
     otrng_plugin_write_privkey_v4_FILEp();
     otrng_ui_update_fingerprint();
@@ -483,7 +502,7 @@ void otrng_plugin_create_privkey_v4(PurpleAccount *account) {
 }
 
 /* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
+void otrng_plugin_create_privkey_v3(const PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
@@ -491,30 +510,32 @@ void otrng_plugin_create_privkey_v3(PurpleAccount *account) {
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
   // TODO: check the return value
-  otrng_plugin_write_privkey_v3_FILEp(account);
+  otrng_plugin_write_privkey_v3_FILEp((PurpleAccount *)account);
   otrng_ui_update_fingerprint();
 
   /* Mark the dialog as done. */
   otrng_dialog_private_key_wait_done(waithandle);
 }
 
-void otrng_plugin_create_client_profile(PurpleAccount *account) {
-  if (otrng_user_state_generate_client_profile(otrng_userstate, account))
+void otrng_plugin_create_client_profile(const PurpleAccount *account) {
+  if (otrng_succeeded(otrng_user_state_generate_client_profile(
+          otrng_userstate, (PurpleAccount *)account))) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
-  // TODO: Update the UI if the client is displayed in the UI
-}
+    // TODO: Update the UI if the client is displayed in the UI
+  }
 }
 
-void otrng_plugin_create_shared_prekey(PurpleAccount *account) {
-  if (otrng_user_state_generate_shared_prekey(otrng_userstate, account)) {
+void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
+  if (otrng_succeeded(otrng_user_state_generate_shared_prekey(
+          otrng_userstate, (PurpleAccount *)account))) {
     // TODO: SAVE to a file
     // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
 }
 
 /* Generate a instance tag for the given accountname/protocol */
-void otrng_plugin_create_instag(PurpleAccount *account) {
+void otrng_plugin_create_instag(const PurpleAccount *account) {
   FILE *instagf;
 
   gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
@@ -531,22 +552,20 @@ void otrng_plugin_create_instag(PurpleAccount *account) {
 
   /* Generate the instag */
   // TODO: check the return value
-  otrng_user_state_instag_generate_generate_FILEp(otrng_userstate, account,
-                                                  instagf);
+  otrng_user_state_instag_generate_generate_FILEp(
+      otrng_userstate, (PurpleAccount *)account, instagf);
 
   fclose(instagf);
 }
 
 static void create_privkey_cb(void *opdata, const char *account_name,
                               const char *protocol_name) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_privkey_v3(account);
 }
 
 static void create_instag_cb(const void *opdata) {
-  // TODO: discards const
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_instag(account);
 }
 
@@ -1029,12 +1048,15 @@ static void process_sending_im(PurpleAccount *account, char *who,
     return;
   }
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
-  int err = otrng_client_send(&newmessage, *message, username, otrng_client);
+  otrng_result result =
+      otrng_client_send(&newmessage, *message, username, otrng_client);
 
   // TODO: this message should be stored for retransmission
-  if (err == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
-    return;
-  }
+  // TODO: this will never be true - we need to change otrng_client_send to
+  // accomodate this
+  /* if (result == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) { */
+  /*   return; */
+  /* } */
 
   // TODO: if require encription
   // if (err == ???) {
@@ -1044,7 +1066,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
   //    *message = ourm;
   //}
 
-  if (!err) {
+  if (otrng_succeeded(result)) {
     free(*message);
     *message = g_strdup(newmessage);
   }
@@ -1143,8 +1165,8 @@ void otrng_plugin_start_smp(otrng_plugin_conversation *conv,
   }
 
   char *tosend = NULL;
-  if (!otrng_client_smp_start(&tosend, conv->peer, question, q_len, secret,
-                              secretlen, client)) {
+  if (otrng_failed(otrng_client_smp_start(&tosend, conv->peer, question, q_len,
+                                          secret, secretlen, client))) {
     return; // ERROR?
   }
 
@@ -1167,8 +1189,8 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
   }
 
   char *tosend = NULL;
-  if (!otrng_client_smp_respond(&tosend, conv->peer, secret, secretlen,
-                                client)) {
+  if (otrng_failed(otrng_client_smp_respond(&tosend, conv->peer, secret,
+                                            secretlen, client))) {
     return; // ERROR?
   }
 
@@ -1239,7 +1261,6 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
                                      char **message, PurpleConversation *conv,
                                      PurpleMessageFlags *flags) {
   char *username = NULL;
-  gboolean res = FALSE;
   char *tosend = NULL;
   char *todisplay = NULL;
   otrng_bool should_ignore = otrng_false;
@@ -1256,16 +1277,16 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   username = g_strdup(purple_normalize(account, *who));
 
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
-  res = otrng_client_receive(&tosend, &todisplay, *message, username,
-                             otrng_client, &should_ignore);
+  otrng_client_receive(&tosend, &todisplay, *message, username, otrng_client,
+                       &should_ignore);
 
   // TODO: client might optionally pass a warning here
   // TODO: this will likely not work correctly at all, since otrng_result
   // doesn't have that kind of result
-  if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) {
-    // TODO: Needs to free tosend AND todisplay
-    return 1;
-  }
+  /* if (res == OTRNG_CLIENT_RESULT_ERROR_NOT_ENCRYPTED) { */
+  /*   // TODO: Needs to free tosend AND todisplay */
+  /*   return 1; */
+  /* } */
 
   if (tosend) {
     // TODO: Should this send to the original who or to the normalized who?
@@ -1476,7 +1497,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
                                             conv->peer, 1);
   account = purple_conversation_get_account(purp_conv);
 
-  if (otrng_client_disconnect(&msg, conv->peer, client)) {
+  if (otrng_succeeded(otrng_client_disconnect(&msg, conv->peer, client))) {
     otrng_plugin_inject_message(account, conv->peer, msg);
   }
 
@@ -1830,27 +1851,23 @@ static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
 
 // TODO: there is no account
 static void create_privkey_v4(const void *opdata) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_privkey_v4(account);
 }
 
 static void create_privkey_v3(const void *opdata) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_privkey_v3(account);
 }
 
 static void create_client_profile(struct otrng_client_state_s *state,
                                   const void *opdata) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_client_profile(account);
 }
 
 static void create_shared_prekey(const void *opdata) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)opdata;
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);
 }
 

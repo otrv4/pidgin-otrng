@@ -120,8 +120,8 @@ static void send_offline_messages_to_each_ensemble(
     }
 
     char *to_send = NULL;
-    if (otrng_client_send_non_interactive_auth(&to_send, ensembles[i],
-                                               recipient, client)) {
+    if (otrng_failed(otrng_client_send_non_interactive_auth(
+            &to_send, ensembles[i], recipient, client))) {
       // TODO: error
       continue;
     }
@@ -129,7 +129,7 @@ static void send_offline_messages_to_each_ensemble(
     send_message(account, recipient, to_send);
     free(to_send);
 
-    if (otrng_client_send(&to_send, message, recipient, client)) {
+    if (otrng_failed(otrng_client_send(&to_send, message, recipient, client))) {
       // TODO: error
       continue;
     }
