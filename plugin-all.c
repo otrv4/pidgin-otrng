@@ -1042,12 +1042,17 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
   username = g_strdup(purple_normalize(account, who));
 
+  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  otrng_conversation_s *otr_conv =
+      otrng_client_get_conversation(0, username, otrng_client);
   PurpleBuddy *buddy = purple_find_buddy(account, username);
-  if (otrng_plugin_buddy_is_offline(account, buddy)) { // AND STATE != ENCRYPTED
+
+  if (otrng_plugin_buddy_is_offline(account, buddy) &&
+      !otrng_conversation_is_encrypted(otr_conv)) {
     send_offline_message(message, username, account);
     return;
   }
-  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+
   otrng_result result =
       otrng_client_send(&newmessage, *message, username, otrng_client);
 

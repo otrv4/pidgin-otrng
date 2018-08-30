@@ -1825,12 +1825,25 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
   /*TODO: check if free(buf) is needed*/
 
-  // TODO: check if is in encrypted state already
   PurpleAccount *account = purple_conversation_get_account(conv);
   const char *peer =
       purple_normalize(account, purple_conversation_get_name(conv));
-  PurpleBuddy *buddy = purple_find_buddy(account, peer);
 
+  otrng_client_s *client = purple_account_to_otrng_client(account);
+  if (!client) {
+    return;
+  }
+
+  otrng_conversation_s *otr_conv =
+      otrng_client_get_conversation(0, peer, client);
+
+  /* Don't send if we're already ENCRYPTED */
+  // TODO: Implement the "Refresh private conversation" behaviour
+  if (otrng_conversation_is_encrypted(otr_conv)) {
+    return;
+  }
+
+  PurpleBuddy *buddy = purple_find_buddy(account, peer);
   if (otrng_plugin_buddy_is_offline(account, buddy)) {
     otrng_plugin_send_non_interactive_auth(peer, account);
     return;
