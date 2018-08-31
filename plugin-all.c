@@ -534,6 +534,15 @@ void otrng_plugin_create_client_profile(const PurpleAccount *account) {
   }
 }
 
+void otrng_plugin_create_prekey_profile(struct otrng_client_state_s *state) {
+  otrng_prekey_profile_s *p =
+      otrng_client_state_build_default_prekey_profile(state);
+  // TODO: check the return error
+  otrng_client_state_add_prekey_profile(state, p);
+  otrng_prekey_profile_free(p);
+  // TODO: Write prekey profile to file
+}
+
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
   if (otrng_succeeded(otrng_user_state_generate_shared_prekey(
           otrng_userstate, (PurpleAccount *)account))) {
@@ -1878,7 +1887,7 @@ static void create_client_profile(struct otrng_client_state_s *state,
 
 static void create_prekey_profile(struct otrng_client_state_s *state,
                                   const void *opdata) {
-  return;
+  otrng_plugin_create_prekey_profile(state);
 }
 
 static void create_shared_prekey(const void *opdata) {
