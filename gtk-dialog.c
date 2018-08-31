@@ -1838,7 +1838,7 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
       otrng_client_get_conversation(0, peer, client);
 
   /* Don't send if we're already ENCRYPTED */
-  // TODO: Implement the "Refresh private conversation" behaviour
+  // TODO: Implement the "Refresh private conversation" behavior
   if (otrng_conversation_is_encrypted(otr_conv)) {
     return;
   }

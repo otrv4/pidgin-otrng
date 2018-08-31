@@ -361,11 +361,18 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
       otrng_client_get_conversation(0, conv->peer, client);
 
   /* Don't send if we're already ENCRYPTED */
+  // TODO: Implement the "Refresh private conversation" behavior
   if (otrng_conversation_is_encrypted(otr_conv)) {
     return;
   }
 
-  // TODO: here if offline, it should ask for the prekey message
+  PurpleAccount *account = purple_accounts_find(conv->account, conv->protocol);
+  PurpleBuddy *buddy = purple_find_buddy(account, conv->peer);
+  if (otrng_plugin_buddy_is_offline(account, buddy)) {
+    otrng_plugin_send_non_interactive_auth(conv->peer, account);
+    return;
+  }
+
   otrng_plugin_send_default_query(conv);
 }
 

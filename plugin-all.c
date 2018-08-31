@@ -986,9 +986,6 @@ static void get_prekey_client_for_sending_offline_message(
   otrng_plugin_inject_message(account, prekey_client->server_identity,
                               send_to_prekey_server);
   free(send_to_prekey_server);
-
-  // 2. Send one offline message for each received prekey ensemble
-  // 3. Send one query message to the person
 }
 
 int otrng_plugin_buddy_is_offline(PurpleAccount *account, PurpleBuddy *buddy) {
