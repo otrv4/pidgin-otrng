@@ -1876,6 +1876,11 @@ static void create_client_profile(struct otrng_client_state_s *state,
   otrng_plugin_create_client_profile(account);
 }
 
+static void create_prekey_profile(struct otrng_client_state_s *state,
+                                  const void *opdata) {
+  return;
+}
+
 static void create_shared_prekey(const void *opdata) {
   const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);
@@ -2045,6 +2050,7 @@ static otrng_client_callbacks_s callbacks_v4 = {
     create_privkey_v3,
     create_privkey_v4,
     create_client_profile,
+    create_prekey_profile,
     create_shared_prekey,
     gone_secure_v4,
     gone_insecure_v4,
