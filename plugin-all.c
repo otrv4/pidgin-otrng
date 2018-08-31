@@ -227,6 +227,14 @@ static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
   }
 }
 
+static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
+  if (otrng_failed(otrng_user_state_prekeys_read_FILEp(
+          otrng_userstate, prekeys_filep,
+          protocol_and_account_to_purple_conversation))) {
+    return;
+  }
+}
+
 static void otrng_plugin_fingerprint_store_create() {
   otrng_fingerprints_table = g_hash_table_new_full(
       g_str_hash, g_str_equal, g_free, g_destroy_plugin_fingerprint);
@@ -2101,13 +2109,12 @@ static int otrng_plugin_init_userstate(void) {
   // Read client profile
   otrng_plugin_read_client_profile(client_profile_filep);
 
+  otrng_plugin_read_prekeys(prekeyf);
+
   // Read fingerprints to OTR4 fingerprint store
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
-                                 // TODO: check the return value
-  otrng_user_state_prekeys_read_FILEp(
-      otrng_userstate, prekeyf, protocol_and_account_to_purple_conversation);
 
   // TODO: Read prekey profile from disk
   // TODO: Read shared prekey from disk
