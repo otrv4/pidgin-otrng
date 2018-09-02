@@ -220,8 +220,10 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
   otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
 
-  // TODO: check the return value
-  otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, prekeyf);
+  if (!otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, prekeyf)) {
+    return 0;
+  }
+
   fclose(prekeyf);
   return 1;
 }
@@ -276,7 +278,7 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
     cb(account, client, NULL, uctx);
   } else {
     /* you can set here some preferences */
-    // otrng_client_state_set_minimum_stored_prekey_msg(100, client->state);
+    // otrng_client_state_set_minimum_stored_prekey_msg(1000, client->state);
 
     if (client->prekey_client) {
       cb(account, client, client->prekey_client, uctx);
