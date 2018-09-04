@@ -489,6 +489,43 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
   return err;
 }
 
+static int otrng_plugin_write_prekey_profile_FILEp(void) {
+#ifndef WIN32
+  mode_t mask;
+#endif /* WIN32 */
+  FILE *filep;
+
+  gchar *file_name =
+      g_build_filename(purple_user_dir(), PREKEYPROFILEFNAME, NULL);
+  if (!file_name) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+  filep = g_fopen(file_name, "w+b");
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+
+  g_free(file_name);
+  if (!filep) {
+    fprintf(stderr, _("Could not write client profile file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(otrng_user_state_prekey_profile_write_FILEp(otrng_userstate,
+                                                               filep))) {
+    err = -1;
+  }
+  fclose(filep);
+
+  return err;
+}
+
+
 /* Generate a private key for the given accountname/protocol */
 void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
@@ -540,7 +577,7 @@ void otrng_plugin_create_prekey_profile(struct otrng_client_state_s *state) {
   // TODO: check the return error
   otrng_client_state_add_prekey_profile(state, p);
   otrng_prekey_profile_free(p);
-  // TODO: Write prekey profile to file
+  otrng_plugin_write_prekey_profile_FILEp();
 }
 
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
