@@ -227,6 +227,15 @@ static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
   }
 }
 
+static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
+  if (otrng_failed(otrng_user_state_prekey_profile_read_FILEp(
+          otrng_userstate, profiles_filep,
+          protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    return;
+  }
+}
+
 static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
   if (otrng_failed(otrng_user_state_prekeys_read_FILEp(
           otrng_userstate, prekeys_filep,
@@ -2115,6 +2124,7 @@ static int otrng_plugin_init_userstate(void) {
   gchar *storefile = NULL;
   gchar *instagfile = NULL;
   gchar *client_profile_filename = NULL;
+  gchar *prekey_profile_filename = NULL;
   gchar *prekeysfile = NULL;
 
   privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
@@ -2123,15 +2133,18 @@ static int otrng_plugin_init_userstate(void) {
   instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
   client_profile_filename =
       g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
+  prekey_profile_filename =
+      g_build_filename(purple_user_dir(), PREKEYPROFILEFNAME, NULL);
   prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
 
   if (!privkeyfile || !privkeyfile3 || !storefile || !instagfile ||
-      !client_profile_filename || !prekeysfile) {
+      !client_profile_filename || !prekey_profile_filename || !prekeysfile) {
     g_free(privkeyfile);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
     g_free(client_profile_filename);
+    g_free(prekey_profile_filename);
     g_free(prekeysfile);
     return 1;
   }
@@ -2141,6 +2154,7 @@ static int otrng_plugin_init_userstate(void) {
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
   FILE *client_profile_filep = g_fopen(client_profile_filename, "rb");
+  FILE *prekey_profile_filep = g_fopen(prekey_profile_filename, "rb");
   FILE *prekeyf = g_fopen(prekeysfile, "rb");
 
   g_free(privkeyfile);
@@ -2148,6 +2162,7 @@ static int otrng_plugin_init_userstate(void) {
   g_free(storefile);
   g_free(instagfile);
   g_free(client_profile_filename);
+  g_free(prekey_profile_filename);
   g_free(prekeysfile);
 
   otrng_userstate = otrng_user_state_new(&callbacks_v4);
@@ -2168,7 +2183,8 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); // Updates the view
 
-  // TODO: Read prekey profile from disk
+  // Read prekey profile from disk
+  otrng_plugin_read_prekey_profile(prekey_profile_filep);
   // TODO: Read shared prekey from disk
 
   if (priv3f) {
@@ -2185,6 +2201,9 @@ static int otrng_plugin_init_userstate(void) {
   }
   if (client_profile_filep) {
     fclose(client_profile_filep);
+  }
+  if (prekey_profile_filep) {
+    fclose(prekey_profile_filep);
   }
   if (prekeyf) {
     fclose(prekeyf);
