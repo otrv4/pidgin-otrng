@@ -525,7 +525,6 @@ static int otrng_plugin_write_prekey_profile_FILEp(void) {
   return err;
 }
 
-
 /* Generate a private key for the given accountname/protocol */
 void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
   OtrgDialogWaitHandle waithandle;
@@ -571,13 +570,13 @@ void otrng_plugin_create_client_profile(const PurpleAccount *account) {
   }
 }
 
-void otrng_plugin_create_prekey_profile(struct otrng_client_state_s *state) {
-  otrng_prekey_profile_s *p =
-      otrng_client_state_build_default_prekey_profile(state);
-  // TODO: check the return error
-  otrng_client_state_add_prekey_profile(state, p);
-  otrng_prekey_profile_free(p);
-  otrng_plugin_write_prekey_profile_FILEp();
+void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
+  if (otrng_succeeded(otrng_user_state_generate_prekey_profile(
+          otrng_userstate, (PurpleAccount *)account))) {
+    // TODO: check the return error
+    otrng_plugin_write_prekey_profile_FILEp();
+    // TODO: Update the UI if the client is displayed in the UI
+  }
 }
 
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
@@ -1924,7 +1923,8 @@ static void create_client_profile(struct otrng_client_state_s *state,
 
 static void create_prekey_profile(struct otrng_client_state_s *state,
                                   const void *opdata) {
-  otrng_plugin_create_prekey_profile(state);
+  const PurpleAccount *account = (const PurpleAccount *)opdata;
+  otrng_plugin_create_prekey_profile(account);
 }
 
 static void create_shared_prekey(const void *opdata) {
