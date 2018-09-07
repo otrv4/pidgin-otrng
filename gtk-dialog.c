@@ -1846,7 +1846,6 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   PurpleBuddy *buddy = purple_find_buddy(account, peer);
   if (otrng_plugin_buddy_is_offline(account, buddy)) {
     otrng_plugin_send_non_interactive_auth(peer, account);
-    return;
   }
 
   otrng_plugin_send_default_query_conv(conv);

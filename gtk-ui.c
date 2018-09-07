@@ -370,7 +370,6 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
   PurpleBuddy *buddy = purple_find_buddy(account, conv->peer);
   if (otrng_plugin_buddy_is_offline(account, buddy)) {
     otrng_plugin_send_non_interactive_auth(conv->peer, account);
-    return;
   }
 
   otrng_plugin_send_default_query(conv);
