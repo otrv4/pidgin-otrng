@@ -279,7 +279,7 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
   } else {
     /* you can set here some preferences */
     // otrng_client_state_set_minimum_stored_prekey_msg(10000, client->state);
-    // otrng_client_state_set_max_published_prekey_msg(1, client->state);
+    // otrng_client_state_set_max_published_prekey_msg(10, client->state);
 
     if (client->prekey_client) {
       cb(account, client, client->prekey_client, uctx);

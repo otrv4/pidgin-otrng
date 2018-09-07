@@ -462,6 +462,42 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
   return err;
 }
 
+static int otrng_plugin_write_shared_prekey_FILEp(void) {
+#ifndef WIN32
+  mode_t mask;
+#endif /* WIN32 */
+  FILE *privf;
+
+  gchar *privkeyfile =
+      g_build_filename(purple_user_dir(), SHAREDPREKEYFILENAME, NULL);
+  if (!privkeyfile) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+  privf = g_fopen(privkeyfile, "w+b");
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+
+  g_free(privkeyfile);
+  if (!privf) {
+    fprintf(stderr, _("Could not write private key file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(
+          otrng_user_state_shared_prekey_write_FILEp(otrng_userstate, privf))) {
+    err = -1;
+  }
+  fclose(privf);
+
+  return err;
+}
+
 static int otrng_plugin_write_client_profile_FILEp(void) {
 #ifndef WIN32
   mode_t mask;
@@ -591,7 +627,7 @@ void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
   if (otrng_succeeded(otrng_user_state_generate_shared_prekey(
           otrng_userstate, (PurpleAccount *)account))) {
-    // TODO: SAVE to a file
+    otrng_plugin_write_shared_prekey_FILEp();
     // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
 }
@@ -2134,6 +2170,8 @@ static int otrng_plugin_init_userstate(void) {
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
   storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+  // shared_prekey_file = g_build_filename(purple_user_dir(),
+  // SHAREDPREKEYFILENAME, NULL);
   client_profile_filename =
       g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
   prekey_profile_filename =
@@ -2146,6 +2184,7 @@ static int otrng_plugin_init_userstate(void) {
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
+    // g_free(shared_prekey_file);
     g_free(client_profile_filename);
     g_free(prekey_profile_filename);
     g_free(prekeysfile);
@@ -2156,6 +2195,7 @@ static int otrng_plugin_init_userstate(void) {
   FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
+  // FILE *shared_prekey_filep = g_fopen(shared_prekey_file, "rb");
   FILE *client_profile_filep = g_fopen(client_profile_filename, "rb");
   FILE *prekey_profile_filep = g_fopen(prekey_profile_filename, "rb");
   FILE *prekeyf = g_fopen(prekeysfile, "rb");
@@ -2164,6 +2204,7 @@ static int otrng_plugin_init_userstate(void) {
   g_free(privkeyfile3);
   g_free(storefile);
   g_free(instagfile);
+  // g_free(shared_prekey_file);
   g_free(client_profile_filename);
   g_free(prekey_profile_filename);
   g_free(prekeysfile);
