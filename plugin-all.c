@@ -1102,6 +1102,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
   username = g_strdup(purple_normalize(account, who));
 
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, username, otrng_client);
   PurpleBuddy *buddy = purple_find_buddy(account, username);
@@ -1341,6 +1342,7 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
   username = g_strdup(purple_normalize(account, *who));
 
   otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+
   otrng_client_receive(&tosend, &todisplay, *message, username, otrng_client,
                        &should_ignore);
 
@@ -1936,7 +1938,8 @@ static void create_prekey_profile(struct otrng_client_state_s *state,
   otrng_plugin_create_prekey_profile(account);
 }
 
-static void create_shared_prekey(const void *opdata) {
+static void create_shared_prekey(struct otrng_client_state_s *state,
+                                 const void *opdata) {
   const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);
 }
