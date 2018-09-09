@@ -109,7 +109,8 @@ protocol_and_account_to_purple_account(const char *protocol,
   return purple_accounts_find(accountname, protocol);
 }
 
-otrng_client_s *otrng_client(const char *protocol, const char *accountname) {
+otrng_client_s *get_otrng_client(const char *protocol,
+                                 const char *accountname) {
   PurpleAccount *account =
       protocol_and_account_to_purple_account(protocol, accountname);
   if (!account) {
@@ -121,12 +122,12 @@ otrng_client_s *otrng_client(const char *protocol, const char *accountname) {
 
 // TODO: REMOVE
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
-  otrng_client_s *ret = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
 
-  // TODO set padding from otrng_max_message_size_table
-  otrng_client_state_set_padding(256, ret->state);
+  /* You can set some configurations here */
+  // otrng_client_state_set_padding(256, client->state);
 
-  return ret;
+  return client;
 }
 
 otrng_conversation_s *
@@ -151,7 +152,7 @@ otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f) {
     return NULL;
   }
 
-  client = otrng_client(f->protocol, f->account);
+  client = get_otrng_client(f->protocol, f->account);
   if (!client) {
     return NULL;
   }
@@ -190,7 +191,7 @@ static const void *protocol_and_account_to_purple_conversation(FILE *privf) {
       return NULL;
     }
     *delim = 0;
-    line[len - 1] = 0; // \n
+    line[len - 1] = 0; /* \n */
 
     return protocol_and_account_to_purple_account(line, delim + 1);
   }
@@ -1146,10 +1147,10 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
   username = g_strdup(purple_normalize(account, who));
 
-  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  otrng_client_s *client = purple_account_to_otrng_client(account);
 
   otrng_conversation_s *otr_conv =
-      otrng_client_get_conversation(0, username, otrng_client);
+      otrng_client_get_conversation(0, username, client);
   PurpleBuddy *buddy = purple_find_buddy(account, username);
 
   if (otrng_plugin_buddy_is_offline(account, buddy) &&
@@ -1159,7 +1160,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
   }
 
   otrng_result result =
-      otrng_client_send(&newmessage, *message, username, otrng_client);
+      otrng_client_send(&newmessage, *message, username, client);
 
   // TODO: this message should be stored for retransmission
   // TODO: this will never be true - we need to change otrng_client_send to
@@ -1198,7 +1199,7 @@ void otrng_plugin_abort_smp(const otrng_plugin_conversation *conv) {
 // TODO: REMOVE
 otrng_client_s *
 otrng_plugin_conversation_to_client(const otrng_plugin_conversation *conv) {
-  return otrng_client(conv->protocol, conv->account);
+  return get_otrng_client(conv->protocol, conv->account);
 }
 
 otrng_plugin_conversation *otrng_plugin_conversation_new(const char *account,
@@ -1330,7 +1331,7 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   OtrgUiPrefs prefs;
   otrng_ui_get_prefs(&prefs, account, username);
 
-  otrng_client_s *client = otrng_client(conv->protocol, conv->account);
+  otrng_client_s *client = get_otrng_client(conv->protocol, conv->account);
   if (!client) {
     return;
   }
@@ -1386,9 +1387,9 @@ static gboolean process_receiving_im(PurpleAccount *account, char **who,
 
   username = g_strdup(purple_normalize(account, *who));
 
-  otrng_client_s *otrng_client = purple_account_to_otrng_client(account);
+  otrng_client_s *client = purple_account_to_otrng_client(account);
 
-  otrng_client_receive(&tosend, &todisplay, *message, username, otrng_client,
+  otrng_client_receive(&tosend, &todisplay, *message, username, client,
                        &should_ignore);
 
   // TODO: client might optionally pass a warning here
@@ -1599,7 +1600,7 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
     return;
   }
 
-  client = otrng_client(conv->protocol, conv->account);
+  client = get_otrng_client(conv->protocol, conv->account);
   if (!client) {
     return;
   }
@@ -1777,7 +1778,7 @@ otrng_plugin_conversation_to_trust(const otrng_plugin_conversation *conv) {
     return level;
   }
 
-  otrng_client_s *client = otrng_client(conv->protocol, conv->account);
+  otrng_client_s *client = get_otrng_client(conv->protocol, conv->account);
   if (!client) {
     return level;
   }

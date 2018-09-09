@@ -352,7 +352,7 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data) {
 /* Send an OTR Query Message to attempt to start a connection */
 static void connect_connection_ui(otrng_plugin_conversation *conv) {
   /* Send an OTR Query to the other side. */
-  otrng_client_s *client = otrng_client(conv->protocol, conv->account);
+  otrng_client_s *client = get_otrng_client(conv->protocol, conv->account);
   if (!client) {
     return;
   }
