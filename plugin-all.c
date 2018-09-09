@@ -1993,6 +1993,10 @@ static void create_shared_prekey(struct otrng_client_state_s *state,
 static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
+  if (!conv) {
+    return;
+  }
+
   otrng_dialog_conversation_connected(conv);
   otrng_plugin_conversation_free(conv);
 }
@@ -2000,6 +2004,10 @@ static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
 static void gone_insecure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
+  if (!conv) {
+    return;
+  }
+
   // TODO: ensure otrng_ui_update_keylist() is called here.
   otrng_dialog_conversation_disconnected(conv);
   otrng_plugin_conversation_free(conv);
@@ -2009,6 +2017,10 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
                                 const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
+  if (!conv) {
+    return;
+  }
+
   otrng_dialog_unknown_fingerprint(cconv->client->user_state, conv->account,
                                    conv->protocol, conv->peer, fp);
   otrng_plugin_conversation_free(conv);
@@ -2029,6 +2041,9 @@ static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
 
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
+  if (!conv) {
+    return;
+  }
 
   // TODO: Change the message if we have have already seen another FP for this
   // contact.
