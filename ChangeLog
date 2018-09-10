@@ -1,3 +1,8 @@
+2018-09-10
+
+	* Many updates to move pidgin-otr to pidgin-otrng. See
+	version control for all changes.
+
 2016-03-06
 
 	* INSTALL.mingw: The INSTALL.mingw file is now actually a script

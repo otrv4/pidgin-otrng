@@ -290,14 +290,19 @@ otr-dev:
 
 ## License
 
+The pidgin-otrng plugin is substantially derived from the pidgin-otr plugin,
+and thus is licensed and copyrighted the same, with the addition of the
+pidgin-otrng contributors to the copyright.
+
 The Off-the-Record Messaging plugin for pidgin is covered by the following
 (GPL) license:
 
     Off-the-Record Messaging plugin for pidgin
-    Copyright (C) 2004-2016  Ian Goldberg, Rob Smits,
+    Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
                              Chris Alexander, Willy Lew,
                              Lisa Du, Nikita Borisov
                              <otr@cypherpunks.ca>
+                             The pidgin-otrng contributors
 
 
     This program is free software; you can redistribute it and/or modify

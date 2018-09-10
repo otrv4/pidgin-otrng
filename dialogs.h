@@ -1,9 +1,10 @@
 /*
  *  Off-the-Record Messaging plugin for pidgin
- *  Copyright (C) 2004-2014  Ian Goldberg, Rob Smits,
+ *  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
  *                           Chris Alexander, Willy Lew,
  *                           Nikita Borisov
  *                           <otr@cypherpunks.ca>
+ *                           The pidgin-otrng contributors
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of version 2 of the GNU General Public License as
