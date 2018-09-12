@@ -123,7 +123,7 @@ otrng_client_s *get_otrng_client(const char *protocol,
 
 // TODO: REMOVE
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
 
   /* You can set some configurations here */
   // otrng_client_state_set_padding(256, client->state);
@@ -139,7 +139,7 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   account = purple_conversation_get_account(conv);
   recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
 
   // TODO: should we force creation here?
   return otrng_client_get_conversation(0, recipient, client);

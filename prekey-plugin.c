@@ -129,7 +129,7 @@ static void send_offline_messages_to_each_ensemble(
   const char *message = ctx->message;
   const char *recipient = ctx->recipient;
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
   if (!client) {
     return;
   }
@@ -217,7 +217,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
 
   PurpleAccount *account = ctx;
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
   if (!client) {
     return 0;
   }
@@ -286,7 +286,7 @@ found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
 }
 
 static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
   if (!client) {
     return NULL;
   }
@@ -295,7 +295,7 @@ static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
 
 void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
                                     void *uctx) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
+  otrng_client_s *client = otrng_client_get(otrng_state, account);
   if (!client) {
     cb(account, client, NULL, uctx);
   } else {
