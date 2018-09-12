@@ -2021,7 +2021,7 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
     return;
   }
 
-  otrng_dialog_unknown_fingerprint(cconv->client->user_state, conv->account,
+  otrng_dialog_unknown_fingerprint(otrng_state->user_state_v3, conv->account,
                                    conv->protocol, conv->peer, fp);
   otrng_plugin_conversation_free(conv);
 }
