@@ -51,7 +51,7 @@
 
 extern PurplePlugin *otrng_plugin_handle;
 
-extern otrng_user_state_s *otrng_userstate;
+extern otrng_global_state_s *otrng_state;
 
 otrng_client_s *get_otrng_client(const char *protocol, const char *accountname);
 

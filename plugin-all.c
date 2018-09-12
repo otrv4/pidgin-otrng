@@ -96,7 +96,7 @@
 
 PurplePlugin *otrng_plugin_handle;
 
-otrng_user_state_s *otrng_userstate = NULL;
+otrng_global_state_s *otrng_state = NULL;
 
 /* GLib HashTable for storing the maximum message size for various
  * protocols. */
@@ -123,7 +123,7 @@ otrng_client_s *get_otrng_client(const char *protocol,
 
 // TODO: REMOVE
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
 
   /* You can set some configurations here */
   // otrng_client_state_set_padding(256, client->state);
@@ -139,7 +139,7 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   account = purple_conversation_get_account(conv);
   recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
 
   // TODO: should we force creation here?
   return otrng_client_get_conversation(0, recipient, client);
@@ -201,28 +201,27 @@ static const void *protocol_and_account_to_purple_conversation(FILE *privf) {
 }
 
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-  if (otrng_failed(otrng_user_state_private_key_v4_read_FILEp(
-          otrng_userstate, priv4,
-          protocol_and_account_to_purple_conversation))) {
+  if (otrng_failed(otrng_global_state_private_key_v4_read_FILEp(
+          otrng_state, priv4, protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
     return;
   }
-  if (!otrng_user_state_private_key_v3_read_FILEp(otrng_userstate, priv3)) {
+  if (!otrng_global_state_private_key_v3_read_FILEp(otrng_state, priv3)) {
     // TODO: error?
   };
 }
 
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
-  if (otrng_failed(otrng_user_state_instance_tags_read_FILEp(otrng_userstate,
-                                                             instagf))) {
+  if (otrng_failed(
+          otrng_global_state_instance_tags_read_FILEp(otrng_state, instagf))) {
     // TODO: react better on failure
     return;
   }
 }
 
 static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
-  if (otrng_failed(otrng_user_state_client_profile_read_FILEp(
-          otrng_userstate, profiles_filep,
+  if (otrng_failed(otrng_global_state_client_profile_read_FILEp(
+          otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
     return;
@@ -230,8 +229,8 @@ static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
 }
 
 static void otrng_plugin_read_shared_prekey(FILE *shared_prekey_filep) {
-  if (otrng_failed(otrng_user_state_shared_prekey_read_FILEp(
-          otrng_userstate, shared_prekey_filep,
+  if (otrng_failed(otrng_global_state_shared_prekey_read_FILEp(
+          otrng_state, shared_prekey_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
     return;
@@ -239,8 +238,8 @@ static void otrng_plugin_read_shared_prekey(FILE *shared_prekey_filep) {
 }
 
 static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
-  if (otrng_failed(otrng_user_state_prekey_profile_read_FILEp(
-          otrng_userstate, profiles_filep,
+  if (otrng_failed(otrng_global_state_prekey_profile_read_FILEp(
+          otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
     return;
@@ -248,8 +247,8 @@ static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
 }
 
 static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
-  if (otrng_failed(otrng_user_state_prekeys_read_FILEp(
-          otrng_userstate, prekeys_filep,
+  if (otrng_failed(otrng_global_state_prekeys_read_FILEp(
+          otrng_state, prekeys_filep,
           protocol_and_account_to_purple_conversation))) {
     return;
   }
@@ -428,8 +427,8 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
   }
 
   int err = 0;
-  if (otrng_failed(otrng_user_state_private_key_v3_generate_FILEp(
-          otrng_userstate, account, privf))) {
+  if (otrng_failed(otrng_global_state_private_key_v3_generate_FILEp(
+          otrng_state, account, privf))) {
     err = -1;
   }
   fclose(privf);
@@ -464,8 +463,8 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
   }
 
   int err = 0;
-  if (otrng_failed(otrng_user_state_private_key_v4_write_FILEp(otrng_userstate,
-                                                               privf))) {
+  if (otrng_failed(
+          otrng_global_state_private_key_v4_write_FILEp(otrng_state, privf))) {
     err = -1;
   }
   fclose(privf);
@@ -501,7 +500,7 @@ static int otrng_plugin_write_shared_prekey_FILEp(void) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_user_state_shared_prekey_write_FILEp(otrng_userstate, privf))) {
+          otrng_global_state_shared_prekey_write_FILEp(otrng_state, privf))) {
     err = -1;
   }
   fclose(privf);
@@ -536,8 +535,8 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
   }
 
   int err = 0;
-  if (otrng_failed(otrng_user_state_client_profile_write_FILEp(otrng_userstate,
-                                                               filep))) {
+  if (otrng_failed(
+          otrng_global_state_client_profile_write_FILEp(otrng_state, filep))) {
     err = -1;
   }
   fclose(filep);
@@ -572,8 +571,8 @@ static int otrng_plugin_write_prekey_profile_FILEp(void) {
   }
 
   int err = 0;
-  if (otrng_failed(otrng_user_state_prekey_profile_write_FILEp(otrng_userstate,
-                                                               filep))) {
+  if (otrng_failed(
+          otrng_global_state_prekey_profile_write_FILEp(otrng_state, filep))) {
     err = -1;
   }
   fclose(filep);
@@ -590,8 +589,8 @@ void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
 
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
-  if (otrng_succeeded(otrng_user_state_generate_private_key(
-          otrng_userstate, (PurpleAccount *)account))) {
+  if (otrng_succeeded(otrng_global_state_generate_private_key(
+          otrng_state, (PurpleAccount *)account))) {
     // TODO: check the return value
     otrng_plugin_write_privkey_v4_FILEp();
     otrng_ui_update_fingerprint();
@@ -618,8 +617,8 @@ void otrng_plugin_create_privkey_v3(const PurpleAccount *account) {
 }
 
 void otrng_plugin_create_client_profile(const PurpleAccount *account) {
-  if (otrng_succeeded(otrng_user_state_generate_client_profile(
-          otrng_userstate, (PurpleAccount *)account))) {
+  if (otrng_succeeded(otrng_global_state_generate_client_profile(
+          otrng_state, (PurpleAccount *)account))) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
     // TODO: Update the UI if the client is displayed in the UI
@@ -627,8 +626,8 @@ void otrng_plugin_create_client_profile(const PurpleAccount *account) {
 }
 
 void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
-  if (otrng_succeeded(otrng_user_state_generate_prekey_profile(
-          otrng_userstate, (PurpleAccount *)account))) {
+  if (otrng_succeeded(otrng_global_state_generate_prekey_profile(
+          otrng_state, (PurpleAccount *)account))) {
     // TODO: check the return error
     otrng_plugin_write_prekey_profile_FILEp();
     // TODO: Update the UI if the client is displayed in the UI
@@ -636,8 +635,8 @@ void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
 }
 
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
-  if (otrng_succeeded(otrng_user_state_generate_shared_prekey(
-          otrng_userstate, (PurpleAccount *)account))) {
+  if (otrng_succeeded(otrng_global_state_generate_shared_prekey(
+          otrng_state, (PurpleAccount *)account))) {
     otrng_plugin_write_shared_prekey_FILEp();
     // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
@@ -661,8 +660,8 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
 
   /* Generate the instag */
   // TODO: check the return value
-  otrng_user_state_instag_generate_generate_FILEp(
-      otrng_userstate, (PurpleAccount *)account, instagf);
+  otrng_global_state_instag_generate_generate_FILEp(
+      otrng_state, (PurpleAccount *)account, instagf);
 
   fclose(instagf);
 }
@@ -1056,7 +1055,7 @@ static OtrlMessageAppOps ui_ops = {policy_cb,
 /* Called by the glib main loop, as set up by stop_start_timer */
 static gboolean timer_fired_cb(gpointer data) {
   // TODO: There should be an equivalent for this
-  otrl_message_poll(otrng_userstate->user_state_v3, &ui_ops, NULL);
+  otrl_message_poll(otrng_state->user_state_v3, &ui_ops, NULL);
   return TRUE;
 }
 
@@ -1443,7 +1442,7 @@ ConnContext *otrng_plugin_conv_to_context(PurpleConversation *conv,
   username = purple_conversation_get_name(conv);
 
   context =
-      otrl_context_find(otrng_userstate->user_state_v3, username, accountname,
+      otrl_context_find(otrng_state->user_state_v3, username, accountname,
                         proto, their_instance, force_create, NULL, NULL, NULL);
 
   return context;
@@ -1584,7 +1583,7 @@ static void supply_extended_menu(PurpleBlistNode *node, GList **menu) {
  * appropriate. */
 void otrng_plugin_disconnect_all_instances(ConnContext *context) {
   // TODO: There should be an equivalent for this
-  otrl_message_disconnect_all_instances(otrng_userstate->user_state_v3, &ui_ops,
+  otrl_message_disconnect_all_instances(otrng_state->user_state_v3, &ui_ops,
                                         NULL, context->accountname,
                                         context->protocol, context->username);
 }
@@ -1832,7 +1831,7 @@ TrustLevel otrng_plugin_context_to_trust(ConnContext *context) {
 
 /* Send the OTRL_TLV_DISCONNECTED packets when we're about to quit. */
 static void process_quitting(void) {
-  OtrlUserState userstate = otrng_userstate->user_state_v3;
+  OtrlUserState userstate = otrng_state->user_state_v3;
   // TODO: use our client_hash to iterate over all active connections
   ConnContext *context = userstate->context_root;
   while (context) {
@@ -2238,7 +2237,7 @@ static int otrng_plugin_init_userstate(void) {
   g_free(prekey_profile_filename);
   g_free(prekeysfile);
 
-  otrng_userstate = otrng_user_state_new(&callbacks_v4);
+  otrng_state = otrng_global_state_new(&callbacks_v4);
 
   // Read instance tags to both V4 and V3 libraries' storage
   otrng_plugin_read_instance_tags_FILEp(instagf);
@@ -2303,8 +2302,8 @@ static void otrng_plugin_cleanup_userstate(void) {
   otrng_ui_update_fingerprint(); // Updates the view
   otrng_fingerprints_table = NULL;
 
-  otrng_user_state_free(otrng_userstate);
-  otrng_userstate = NULL;
+  otrng_global_state_free(otrng_state);
+  otrng_state = NULL;
 }
 
 #if BETA_DIALOG && defined USING_GTK /* Only for beta */

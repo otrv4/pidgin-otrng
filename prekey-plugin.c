@@ -54,7 +54,7 @@
 #include "prekey-discovery.h"
 
 // TODO: why is this global?
-extern otrng_user_state_s *otrng_userstate;
+extern otrng_global_state_s *otrng_state;
 
 static void send_message(PurpleAccount *account, const char *recipient,
                          const char *message) {
@@ -129,7 +129,7 @@ static void send_offline_messages_to_each_ensemble(
   const char *message = ctx->message;
   const char *recipient = ctx->recipient;
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
   if (!client) {
     return;
   }
@@ -217,7 +217,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
 
   PurpleAccount *account = ctx;
 
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
   if (!client) {
     return 0;
   }
@@ -242,7 +242,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
   otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
 
-  if (!otrng_user_state_prekey_messages_write_FILEp(otrng_userstate, prekeyf)) {
+  if (!otrng_global_state_prekey_messages_write_FILEp(otrng_state, prekeyf)) {
     return 0;
   }
 
@@ -286,7 +286,7 @@ found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
 }
 
 static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
   if (!client) {
     return NULL;
   }
@@ -295,7 +295,7 @@ static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
 
 void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
                                     void *uctx) {
-  otrng_client_s *client = otrng_messaging_client_get(otrng_userstate, account);
+  otrng_client_s *client = otrng_messaging_client_get(otrng_state, account);
   if (!client) {
     cb(account, client, NULL, uctx);
   } else {
@@ -404,7 +404,7 @@ static void account_signed_on_cb(PurpleConnection *conn, void *data) {
 }
 
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {
-  if (!otrng_userstate) {
+  if (!otrng_state) {
     return FALSE;
   }
 
