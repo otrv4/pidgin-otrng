@@ -1946,8 +1946,8 @@ static void otrng_free_mms_table() {
 }
 
 // TODO: May not be necessary. Remove.
-static otrng_plugin_conversation *client_conversation_to_plugin_conversation(
-    const otrng_client_conversation_s *conv) {
+static otrng_plugin_conversation *
+client_conversation_to_plugin_conversation(const otrng_s *conv) {
   // TODO: This discards const qualifier
   PurpleAccount *account = (PurpleAccount *)conv->client->client_id;
   if (!account) {
@@ -1990,7 +1990,7 @@ static void create_shared_prekey(struct otrng_client_s *client,
   otrng_plugin_create_shared_prekey(account);
 }
 
-static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
+static void gone_secure_v4(const otrng_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
   if (!conv) {
@@ -2001,7 +2001,7 @@ static void gone_secure_v4(const otrng_client_conversation_s *cconv) {
   otrng_plugin_conversation_free(conv);
 }
 
-static void gone_insecure_v4(const otrng_client_conversation_s *cconv) {
+static void gone_insecure_v4(const otrng_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
   if (!conv) {
@@ -2014,7 +2014,7 @@ static void gone_insecure_v4(const otrng_client_conversation_s *cconv) {
 }
 
 static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
-                                const otrng_client_conversation_s *cconv) {
+                                const otrng_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
   if (!conv) {
@@ -2027,7 +2027,7 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3_p fp,
 }
 
 static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
-                                const otrng_client_conversation_s *cconv) {
+                                const otrng_s *cconv) {
   // TODO: use fp to determine if you have seen this fp before
   // See: otrng_dialog_unknown_fingerprint
   // (otrng_gtk_dialog_unknown_fingerprint)
@@ -2071,7 +2071,7 @@ static void fingerprint_seen_v4(const otrng_fingerprint_p fp,
   g_free(buf);
 }
 
-static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv) {
+static void smp_ask_for_secret_v4(const otrng_s *cconv) {
   if (!cconv) {
     return;
   }
@@ -2083,7 +2083,7 @@ static void smp_ask_for_secret_v4(const otrng_client_conversation_s *cconv) {
 }
 
 static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len,
-                                  const otrng_client_conversation_s *cconv) {
+                                  const otrng_s *cconv) {
   if (!cconv) {
     return;
   }
@@ -2100,7 +2100,7 @@ static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len,
 
 static void smp_update_v4(const otrng_smp_event_t event,
                           const uint8_t progress_percent,
-                          const otrng_client_conversation_s *cconv) {
+                          const otrng_s *cconv) {
   if (!cconv) {
     return;
   }
@@ -2138,7 +2138,7 @@ static void smp_update_v4(const otrng_smp_event_t event,
 }
 
 static otrng_shared_session_state_s
-get_shared_session_state_cb(const otrng_client_conversation_s *conv) {
+get_shared_session_state_cb(const otrng_s *conv) {
   // TODO: Get those values from the conversation
   return (otrng_shared_session_state_s){
       .identifier1 = g_strdup("alice"),
