@@ -104,26 +104,45 @@ GHashTable *otrng_max_message_size_table = NULL;
 
 GHashTable *otrng_fingerprints_table = NULL;
 
+static otrng_client_id_s
+protocol_and_account_to_client_id(const char *protocol, const char *account) {
+  otrng_client_id_s result = {
+      .protocol = protocol,
+      .account = account,
+  };
+  return result;
+}
+
+static otrng_client_id_s
+purple_account_to_client_id(const PurpleAccount *account) {
+  const char *protocol = purple_account_get_protocol_id(account);
+  const char *accountname =
+      g_strdup(purple_normalize(account, purple_account_get_username(account)));
+  return protocol_and_account_to_client_id(protocol, accountname);
+}
+
 static PurpleAccount *
 protocol_and_account_to_purple_account(const char *protocol,
                                        const char *accountname) {
   return purple_accounts_find(accountname, protocol);
 }
 
+static PurpleAccount *
+client_id_to_purple_account(const otrng_client_id_s client_id) {
+  return protocol_and_account_to_purple_account(client_id.protocol,
+                                                client_id.account);
+}
+
 otrng_client_s *get_otrng_client(const char *protocol,
                                  const char *accountname) {
-  PurpleAccount *account =
-      protocol_and_account_to_purple_account(protocol, accountname);
-  if (!account) {
-    return NULL;
-  }
-
-  return purple_account_to_otrng_client(account);
+  return otrng_client_get(
+      otrng_state, protocol_and_account_to_client_id(protocol, accountname));
 }
 
 // TODO: REMOVE
 otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
-  otrng_client_s *client = otrng_client_get(otrng_state, account);
+  otrng_client_s *client =
+      otrng_client_get(otrng_state, purple_account_to_client_id(account));
 
   /* You can set some configurations here */
   // otrng_client_set_padding(256, client);
@@ -139,7 +158,8 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   account = purple_conversation_get_account(conv);
   recipient = purple_normalize(account, purple_conversation_get_name(conv));
 
-  otrng_client_s *client = otrng_client_get(otrng_state, account);
+  otrng_client_s *client =
+      otrng_client_get(otrng_state, purple_account_to_client_id(account));
 
   // TODO: should we force creation here?
   return otrng_client_get_conversation(0, recipient, client);
@@ -176,28 +196,34 @@ static void g_destroy_plugin_fingerprint(gpointer data) {
   free(fp);
 }
 
-static const void *protocol_and_account_to_purple_conversation(FILE *privf) {
+static otrng_client_id_s
+protocol_and_account_to_purple_conversation(FILE *privf) {
   char *line = NULL;
   size_t cap = 0;
   int len = 0;
 
+  otrng_client_id_s null_result = {
+      .protocol = NULL,
+      .account = NULL,
+  };
+
   if (!privf) {
-    return NULL;
+    return null_result;
   }
 
   while ((len = getline(&line, &cap, privf)) != -1) {
     char *delim = strchr(line, ':');
 
     if (!delim) {
-      return NULL;
+      return null_result;
     }
     *delim = 0;
     line[len - 1] = 0; /* \n */
 
-    return protocol_and_account_to_purple_account(line, delim + 1);
+    return protocol_and_account_to_client_id(line, delim + 1);
   }
 
-  return NULL;
+  return null_result;
 }
 
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
@@ -428,7 +454,7 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
 
   int err = 0;
   if (otrng_failed(otrng_global_state_private_key_v3_generate_FILEp(
-          otrng_state, account, privf))) {
+          otrng_state, purple_account_to_client_id(account), privf))) {
     err = -1;
   }
   fclose(privf);
@@ -590,7 +616,7 @@ void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
   waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
 
   if (otrng_succeeded(otrng_global_state_generate_private_key(
-          otrng_state, (PurpleAccount *)account))) {
+          otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return value
     otrng_plugin_write_privkey_v4_FILEp();
     otrng_ui_update_fingerprint();
@@ -618,7 +644,7 @@ void otrng_plugin_create_privkey_v3(const PurpleAccount *account) {
 
 void otrng_plugin_create_client_profile(const PurpleAccount *account) {
   if (otrng_succeeded(otrng_global_state_generate_client_profile(
-          otrng_state, (PurpleAccount *)account))) {
+          otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
     // TODO: Update the UI if the client is displayed in the UI
@@ -627,7 +653,7 @@ void otrng_plugin_create_client_profile(const PurpleAccount *account) {
 
 void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
   if (otrng_succeeded(otrng_global_state_generate_prekey_profile(
-          otrng_state, (PurpleAccount *)account))) {
+          otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
     otrng_plugin_write_prekey_profile_FILEp();
     // TODO: Update the UI if the client is displayed in the UI
@@ -636,7 +662,7 @@ void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
 
 void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
   if (otrng_succeeded(otrng_global_state_generate_shared_prekey(
-          otrng_state, (PurpleAccount *)account))) {
+          otrng_state, purple_account_to_client_id(account)))) {
     otrng_plugin_write_shared_prekey_FILEp();
     // otrng_ui_update_fingerprint(); // Update the fingerprints VIEW
   }
@@ -661,20 +687,18 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
   /* Generate the instag */
   // TODO: check the return value
   otrng_global_state_instag_generate_generate_FILEp(
-      otrng_state, (PurpleAccount *)account, instagf);
+      otrng_state, purple_account_to_client_id(account), instagf);
 
   fclose(instagf);
 }
 
 static void create_privkey_cb(void *opdata, const char *account_name,
                               const char *protocol_name) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_privkey_v3(account);
+  otrng_plugin_create_privkey_v3(opdata);
 }
 
-static void create_instag_cb(const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_instag(account);
+static void create_instag_cb(const otrng_client_id_s opdata) {
+  otrng_plugin_create_instag(client_id_to_purple_account(opdata));
 }
 
 static int is_logged_in_cb(void *opdata, const char *accountname,
@@ -1948,46 +1972,35 @@ static void otrng_free_mms_table() {
 // TODO: May not be necessary. Remove.
 static otrng_plugin_conversation *
 client_conversation_to_plugin_conversation(const otrng_s *conv) {
-  // TODO: This discards const qualifier
-  PurpleAccount *account = (PurpleAccount *)conv->client->client_id;
-  if (!account) {
-    return NULL;
-  }
-
-  const char *accountname = purple_account_get_username(account);
-  const char *protocol = purple_account_get_protocol_id(account);
+  const char *accountname = conv->client->client_id.account;
+  const char *protocol = conv->client->client_id.protocol;
 
   // TODO: Instance tag?
   return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
 }
 
 // TODO: there is no account
-static void create_privkey_v4(const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_privkey_v4(account);
+static void create_privkey_v4(const otrng_client_id_s opdata) {
+  otrng_plugin_create_privkey_v4(client_id_to_purple_account(opdata));
 }
 
-static void create_privkey_v3(const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_privkey_v3(account);
+static void create_privkey_v3(const otrng_client_id_s opdata) {
+  otrng_plugin_create_privkey_v3(client_id_to_purple_account(opdata));
 }
 
 static void create_client_profile(struct otrng_client_s *client,
-                                  const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_client_profile(account);
+                                  const otrng_client_id_s opdata) {
+  otrng_plugin_create_client_profile(client_id_to_purple_account(opdata));
 }
 
 static void create_prekey_profile(struct otrng_client_s *client,
-                                  const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_prekey_profile(account);
+                                  const otrng_client_id_s opdata) {
+  otrng_plugin_create_prekey_profile(client_id_to_purple_account(opdata));
 }
 
 static void create_shared_prekey(struct otrng_client_s *client,
-                                 const void *opdata) {
-  const PurpleAccount *account = (const PurpleAccount *)opdata;
-  otrng_plugin_create_shared_prekey(account);
+                                 const otrng_client_id_s opdata) {
+  otrng_plugin_create_shared_prekey(client_id_to_purple_account(opdata));
 }
 
 static void gone_secure_v4(const otrng_s *cconv) {
@@ -2147,18 +2160,11 @@ get_shared_session_state_cb(const otrng_s *conv) {
   };
 }
 
-static otrng_result get_account_and_protocol_cb(char **account_name,
-                                                char **protocol_name,
-                                                const void *client_id) {
-  PurpleAccount *account = (PurpleAccount *)client_id;
-
-  if (!client_id) {
-    return OTRNG_ERROR;
-  }
-
-  *account_name =
-      g_strdup(purple_normalize(account, purple_account_get_username(account)));
-  *protocol_name = g_strdup(purple_account_get_protocol_id(account));
+static otrng_result
+get_account_and_protocol_cb(char **account_name, char **protocol_name,
+                            const otrng_client_id_s client_id) {
+  *account_name = g_strdup(client_id.account);
+  *protocol_name = g_strdup(client_id.protocol);
 
   return OTRNG_SUCCESS;
 }
