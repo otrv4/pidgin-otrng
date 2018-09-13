@@ -126,7 +126,7 @@ otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
   otrng_client_s *client = otrng_client_get(otrng_state, account);
 
   /* You can set some configurations here */
-  // otrng_client_state_set_padding(256, client->state);
+  // otrng_client_set_padding(256, client);
 
   return client;
 }
@@ -1972,19 +1972,19 @@ static void create_privkey_v3(const void *opdata) {
   otrng_plugin_create_privkey_v3(account);
 }
 
-static void create_client_profile(struct otrng_client_state_s *state,
+static void create_client_profile(struct otrng_client_s *client,
                                   const void *opdata) {
   const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_client_profile(account);
 }
 
-static void create_prekey_profile(struct otrng_client_state_s *state,
+static void create_prekey_profile(struct otrng_client_s *client,
                                   const void *opdata) {
   const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_prekey_profile(account);
 }
 
-static void create_shared_prekey(struct otrng_client_state_s *state,
+static void create_shared_prekey(struct otrng_client_s *client,
                                  const void *opdata) {
   const PurpleAccount *account = (const PurpleAccount *)opdata;
   otrng_plugin_create_shared_prekey(account);

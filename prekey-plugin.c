@@ -231,9 +231,9 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   }
 
   const client_profile_s *client_profile =
-      otrng_client_state_get_client_profile(client->state);
+      otrng_client_get_client_profile(client);
   const otrng_prekey_profile_s *prekey_profile =
-      otrng_client_state_get_prekey_profile(client->state);
+      otrng_client_get_prekey_profile(client);
 
   // TODO: only publish when needed.
   msg->client_profile = malloc(sizeof(client_profile_s));
@@ -300,8 +300,8 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
     cb(account, client, NULL, uctx);
   } else {
     /* you can set here some preferences */
-    // otrng_client_state_set_minimum_stored_prekey_msg(10000, client->state);
-    // otrng_client_state_set_max_published_prekey_msg(10, client->state);
+    // otrng_client_set_minimum_stored_prekey_msg(10000, client);
+    // otrng_client_set_max_published_prekey_msg(10, client);
 
     if (client->prekey_client) {
       cb(account, client, client->prekey_client, uctx);
