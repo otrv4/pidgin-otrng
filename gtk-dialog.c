@@ -1827,11 +1827,12 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   /*TODO: check if free(buf) is needed*/
 
   PurpleAccount *account = purple_conversation_get_account(conv);
-  const char *peer =
-      purple_normalize(account, purple_conversation_get_name(conv));
+  char *peer =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
   if (!client) {
+    free(peer);
     return;
   }
 
@@ -1841,14 +1842,17 @@ static void otrng_gtk_dialog_clicked_connect(GtkWidget *widget, gpointer data) {
   /* Don't send if we're already ENCRYPTED */
   // TODO: Implement the "Refresh private conversation" behavior
   if (otrng_conversation_is_encrypted(otr_conv)) {
+    free(peer);
     return;
   }
 
   PurpleBuddy *buddy = purple_find_buddy(account, peer);
   if (otrng_plugin_buddy_is_offline(account, buddy)) {
     otrng_plugin_send_non_interactive_auth(peer, account);
+    free(peer);
     return;
   }
+  free(peer);
 
   otrng_plugin_send_default_query_conv(conv);
 }
