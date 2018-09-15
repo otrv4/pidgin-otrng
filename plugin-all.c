@@ -512,8 +512,7 @@ static int otrng_plugin_write_forging_key_FILEp(void) {
 #endif /* WIN32 */
   FILE *f;
 
-  gchar *fn =
-    g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
+  gchar *fn = g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
   if (!fn) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -541,7 +540,6 @@ static int otrng_plugin_write_forging_key_FILEp(void) {
 
   return err;
 }
-
 
 static int otrng_plugin_write_shared_prekey_FILEp(void) {
 #ifndef WIN32
@@ -2259,7 +2257,8 @@ static int otrng_plugin_init_userstate(void) {
   gchar *prekeysfile = NULL;
 
   privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
-  forging_key_file = g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
+  forging_key_file =
+      g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
   storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
@@ -2271,8 +2270,8 @@ static int otrng_plugin_init_userstate(void) {
       g_build_filename(purple_user_dir(), PREKEYPROFILEFNAME, NULL);
   prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
 
-  if (!privkeyfile || !forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
-      !client_profile_filename || !shared_prekey_file ||
+  if (!privkeyfile || !forging_key_file || !privkeyfile3 || !storefile ||
+      !instagfile || !client_profile_filename || !shared_prekey_file ||
       !prekey_profile_filename || !prekeysfile) {
     g_free(privkeyfile);
     g_free(forging_key_file);
