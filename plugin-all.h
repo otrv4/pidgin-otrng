@@ -43,6 +43,7 @@
 #define CLIENTPROFILEFNAME "otr4.client_profile"
 #define PREKEYPROFILEFNAME "otr4.prekey_profile"
 #define PREKEYSFNAME "otr4.prekey_messages"
+#define FORGINGKEYFILENAME "otr4.forging_key"
 
 #define PRIVKEYFNAME "otr.private_key"
 #define STOREFNAME "otr.fingerprints"
@@ -76,6 +77,9 @@ void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
 
 /* Generate a V4 private key */
 void otrng_plugin_create_privkey_v4(const PurpleAccount *account);
+
+/* Generate a forging key */
+void otrng_plugin_create_forging_key(const PurpleAccount *account);
 
 /* Generate a V3 private key */
 void otrng_plugin_create_privkey_v3(const PurpleAccount *account);
