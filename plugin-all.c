@@ -1431,9 +1431,10 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
 
   account = purple_conversation_get_account(conv);
   // accountname = purple_account_get_username(account);
-  peer = purple_normalize(account, purple_conversation_get_name(conv));
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
+
+  peer = purple_normalize(account, purple_conversation_get_name(conv));
   otrng_ui_get_prefs(&prefs, account, peer);
 
   // TODO: Use policy?
