@@ -677,14 +677,16 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   PurplePlugin *p;
   char *proto_name;
 
-  const char *username = NULL;
+  char *username = NULL;
   otrng_plugin_fingerprint *fprint = NULL;
 
   PurpleConversation *pconv = otrng_plugin_conversation_to_purple_conv(conv, 0);
   PurpleAccount *account = purple_conversation_get_account(pconv);
-  username = purple_normalize(account, purple_conversation_get_name(pconv));
+  username =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(pconv)));
 
   fprint = otrng_plugin_fingerprint_get_active(username);
+  free(username);
   if (fprint == NULL) {
     return;
   }
@@ -970,8 +972,8 @@ create_smp_progress_dialog(GtkWindow *parent,
 
   pconv = otrng_plugin_conversation_to_purple_conv(conv, 1);
   PurpleAccount *account = purple_conversation_get_account(pconv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(pconv));
+  char *username =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(pconv)));
 
   // TODO: How to get this?
   // This came from context->smstate->received_question
@@ -1011,6 +1013,7 @@ create_smp_progress_dialog(GtkWindow *parent,
                               received_question ? _("Authenticating to %s")
                                                 : _("Authenticating %s"));
   label_text = g_strdup_printf(label_pat, username);
+  free(username);
   g_free(label_pat);
 
   label = gtk_label_new(NULL);
@@ -1734,6 +1737,7 @@ static void otrng_gtk_dialog_finished(const char *accountname,
     return;
   }
 
+  // This purple_normalize is safe without g_strdup
   buf = g_strdup_printf(
       _("%s has ended his/her private conversation with "
         "you; you should do the same."),
@@ -1788,13 +1792,14 @@ static void otrng_gtk_dialog_stillconnected(ConnContext *context) {
   }
 
   PurpleAccount *account = purple_conversation_get_account(conv);
-  const char *username =
-      purple_normalize(account, purple_conversation_get_name(conv));
+  char *username =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
   buf =
       g_strdup_printf(format_buf, username,
                       context->protocol_version == 1 ? _("  Warning: using old "
                                                          "protocol version 1.")
                                                      : "");
+  free(username);
 
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 

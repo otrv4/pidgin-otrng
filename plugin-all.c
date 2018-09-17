@@ -153,16 +153,20 @@ otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
 otrng_conversation_s *
 purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   PurpleAccount *account = NULL;
-  const char *recipient = NULL;
+  char *recipient = NULL;
 
   account = purple_conversation_get_account(conv);
-  recipient = purple_normalize(account, purple_conversation_get_name(conv));
+  recipient =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
 
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
 
   // TODO: should we force creation here?
-  return otrng_client_get_conversation(0, recipient, client);
+  otrng_conversation_s *result =
+      otrng_client_get_conversation(0, recipient, client);
+  free(recipient);
+  return result;
 }
 
 otrng_conversation_s *
@@ -1317,10 +1321,13 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv) {
 
   const char *accountname = purple_account_get_username(account);
   const char *protocol = purple_account_get_protocol_id(account);
-  const char *peer =
-      purple_normalize(account, purple_conversation_get_name(conv));
+  char *peer =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
 
-  return otrng_plugin_conversation_new(accountname, protocol, peer);
+  otrng_plugin_conversation *result =
+      otrng_plugin_conversation_new(accountname, protocol, peer);
+  free(peer);
+  return result;
 }
 
 void otrng_plugin_conversation_free(otrng_plugin_conversation *conv) {
@@ -1396,16 +1403,18 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   PurpleConversation *purp_conv = NULL;
   PurpleAccount *account = NULL;
   char *msg;
-  const char *username;
+  char *username;
 
   purp_conv = otrng_plugin_userinfo_to_conv(conv->account, conv->protocol,
                                             conv->peer, 1);
 
   // TODO: change this later, but it is so, so it does compile
   account = purple_conversation_get_account(purp_conv);
-  username = purple_normalize(account, purple_conversation_get_name(purp_conv));
+  username = g_strdup(
+      purple_normalize(account, purple_conversation_get_name(purp_conv)));
   OtrgUiPrefs prefs;
   otrng_ui_get_prefs(&prefs, account, username);
+  free(username);
 
   otrng_client_s *client = get_otrng_client(conv->protocol, conv->account);
   if (!client) {
@@ -1425,7 +1434,7 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
  * conversation. */
 void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
   PurpleAccount *account = NULL;
-  const char *peer = NULL;
+  char *peer = NULL;
   char *msg = NULL;
   OtrgUiPrefs prefs;
 
@@ -1434,7 +1443,8 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
 
-  peer = purple_normalize(account, purple_conversation_get_name(conv));
+  peer =
+      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
   otrng_ui_get_prefs(&prefs, account, peer);
 
   // TODO: Use policy?
@@ -1442,6 +1452,7 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
   msg = otrng_client_query_message(peer, "", client);
   otrng_plugin_inject_message(account, peer,
                               msg ? msg : OTRG_PLUGIN_DEFAULT_QUERY);
+  free(peer);
   free(msg);
 }
 
