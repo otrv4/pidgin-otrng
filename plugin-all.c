@@ -617,6 +617,42 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
   return err;
 }
 
+static int otrng_plugin_write_expired_client_profile_FILEp(void) {
+#ifndef WIN32
+  mode_t mask;
+#endif /* WIN32 */
+  FILE *filep;
+
+  gchar *file_name =
+      g_build_filename(purple_user_dir(), EXPCLIENTPROFILEFNAME, NULL);
+  if (!file_name) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+  filep = g_fopen(file_name, "w+b");
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+
+  g_free(file_name);
+  if (!filep) {
+    fprintf(stderr, _("Could not write client profile file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(
+          otrng_global_state_client_profile_write_FILEp(otrng_state, filep))) {
+    err = -1;
+  }
+  fclose(filep);
+
+  return err;
+}
+
 static int otrng_plugin_write_prekey_profile_FILEp(void) {
 #ifndef WIN32
   mode_t mask;
@@ -704,6 +740,14 @@ void otrng_plugin_create_client_profile(const PurpleAccount *account) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
     // TODO: Update the UI if the client is displayed in the UI
+  }
+}
+
+void otrng_plugin_write_expired_client_profile(const PurpleAccount *account) {
+  if (otrng_succeeded(otrng_global_state_generate_client_profile(
+          otrng_state, purple_account_to_client_id(account)))) {
+    // TODO: check the return error
+    otrng_plugin_write_expired_client_profile_FILEp();
   }
 }
 
@@ -2061,6 +2105,12 @@ static void create_client_profile(struct otrng_client_s *client,
   otrng_plugin_create_client_profile(client_id_to_purple_account(opdata));
 }
 
+static void write_expired_client_profile(struct otrng_client_s *client,
+                                         const otrng_client_id_s opdata) {
+  otrng_plugin_write_expired_client_profile(
+      client_id_to_purple_account(opdata));
+}
+
 static void create_prekey_profile(struct otrng_client_s *client,
                                   const otrng_client_id_s opdata) {
   otrng_plugin_create_prekey_profile(client_id_to_purple_account(opdata));
@@ -2244,6 +2294,7 @@ static otrng_client_callbacks_s callbacks_v4 = {
     create_privkey_v4,
     create_forging_key,
     create_client_profile,
+    write_expired_client_profile,
     create_prekey_profile,
     create_shared_prekey,
     gone_secure_v4,

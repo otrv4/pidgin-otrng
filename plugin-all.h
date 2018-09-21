@@ -41,6 +41,7 @@
 #define STOREFNAMEv4 "otr4.fingerprints"
 #define SHAREDPREKEYFILENAME "otr4.shared_prekey"
 #define CLIENTPROFILEFNAME "otr4.client_profile"
+#define EXPCLIENTPROFILEFNAME "otr4.exp_client_profile"
 #define PREKEYPROFILEFNAME "otr4.prekey_profile"
 #define PREKEYSFNAME "otr4.prekey_messages"
 #define FORGINGKEYFILENAME "otr4.forging_key"
