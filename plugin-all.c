@@ -293,6 +293,15 @@ static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
   }
 }
 
+static void otrng_plugin_read_expired_prekey_profile(FILE *profiles_filep) {
+  if (otrng_failed(otrng_global_state_expired_prekey_profile_read_FILEp(
+          otrng_state, profiles_filep,
+          protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    return;
+  }
+}
+
 static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
   if (otrng_failed(otrng_global_state_prekeys_read_FILEp(
           otrng_state, prekeys_filep,
@@ -2464,6 +2473,9 @@ static int otrng_plugin_init_userstate(void) {
 
   /* Read prekey profile */
   otrng_plugin_read_prekey_profile(prekey_profile_filep);
+
+  /* Read prekey profile */
+  otrng_plugin_read_expired_prekey_profile(prekey_profile_filep);
 
   /* Read prekey messages */
   otrng_plugin_read_prekeys(prekeyf);
