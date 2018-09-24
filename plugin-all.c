@@ -266,6 +266,15 @@ static void otrng_plugin_read_client_profile(FILE *profiles_filep) {
   }
 }
 
+static void otrng_plugin_read_expired_client_profile(FILE *profiles_filep) {
+  if (otrng_failed(otrng_global_state_expired_client_profile_read_FILEp(
+          otrng_state, profiles_filep,
+          protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    return;
+  }
+}
+
 static void otrng_plugin_read_shared_prekey(FILE *shared_prekey_filep) {
   if (otrng_failed(otrng_global_state_shared_prekey_read_FILEp(
           otrng_state, shared_prekey_filep,
@@ -445,7 +454,8 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
 #endif /* WIN32 */
   FILE *privf;
 
-  gchar *privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
+  gchar *privkeyfile =
+      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
   if (!privkeyfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -481,7 +491,7 @@ static int otrng_plugin_write_privkey_v4_FILEp(void) {
   FILE *privf;
 
   gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
+      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_v4, NULL);
   if (!privkeyfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -516,7 +526,7 @@ static int otrng_plugin_write_forging_key_FILEp(void) {
 #endif /* WIN32 */
   FILE *f;
 
-  gchar *fn = g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
+  gchar *fn = g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
   if (!fn) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -552,7 +562,7 @@ static int otrng_plugin_write_shared_prekey_FILEp(void) {
   FILE *privf;
 
   gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), SHAREDPREKEYFILENAME, NULL);
+      g_build_filename(purple_user_dir(), SHARED_PREKEY_FILE_NAME, NULL);
   if (!privkeyfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -588,7 +598,7 @@ static int otrng_plugin_write_client_profile_FILEp(void) {
   FILE *filep;
 
   gchar *file_name =
-      g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
+      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
   if (!file_name) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -624,7 +634,7 @@ static int otrng_plugin_write_expired_client_profile_FILEp(void) {
   FILE *filep;
 
   gchar *file_name =
-      g_build_filename(purple_user_dir(), EXPCLIENTPROFILEFNAME, NULL);
+      g_build_filename(purple_user_dir(), EXP_CLIENT_PROFILE_FILE_NAME, NULL);
   if (!file_name) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -660,7 +670,7 @@ static int otrng_plugin_write_prekey_profile_FILEp(void) {
   FILE *filep;
 
   gchar *file_name =
-      g_build_filename(purple_user_dir(), PREKEYPROFILEFNAME, NULL);
+      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
   if (!file_name) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -696,7 +706,7 @@ static int otrng_plugin_write_expired_prekey_profile_FILEp(void) {
   FILE *filep;
 
   gchar *file_name =
-      g_build_filename(purple_user_dir(), EXPPREKEYPROFILEFNAME, NULL);
+      g_build_filename(purple_user_dir(), EXP_PREKEY_PROFILE_FILE_NAME, NULL);
   if (!file_name) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
@@ -820,7 +830,8 @@ void otrng_plugin_create_shared_prekey(const PurpleAccount *account) {
 void otrng_plugin_create_instag(const PurpleAccount *account) {
   FILE *instagf;
 
-  gchar *instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+  gchar *instagfile =
+      g_build_filename(purple_user_dir(), INSTAG_FILE_NAME, NULL);
   if (!instagfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return;
@@ -1810,7 +1821,8 @@ void otrng_plugin_write_fingerprints_v4(void) {
   mode_t mask;
 #endif /* WIN32 */
   FILE *storef;
-  gchar *storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
+  gchar *storefile =
+      g_build_filename(purple_user_dir(), STORE_FILE_NAME_v4, NULL);
 #ifndef WIN32
   mask = umask(0077);
 #endif /* WIN32 */
@@ -2084,7 +2096,7 @@ static void otrng_int_free(gpointer data) { g_free((int *)data); }
 
 static void otrng_init_mms_table() {
   /* Hardcoded defaults for maximum message sizes for various
-   * protocols.  These can be overridden in the user's MAXMSGSIZEFNAME
+   * protocols.  These can be overridden in the user's MAX_MSG_SIZE+FILE_NAME
    * file. */
   static const struct s_OtrgIdProtPair {
     char *protid;
@@ -2107,7 +2119,8 @@ static void otrng_init_mms_table() {
     g_hash_table_insert(otrng_max_message_size_table, nextprot, nextsize);
   }
 
-  maxmsgsizefile = g_build_filename(purple_user_dir(), MAXMSGSIZEFNAME, NULL);
+  maxmsgsizefile =
+      g_build_filename(purple_user_dir(), MAX_MSG_SIZE_FILE_NAME, NULL);
 
   if (maxmsgsizefile) {
     mmsf = g_fopen(maxmsgsizefile, "rt");
@@ -2374,19 +2387,19 @@ static int otrng_plugin_init_userstate(void) {
   gchar *prekey_profile_filename = NULL;
   gchar *prekeysfile = NULL;
 
-  privkeyfile = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
+  privkeyfile = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_v4, NULL);
   forging_key_file =
-      g_build_filename(purple_user_dir(), FORGINGKEYFILENAME, NULL);
-  privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEYFNAME, NULL);
-  storefile = g_build_filename(purple_user_dir(), STOREFNAMEv4, NULL);
-  instagfile = g_build_filename(purple_user_dir(), INSTAGFNAME, NULL);
+      g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
+  privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
+  storefile = g_build_filename(purple_user_dir(), STORE_FILE_NAME_v4, NULL);
+  instagfile = g_build_filename(purple_user_dir(), INSTAG_FILE_NAME, NULL);
   client_profile_filename =
-      g_build_filename(purple_user_dir(), CLIENTPROFILEFNAME, NULL);
+      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
   shared_prekey_file =
-      g_build_filename(purple_user_dir(), SHAREDPREKEYFILENAME, NULL);
+      g_build_filename(purple_user_dir(), SHARED_PREKEY_FILE_NAME, NULL);
   prekey_profile_filename =
-      g_build_filename(purple_user_dir(), PREKEYPROFILEFNAME, NULL);
-  prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
+      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
+  prekeysfile = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
 
   if (!privkeyfile || !forging_key_file || !privkeyfile3 || !storefile ||
       !instagfile || !client_profile_filename || !shared_prekey_file ||
@@ -2426,29 +2439,33 @@ static int otrng_plugin_init_userstate(void) {
 
   otrng_state = otrng_global_state_new(&callbacks_v4);
 
-  // Read instance tags to both V4 and V3 libraries' storage
+  /* Read instance tags to both V4 and V3 libraries' storage */
   otrng_plugin_read_instance_tags_FILEp(instagf);
 
-  // Read V3 and V4 private keys from files
+  /* Read V3 and V4 private keys from files */
   otrng_plugin_read_private_keys(priv3f, privf);
 
+  /* Read forging key from file */
   otrng_plugin_read_forging_keys(forgf);
 
-  // Read fingerprints to OTR4 fingerprint store
+  /* Read fingerprints to OTR4 fingerprint store */
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
-  otrng_ui_update_fingerprint(); // Updates the view
+  otrng_ui_update_fingerprint(); /* Updates the view */
 
-  // Read client profile
+  /* Read client profile */
   otrng_plugin_read_client_profile(client_profile_filep);
 
-  // Read shared prekey
+  /* Read exp client profile */
+  otrng_plugin_read_expired_client_profile(client_profile_filep);
+
+  /* Read shared prekey */
   otrng_plugin_read_shared_prekey(shared_prekey_filep);
 
-  // Read prekey profile
+  /* Read prekey profile */
   otrng_plugin_read_prekey_profile(prekey_profile_filep);
 
-  // Read prekeys
+  /* Read prekey messages */
   otrng_plugin_read_prekeys(prekeyf);
 
   if (priv3f) {

@@ -191,13 +191,12 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
 
   send_offline_messages_to_each_ensemble(ensembles, num_ensembles, c);
 
-  // TODO: this can be causing the crash
   free(c->message);
   free(c->recipient);
   free(c);
 }
 
-#define PREKEYSFNAME "otr4.prekey_messages"
+#define PREKEYS_FILE_NAME "otr4.prekey_messages"
 
 static int
 build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
@@ -209,7 +208,8 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   }
 
   FILE *prekeyf = NULL;
-  gchar *prekeysfile = g_build_filename(purple_user_dir(), PREKEYSFNAME, NULL);
+  gchar *prekeysfile =
+      g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
   if (!prekeysfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return 0;

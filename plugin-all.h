@@ -37,20 +37,20 @@
 /* libotrng headers */
 #include "otrng-client.h"
 
-#define PRIVKEYFNAMEv4 "otr4.private_key"
-#define STOREFNAMEv4 "otr4.fingerprints"
-#define SHAREDPREKEYFILENAME "otr4.shared_prekey"
-#define CLIENTPROFILEFNAME "otr4.client_profile"
-#define EXPCLIENTPROFILEFNAME "otr4.exp_client_profile"
-#define EXPPREKEYPROFILEFNAME "otr4.exp_prekey_profile"
-#define PREKEYPROFILEFNAME "otr4.prekey_profile"
-#define PREKEYSFNAME "otr4.prekey_messages"
-#define FORGINGKEYFILENAME "otr4.forging_key"
+#define PRIVKEY_FILE_NAME_v4 "otr4.private_key"
+#define STORE_FILE_NAME_v4 "otr4.fingerprints"
+#define SHARED_PREKEY_FILE_NAME "otr4.shared_prekey"
+#define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
+#define EXP_CLIENT_PROFILE_FILE_NAME "otr4.exp_client_profile"
+#define EXP_PREKEY_PROFILE_FILE_NAME "otr4.exp_prekey_profile"
+#define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
+#define PREKEYS_FILE_NAME "otr4.prekey_messages"
+#define FORGING_KEY_FILE_NAME "otr4.forging_key"
 
-#define PRIVKEYFNAME "otr.private_key"
-#define STOREFNAME "otr.fingerprints"
-#define INSTAGFNAME "otr.instance_tags"
-#define MAXMSGSIZEFNAME "otr.max_message_size"
+#define PRIVKEY_FILE_NAME "otr.private_key"
+#define STORE_FILE_NAME "otr.fingerprints"
+#define INSTAG_FILE_NAME "otr.instance_tags"
+#define MAX_MSG_SIZE_FILE_NAME "otr.max_message_size"
 
 extern PurplePlugin *otrng_plugin_handle;
 
