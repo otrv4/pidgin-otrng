@@ -237,8 +237,8 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   }
 
   msg->num_prekey_messages = max_published_prekey_msg;
-  msg->prekey_messages =
-      otrng_client_build_prekey_messages(msg->num_prekey_messages, client);
+  msg->prekey_messages = otrng_client_build_prekey_messages(
+      msg->num_prekey_messages, client, &msg->ecdh_keys, &msg->dh_keys);
 
   if (!msg->prekey_messages) {
     return 0;
@@ -255,6 +255,8 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
 
   msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
   otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
+
+  *msg->prekey_profile_key = *client->shared_prekey_pair->priv;
 
   if (!otrng_global_state_prekey_messages_write_FILEp(otrng_state, prekeyf)) {
     return 0;
