@@ -58,7 +58,7 @@ extern otrng_global_state_s *otrng_state;
 
 otrng_client_s *get_otrng_client(const char *protocol, const char *accountname);
 
-otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account);
+otrng_client_s *purple_account_to_otrng_client(const PurpleAccount *account);
 
 otrng_conversation_s *
 purple_conversation_to_otrng_conversation(const PurpleConversation *conv);

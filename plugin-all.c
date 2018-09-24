@@ -140,7 +140,7 @@ otrng_client_s *get_otrng_client(const char *protocol,
 }
 
 // TODO: REMOVE
-otrng_client_s *purple_account_to_otrng_client(PurpleAccount *account) {
+otrng_client_s *purple_account_to_otrng_client(const PurpleAccount *account) {
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
 
@@ -770,11 +770,13 @@ void otrng_plugin_create_privkey_v3(const PurpleAccount *account) {
   otrng_dialog_private_key_wait_done(waithandle);
 }
 
-void otrng_plugin_create_client_profile(const PurpleAccount *account) {
+void otrng_plugin_create_client_profile(PurpleAccount *account) {
   if (otrng_succeeded(otrng_global_state_generate_client_profile(
           otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
+    otrng_client_s *client = purple_account_to_otrng_client(account);
+	otrng_prekey_client_set_client_profile_publication(client->prekey_client);
     // TODO: Update the UI if the client is displayed in the UI
   }
 }
@@ -792,6 +794,8 @@ void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
           otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
     otrng_plugin_write_prekey_profile_FILEp();
+    otrng_client_s *client = purple_account_to_otrng_client(account);
+	otrng_prekey_client_set_prekey_profile_publication(client->prekey_client);
     // TODO: Update the UI if the client is displayed in the UI
   }
 }
@@ -824,7 +828,7 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
   instagf = g_fopen(instagfile, "w+b");
   g_free(instagfile);
   if (!instagf) {
-    fprintf(stderr, _("Could not write private key file\n"));
+    fprintf(stderr, _("Could not write instange tag file\n"));
     return;
   }
 

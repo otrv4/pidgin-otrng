@@ -201,7 +201,7 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
 
 static int
 build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
-                                    unsigned int max_published_prekey_msg,
+                                    otrng_prekey_publication_policy_s *policy,
                                     void *ctx) {
   if (!ctx) {
     printf("Received invalid ctx\n");
@@ -236,7 +236,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  msg->num_prekey_messages = max_published_prekey_msg;
+  msg->num_prekey_messages = policy->max_published_prekey_msg;
   msg->prekey_messages = otrng_client_build_prekey_messages(
       msg->num_prekey_messages, client, &msg->ecdh_keys, &msg->dh_keys);
 
@@ -244,17 +244,21 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  const client_profile_s *client_profile =
-      otrng_client_get_client_profile(client);
-  const otrng_prekey_profile_s *prekey_profile =
-      otrng_client_get_prekey_profile(client);
+  if (policy->publish_client_profile) {
+    const client_profile_s *client_profile =
+        otrng_client_get_client_profile(client);
 
-  // TODO: only publish when needed.
-  msg->client_profile = malloc(sizeof(client_profile_s));
-  otrng_client_profile_copy(msg->client_profile, client_profile);
+    msg->client_profile = malloc(sizeof(client_profile_s));
+    otrng_client_profile_copy(msg->client_profile, client_profile);
+  }
 
-  msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
-  otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
+  if (policy->publish_prekey_profile) {
+    const otrng_prekey_profile_s *prekey_profile =
+        otrng_client_get_prekey_profile(client);
+
+    msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
+    otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
+  }
 
   *msg->prekey_profile_key = *client->shared_prekey_pair->priv;
 
