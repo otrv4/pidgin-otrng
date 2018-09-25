@@ -69,7 +69,11 @@
 #include "gtk-dialog.h"
 #include "gtk-ui.h"
 #include "i18n.h"
+#include "long_term_keys.h"
+#include "pidgin-helpers.h"
 #include "prekey-discovery.h"
+
+#include <libotr-ng/client_orchestration.h>
 
 /* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 0
@@ -104,138 +108,16 @@ GHashTable *otrng_max_message_size_table = NULL;
 
 GHashTable *otrng_fingerprints_table = NULL;
 
-static otrng_client_id_s
-protocol_and_account_to_client_id(const char *protocol, const char *account) {
-  otrng_client_id_s result = {
-      .protocol = protocol,
-      .account = account,
-  };
-  return result;
-}
-
-static otrng_client_id_s
-purple_account_to_client_id(const PurpleAccount *account) {
-  const char *protocol = purple_account_get_protocol_id(account);
-  const char *accountname =
-      g_strdup(purple_normalize(account, purple_account_get_username(account)));
-  return protocol_and_account_to_client_id(protocol, accountname);
-}
-
-static PurpleAccount *
-protocol_and_account_to_purple_account(const char *protocol,
-                                       const char *accountname) {
-  return purple_accounts_find(accountname, protocol);
-}
-
-static PurpleAccount *
-client_id_to_purple_account(const otrng_client_id_s client_id) {
-  return protocol_and_account_to_purple_account(client_id.protocol,
-                                                client_id.account);
-}
-
-otrng_client_s *get_otrng_client(const char *protocol,
-                                 const char *accountname) {
-  return otrng_client_get(
-      otrng_state, protocol_and_account_to_client_id(protocol, accountname));
-}
-
-// TODO: REMOVE
-otrng_client_s *purple_account_to_otrng_client(const PurpleAccount *account) {
-  otrng_client_s *client =
-      otrng_client_get(otrng_state, purple_account_to_client_id(account));
-
-  /* You can set some configurations here */
-  // otrng_client_set_padding(256, client);
-
-  return client;
-}
-
-otrng_conversation_s *
-purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
-  PurpleAccount *account = NULL;
-  char *recipient = NULL;
-
-  account = purple_conversation_get_account(conv);
-  recipient =
-      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
-
-  otrng_client_s *client =
-      otrng_client_get(otrng_state, purple_account_to_client_id(account));
-
-  // TODO: should we force creation here?
-  otrng_conversation_s *result =
-      otrng_client_get_conversation(0, recipient, client);
-  free(recipient);
-  return result;
-}
-
-otrng_conversation_s *
-otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f) {
-  otrng_client_s *client = NULL;
-
-  if (!f) {
-    return NULL;
-  }
-
-  client = get_otrng_client(f->protocol, f->account);
-  if (!client) {
-    return NULL;
-  }
-
-  return otrng_client_get_conversation(0, f->username, client);
-}
-
 static void g_destroy_plugin_fingerprint(gpointer data) {
   otrng_plugin_fingerprint *fp = data;
 
   free(fp->protocol);
-  fp->protocol = NULL;
-
   free(fp->account);
-  fp->account = NULL;
-
   free(fp->username);
-  fp->username = NULL;
-
   free(fp);
 }
 
-static otrng_client_id_s
-protocol_and_account_to_purple_conversation(FILE *privf) {
-  char *line = NULL;
-  size_t cap = 0;
-  int len = 0;
-
-  otrng_client_id_s null_result = {
-      .protocol = NULL,
-      .account = NULL,
-  };
-
-  if (!privf) {
-    return null_result;
-  }
-
-  while ((len = getline(&line, &cap, privf)) != -1) {
-    char *delim = strchr(line, ':');
-
-    if (!delim) {
-      return null_result;
-    }
-    *delim = 0;
-    line[len - 1] = 0; /* \n */
-
-    return protocol_and_account_to_client_id(line, delim + 1);
-  }
-
-  return null_result;
-}
-
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-  if (otrng_failed(otrng_global_state_private_key_v4_read_FILEp(
-          otrng_state, priv4, protocol_and_account_to_purple_conversation))) {
-    // TODO: react better on failure
-    return;
-  }
   if (!otrng_global_state_private_key_v3_read_FILEp(otrng_state, priv3)) {
     // TODO: error?
   }
@@ -315,10 +197,6 @@ static void otrng_plugin_fingerprint_store_create() {
       g_str_hash, g_str_equal, g_free, g_destroy_plugin_fingerprint);
 }
 
-GList *otrng_plugin_fingerprint_get_all(void) {
-  return g_hash_table_get_values(otrng_fingerprints_table);
-}
-
 otrng_plugin_fingerprint *
 otrng_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN]) {
   return g_hash_table_lookup(otrng_fingerprints_table, fp);
@@ -342,28 +220,6 @@ otrng_plugin_fingerprint_new(const char fp[OTRNG_FPRINT_HUMAN_LEN],
   char *key = g_strdup(fp);
   g_hash_table_insert(otrng_fingerprints_table, key, info);
   return info;
-}
-
-void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]) {
-  g_hash_table_remove(otrng_fingerprints_table, fp);
-}
-
-static gboolean find_active_fingerprint(gpointer key, gpointer value,
-                                        gpointer user_data) {
-  otrng_plugin_fingerprint *info = value;
-
-  // TODO: get the "active" and not the first.
-  if (!strcmp(info->username, user_data)) {
-    return TRUE;
-  }
-
-  return FALSE;
-}
-
-otrng_plugin_fingerprint *
-otrng_plugin_fingerprint_get_active(const char *peer) {
-  return g_hash_table_find(otrng_fingerprints_table, find_active_fingerprint,
-                           (gpointer)peer);
 }
 
 /* Send an IM from the given account to the given recipient.  Display an
@@ -795,7 +651,7 @@ void otrng_plugin_create_client_profile(PurpleAccount *account) {
     // TODO: check the return error
     otrng_plugin_write_client_profile_FILEp();
     otrng_client_s *client = purple_account_to_otrng_client(account);
-	otrng_prekey_client_set_client_profile_publication(client->prekey_client);
+    otrng_prekey_client_set_client_profile_publication(client->prekey_client);
     // TODO: Update the UI if the client is displayed in the UI
   }
 }
@@ -814,7 +670,7 @@ void otrng_plugin_create_prekey_profile(const PurpleAccount *account) {
     // TODO: check the return error
     otrng_plugin_write_prekey_profile_FILEp();
     otrng_client_s *client = purple_account_to_otrng_client(account);
-	otrng_prekey_client_set_prekey_profile_publication(client->prekey_client);
+    otrng_prekey_client_set_prekey_profile_publication(client->prekey_client);
     // TODO: Update the UI if the client is displayed in the UI
   }
 }
@@ -1340,6 +1196,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
   username = g_strdup(purple_normalize(account, who));
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
+  otrng_client_ensure_correct_state(client);
 
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, username, client);
@@ -2363,30 +2220,7 @@ get_account_and_protocol_cb(char **account_name, char **protocol_name,
   return OTRNG_SUCCESS;
 }
 
-static otrng_client_callbacks_s callbacks_v4 = {
-    get_account_and_protocol_cb,
-    create_instag_cb,
-    create_privkey_v3,
-    create_privkey_v4,
-    create_forging_key,
-    create_client_profile,
-    write_expired_client_profile,
-    create_prekey_profile,
-    write_expired_prekey_profile,
-    create_shared_prekey,
-    gone_secure_v4,
-    gone_insecure_v4,
-    fingerprint_seen_v4,
-    fingerprint_seen_v3,
-    smp_ask_for_secret_v4,
-    smp_ask_for_answer_v4,
-    smp_update_v4,
-    NULL, // TODO: received_extra_symm_key
-    get_shared_session_state_cb,
-};
-
 static int otrng_plugin_init_userstate(void) {
-  gchar *privkeyfile = NULL;
   gchar *forging_key_file = NULL;
   gchar *privkeyfile3 = NULL;
   gchar *storefile = NULL;
@@ -2396,7 +2230,6 @@ static int otrng_plugin_init_userstate(void) {
   gchar *prekey_profile_filename = NULL;
   gchar *prekeysfile = NULL;
 
-  privkeyfile = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_v4, NULL);
   forging_key_file =
       g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
@@ -2410,10 +2243,9 @@ static int otrng_plugin_init_userstate(void) {
       g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
   prekeysfile = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
 
-  if (!privkeyfile || !forging_key_file || !privkeyfile3 || !storefile ||
-      !instagfile || !client_profile_filename || !shared_prekey_file ||
+  if (!forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
+      !client_profile_filename || !shared_prekey_file ||
       !prekey_profile_filename || !prekeysfile) {
-    g_free(privkeyfile);
     g_free(forging_key_file);
     g_free(privkeyfile3);
     g_free(storefile);
@@ -2426,7 +2258,6 @@ static int otrng_plugin_init_userstate(void) {
     return 1;
   }
 
-  FILE *privf = g_fopen(privkeyfile, "rb");
   FILE *forgf = g_fopen(forging_key_file, "rb");
   FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *storef = g_fopen(storefile, "rb");
@@ -2436,7 +2267,6 @@ static int otrng_plugin_init_userstate(void) {
   FILE *prekey_profile_filep = g_fopen(prekey_profile_filename, "rb");
   FILE *prekeyf = g_fopen(prekeysfile, "rb");
 
-  g_free(privkeyfile);
   g_free(forging_key_file);
   g_free(privkeyfile3);
   g_free(storefile);
@@ -2446,13 +2276,36 @@ static int otrng_plugin_init_userstate(void) {
   g_free(prekey_profile_filename);
   g_free(prekeysfile);
 
-  otrng_state = otrng_global_state_new(&callbacks_v4);
+  otrng_client_callbacks_s *callbacks =
+      malloc(sizeof(otrng_client_callbacks_s));
+  callbacks->get_account_and_protocol = get_account_and_protocol_cb;
+  callbacks->create_instag = create_instag_cb;
+  callbacks->create_privkey_v3 = create_privkey_v3;
+  callbacks->create_privkey_v4 = create_privkey_v4;
+  callbacks->create_forging_key = create_forging_key;
+  callbacks->create_client_profile = create_client_profile;
+  callbacks->write_expired_client_profile = write_expired_client_profile;
+  callbacks->create_prekey_profile = create_prekey_profile;
+  callbacks->write_expired_prekey_profile = write_expired_prekey_profile;
+  callbacks->create_shared_prekey = create_shared_prekey;
+  callbacks->gone_secure = gone_secure_v4;
+  callbacks->gone_insecure = gone_insecure_v4;
+  callbacks->fingerprint_seen = fingerprint_seen_v4;
+  callbacks->fingerprint_seen_v3 = fingerprint_seen_v3;
+  callbacks->smp_ask_for_secret = smp_ask_for_secret_v4;
+  callbacks->smp_ask_for_answer = smp_ask_for_answer_v4;
+  callbacks->smp_update = smp_update_v4;
+  callbacks->get_shared_session_state = get_shared_session_state_cb;
+
+  long_term_keys_init_userstate(callbacks);
+
+  otrng_state = otrng_global_state_new(callbacks);
 
   /* Read instance tags to both V4 and V3 libraries' storage */
   otrng_plugin_read_instance_tags_FILEp(instagf);
 
-  /* Read V3 and V4 private keys from files */
-  otrng_plugin_read_private_keys(priv3f, privf);
+  // Read V3 private key from files
+  otrng_plugin_read_private_keys(priv3f, NULL);
 
   /* Read forging key from file */
   otrng_plugin_read_forging_keys(forgf);
@@ -2482,10 +2335,6 @@ static int otrng_plugin_init_userstate(void) {
 
   if (priv3f) {
     fclose(priv3f);
-  }
-
-  if (privf) {
-    fclose(privf);
   }
 
   if (forgf) {

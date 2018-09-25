@@ -44,7 +44,10 @@ pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
 				  gtk-ui.c \
 				  gtk-dialog.c \
 				  tooltipmenu.c \
-				  otrng-client.c
+				  otrng-client.c \
+				  long_term_keys.c \
+				  fingerprint.c \
+                  pidgin-helpers.c
 
 pidgin_otrng_la_LDFLAGS=	-module -avoid-version
 pidgin_otrng_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@

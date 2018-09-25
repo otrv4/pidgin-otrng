@@ -65,6 +65,7 @@
 /* pidgin-otrng headers */
 #include "gtk-dialog.h"
 #include "otr-icons.h"
+#include "pidgin-helpers.h"
 #include "plugin-all.h"
 #include "ui.h"
 

@@ -49,6 +49,7 @@
 
 /* pidgin-otrng headers */
 #include "dialogs.h"
+#include "pidgin-helpers.h"
 #include "plugin-all.h"
 
 static const OtrgUiUiOps *ui_ops = NULL;

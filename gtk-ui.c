@@ -50,6 +50,7 @@
 
 /* pidgin-otrng headers */
 #include "dialogs.h"
+#include "pidgin-helpers.h"
 #include "plugin-all.h"
 #include "ui.h"
 

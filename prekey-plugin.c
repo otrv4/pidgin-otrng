@@ -48,6 +48,7 @@
 #include <connection.h>
 #include <prpl.h>
 
+#include <libotr-ng/client_orchestration.h>
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
 
@@ -146,6 +147,7 @@ static void send_offline_messages_to_each_ensemble(
   if (!client) {
     return;
   }
+  otrng_client_ensure_correct_state(client);
 
   int i;
   for (i = 0; i < num_ensembles; i++) {
@@ -235,6 +237,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
   if (!client) {
     return 0;
   }
+  otrng_client_ensure_correct_state(client);
 
   msg->num_prekey_messages = policy->max_published_prekey_msg;
   msg->prekey_messages = otrng_client_build_prekey_messages(
@@ -311,6 +314,7 @@ static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
   if (!client) {
     return NULL;
   }
+  otrng_client_ensure_correct_state(client);
   return client->prekey_client;
 }
 
@@ -321,6 +325,7 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
   if (!client) {
     cb(account, client, NULL, uctx);
   } else {
+    otrng_client_ensure_correct_state(client);
     /* you can set here some preferences */
     // otrng_client_set_minimum_stored_prekey_msg(10000, client);
     // otrng_client_set_max_published_prekey_msg(10, client);
