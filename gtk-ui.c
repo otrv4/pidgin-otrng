@@ -50,6 +50,7 @@
 
 /* pidgin-otrng headers */
 #include "dialogs.h"
+#include "long_term_keys.h"
 #include "pidgin-helpers.h"
 #include "plugin-all.h"
 #include "ui.h"
@@ -211,7 +212,7 @@ static void generate(GtkWidget *widget, gpointer data) {
   }
 
   // Do we actually have to create both keys at the same time?
-  otrng_plugin_create_privkey_v4(account);
+  long_term_keys_create_privkey_v4(purple_account_to_client_id(account));
   otrng_plugin_create_privkey_v3(account);
 }
 

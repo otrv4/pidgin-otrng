@@ -24,9 +24,12 @@
 #define __OTRNG_LONG_TERM_KEYS_H__
 
 #include <libotr-ng/client_callbacks.h>
+#include <libotr-ng/messaging.h>
 
-#define PRIVKEYFNAMEv4 "otr4.private_key"
+#define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
 
-void long_term_keys_init_userstate(otrng_client_callbacks_s *);
+void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata);
+
+void long_term_keys_set_callbacks(otrng_client_callbacks_s *);
 
 #endif

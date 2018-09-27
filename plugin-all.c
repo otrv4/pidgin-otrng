@@ -349,42 +349,6 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
   return err;
 }
 
-static int otrng_plugin_write_privkey_v4_FILEp(void) {
-#ifndef WIN32
-  mode_t mask;
-#endif /* WIN32 */
-  FILE *privf;
-
-  gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_v4, NULL);
-  if (!privkeyfile) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-#ifndef WIN32
-  mask = umask(0077);
-#endif /* WIN32 */
-  privf = g_fopen(privkeyfile, "w+b");
-#ifndef WIN32
-  umask(mask);
-#endif /* WIN32 */
-
-  g_free(privkeyfile);
-  if (!privf) {
-    fprintf(stderr, _("Could not write private key file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(
-          otrng_global_state_private_key_v4_write_FILEp(otrng_state, privf))) {
-    err = -1;
-  }
-  fclose(privf);
-
-  return err;
-}
-
 static int otrng_plugin_write_forging_key_FILEp(void) {
 #ifndef WIN32
   mode_t mask;
@@ -598,26 +562,6 @@ static int otrng_plugin_write_expired_prekey_profile_FILEp(void) {
   fclose(filep);
 
   return err;
-}
-
-/* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey_v4(const PurpleAccount *account) {
-  OtrgDialogWaitHandle waithandle;
-
-  const char *accountname = purple_account_get_username(account);
-  const char *protocol = purple_account_get_protocol_id(account);
-
-  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
-
-  if (otrng_succeeded(otrng_global_state_generate_private_key(
-          otrng_state, purple_account_to_client_id(account)))) {
-    // TODO: check the return value
-    otrng_plugin_write_privkey_v4_FILEp();
-    otrng_ui_update_fingerprint();
-  }
-
-  /* Mark the dialog as done. */
-  otrng_dialog_private_key_wait_done(waithandle);
 }
 
 /* Generate a forging_key for the given accountname/protocol */
@@ -2014,11 +1958,6 @@ client_conversation_to_plugin_conversation(const otrng_s *conv) {
   return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
 }
 
-// TODO: there is no account
-static void create_privkey_v4(const otrng_client_id_s opdata) {
-  otrng_plugin_create_privkey_v4(client_id_to_purple_account(opdata));
-}
-
 static void create_forging_key(const otrng_client_id_s opdata) {
   otrng_plugin_create_forging_key(client_id_to_purple_account(opdata));
 }
@@ -2220,6 +2159,34 @@ get_account_and_protocol_cb(char **account_name, char **protocol_name,
   return OTRNG_SUCCESS;
 }
 
+static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
+  otrng_client_callbacks_s *cb = malloc(sizeof(otrng_client_callbacks_s));
+  if (!cb) {
+    // TODO add log
+    return NULL;
+  }
+  cb->get_account_and_protocol = get_account_and_protocol_cb;
+  cb->create_instag = create_instag_cb;
+  // TODO move to long_term_keys.c
+  cb->create_privkey_v3 = create_privkey_v3;
+  cb->create_forging_key = create_forging_key;
+  cb->create_client_profile = create_client_profile;
+  cb->write_expired_client_profile = write_expired_client_profile;
+  cb->create_prekey_profile = create_prekey_profile;
+  cb->write_expired_prekey_profile = write_expired_prekey_profile;
+  cb->create_shared_prekey = create_shared_prekey;
+  cb->gone_secure = gone_secure_v4;
+  cb->gone_insecure = gone_insecure_v4;
+  cb->fingerprint_seen = fingerprint_seen_v4;
+  cb->fingerprint_seen_v3 = fingerprint_seen_v3;
+  cb->smp_ask_for_secret = smp_ask_for_secret_v4;
+  cb->smp_ask_for_answer = smp_ask_for_answer_v4;
+  cb->smp_update = smp_update_v4;
+  cb->get_shared_session_state = get_shared_session_state_cb;
+
+  return cb;
+}
+
 static int otrng_plugin_init_userstate(void) {
   gchar *forging_key_file = NULL;
   gchar *privkeyfile3 = NULL;
@@ -2276,28 +2243,8 @@ static int otrng_plugin_init_userstate(void) {
   g_free(prekey_profile_filename);
   g_free(prekeysfile);
 
-  otrng_client_callbacks_s *callbacks =
-      malloc(sizeof(otrng_client_callbacks_s));
-  callbacks->get_account_and_protocol = get_account_and_protocol_cb;
-  callbacks->create_instag = create_instag_cb;
-  callbacks->create_privkey_v3 = create_privkey_v3;
-  callbacks->create_privkey_v4 = create_privkey_v4;
-  callbacks->create_forging_key = create_forging_key;
-  callbacks->create_client_profile = create_client_profile;
-  callbacks->write_expired_client_profile = write_expired_client_profile;
-  callbacks->create_prekey_profile = create_prekey_profile;
-  callbacks->write_expired_prekey_profile = write_expired_prekey_profile;
-  callbacks->create_shared_prekey = create_shared_prekey;
-  callbacks->gone_secure = gone_secure_v4;
-  callbacks->gone_insecure = gone_insecure_v4;
-  callbacks->fingerprint_seen = fingerprint_seen_v4;
-  callbacks->fingerprint_seen_v3 = fingerprint_seen_v3;
-  callbacks->smp_ask_for_secret = smp_ask_for_secret_v4;
-  callbacks->smp_ask_for_answer = smp_ask_for_answer_v4;
-  callbacks->smp_update = smp_update_v4;
-  callbacks->get_shared_session_state = get_shared_session_state_cb;
-
-  long_term_keys_init_userstate(callbacks);
+  otrng_client_callbacks_s *callbacks = otrng_plugin_client_callbacks_new();
+  long_term_keys_set_callbacks(callbacks);
 
   otrng_state = otrng_global_state_new(callbacks);
 

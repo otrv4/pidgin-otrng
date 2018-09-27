@@ -6,6 +6,7 @@ gtk-dialog.c
 gtk-dialog.h
 gtk-ui.c
 gtk-ui.h
+long_term_keys.c
 otrng-plugin.c
 otrng-plugin.h
 plugin-all.c

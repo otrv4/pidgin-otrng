@@ -37,7 +37,6 @@
 /* libotrng headers */
 #include "otrng-client.h"
 
-#define PRIVKEY_FILE_NAME_v4 "otr4.private_key"
 #define STORE_FILE_NAME_v4 "otr4.fingerprints"
 #define SHARED_PREKEY_FILE_NAME "otr4.shared_prekey"
 #define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
@@ -69,9 +68,6 @@ otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
  * error dialog if that account isn't currently logged in. */
 void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
                                  const char *message);
-
-/* Generate a V4 private key */
-void otrng_plugin_create_privkey_v4(const PurpleAccount *account);
 
 /* Generate a forging key */
 void otrng_plugin_create_forging_key(const PurpleAccount *account);

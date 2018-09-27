@@ -29,12 +29,80 @@
 #include <libotr-ng/client.h>
 #include <libotr-ng/messaging.h>
 
+#include "gtk-dialog.h"
 #include "pidgin-helpers.h"
+#include "ui.h"
+
+#ifdef ENABLE_NLS
+/* internationalisation header */
+#include <glib/gi18n-lib.h>
+#else
+#define _(x) (x)
+#define N_(x) (x)
+#endif
+
 
 extern otrng_global_state_s *otrng_state;
 
+static int write_privkey_v4_FILEp(void) {
+#ifndef WIN32
+  mode_t mask;
+#endif /* WIN32 */
+  FILE *privf;
+
+  gchar *privkeyfile =
+      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
+  if (!privkeyfile) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+  privf = g_fopen(privkeyfile, "w+b");
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+
+  g_free(privkeyfile);
+  if (!privf) {
+    fprintf(stderr, _("Could not write private key file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(
+          otrng_global_state_private_key_v4_write_FILEp(otrng_state, privf))) {
+    err = -1;
+  }
+  fclose(privf);
+
+  return err;
+}
+
+/* Generate a private key for the given accountname/protocol */
+void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
+  PurpleAccount *account = client_id_to_purple_account(opdata);
+  OtrgDialogWaitHandle waithandle;
+
+  const char *accountname = purple_account_get_username(account);
+  const char *protocol = purple_account_get_protocol_id(account);
+
+  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
+
+  if (otrng_succeeded(otrng_global_state_generate_private_key(
+          otrng_state, purple_account_to_client_id(account)))) {
+    // TODO: check the return value
+    write_privkey_v4_FILEp();
+    otrng_ui_update_fingerprint();
+  }
+
+  /* Mark the dialog as done. */
+  otrng_dialog_private_key_wait_done(waithandle);
+}
+
 static void load_private_keys_v4(const otrng_client_id_s opdata) {
-  gchar *f = g_build_filename(purple_user_dir(), PRIVKEYFNAMEv4, NULL);
+  gchar *f = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
   if (!f) {
     return;
   }
@@ -50,6 +118,7 @@ static void load_private_keys_v4(const otrng_client_id_s opdata) {
   }
 }
 
-void long_term_keys_init_userstate(otrng_client_callbacks_s *callbacks) {
-  callbacks->load_privkey_v4 = load_private_keys_v4;
+void long_term_keys_set_callbacks(otrng_client_callbacks_s *callbacks) {
+  callbacks->create_privkey_v4 = &long_term_keys_create_privkey_v4;
+  callbacks->load_privkey_v4 = &load_private_keys_v4;
 }
