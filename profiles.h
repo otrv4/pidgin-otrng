@@ -28,8 +28,6 @@
 #include <libotr-ng/client.h>
 #include <libotr-ng/client_callbacks.h>
 
-void profiles_create_client_profile(const PurpleAccount *account);
-
 void profiles_set_callbacks(otrng_client_callbacks_s *callbacks);
 
 #endif

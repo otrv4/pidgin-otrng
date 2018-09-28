@@ -143,3 +143,47 @@ void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
     fclose(fp);
   }
 }
+
+int persistance_write_prekey_profile(otrng_global_state_s *otrng_state) {
+  FILE *f;
+
+  gchar *file_name =
+      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
+  if (!file_name) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+  f = open_file_write_mode(file_name);
+
+  if (!f) {
+    fprintf(stderr, _("Could not write prekey profile file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(
+          otrng_global_state_prekey_profile_write_to(otrng_state, f))) {
+    err = -1;
+  }
+  fclose(f);
+
+  return err;
+}
+
+void persistance_read_prekey_profile(otrng_global_state_s *otrng_state) {
+  gchar *f =
+      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
+  if (!f) {
+    return;
+  }
+
+  FILE *fp = g_fopen(f, "rb");
+  g_free(f);
+
+  otrng_global_state_prekey_profile_read_from(
+      otrng_state, fp, protocol_and_account_to_purple_conversation);
+
+  if (fp) {
+    fclose(fp);
+  }
+}
