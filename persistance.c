@@ -38,27 +38,36 @@
 #define N_(x) (x)
 #endif
 
-int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state) {
+static FILE *open_file_write_mode(gchar *filename) {
+  FILE *f;
 #ifndef WIN32
   mode_t mask;
 #endif /* WIN32 */
-  FILE *privf;
 
+#ifndef WIN32
+  mask = umask(0077);
+#endif /* WIN32 */
+
+  f = g_fopen(filename, "w+b");
+
+#ifndef WIN32
+  umask(mask);
+#endif /* WIN32 */
+  g_free(filename);
+  return f;
+}
+
+int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state) {
+  FILE *privf;
   gchar *privkeyfile =
       g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
   if (!privkeyfile) {
     fprintf(stderr, _("Out of memory building filenames!\n"));
     return -1;
   }
-#ifndef WIN32
-  mask = umask(0077);
-#endif /* WIN32 */
-  privf = g_fopen(privkeyfile, "w+b");
-#ifndef WIN32
-  umask(mask);
-#endif /* WIN32 */
 
-  g_free(privkeyfile);
+  privf = open_file_write_mode(privkeyfile);
+
   if (!privf) {
     fprintf(stderr, _("Could not write private key file\n"));
     return -1;
