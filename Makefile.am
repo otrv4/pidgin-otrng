@@ -47,7 +47,8 @@ pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
 				  otrng-client.c \
 				  long_term_keys.c \
 				  fingerprint.c \
-                  pidgin-helpers.c
+                  pidgin-helpers.c \
+                  persistance.c
 
 pidgin_otrng_la_LDFLAGS=	-module -avoid-version
 pidgin_otrng_la_LDFLAGS+=	@LIBGCRYPT_LIBS@ @LIBOTR_LIBS@ @LIBOTRNG_LIBS@

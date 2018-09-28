@@ -9,6 +9,8 @@ gtk-ui.h
 long_term_keys.c
 otrng-plugin.c
 otrng-plugin.h
+persistance.c
+persistance.h
 plugin-all.c
 plugin-all.h
 prekey-plugin.c

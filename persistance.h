@@ -20,16 +20,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __OTRNG_LONG_TERM_KEYS_H__
-#define __OTRNG_LONG_TERM_KEYS_H__
+#ifndef __OTRNG_PERSISTANCE_H__
+#define __OTRNG_PERSISTANCE_H__
 
-#include <libotr-ng/client_callbacks.h>
-#include <libotr-ng/messaging.h>
+#define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
 
-void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata);
+int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state);
 
-void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata);
-
-void long_term_keys_set_callbacks(otrng_client_callbacks_s *);
+void persistance_load_private_keys_v4(otrng_global_state_s *otrng_state);
 
 #endif
