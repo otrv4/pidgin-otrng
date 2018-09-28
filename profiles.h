@@ -20,20 +20,16 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __OTRNG_PERSISTANCE_H__
-#define __OTRNG_PERSISTANCE_H__
+#ifndef __OTRNG_PROFILES_H__
+#define __OTRNG_PROFILES_H__
 
-#include <libotr-ng/messaging.h>
+#include <account.h>
 
-#define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
-#define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
+#include <libotr-ng/client.h>
+#include <libotr-ng/client_callbacks.h>
 
-int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state);
+void profiles_create_client_profile(const PurpleAccount *account);
 
-void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state);
-
-int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state);
-
-void persistance_read_client_profile(otrng_global_state_s *otrng_state);
+void profiles_set_callbacks(otrng_client_callbacks_s *callbacks);
 
 #endif

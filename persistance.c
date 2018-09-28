@@ -125,3 +125,25 @@ int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state) {
 
   return err;
 }
+
+void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
+  gchar *f =
+      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
+  if (!f) {
+    return;
+  }
+
+  FILE *fp = g_fopen(f, "rb");
+  g_free(f);
+
+  if (otrng_failed(otrng_global_state_client_profile_read_FILEp(
+          otrng_state, fp, protocol_and_account_to_purple_conversation))) {
+    // TODO: react better on failure
+    fclose(fp);
+    return;
+  }
+
+  if (fp) {
+    fclose(fp);
+  }
+}

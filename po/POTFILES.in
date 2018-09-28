@@ -7,6 +7,7 @@ gtk-dialog.h
 gtk-ui.c
 gtk-ui.h
 long_term_keys.c
+long_term_keys.h
 otrng-plugin.c
 otrng-plugin.h
 persistance.c
@@ -15,5 +16,7 @@ plugin-all.c
 plugin-all.h
 prekey-plugin.c
 prekey-plugin.h
+profiles.c
+profiles.h
 ui.c
 ui.h
