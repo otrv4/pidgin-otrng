@@ -39,7 +39,6 @@
 
 #define STORE_FILE_NAME_v4 "otr4.fingerprints"
 #define SHARED_PREKEY_FILE_NAME "otr4.shared_prekey"
-#define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
 #define EXP_CLIENT_PROFILE_FILE_NAME "otr4.exp_client_profile"
 #define EXP_PREKEY_PROFILE_FILE_NAME "otr4.exp_prekey_profile"
 #define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"

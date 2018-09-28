@@ -58,6 +58,7 @@
 #include <libotr/userstate.h>
 
 /* pidgin-otrng headers */
+#include "persistance.h"
 #include "plugin-all.h"
 #include "prekey-plugin.h"
 
@@ -420,42 +421,6 @@ static int otrng_plugin_write_shared_prekey_FILEp(void) {
   return err;
 }
 
-static int otrng_plugin_write_client_profile_FILEp(void) {
-#ifndef WIN32
-  mode_t mask;
-#endif /* WIN32 */
-  FILE *filep;
-
-  gchar *file_name =
-      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
-  if (!file_name) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-#ifndef WIN32
-  mask = umask(0077);
-#endif /* WIN32 */
-  filep = g_fopen(file_name, "w+b");
-#ifndef WIN32
-  umask(mask);
-#endif /* WIN32 */
-
-  g_free(file_name);
-  if (!filep) {
-    fprintf(stderr, _("Could not write client profile file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(
-          otrng_global_state_client_profile_write_FILEp(otrng_state, filep))) {
-    err = -1;
-  }
-  fclose(filep);
-
-  return err;
-}
-
 static int otrng_plugin_write_expired_client_profile_FILEp(void) {
 #ifndef WIN32
   mode_t mask;
@@ -593,7 +558,7 @@ void otrng_plugin_create_client_profile(PurpleAccount *account) {
   if (otrng_succeeded(otrng_global_state_generate_client_profile(
           otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
-    otrng_plugin_write_client_profile_FILEp();
+    persistance_write_client_profile_FILEp(otrng_state);
     otrng_client_s *client = purple_account_to_otrng_client(account);
     otrng_prekey_client_set_client_profile_publication(client->prekey_client);
     // TODO: Update the UI if the client is displayed in the UI

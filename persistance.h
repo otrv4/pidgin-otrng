@@ -23,10 +23,16 @@
 #ifndef __OTRNG_PERSISTANCE_H__
 #define __OTRNG_PERSISTANCE_H__
 
+#include <libotr-ng/messaging.h>
+
 #define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
+#define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
+
 
 int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state);
 
-void persistance_load_private_keys_v4(otrng_global_state_s *otrng_state);
+void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state);
+
+int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state);
 
 #endif

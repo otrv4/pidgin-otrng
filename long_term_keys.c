@@ -35,7 +35,7 @@
 extern otrng_global_state_s *otrng_state;
 
 void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata) {
-  persistance_load_private_keys_v4(otrng_state);
+  persistance_read_private_keys_v4(otrng_state);
 }
 
 /* Generate a private key for the given accountname/protocol */

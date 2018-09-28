@@ -83,7 +83,7 @@ int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state) {
   return err;
 }
 
-void persistance_load_private_keys_v4(otrng_global_state_s *otrng_state) {
+void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state) {
   gchar *f = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
   if (!f) {
     return;
@@ -98,4 +98,30 @@ void persistance_load_private_keys_v4(otrng_global_state_s *otrng_state) {
   if (fp) {
     fclose(fp);
   }
+}
+
+int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state) {
+  FILE *f;
+
+  gchar *file_name =
+      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
+  if (!file_name) {
+    fprintf(stderr, _("Out of memory building filenames!\n"));
+    return -1;
+  }
+  f = open_file_write_mode(file_name);
+
+  if (!f) {
+    fprintf(stderr, _("Could not write client profile file\n"));
+    return -1;
+  }
+
+  int err = 0;
+  if (otrng_failed(
+          otrng_global_state_client_profile_write_FILEp(otrng_state, f))) {
+    err = -1;
+  }
+  fclose(f);
+
+  return err;
 }
