@@ -2135,6 +2135,7 @@ static int otrng_plugin_init_userstate(void) {
   gchar *exp_client_profile_filename = NULL;
   gchar *shared_prekey_file = NULL;
   gchar *prekey_profile_filename = NULL;
+  gchar *exp_prekey_profile_filename = NULL;
   gchar *prekeysfile = NULL;
 
   forging_key_file =
@@ -2148,11 +2149,14 @@ static int otrng_plugin_init_userstate(void) {
       g_build_filename(purple_user_dir(), SHARED_PREKEY_FILE_NAME, NULL);
   prekey_profile_filename =
       g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
+  exp_prekey_profile_filename =
+      g_build_filename(purple_user_dir(), EXP_PREKEY_PROFILE_FILE_NAME, NULL);
   prekeysfile = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
 
   if (!forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
       !exp_client_profile_filename || !shared_prekey_file ||
-      !prekey_profile_filename || !prekeysfile) {
+      !prekey_profile_filename || !exp_prekey_profile_filename ||
+      !prekeysfile) {
     g_free(forging_key_file);
     g_free(privkeyfile3);
     g_free(storefile);
@@ -2160,6 +2164,7 @@ static int otrng_plugin_init_userstate(void) {
     g_free(exp_client_profile_filename);
     g_free(shared_prekey_file);
     g_free(prekey_profile_filename);
+    g_free(exp_prekey_profile_filename);
     g_free(prekeysfile);
 
     return 1;
@@ -2172,6 +2177,7 @@ static int otrng_plugin_init_userstate(void) {
   FILE *exp_client_profile_f = g_fopen(exp_client_profile_filename, "rb");
   FILE *shared_prekey_filep = g_fopen(shared_prekey_file, "rb");
   FILE *prekey_profile_filep = g_fopen(prekey_profile_filename, "rb");
+  FILE *exp_prekey_profile_filep = g_fopen(exp_prekey_profile_filename, "rb");
   FILE *prekeyf = g_fopen(prekeysfile, "rb");
 
   g_free(forging_key_file);
@@ -2180,6 +2186,7 @@ static int otrng_plugin_init_userstate(void) {
   g_free(exp_client_profile_filename);
   g_free(shared_prekey_file);
   g_free(prekey_profile_filename);
+  g_free(exp_prekey_profile_filename);
   g_free(prekeysfile);
 
   otrng_client_callbacks_s *callbacks = otrng_plugin_client_callbacks_new();
@@ -2212,7 +2219,7 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_read_prekey_profile(prekey_profile_filep);
 
   /* Read prekey profile */
-  otrng_plugin_read_expired_prekey_profile(prekey_profile_filep);
+  otrng_plugin_read_expired_prekey_profile(exp_prekey_profile_filep);
 
   /* Read prekey messages */
   otrng_plugin_read_prekeys(prekeyf);
