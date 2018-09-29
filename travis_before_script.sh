@@ -16,21 +16,21 @@ if [[ -f $GPG_ERROR_DIR/src/.libs/libgpg-error.so ]]; then
     (cd $GPG_ERROR_DIR && make install)
 else
     curl https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.26.tar.bz2 | tar xjf - -C .deps
-    (cd $GPG_ERROR_DIR && ./configure --prefix=$PREFIX && make && make install)
+    (cd $GPG_ERROR_DIR && ./configure --prefix=$PREFIX && make -j && make install)
 fi
 
 if [[ -f $LIBGCRYPT_DIR/src/.libs/libgcrypt.so ]]; then
     (cd $LIBGCRYPT_DIR && make install)
 else
     curl https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.8.1.tar.bz2 | tar xjf - -C .deps
-    (cd $LIBGCRYPT_DIR && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX  && make && make install)
+    (cd $LIBGCRYPT_DIR && ./configure --with-libgpg-error-prefix=$PREFIX --prefix=$PREFIX  && make -j && make install)
 fi
 
 if [[ -f $LIBSODIUM_DIR/src/libsodium/.libs/libsodium.so ]]; then
     (cd $LIBSODIUM_DIR && make install)
 else
     curl https://download.libsodium.org/libsodium/releases/LATEST.tar.gz | tar xzf - -C .deps
-    (cd $LIBSODIUM_DIR && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install)
+    (cd $LIBSODIUM_DIR && ./autogen.sh && ./configure --prefix=$PREFIX && make -j && make install)
 fi
 
 if [[ -f $LIBOTR_DIR/src/.libs/libotr.so ]]; then
@@ -39,7 +39,7 @@ else
     if [[ ! -e $LIBOTR_DIR ]]; then
         git clone --depth=1 https://bugs.otr.im/lib/libotr.git $LIBOTR_DIR
     fi
-    (cd $LIBOTR_DIR && ./bootstrap && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX  && make && make install)
+    (cd $LIBOTR_DIR && ./bootstrap && ./configure --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX  && make -j && make install)
 fi
 
 if [[ -f $LIBGOLDILOCKS_DIR/src/.libs/libgoldilocks.so ]]; then
@@ -47,7 +47,7 @@ if [[ -f $LIBGOLDILOCKS_DIR/src/.libs/libgoldilocks.so ]]; then
 else
     rm -rf $LIBGOLDILOCKS_DIR
     git clone --depth=1 https://github.com/otrv4/libgoldilocks $LIBGOLDILOCKS_DIR
-    (cd $LIBGOLDILOCKS_DIR && ./autogen.sh && ./configure --prefix=$PREFIX && make && make install)
+    (cd $LIBGOLDILOCKS_DIR && ./autogen.sh && ./configure --prefix=$PREFIX && make -j && make install)
 fi
 
 if [[ ! -f .deps/pidgin.tar.bz2 ]]; then

@@ -1,4 +1,4 @@
-# 
+#
 #  Off-the-Record Messaging plugin for pidgin
 #  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
 #                           Chris Alexander, Willy Lew,
@@ -61,7 +61,7 @@ before_install:
   - ./travis_before_script.sh
   - rm -rf .deps/libotr-ng
   - git clone --depth=1 https://github.com/otrv4/libotr-ng.git .deps/libotr-ng
-  - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make && make install && popd
+  - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make -j && make install && popd
 
 script:
   - cd ${PREFIX}/pidgin-2.13.0/pidgin/plugins
@@ -72,5 +72,5 @@ script:
   - echo -e "ACLOCAL_FLAGS= -I ${PREFIX}/share/aclocal\n$(cat Makefile.am)" > Makefile.am
   - ./autogen.sh
   - ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib
-  - make && make test
+  - make -j && make test
   - mv ${TRAVIS_BUILD_DIR} ${OLD_TRAVIS_BUILD_DIR}
