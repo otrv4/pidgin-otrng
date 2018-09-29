@@ -136,12 +136,8 @@ void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
   FILE *fp = g_fopen(f, "rb");
   g_free(f);
 
-  if (otrng_failed(otrng_global_state_client_profile_read_FILEp(
-          otrng_state, fp, protocol_and_account_to_purple_conversation))) {
-    // TODO: react better on failure
-    fclose(fp);
-    return;
-  }
+  otrng_global_state_client_profile_read_FILEp(
+      otrng_state, fp, protocol_and_account_to_purple_conversation);
 
   if (fp) {
     fclose(fp);

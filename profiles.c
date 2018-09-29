@@ -33,8 +33,11 @@ void profiles_create_client_profile(const PurpleAccount *account) {
           otrng_state, purple_account_to_client_id(account)))) {
     // TODO: check the return error
     persistance_write_client_profile_FILEp(otrng_state);
-    otrng_client_s *client = purple_account_to_otrng_client(account);
-    otrng_prekey_client_set_client_profile_publication(client->prekey_client);
+    /* otrng_client_s *client = purple_account_to_otrng_client(account); */
+    // TODO: This line won't work, since this function can be called BEFORE a
+    // prekey client has been created
+    /* otrng_prekey_client_set_client_profile_publication(client->prekey_client);
+     */
     // TODO: Update the UI if the client is displayed in the UI
   }
 }
