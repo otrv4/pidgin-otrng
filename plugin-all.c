@@ -2132,6 +2132,7 @@ static int otrng_plugin_init_userstate(void) {
   gchar *privkeyfile3 = NULL;
   gchar *storefile = NULL;
   gchar *instagfile = NULL;
+  gchar *exp_client_profile_filename = NULL;
   gchar *shared_prekey_file = NULL;
   gchar *prekey_profile_filename = NULL;
   gchar *prekeysfile = NULL;
@@ -2141,6 +2142,8 @@ static int otrng_plugin_init_userstate(void) {
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
   storefile = g_build_filename(purple_user_dir(), STORE_FILE_NAME_v4, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAG_FILE_NAME, NULL);
+  exp_client_profile_filename =
+      g_build_filename(purple_user_dir(), EXP_CLIENT_PROFILE_FILE_NAME, NULL);
   shared_prekey_file =
       g_build_filename(purple_user_dir(), SHARED_PREKEY_FILE_NAME, NULL);
   prekey_profile_filename =
@@ -2148,11 +2151,13 @@ static int otrng_plugin_init_userstate(void) {
   prekeysfile = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
 
   if (!forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
-      !shared_prekey_file || !prekey_profile_filename || !prekeysfile) {
+      !exp_client_profile_filename || !shared_prekey_file ||
+      !prekey_profile_filename || !prekeysfile) {
     g_free(forging_key_file);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
+    g_free(exp_client_profile_filename);
     g_free(shared_prekey_file);
     g_free(prekey_profile_filename);
     g_free(prekeysfile);
@@ -2164,6 +2169,7 @@ static int otrng_plugin_init_userstate(void) {
   FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
+  FILE *exp_client_profile_f = g_fopen(exp_client_profile_filename, "rb");
   FILE *shared_prekey_filep = g_fopen(shared_prekey_file, "rb");
   FILE *prekey_profile_filep = g_fopen(prekey_profile_filename, "rb");
   FILE *prekeyf = g_fopen(prekeysfile, "rb");
@@ -2171,7 +2177,7 @@ static int otrng_plugin_init_userstate(void) {
   g_free(forging_key_file);
   g_free(privkeyfile3);
   g_free(storefile);
-  g_free(instagfile);
+  g_free(exp_client_profile_filename);
   g_free(shared_prekey_file);
   g_free(prekey_profile_filename);
   g_free(prekeysfile);
@@ -2195,6 +2201,9 @@ static int otrng_plugin_init_userstate(void) {
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
   otrng_ui_update_fingerprint(); /* Updates the view */
+
+  /* Read exp client profile */
+  otrng_plugin_read_expired_client_profile(exp_client_profile_f);
 
   /* Read shared prekey */
   otrng_plugin_read_shared_prekey(shared_prekey_filep);
