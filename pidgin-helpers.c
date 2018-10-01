@@ -21,8 +21,8 @@
  */
 
 #include <account.h>
-#include <glib.h>
 #include <assert.h>
+#include <glib.h>
 
 #include "fingerprint.h"
 #include "pidgin-helpers.h"
