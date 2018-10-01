@@ -1179,7 +1179,8 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv) {
 
   account = purple_conversation_get_account(conv);
 
-  const char *accountname = purple_account_get_username(account);
+  char *accountname =
+      g_strdup(purple_normalize(account, purple_account_get_username(account)));
   const char *protocol = purple_account_get_protocol_id(account);
   char *peer =
       g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
@@ -1187,6 +1188,7 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv) {
   otrng_plugin_conversation *result =
       otrng_plugin_conversation_new(accountname, protocol, peer);
   free(peer);
+  free(accountname);
   return result;
 }
 
@@ -1722,7 +1724,6 @@ PurpleConversation *otrng_plugin_context_to_conv(ConnContext *context,
 TrustLevel
 otrng_plugin_conversation_to_trust(const otrng_plugin_conversation *conv) {
   TrustLevel level = TRUST_NOT_PRIVATE;
-
   if (!conv) {
     return level;
   }
