@@ -75,7 +75,7 @@ int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_private_key_v4_write_FILEp(otrng_state, privf))) {
+          otrng_global_state_private_key_v4_write_to(otrng_state, privf))) {
     err = -1;
   }
   fclose(privf);
@@ -92,7 +92,7 @@ void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state) {
   FILE *fp = g_fopen(f, "rb");
   g_free(f);
 
-  otrng_global_state_private_key_v4_read_FILEp(
+  otrng_global_state_private_key_v4_read_from(
       otrng_state, fp, protocol_and_account_to_purple_conversation);
 
   if (fp) {
@@ -118,7 +118,7 @@ int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_client_profile_write_FILEp(otrng_state, f))) {
+          otrng_global_state_client_profile_write_to(otrng_state, f))) {
     err = -1;
   }
   fclose(f);
@@ -136,7 +136,7 @@ void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
   FILE *fp = g_fopen(f, "rb");
   g_free(f);
 
-  otrng_global_state_client_profile_read_FILEp(
+  otrng_global_state_client_profile_read_from(
       otrng_state, fp, protocol_and_account_to_purple_conversation);
 
   if (fp) {

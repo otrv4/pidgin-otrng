@@ -266,7 +266,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
 
   *msg->prekey_profile_key = *client->shared_prekey_pair->priv;
 
-  if (!otrng_global_state_prekey_messages_write_FILEp(otrng_state, prekeyf)) {
+  if (!otrng_global_state_prekey_messages_write_to(otrng_state, prekeyf)) {
     return 0;
   }
 

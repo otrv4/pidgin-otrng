@@ -121,13 +121,13 @@ static void g_destroy_plugin_fingerprint(gpointer data) {
 }
 
 static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-  if (!otrng_global_state_private_key_v3_read_FILEp(otrng_state, priv3)) {
+  if (!otrng_global_state_private_key_v3_read_from(otrng_state, priv3)) {
     // TODO: error?
   }
 }
 
 static void otrng_plugin_read_forging_keys(FILE *f) {
-  if (otrng_failed(otrng_global_state_forging_key_read_FILEp(
+  if (otrng_failed(otrng_global_state_forging_key_read_from(
           otrng_state, f, protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
     return;
@@ -136,14 +136,14 @@ static void otrng_plugin_read_forging_keys(FILE *f) {
 
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
   if (otrng_failed(
-          otrng_global_state_instance_tags_read_FILEp(otrng_state, instagf))) {
+          otrng_global_state_instance_tags_read_from(otrng_state, instagf))) {
     // TODO: react better on failure
     return;
   }
 }
 
 static void otrng_plugin_read_expired_client_profile(FILE *profiles_filep) {
-  if (otrng_failed(otrng_global_state_expired_client_profile_read_FILEp(
+  if (otrng_failed(otrng_global_state_expired_client_profile_read_from(
           otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
@@ -152,7 +152,7 @@ static void otrng_plugin_read_expired_client_profile(FILE *profiles_filep) {
 }
 
 static void otrng_plugin_read_shared_prekey(FILE *shared_prekey_filep) {
-  if (otrng_failed(otrng_global_state_shared_prekey_read_FILEp(
+  if (otrng_failed(otrng_global_state_shared_prekey_read_from(
           otrng_state, shared_prekey_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
@@ -161,7 +161,7 @@ static void otrng_plugin_read_shared_prekey(FILE *shared_prekey_filep) {
 }
 
 static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
-  if (otrng_failed(otrng_global_state_prekey_profile_read_FILEp(
+  if (otrng_failed(otrng_global_state_prekey_profile_read_from(
           otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
@@ -170,7 +170,7 @@ static void otrng_plugin_read_prekey_profile(FILE *profiles_filep) {
 }
 
 static void otrng_plugin_read_expired_prekey_profile(FILE *profiles_filep) {
-  if (otrng_failed(otrng_global_state_expired_prekey_profile_read_FILEp(
+  if (otrng_failed(otrng_global_state_expired_prekey_profile_read_from(
           otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
@@ -179,7 +179,7 @@ static void otrng_plugin_read_expired_prekey_profile(FILE *profiles_filep) {
 }
 
 static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
-  if (otrng_failed(otrng_global_state_prekeys_read_FILEp(
+  if (otrng_failed(otrng_global_state_prekeys_read_from(
           otrng_state, prekeys_filep,
           protocol_and_account_to_purple_conversation))) {
     return;
@@ -334,7 +334,7 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
   }
 
   int err = 0;
-  if (otrng_failed(otrng_global_state_private_key_v3_generate_FILEp(
+  if (otrng_failed(otrng_global_state_private_key_v3_generate_into(
           otrng_state, purple_account_to_client_id(account), privf))) {
     err = -1;
   }
@@ -369,8 +369,7 @@ static int otrng_plugin_write_forging_key_FILEp(void) {
   }
 
   int err = 0;
-  if (otrng_failed(
-          otrng_global_state_forging_key_write_FILEp(otrng_state, f))) {
+  if (otrng_failed(otrng_global_state_forging_key_write_to(otrng_state, f))) {
     err = -1;
   }
   fclose(f);
@@ -406,7 +405,7 @@ static int otrng_plugin_write_shared_prekey_FILEp(void) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_shared_prekey_write_FILEp(otrng_state, privf))) {
+          otrng_global_state_shared_prekey_write_to(otrng_state, privf))) {
     err = -1;
   }
   fclose(privf);
@@ -442,7 +441,7 @@ static int otrng_plugin_write_expired_client_profile_FILEp(void) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_client_profile_write_FILEp(otrng_state, filep))) {
+          otrng_global_state_client_profile_write_to(otrng_state, filep))) {
     err = -1;
   }
   fclose(filep);
@@ -478,7 +477,7 @@ static int otrng_plugin_write_prekey_profile_FILEp(void) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_prekey_profile_write_FILEp(otrng_state, filep))) {
+          otrng_global_state_prekey_profile_write_to(otrng_state, filep))) {
     err = -1;
   }
   fclose(filep);
@@ -514,7 +513,7 @@ static int otrng_plugin_write_expired_prekey_profile_FILEp(void) {
 
   int err = 0;
   if (otrng_failed(
-          otrng_global_state_prekey_profile_write_FILEp(otrng_state, filep))) {
+          otrng_global_state_prekey_profile_write_to(otrng_state, filep))) {
     err = -1;
   }
   fclose(filep);
@@ -601,7 +600,7 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
 
   /* Generate the instag */
   // TODO: check the return value
-  otrng_global_state_instag_generate_generate_FILEp(
+  otrng_global_state_instag_generate_generate_into(
       otrng_state, purple_account_to_client_id(account), instagf);
 
   fclose(instagf);
