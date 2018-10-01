@@ -2102,7 +2102,8 @@ get_account_and_protocol_cb(char **account_name, char **protocol_name,
 }
 
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
-  otrng_client_callbacks_s *cb = otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
+  otrng_client_callbacks_s *cb =
+      otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
 
   cb->get_account_and_protocol = get_account_and_protocol_cb;
   cb->create_instag = create_instag_cb;
