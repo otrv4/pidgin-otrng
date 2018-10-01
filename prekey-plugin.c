@@ -48,6 +48,7 @@
 #include <connection.h>
 #include <prpl.h>
 
+#include <libotr-ng/alloc.h>
 #include <libotr-ng/client_orchestration.h>
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
@@ -251,7 +252,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     const client_profile_s *client_profile =
         otrng_client_get_client_profile(client);
 
-    msg->client_profile = malloc(sizeof(client_profile_s));
+    msg->client_profile = otrng_xmalloc_z(sizeof(client_profile_s));
     otrng_client_profile_copy(msg->client_profile, client_profile);
   }
 
@@ -259,7 +260,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     const otrng_prekey_profile_s *prekey_profile =
         otrng_client_get_prekey_profile(client);
 
-    msg->prekey_profile = malloc(sizeof(otrng_prekey_profile_s));
+    msg->prekey_profile = otrng_xmalloc_z(sizeof(otrng_prekey_profile_s));
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
   }
 

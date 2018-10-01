@@ -40,13 +40,16 @@ void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata) {
 
 /* Generate a private key for the given accountname/protocol */
 void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
+  /* For now, remove the dialog that tells us a key is being created -
+     this has the problem of making the code re-entrant */
+
   PurpleAccount *account = client_id_to_purple_account(opdata);
-  OtrgDialogWaitHandle waithandle;
+  /* OtrgDialogWaitHandle waithandle; */
 
-  const char *accountname = purple_account_get_username(account);
-  const char *protocol = purple_account_get_protocol_id(account);
+  /* const char *accountname = purple_account_get_username(account); */
+  /* const char *protocol = purple_account_get_protocol_id(account); */
 
-  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
+  /* waithandle = otrng_dialog_private_key_wait_start(accountname, protocol); */
 
   if (otrng_succeeded(otrng_global_state_generate_private_key(
           otrng_state, purple_account_to_client_id(account)))) {
@@ -56,7 +59,7 @@ void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
   }
 
   /* Mark the dialog as done. */
-  otrng_dialog_private_key_wait_done(waithandle);
+  /* otrng_dialog_private_key_wait_done(waithandle); */
 }
 
 void long_term_keys_set_callbacks(otrng_client_callbacks_s *callbacks) {

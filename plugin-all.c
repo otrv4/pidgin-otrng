@@ -75,6 +75,7 @@
 #include "pidgin-helpers.h"
 #include "prekey-discovery.h"
 
+#include <libotr-ng/alloc.h>
 #include <libotr-ng/client_orchestration.h>
 
 /* Controls a beta warning/expiry dialog */
@@ -2101,11 +2102,8 @@ get_account_and_protocol_cb(char **account_name, char **protocol_name,
 }
 
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
-  otrng_client_callbacks_s *cb = malloc(sizeof(otrng_client_callbacks_s));
-  if (!cb) {
-    // TODO add log
-    return NULL;
-  }
+  otrng_client_callbacks_s *cb = otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
+
   cb->get_account_and_protocol = get_account_and_protocol_cb;
   cb->create_instag = create_instag_cb;
   // TODO move to long_term_keys.c
