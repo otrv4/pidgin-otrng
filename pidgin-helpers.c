@@ -22,6 +22,7 @@
 
 #include <account.h>
 #include <glib.h>
+#include <assert.h>
 
 #include "fingerprint.h"
 #include "pidgin-helpers.h"
@@ -33,6 +34,9 @@ extern otrng_global_state_s *otrng_state;
 
 otrng_client_id_s protocol_and_account_to_client_id(const char *protocol,
                                                     const char *account) {
+  assert(protocol != NULL);
+  assert(account != NULL);
+
   otrng_client_id_s result = {
       .protocol = protocol,
       .account = account,
@@ -41,15 +45,28 @@ otrng_client_id_s protocol_and_account_to_client_id(const char *protocol,
 }
 
 otrng_client_id_s purple_account_to_client_id(const PurpleAccount *account) {
-  const char *protocol = purple_account_get_protocol_id(account);
-  const char *accountname =
+  const char *protocol, *accountname;
+
+  assert(account != NULL);
+
+  protocol = purple_account_get_protocol_id(account);
+  accountname =
       g_strdup(purple_normalize(account, purple_account_get_username(account)));
   return protocol_and_account_to_client_id(protocol, accountname);
 }
 
 PurpleAccount *protocol_and_account_to_purple_account(const char *protocol,
                                                       const char *accountname) {
-  return purple_accounts_find(accountname, protocol);
+  PurpleAccount *result;
+
+  assert(protocol != NULL);
+  assert(accountname != NULL);
+
+  result = purple_accounts_find(accountname, protocol);
+
+  assert(result != NULL);
+
+  return result;
 }
 
 PurpleAccount *client_id_to_purple_account(const otrng_client_id_s client_id) {
@@ -59,14 +76,20 @@ PurpleAccount *client_id_to_purple_account(const otrng_client_id_s client_id) {
 
 otrng_client_s *get_otrng_client(const char *protocol,
                                  const char *accountname) {
-  return otrng_client_get(
+  otrng_client_s *result = otrng_client_get(
       otrng_state, protocol_and_account_to_client_id(protocol, accountname));
+
+  assert(result != NULL);
+
+  return result;
 }
 
 // TODO: REMOVE
 otrng_client_s *purple_account_to_otrng_client(const PurpleAccount *account) {
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
+
+  assert(client != NULL);
 
   /* You can set some configurations here */
   // otrng_client_set_padding(256, client);
@@ -79,7 +102,12 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   PurpleAccount *account = NULL;
   char *recipient = NULL;
 
+  assert(conv != NULL);
+
   account = purple_conversation_get_account(conv);
+
+  assert(account != NULL);
+
   recipient =
       g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
 
@@ -90,6 +118,9 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   otrng_conversation_s *result =
       otrng_client_get_conversation(0, recipient, client);
   free(recipient);
+
+  assert(result != NULL);
+
   return result;
 }
 
