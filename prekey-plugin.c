@@ -248,7 +248,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  if (policy->publish_client_profile) {
+  if (policy->publish_client_profile || 1) {
     const client_profile_s *client_profile =
         otrng_client_get_client_profile(client);
 
@@ -256,7 +256,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     otrng_client_profile_copy(msg->client_profile, client_profile);
   }
 
-  if (policy->publish_prekey_profile) {
+  if (policy->publish_prekey_profile || 1) {
     const otrng_prekey_profile_s *prekey_profile =
         otrng_client_get_prekey_profile(client);
 
