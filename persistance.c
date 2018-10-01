@@ -144,7 +144,7 @@ void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
   }
 }
 
-int persistance_write_prekey_profile(otrng_global_state_s *otrng_state) {
+int persistance_write_prekey_profile_FILEp(otrng_global_state_s *otrng_state) {
   FILE *f;
 
   gchar *file_name =
