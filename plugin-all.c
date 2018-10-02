@@ -1021,6 +1021,21 @@ void otrng_plugin_send_non_interactive_auth(const char *username,
   return;
 }
 
+static gboolean timed_trigger_potential_publishing(gpointer data) {
+  otrng_debug_enter("timed_trigger_potential_publishing");
+  purple_signal_emit(otrng_plugin_handle, "maybe-publish-prekey-data", data);
+  otrng_debug_exit("timed_trigger_potential_publishing");
+  return FALSE; // we don't want to continue
+}
+
+#define OTRNG_PUBLISHING_TRIGGER_INTERVAL 3
+
+static void trigger_potential_publishing(otrng_client_s *client) {
+  otrng_debug_enter("trigger_potential_publishing");
+  purple_timeout_add_seconds(OTRNG_PUBLISHING_TRIGGER_INTERVAL, timed_trigger_potential_publishing, client);
+  otrng_debug_exit("trigger_potential_publishing");
+}
+
 static void process_sending_im(PurpleAccount *account, char *who,
                                char **message, void *ctx) {
   char *newmessage = NULL;
@@ -1042,6 +1057,7 @@ static void process_sending_im(PurpleAccount *account, char *who,
 
   otrng_client_s *client = purple_account_to_otrng_client(account);
   otrng_client_ensure_correct_state(client);
+  trigger_potential_publishing(client);
 
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, username, client);
