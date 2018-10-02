@@ -2139,7 +2139,7 @@ static int otrng_plugin_init_userstate(void) {
   long_term_keys_set_callbacks(callbacks);
   profiles_set_callbacks(callbacks);
 
-  otrng_state = otrng_global_state_new(callbacks);
+  otrng_state = otrng_global_state_new(callbacks, otrng_false);
 
   /* Read instance tags to both V4 and V3 libraries' storage */
   otrng_plugin_read_instance_tags_FILEp(instagf);
