@@ -554,7 +554,7 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
 
   /* Generate the instag */
   // TODO: check the return value
-  otrng_global_state_instag_generate_generate_into(
+  otrng_global_state_instag_generate_into(
       otrng_state, purple_account_to_client_id(account), instagf);
 
   fclose(instagf);
