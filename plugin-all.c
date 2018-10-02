@@ -77,6 +77,7 @@
 
 #include <libotr-ng/alloc.h>
 #include <libotr-ng/client_orchestration.h>
+#include <libotr-ng/debug.h>
 
 /* Controls a beta warning/expiry dialog */
 #define BETA_DIALOG 0
@@ -961,7 +962,8 @@ static void get_prekey_client_for_sending_offline_message(
   prekey_client_offline_message_ctx_s *c = xctx;
 
   // Try to send an offline message
-  printf("Should try to send an offline message to %s\n", c->username);
+  otrng_debug_fprintf(stderr, "Should try to send an offline message to %s\n",
+                      c->username);
 
   // 1. get prekey ensemble for this person
   if (!prekey_client) {

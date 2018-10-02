@@ -50,6 +50,7 @@
 
 #include <libotr-ng/alloc.h>
 #include <libotr-ng/client_orchestration.h>
+#include <libotr-ng/debug.h>
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
 
@@ -84,28 +85,32 @@ static void send_message(PurpleAccount *account, const char *recipient,
 }
 
 static void notify_error_cb(int error, void *ctx) {
-  printf("\nPrekey Server: an error happened: %d \n", error);
+  otrng_debug_fprintf(stderr, "Prekey Server: an error happened: %d\n", error);
 }
 
 static void
 storage_status_received_cb(const otrng_prekey_storage_status_message_s *msg,
                            void *ctx) {
-  printf("\nPrekey Server: we have %d prekey messages stored.\n",
-         msg->stored_prekeys);
+  otrng_debug_fprintf(stderr,
+                      "Prekey Server: we have %d prekey messages stored.\n",
+                      msg->stored_prekeys);
 }
 
 static void success_received_cb(void *ctx) {
-  printf("\nPrekey Server: received success\n");
+  otrng_debug_fprintf(stderr, "Prekey Server: received success\n");
 }
 
 static void failure_received_cb(void *ctx) {
-  printf("\nPrekey Server: something happened. We were unable to process the "
-         "request.\n");
+  otrng_debug_fprintf(
+      stderr,
+      "Prekey Server: something happened. We were unable to process the "
+      "request.\n");
 }
 
 static void no_prekey_in_storage_received_cb(void *ctx) {
-  printf("\nPrekey Server: there are no prekey in storage for the requested "
-         "recipient.\n");
+  otrng_debug_fprintf(
+      stderr, "Prekey Server: there are no prekey in storage for the requested "
+              "recipient.\n");
 }
 
 static void get_prekey_client_for_low_prekey_messages(
@@ -113,12 +118,12 @@ static void get_prekey_client_for_low_prekey_messages(
     otrng_prekey_client_s *prekey_client, void *ctx) {
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
-    printf("\n No connection. \n");
+    otrng_debug_fprintf(stderr, "No connection. \n");
     return;
   }
 
   if (!prekey_client) {
-    printf("\n No prekey client. \n");
+    otrng_debug_fprintf(stderr, "No prekey client. \n");
     return;
   }
 
@@ -130,7 +135,7 @@ static void get_prekey_client_for_low_prekey_messages(
 
 static void low_prekey_messages_in_storage_cb(char *server_identity,
                                               void *ctx) {
-  printf("\nPrekey Server: Publishing prekey messages.\n");
+  otrng_debug_fprintf(stderr, "Prekey Server: Publishing prekey messages.\n");
   otrng_plugin_get_prekey_client(ctx, get_prekey_client_for_low_prekey_messages,
                                  NULL);
 }
@@ -153,7 +158,7 @@ static void send_offline_messages_to_each_ensemble(
   int i;
   for (i = 0; i < num_ensembles; i++) {
     if (!otrng_prekey_ensemble_validate(ensembles[i])) {
-      printf("The Prekey Ensemble %d is not valid\n", i);
+      otrng_debug_fprintf(stderr, "The Prekey Ensemble %d is not valid\n", i);
       continue;
     }
 
@@ -184,10 +189,11 @@ static void send_offline_messages_to_each_ensemble(
 static void
 prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
                              uint8_t num_ensembles, void *ctx) {
-  printf("\nPrekey Server: we received %d ensembles.\n", num_ensembles);
+  otrng_debug_fprintf(stderr, "Prekey Server: we received %d ensembles.\n",
+                      num_ensembles);
 
   if (!ctx) {
-    printf("\n Invalid NULL context\n");
+    otrng_debug_fprintf(stderr, "Invalid NULL context\n");
   }
 
   otrng_plugin_offline_message_ctx *c = ctx;
@@ -206,7 +212,7 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
                                     otrng_prekey_publication_policy_s *policy,
                                     void *ctx) {
   if (!ctx) {
-    printf("Received invalid ctx\n");
+    otrng_debug_fprintf(stderr, "Received invalid ctx\n");
     return 0;
   }
 
@@ -408,7 +414,7 @@ static void get_prekey_client_for_account_signed_on(
 
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
-    printf("\n No connection. \n");
+    otrng_debug_fprintf(stderr, "No connection. \n");
     return;
   }
 
