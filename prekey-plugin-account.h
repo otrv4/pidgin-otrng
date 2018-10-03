@@ -20,21 +20,32 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* Purple headers */
-#include <account.h>
-#include <plugin.h>
 
-#include <libotr-ng/prekey_client.h>
+#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_ACCOUNT
+#define OTRNG_PIDGIN_PREKEY_PLUGIN_ACCOUNT
 
-#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN
-#define OTRNG_PIDGIN_PREKEY_PLUGIN
+#include <glib.h>
+#include <prpl.h>
+
+#define PREKEYS_FILE_NAME "otr4.prekey_messages"
 
 #include <libotr-ng/client.h>
 #include <libotr-ng/prekey_client.h>
 
-gboolean otrng_prekey_plugin_load(PurplePlugin *handle);
-gboolean otrng_prekey_plugin_unload(PurplePlugin *handle);
+void low_prekey_messages_in_storage_cb(otrng_client_s *client,
+                                              char *server_identity,
+                                       void *ctx);
+void
+storage_status_received_cb(otrng_client_s *client,
+                           const otrng_prekey_storage_status_message_s *msg,
+                           void *ctx);
+void success_received_cb(otrng_client_s *client, void *ctx);
+void failure_received_cb(otrng_client_s *client, void *ctx);
+int build_prekey_publication_message_cb(
+    otrng_client_s *client, otrng_prekey_publication_message_s *msg,
+    otrng_prekey_publication_policy_s *policy, void *ctx);
 
-void trigger_potential_publishing(otrng_client_s *client);
+gboolean otrng_prekey_plugin_account_load(PurplePlugin *handle);
+gboolean otrng_prekey_plugin_account_unload(PurplePlugin *handle);
 
-#endif
+#endif // OTRNG_PIDGIN_PREKEY_PLUGIN_ACCOUNT

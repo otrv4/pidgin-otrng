@@ -1,4 +1,4 @@
-# 
+#
 #  Off-the-Record Messaging plugin for pidgin
 #  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
 #                           Chris Alexander, Willy Lew,
@@ -36,6 +36,9 @@ plugin_LTLIBRARIES=	pidgin-otrng.la
 
 pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
 				  prekey-plugin.c \
+				  prekey-plugin-peers.c \
+				  prekey-plugin-account.c \
+				  prekey-plugin-shared.c \
 				  prekey-discovery.c \
 				  prekey-discovery-jabber.c \
 				  plugin-all.c \

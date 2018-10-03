@@ -74,6 +74,8 @@
 #include "long_term_keys.h"
 #include "pidgin-helpers.h"
 #include "prekey-discovery.h"
+#include "prekey-plugin-shared.h"
+#include "prekey-plugin-peers.h"
 
 #include <libotr-ng/alloc.h>
 #include <libotr-ng/client_orchestration.h>

@@ -20,21 +20,30 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* Purple headers */
-#include <account.h>
-#include <plugin.h>
 
-#include <libotr-ng/prekey_client.h>
+#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_PEERS
+#define OTRNG_PIDGIN_PREKEY_PLUGIN_PEERS
 
-#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN
-#define OTRNG_PIDGIN_PREKEY_PLUGIN
+#include <glib.h>
+#include <prpl.h>
 
 #include <libotr-ng/client.h>
 #include <libotr-ng/prekey_client.h>
 
-gboolean otrng_prekey_plugin_load(PurplePlugin *handle);
-gboolean otrng_prekey_plugin_unload(PurplePlugin *handle);
+typedef struct {
+  PurpleAccount *account;
+  char *message;
+  char *recipient;
+} otrng_plugin_offline_message_ctx;
 
-void trigger_potential_publishing(otrng_client_s *client);
+void no_prekey_in_storage_received_cb(otrng_client_s *client,
+                                      void *ctx);
+void
+prekey_ensembles_received_cb(otrng_client_s *client,
+                             prekey_ensemble_s *const *const ensembles,
+                             uint8_t num_ensembles, void *ctx);
 
-#endif
+gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle);
+gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle);
+
+#endif // OTRNG_PIDGIN_PREKEY_PLUGIN_PEERS

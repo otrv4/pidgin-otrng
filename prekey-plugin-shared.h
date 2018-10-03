@@ -20,21 +20,32 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* Purple headers */
-#include <account.h>
-#include <plugin.h>
 
-#include <libotr-ng/prekey_client.h>
+#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED
+#define OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED
 
-#ifndef OTRNG_PIDGIN_PREKEY_PLUGIN
-#define OTRNG_PIDGIN_PREKEY_PLUGIN
+#include <prpl.h>
 
 #include <libotr-ng/client.h>
 #include <libotr-ng/prekey_client.h>
 
-gboolean otrng_prekey_plugin_load(PurplePlugin *handle);
-gboolean otrng_prekey_plugin_unload(PurplePlugin *handle);
+typedef void (*WithPrekeyClient)(PurpleAccount *, otrng_client_s *,
+                                 otrng_prekey_client_s *, void *);
 
+typedef struct {
+  PurpleAccount *account;
+  otrng_client_s *client;
+  int found;
+  WithPrekeyClient next;
+  void *ctx;
+} lookup_prekey_server_for_prekey_client_ctx_s;
+
+
+void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
+                                    void *uctx);
 void trigger_potential_publishing(otrng_client_s *client);
 
-#endif
+void send_message(PurpleAccount *account, const char *recipient,
+                  const char *message);
+
+#endif // OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED
