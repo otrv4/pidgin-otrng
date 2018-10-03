@@ -16,6 +16,12 @@ plugin-all.c
 plugin-all.h
 prekey-plugin.c
 prekey-plugin.h
+prekey-plugin-account.c
+prekey-plugin-account.h
+prekey-plugin-peers.c
+prekey-plugin-peers.h
+prekey-plugin-shared.c
+prekey-plugin-shared.h
 profiles.c
 profiles.h
 ui.c
