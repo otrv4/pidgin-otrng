@@ -280,15 +280,15 @@ static int build_prekey_publication_message_cb(
     return 0;
   }
 
-  const client_profile_s *client_profile =
+  const otrng_client_profile_s *client_profile =
       otrng_client_get_client_profile(client);
   if (otrng_client_profile_should_publish(client_profile)) {
-    otrng_client_profile_start_publishing((client_profile_s *)client_profile);
+    otrng_client_profile_start_publishing((otrng_client_profile_s *)client_profile);
 
     otrng_debug_fprintf(stderr,
                         "[%s] Prekey Server: Publishing Client Profile\n",
                         client->client_id.account);
-    msg->client_profile = otrng_xmalloc_z(sizeof(client_profile_s));
+    msg->client_profile = otrng_xmalloc_z(sizeof(otrng_client_profile_s));
     otrng_client_profile_copy(msg->client_profile, client_profile);
   }
 
