@@ -47,4 +47,6 @@ void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle);
 gboolean otrng_prekey_plugin_unload(PurplePlugin *handle);
 
+void trigger_potential_publishing(otrng_client_s *client);
+
 #endif
