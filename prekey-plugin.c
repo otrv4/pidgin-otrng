@@ -447,6 +447,7 @@ static void get_prekey_client_for_account_signed_on(
   // 2. Retrieve the status of storage for yourself
   // message = otrng_prekey_client_request_storage_information(prekey_client);
 
+  // TODO: we should probably set some Purple flags on this call, instead of the 0
   serv_send_im(connection, prekey_client->server_identity, message, 0);
   free(message);
 }
