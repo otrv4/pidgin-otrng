@@ -283,7 +283,8 @@ static int build_prekey_publication_message_cb(
   const otrng_client_profile_s *client_profile =
       otrng_client_get_client_profile(client);
   if (otrng_client_profile_should_publish(client_profile)) {
-    otrng_client_profile_start_publishing((otrng_client_profile_s *)client_profile);
+    otrng_client_profile_start_publishing(
+        (otrng_client_profile_s *)client_profile);
 
     otrng_debug_fprintf(stderr,
                         "[%s] Prekey Server: Publishing Client Profile\n",

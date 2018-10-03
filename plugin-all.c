@@ -1909,7 +1909,7 @@ static void gone_insecure_v4(const otrng_s *cconv) {
   otrng_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v3(const otrng_fingerprint_v3 fp,
+static void fingerprint_seen_v3(const otrng_fingerprint_v3_t fp,
                                 const otrng_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
@@ -1922,7 +1922,7 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3 fp,
   otrng_plugin_conversation_free(conv);
 }
 
-static void fingerprint_seen_v4(const otrng_fingerprint fp,
+static void fingerprint_seen_v4(const otrng_fingerprint_t fp,
                                 const otrng_s *cconv) {
   // TODO: use fp to determine if you have seen this fp before
   // See: otrng_dialog_unknown_fingerprint
