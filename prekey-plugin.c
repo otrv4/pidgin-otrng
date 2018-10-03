@@ -111,6 +111,7 @@ static void success_received_cb(otrng_client_s *client, void *ctx) {
 }
 
 static void failure_received_cb(otrng_client_s *client, void *ctx) {
+  otrng_client_failed_published(client);
   otrng_debug_fprintf(
       stderr,
       "[%s] Prekey Server: something happened. We were unable to process the "
@@ -143,6 +144,7 @@ get_prekey_client_for_publishing(PurpleAccount *account, otrng_client_s *client,
   }
 
   char *message = NULL;
+  otrng_client_start_publishing(client);
   message = otrng_prekey_client_publish(prekey_client);
 
   serv_send_im(connection, prekey_client->server_identity, message, 0);
@@ -280,7 +282,9 @@ static int build_prekey_publication_message_cb(
 
   const client_profile_s *client_profile =
       otrng_client_get_client_profile(client);
-  if (client_profile->should_publish) {
+  if (otrng_client_profile_should_publish(client_profile)) {
+    otrng_client_profile_start_publishing((client_profile_s *)client_profile);
+
     otrng_debug_fprintf(stderr,
                         "[%s] Prekey Server: Publishing Client Profile\n",
                         client->client_id.account);
