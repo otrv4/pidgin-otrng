@@ -161,11 +161,10 @@ int build_prekey_publication_message_cb(
     return 0;
   }
 
-  const otrng_client_profile_s *client_profile =
+  otrng_client_profile_s *client_profile =
       otrng_client_get_client_profile(client);
   if (otrng_client_profile_should_publish(client_profile)) {
-    otrng_client_profile_start_publishing(
-        (otrng_client_profile_s *)client_profile);
+    otrng_client_profile_start_publishing(client_profile);
 
     otrng_debug_fprintf(stderr,
                         "[%s] Prekey Server: Publishing Client Profile\n",
@@ -174,10 +173,14 @@ int build_prekey_publication_message_cb(
     otrng_client_profile_copy(msg->client_profile, client_profile);
   }
 
-  if (policy->publish_prekey_profile || 1) {
-    const otrng_prekey_profile_s *prekey_profile =
-        otrng_client_get_prekey_profile(client);
+  otrng_prekey_profile_s *prekey_profile =
+      otrng_client_get_prekey_profile(client);
+  if (otrng_prekey_profile_should_publish(prekey_profile)) {
+    otrng_prekey_profile_start_publishing(prekey_profile);
 
+    otrng_debug_fprintf(stderr,
+                        "[%s] Prekey Server: Publishing Prekey Profile\n",
+                        client->client_id.account);
     msg->prekey_profile = otrng_xmalloc_z(sizeof(otrng_prekey_profile_s));
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
   }
