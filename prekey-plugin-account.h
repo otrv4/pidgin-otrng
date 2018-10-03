@@ -20,7 +20,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
 #ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_ACCOUNT
 #define OTRNG_PIDGIN_PREKEY_PLUGIN_ACCOUNT
 
@@ -33,12 +32,10 @@
 #include <libotr-ng/prekey_client.h>
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
-                                              char *server_identity,
-                                       void *ctx);
-void
-storage_status_received_cb(otrng_client_s *client,
-                           const otrng_prekey_storage_status_message_s *msg,
-                           void *ctx);
+                                       char *server_identity, void *ctx);
+void storage_status_received_cb(
+    otrng_client_s *client, const otrng_prekey_storage_status_message_s *msg,
+    void *ctx);
 void success_received_cb(otrng_client_s *client, void *ctx);
 void failure_received_cb(otrng_client_s *client, void *ctx);
 int build_prekey_publication_message_cb(

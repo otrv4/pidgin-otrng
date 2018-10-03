@@ -35,8 +35,7 @@
 
 extern otrng_global_state_s *otrng_state;
 
-void no_prekey_in_storage_received_cb(otrng_client_s *client,
-                                             void *ctx) {
+void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx) {
   otrng_debug_fprintf(
       stderr,
       "[%s] Prekey Server: there are no prekey in storage for the requested "
@@ -92,10 +91,9 @@ static void send_offline_messages_to_each_ensemble(
   // 3. Send a single query message (dependencia na outra direção).
 }
 
-void
-prekey_ensembles_received_cb(otrng_client_s *client,
-                             prekey_ensemble_s *const *const ensembles,
-                             uint8_t num_ensembles, void *ctx) {
+void prekey_ensembles_received_cb(otrng_client_s *client,
+                                  prekey_ensemble_s *const *const ensembles,
+                                  uint8_t num_ensembles, void *ctx) {
   otrng_debug_fprintf(stderr, "[%s] Prekey Server: we received %d ensembles.\n",
                       client->client_id.account, num_ensembles);
 
@@ -112,10 +110,6 @@ prekey_ensembles_received_cb(otrng_client_s *client,
   free(c);
 }
 
-gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle) {
-  return TRUE;
-}
+gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle) { return TRUE; }
 
-gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle) {
-  return TRUE;
-}
+gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle) { return TRUE; }

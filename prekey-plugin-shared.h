@@ -20,7 +20,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
 #ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED
 #define OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED
 
@@ -39,7 +38,6 @@ typedef struct {
   WithPrekeyClient next;
   void *ctx;
 } lookup_prekey_server_for_prekey_client_ctx_s;
-
 
 void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
                                     void *uctx);

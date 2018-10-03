@@ -20,7 +20,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
 #include "prekey-plugin-account.h"
 #include "prekey-plugin-shared.h"
 
@@ -57,10 +56,9 @@
 
 extern otrng_global_state_s *otrng_state;
 
-void
-storage_status_received_cb(otrng_client_s *client,
-                           const otrng_prekey_storage_status_message_s *msg,
-                           void *ctx) {
+void storage_status_received_cb(
+    otrng_client_s *client, const otrng_prekey_storage_status_message_s *msg,
+    void *ctx) {
   otrng_debug_fprintf(
       stderr, "[%s] Prekey Server: we have %d prekey messages stored.\n",
       client->client_id.account, msg->stored_prekeys);
@@ -105,8 +103,7 @@ get_prekey_client_for_publishing(PurpleAccount *account, otrng_client_s *client,
 }
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
-                                              char *server_identity,
-                                              void *ctx) {
+                                       char *server_identity, void *ctx) {
   otrng_debug_fprintf(stderr,
                       "[%s] Prekey Server: Publishing prekey messages.\n",
                       client->client_id.account);
@@ -267,7 +264,6 @@ gboolean otrng_prekey_plugin_account_unload(PurplePlugin *handle) {
 
   purple_signal_disconnect(handle, "maybe-publish-prekey-data", handle,
                            PURPLE_CALLBACK(maybe_publish_prekey_data));
-
 
   purple_signal_disconnect(purple_connections_get_handle(), "signed-on", handle,
                            PURPLE_CALLBACK(account_signed_on_cb));

@@ -121,7 +121,6 @@ static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
   return ignore;
 }
 
-
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {
   if (!otrng_state) {
     return FALSE;

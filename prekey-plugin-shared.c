@@ -20,22 +20,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
 #include "prekey-plugin-shared.h"
 
 #include "pidgin-helpers.h"
 
 #include "prekey-discovery.h"
 
+#include <libotr-ng/client_orchestration.h>
 #include <libotr-ng/debug.h>
 #include <libotr-ng/messaging.h>
-#include <libotr-ng/client_orchestration.h>
 
 extern otrng_global_state_s *otrng_state;
 extern PurplePlugin *otrng_plugin_handle;
 
 void send_message(PurpleAccount *account, const char *recipient,
-                         const char *message) {
+                  const char *message) {
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
     // Not connected
@@ -79,7 +78,6 @@ found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
   }
   cc->found++;
 }
-
 
 void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
                                     void *uctx) {

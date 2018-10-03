@@ -20,7 +20,6 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-
 #ifndef OTRNG_PIDGIN_PREKEY_PLUGIN_PEERS
 #define OTRNG_PIDGIN_PREKEY_PLUGIN_PEERS
 
@@ -36,12 +35,10 @@ typedef struct {
   char *recipient;
 } otrng_plugin_offline_message_ctx;
 
-void no_prekey_in_storage_received_cb(otrng_client_s *client,
-                                      void *ctx);
-void
-prekey_ensembles_received_cb(otrng_client_s *client,
-                             prekey_ensemble_s *const *const ensembles,
-                             uint8_t num_ensembles, void *ctx);
+void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx);
+void prekey_ensembles_received_cb(otrng_client_s *client,
+                                  prekey_ensemble_s *const *const ensembles,
+                                  uint8_t num_ensembles, void *ctx);
 
 gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle);
 gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle);
