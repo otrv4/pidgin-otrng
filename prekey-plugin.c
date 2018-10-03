@@ -57,7 +57,6 @@
 #include "prekey-discovery.h"
 #include "pidgin-helpers.h"
 
-// TODO: why is this global?
 extern otrng_global_state_s *otrng_state;
 
 static void send_message(PurpleAccount *account, const char *recipient,
@@ -73,32 +72,32 @@ static void send_message(PurpleAccount *account, const char *recipient,
   serv_send_im(connection, recipient, message, 0);
 }
 
-static void notify_error_cb(int error, void *ctx) {
+static void notify_error_cb(otrng_client_s *client, int error, void *ctx) {
   otrng_debug_fprintf(stderr, "Prekey Server: an error happened: %d\n", error);
 }
 
 static void
-storage_status_received_cb(const otrng_prekey_storage_status_message_s *msg,
+storage_status_received_cb(otrng_client_s *client, const otrng_prekey_storage_status_message_s *msg,
                            void *ctx) {
   otrng_debug_fprintf(stderr,
                       "Prekey Server: we have %d prekey messages stored.\n",
                       msg->stored_prekeys);
 }
 
-static void success_received_cb(void *ctx) {
-  // TODO: here we should mark everything as published, once we can assume ctx
+static void success_received_cb(otrng_client_s *client, void *ctx) {
+  // TODO: @ola here we should mark everything as published, once we can assume ctx
   // is the right thing
   otrng_debug_fprintf(stderr, "Prekey Server: received success\n");
 }
 
-static void failure_received_cb(void *ctx) {
+static void failure_received_cb(otrng_client_s *client, void *ctx) {
   otrng_debug_fprintf(
       stderr,
       "Prekey Server: something happened. We were unable to process the "
       "request.\n");
 }
 
-static void no_prekey_in_storage_received_cb(void *ctx) {
+static void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx) {
   otrng_debug_fprintf(
       stderr, "Prekey Server: there are no prekey in storage for the requested "
               "recipient.\n");
@@ -124,9 +123,13 @@ static void get_prekey_client_for_publishing(
   serv_send_im(connection, prekey_client->server_identity, message, 0);
 }
 
-static void low_prekey_messages_in_storage_cb(char *server_identity,
+static void low_prekey_messages_in_storage_cb(otrng_client_s *client, char *server_identity,
                                               void *ctx) {
   otrng_debug_fprintf(stderr, "Prekey Server: Publishing prekey messages.\n");
+  // TODO: @ola in libotr-ng at the place triggering this, we should store the amount
+  // of prekeys and then use that to calculate how many things left
+  // Instead of starting this whole thing, we should ensure proper state, and
+  // then we should trigger a check for publishing later on
   otrng_plugin_get_prekey_client(ctx, get_prekey_client_for_publishing,
                                  NULL);
 }
@@ -178,7 +181,7 @@ static void send_offline_messages_to_each_ensemble(
 }
 
 static void
-prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
+prekey_ensembles_received_cb(otrng_client_s *client, prekey_ensemble_s *const *const ensembles,
                              uint8_t num_ensembles, void *ctx) {
   otrng_debug_fprintf(stderr, "Prekey Server: we received %d ensembles.\n",
                       num_ensembles);
@@ -199,7 +202,7 @@ prekey_ensembles_received_cb(prekey_ensemble_s *const *const ensembles,
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
 
 static int
-build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
+build_prekey_publication_message_cb(otrng_client_s *client, otrng_prekey_publication_message_s *msg,
                                     otrng_prekey_publication_policy_s *policy,
                                     void *ctx) {
   otrng_debug_enter("build_prekey_publication_message_cb");
@@ -232,17 +235,9 @@ build_prekey_publication_message_cb(otrng_prekey_publication_message_s *msg,
     return 0;
   }
 
-  PurpleAccount *account = ctx;
-
-  otrng_client_s *client =
-      otrng_client_get(otrng_state, purple_account_to_client_id(account));
-  if (!client) {
-    otrng_debug_exit("build_prekey_publication_message_cb");
-    return 0;
-  }
   otrng_client_ensure_correct_state(client);
 
-  // TODO: continue here - we should not create prekey messages here
+  // TODO: @ola continue here - we should not create prekey messages here
   //    instead, they should be done in the orchestration part
 
   msg->num_prekey_messages = policy->max_published_prekey_msg;
@@ -317,16 +312,6 @@ found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
   cc->found++;
 }
 
-static otrng_prekey_client_s *get_cached_prekey_client(PurpleAccount *account) {
-  otrng_client_s *client =
-      otrng_client_get(otrng_state, purple_account_to_client_id(account));
-  if (!client) {
-    return NULL;
-  }
-  otrng_client_ensure_correct_state(client);
-  return client->prekey_client;
-}
-
 void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
                                     void *uctx) {
   otrng_client_s *client =
@@ -367,14 +352,13 @@ static gboolean
 otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
                                              const char *message,
                                              PurpleAccount *account) {
-  otrng_prekey_client_s *prekey_client = NULL;
-
-  prekey_client = get_cached_prekey_client(account);
-  if (!prekey_client) {
+  otrng_client_s *client =
+    otrng_client_get(otrng_state, purple_account_to_client_id(account));
+  if (!client) {
     return FALSE;
   }
 
-  return otrng_prekey_client_receive(tosend, server, message, prekey_client);
+  return otrng_prekey_client_receive(tosend, server, message, client);
 }
 
 static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
@@ -449,7 +433,7 @@ static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
     otrng_debug_exit("maybe_publish_prekey_data");
     return;
   }
-  otrng_debug_fprintf(stderr, "Prekey: we have been asked to publish...");
+  otrng_debug_fprintf(stderr, "Prekey: we have been asked to publish...\n");
   otrng_plugin_get_prekey_client(client_id_to_purple_account(client->client_id), get_prekey_client_for_publishing, NULL);
   otrng_debug_exit("maybe_publish_prekey_data");
 }
