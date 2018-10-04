@@ -201,19 +201,23 @@ static gboolean xmpp_iq_received(PurpleConnection *pc, const char *type,
 // Returns a new buffer containing the domain part of the jid
 // It is the callers responsibility to free this
 // If no delimiters are found it's assumed the full string is the domain
-static char *get_domain_from_jid(const char *jid) {
+char *get_domain_from_jid(const char *jid) {
   char *current;
   char *start = (char *)jid;
   int len = 0;
 
-  for (current = start; current; current++) {
+  if (!start) {
+    return NULL;
+  }
+
+  for (current = start; *current; current++) {
     if (*current == '@') {
       start = current + 1;
       break;
     }
   }
 
-  for (current = start; current; current++) {
+  for (current = start; *current; current++) {
     if (*current == '/') {
       break;
     }

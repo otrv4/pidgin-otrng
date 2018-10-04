@@ -21,14 +21,19 @@
  */
 
 #include <glib.h>
+#include <string.h>
+#include <stdio.h>
 
-#include "test_plugin.c"
-#include "test_prekey_discovery_jabber.c"
+char *get_domain_from_jid(const char *jid);
 
-int main(int argc, char **argv) {
-  g_test_init(&argc, &argv, NULL);
-
-  g_test_add_func("/prekey_discovery/jabber/get_domain_from_jid", test_get_domain_from_jid);
-
-  return g_test_run();
+void test_get_domain_from_jid(void) {
+  g_assert_cmpstr(get_domain_from_jid("ola@example.org/foo"), ==, "example.org");
+  g_assert_cmpstr(get_domain_from_jid("example2.org/foo"), ==, "example2.org");
+  g_assert_cmpstr(get_domain_from_jid("ola@example3.org"), ==, "example3.org");
+  g_assert_cmpstr(get_domain_from_jid("ola@example4.org/"), ==, "example4.org");
+  g_assert_cmpstr(get_domain_from_jid("example5.org"), ==, "example5.org");
+  g_assert_cmpstr(get_domain_from_jid("ola@/foo"), ==, "");
+  g_assert_cmpstr(get_domain_from_jid(""), ==, "");
+  char *res1 = get_domain_from_jid(NULL);
+  g_assert(res1 == NULL);
 }

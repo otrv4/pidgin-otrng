@@ -1,4 +1,4 @@
-# 
+#
 #  Off-the-Record Messaging plugin for pidgin
 #  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
 #                           Chris Alexander, Willy Lew,
@@ -19,11 +19,13 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
+AUTOMAKE_OPTIONS = subdir-objects
 
 check_PROGRAMS = test
 
 test_SOURCES = 	test.c \
+				../prekey-discovery-jabber.c \
 			    $(pidgin_otrng_la_SOURCES)
 
-test_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
-test_LDFLAGS = $(pidgin_otrng_la_LDFLAGS) @TEST_LIBS@
+test_CFLAGS = $(AM_CFLAGS) $(EXTRA_CFLAGS)
+test_LDFLAGS = $(pidgin_otrng_la_LDFLAGS) $(AM_LDFLAGS) @EXTRA_LIBS@

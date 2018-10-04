@@ -1,4 +1,4 @@
-# 
+#
 #  Off-the-Record Messaging plugin for pidgin
 #  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
 #                           Chris Alexander, Willy Lew,
@@ -41,8 +41,7 @@ LT_INIT([disable-static])
 AM_PATH_LIBGCRYPT(1:1.2.0,,AC_MSG_ERROR(libgcrypt 1.2.0 or newer is required.))
 AM_PATH_LIBOTR(4.0.0,,AC_MSG_ERROR(libotr 4.x >= 4.0.0 is required.))
 PKG_CHECK_MODULES([LIBOTRNG], [libotr-ng >= 0.0.1])
-PKG_CHECK_MODULES([TEST], [glib-2.0 >= 2.6])
-PKG_CHECK_MODULES([EXTRA], [glib-2.0 >= 2.6 gtk+-2.0 >= 2.6 pidgin >= 2.0 purple >= 2.0])
+PKG_CHECK_MODULES([EXTRA], [glib-2.0 >= 2.6 gtk+-2.0 >= 2.6 pidgin >= 2.2 purple >= 2.0])
 
 dnl #######################################################################
 dnl # Check for LibXML2 (required)
