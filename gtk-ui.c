@@ -256,7 +256,7 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
       disconnect_sensitive = 1;
       forget_sensitive = 0;
     } else if (otrng_conversation_is_finished(otr_conv)) {
-      disconnect_sensitive = 1;
+      disconnect_sensitive = 0;
       connect_sensitive = 1;
     } else {
       connect_sensitive = 1;
