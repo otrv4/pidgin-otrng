@@ -183,9 +183,10 @@ int build_prekey_publication_message_cb(
                         client->client_id.account);
     msg->prekey_profile = otrng_xmalloc_z(sizeof(otrng_prekey_profile_s));
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
-  }
 
-  *msg->prekey_profile_key = *client->shared_prekey_pair->priv;
+    // TODO: this shouldn't really be necessary now
+    *msg->prekey_profile_key = *prekey_profile->keys->priv;
+  }
 
   if (!otrng_global_state_prekey_messages_write_to(otrng_state, prekeyf)) {
     otrng_debug_exit("build_prekey_publication_message_cb");
