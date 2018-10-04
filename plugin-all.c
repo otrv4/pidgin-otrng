@@ -61,6 +61,7 @@
 #include "persistance.h"
 #include "plugin-all.h"
 #include "prekey-plugin.h"
+#include "prekeys.h"
 #include "profiles.h"
 
 #ifdef USING_GTK
@@ -159,14 +160,6 @@ static void otrng_plugin_read_expired_prekey_profile(FILE *profiles_filep) {
           otrng_state, profiles_filep,
           protocol_and_account_to_purple_conversation))) {
     // TODO: react better on failure
-    return;
-  }
-}
-
-static void otrng_plugin_read_prekeys(FILE *prekeys_filep) {
-  if (otrng_failed(otrng_global_state_prekeys_read_from(
-          otrng_state, prekeys_filep,
-          protocol_and_account_to_purple_conversation))) {
     return;
   }
 }
@@ -2017,7 +2010,6 @@ static int otrng_plugin_init_userstate(void) {
   gchar *instagfile = NULL;
   gchar *exp_client_profile_filename = NULL;
   gchar *exp_prekey_profile_filename = NULL;
-  gchar *prekeysfile = NULL;
 
   forging_key_file =
       g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
@@ -2028,18 +2020,15 @@ static int otrng_plugin_init_userstate(void) {
       g_build_filename(purple_user_dir(), EXP_CLIENT_PROFILE_FILE_NAME, NULL);
   exp_prekey_profile_filename =
       g_build_filename(purple_user_dir(), EXP_PREKEY_PROFILE_FILE_NAME, NULL);
-  prekeysfile = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
 
   if (!forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
-      !exp_client_profile_filename || !exp_prekey_profile_filename ||
-      !prekeysfile) {
+      !exp_client_profile_filename || !exp_prekey_profile_filename) {
     g_free(forging_key_file);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
     g_free(exp_client_profile_filename);
     g_free(exp_prekey_profile_filename);
-    g_free(prekeysfile);
 
     return 1;
   }
@@ -2050,18 +2039,18 @@ static int otrng_plugin_init_userstate(void) {
   FILE *instagf = g_fopen(instagfile, "rb");
   FILE *exp_client_profile_f = g_fopen(exp_client_profile_filename, "rb");
   FILE *exp_prekey_profile_filep = g_fopen(exp_prekey_profile_filename, "rb");
-  FILE *prekeyf = g_fopen(prekeysfile, "rb");
 
   g_free(forging_key_file);
   g_free(privkeyfile3);
   g_free(storefile);
+  g_free(instagfile);
   g_free(exp_client_profile_filename);
   g_free(exp_prekey_profile_filename);
-  g_free(prekeysfile);
 
   otrng_client_callbacks_s *callbacks = otrng_plugin_client_callbacks_new();
   long_term_keys_set_callbacks(callbacks);
   profiles_set_callbacks(callbacks);
+  prekeys_set_callbacks(callbacks);
 
   otrng_state = otrng_global_state_new(callbacks, otrng_false);
 
@@ -2085,9 +2074,6 @@ static int otrng_plugin_init_userstate(void) {
   /* Read prekey profile */
   otrng_plugin_read_expired_prekey_profile(exp_prekey_profile_filep);
 
-  /* Read prekey messages */
-  otrng_plugin_read_prekeys(prekeyf);
-
   if (priv3f) {
     fclose(priv3f);
   }
@@ -2102,10 +2088,6 @@ static int otrng_plugin_init_userstate(void) {
 
   if (instagf) {
     fclose(instagf);
-  }
-
-  if (prekeyf) {
-    fclose(prekeyf);
   }
 
   return 0;

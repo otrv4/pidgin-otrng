@@ -14,6 +14,8 @@ persistance.c
 persistance.h
 plugin-all.c
 plugin-all.h
+prekeys.c
+prekeys.h
 prekey-plugin.c
 prekey-plugin.h
 prekey-plugin-account.c

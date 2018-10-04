@@ -187,3 +187,36 @@ void persistance_read_prekey_profile(otrng_global_state_s *otrng_state) {
     fclose(fp);
   }
 }
+
+int persistance_write_prekey_messages(otrng_global_state_s *otrng_state) {
+  FILE *fp = NULL;
+  gchar *f = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
+  if (!f) {
+    return -1;
+  }
+
+  fp = open_file_write_mode(f);
+
+  if (!otrng_global_state_prekey_messages_write_to(otrng_state, fp)) {
+    fclose(fp);
+    return -1;
+  }
+
+  return 0;
+}
+
+void persistance_read_prekey_messages(otrng_global_state_s *otrng_state) {
+  gchar *f = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
+  if (!f) {
+    return;
+  }
+
+  FILE *fp = g_fopen(f, "rb");
+  g_free(f);
+
+  if (fp) {
+    otrng_global_state_prekeys_read_from(
+        otrng_state, fp, protocol_and_account_to_purple_conversation);
+    fclose(fp);
+  }
+}

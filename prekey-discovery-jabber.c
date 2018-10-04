@@ -233,6 +233,9 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
                                                   const char *who,
                                                   PrekeyServerResult result_cb,
                                                   void *context) {
+  if (account == NULL || who == NULL) {
+    return 0;
+  }
   PurplePlugin *prpl = purple_plugins_find_with_id("prpl-jabber");
   if (prpl == NULL) {
     return 0;
@@ -260,7 +263,7 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
   send_iq(pc, server, NS_DISCO_ITEMS, iq_handle);
 
   free(server);
-  free(nwho);
+  g_free(nwho);
   return 1;
 }
 

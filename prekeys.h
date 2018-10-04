@@ -20,30 +20,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __OTRNG_PERSISTANCE_H__
-#define __OTRNG_PERSISTANCE_H__
+#ifndef __OTRNG_PREKEYS_H__
+#define __OTRNG_PREKEYS_H__
 
-#include <libotr-ng/messaging.h>
+#include <account.h>
 
-#define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
-#define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
-#define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
-#define PREKEYS_FILE_NAME "otr4.prekey_messages"
+#include <libotr-ng/client.h>
+#include <libotr-ng/client_callbacks.h>
 
-int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state);
-
-void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state);
-
-int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state);
-
-void persistance_read_client_profile(otrng_global_state_s *otrng_state);
-
-int persistance_write_prekey_profile_FILEp(otrng_global_state_s *otrng_state);
-
-void persistance_read_prekey_profile(otrng_global_state_s *otrng_state);
-
-int persistance_write_prekey_messages(otrng_global_state_s *otrng_state);
-
-void persistance_read_prekey_messages(otrng_global_state_s *otrng_state);
+void prekeys_set_callbacks(otrng_client_callbacks_s *callbacks);
 
 #endif

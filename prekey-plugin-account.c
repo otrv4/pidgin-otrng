@@ -104,9 +104,6 @@ get_prekey_client_for_publishing(PurpleAccount *account, otrng_client_s *client,
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
                                        char *server_identity, void *ctx) {
-  otrng_debug_fprintf(stderr,
-                      "[%s] Prekey Server: Publishing prekey messages.\n",
-                      client->client_id.account);
   // TODO: @ola
   // Once ensure_state can handle prekey messages, it should be called here
   // And then trigger a maybe_publish later
@@ -124,41 +121,14 @@ int build_prekey_publication_message_cb(
     return 0;
   }
 
-  FILE *prekeyf = NULL;
-  gchar *prekeysfile =
-      g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
-  if (!prekeysfile) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    otrng_debug_exit("build_prekey_publication_message_cb");
-    return 0;
-  }
-
-  prekeyf = g_fopen(prekeysfile, "w+b");
-  g_free(prekeysfile);
-
-#ifndef WIN32
-  mode_t mask = umask(0077);
-  umask(mask);
-#endif /* WIN32 */
-
-  if (!prekeyf) {
-    fprintf(stderr, _("Could not write prekey messages file\n"));
-    otrng_debug_exit("build_prekey_publication_message_cb");
-    return 0;
-  }
-
   otrng_client_ensure_correct_state(client);
 
-  // TODO: @ola continue here - we should not create prekey messages here
-  //    instead, they should be done in the orchestration part
+  otrng_prekey_client_add_prekey_messages_for_publication(client, msg);
 
-  msg->num_prekey_messages = client->prekey_msgs_num_to_publish;
-  msg->prekey_messages = otrng_client_build_prekey_messages(
-      msg->num_prekey_messages, client, &msg->ecdh_keys, &msg->dh_keys);
-
-  if (msg->num_prekey_messages > 0 && !msg->prekey_messages) {
-    otrng_debug_exit("build_prekey_publication_message_cb");
-    return 0;
+  if (msg->num_prekey_messages > 0) {
+    otrng_debug_fprintf(stderr,
+                        "[%s] Prekey Server: Publishing %d Prekey Messages\n",
+                        client->client_id.account, msg->num_prekey_messages);
   }
 
   otrng_client_profile_s *client_profile =
@@ -183,17 +153,8 @@ int build_prekey_publication_message_cb(
                         client->client_id.account);
     msg->prekey_profile = otrng_xmalloc_z(sizeof(otrng_prekey_profile_s));
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
-
-    // TODO: this shouldn't really be necessary now
-    *msg->prekey_profile_key = *prekey_profile->keys->priv;
   }
 
-  if (!otrng_global_state_prekey_messages_write_to(otrng_state, prekeyf)) {
-    otrng_debug_exit("build_prekey_publication_message_cb");
-    return 0;
-  }
-
-  fclose(prekeyf);
   otrng_debug_exit("build_prekey_publication_message_cb");
   return 1;
 }
