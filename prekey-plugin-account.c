@@ -66,7 +66,7 @@ void storage_status_received_cb(
 
 void success_received_cb(otrng_client_s *client, void *ctx) {
   otrng_client_published(client);
-  client->prekey_messages_num_to_publish = 0;
+  client->prekey_msgs_num_to_publish = 0;
   otrng_debug_fprintf(stderr, "[%s] Prekey Server: received success\n",
                       client->client_id.account);
 }
@@ -152,7 +152,7 @@ int build_prekey_publication_message_cb(
   // TODO: @ola continue here - we should not create prekey messages here
   //    instead, they should be done in the orchestration part
 
-  msg->num_prekey_messages = client->prekey_messages_num_to_publish;
+  msg->num_prekey_messages = client->prekey_msgs_num_to_publish;
   msg->prekey_messages = otrng_client_build_prekey_messages(
       msg->num_prekey_messages, client, &msg->ecdh_keys, &msg->dh_keys);
 

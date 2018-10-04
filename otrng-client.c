@@ -29,7 +29,7 @@
 char *otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client) {
   char *ret = NULL;
 
-  otrng_fingerprint_t our_fp = {0};
+  otrng_fingerprint our_fp = {0};
   if (otrng_failed(otrng_client_get_our_fingerprint(our_fp, client))) {
     return NULL;
   }
