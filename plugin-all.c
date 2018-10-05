@@ -1867,7 +1867,7 @@ static void smp_ask_for_answer_v4(const unsigned char *question, size_t q_len,
   otrng_plugin_conversation_free(conv);
 }
 
-static void smp_update_v4(const otrng_smp_event_t event,
+static void smp_update_v4(const otrng_smp_event event,
                           const uint8_t progress_percent,
                           const otrng_s *cconv) {
   if (!cconv) {
@@ -1907,9 +1907,9 @@ static void smp_update_v4(const otrng_smp_event_t event,
 }
 
 static void display_error_message(const otrng_error_event event,
-                                          string_p *to_display,
-                                          const struct otrng_s *cconv) {
-  if (!cconv) { //TODO: prob not needed
+                                  string_p *to_display,
+                                  const struct otrng_s *cconv) {
+  if (!cconv) { // TODO: prob not needed
     return;
   }
 
@@ -1928,12 +1928,10 @@ static void display_error_message(const otrng_error_event event,
         otrng_xstrndup(not_in_private_error, strlen(not_in_private_error));
     break;
   case OTRNG_ERROR_ENCRYPTION_ERROR_EVENT:
-    *to_display =
-        otrng_xstrndup(encryption_error, strlen(encryption_error));
+    *to_display = otrng_xstrndup(encryption_error, strlen(encryption_error));
     break;
   case OTRNG_ERROR_MALFORMED_EVENT:
-    *to_display =
-        otrng_xstrndup(malformed_error, strlen(malformed_error));
+    *to_display = otrng_xstrndup(malformed_error, strlen(malformed_error));
     break;
   case OTRNG_ERROR_NONE:
     break;

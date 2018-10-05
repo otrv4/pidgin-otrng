@@ -1530,8 +1530,7 @@ otrng_gtk_dialog_socialist_millionaires(const otrng_plugin_conversation *conv,
  * 1.0 (complete).  Any other value represents an intermediate state. */
 static void
 otrng_gtk_dialog_update_smp(const otrng_plugin_conversation *context,
-                            otrng_smp_event_t smp_event,
-                            double progress_level) {
+                            otrng_smp_event smp_event, double progress_level) {
   PurpleConversation *conv =
       otrng_plugin_conversation_to_purple_conv(context, 0);
   GtkProgressBar *bar;

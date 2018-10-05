@@ -129,8 +129,7 @@ void otrng_dialog_socialist_millionaires_q(
 
 /* Update the status of an ongoing socialist millionaires protocol. */
 void otrng_dialog_update_smp(const otrng_plugin_conversation *context,
-                             otrng_smp_event_t smp_event,
-                             double progress_level) {
+                             otrng_smp_event smp_event, double progress_level) {
   ui_ops->update_smp(context, smp_event, progress_level);
 }
 
