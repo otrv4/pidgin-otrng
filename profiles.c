@@ -56,6 +56,14 @@ static void store_prekey_profile(otrng_client_s *client,
   persistance_write_prekey_profile_FILEp(otrng_state);
 }
 
+static void store_expired_client_profile(otrng_client_s *client) {
+  persistance_write_expired_client_profile(otrng_state);
+}
+
+static void load_expired_client_profile(otrng_client_s *client) {
+  persistance_read_expired_client_profile(otrng_state);
+}
+
 void profiles_set_callbacks(otrng_client_callbacks_s *callbacks) {
   callbacks->create_client_profile = create_client_profile;
   callbacks->load_client_profile = load_client_profile;
@@ -63,4 +71,6 @@ void profiles_set_callbacks(otrng_client_callbacks_s *callbacks) {
   callbacks->create_prekey_profile = create_prekey_profile;
   callbacks->load_prekey_profile = load_prekey_profile;
   callbacks->store_prekey_profile = store_prekey_profile;
+  callbacks->load_expired_client_profile = load_expired_client_profile;
+  callbacks->store_expired_client_profile = store_expired_client_profile;
 }
