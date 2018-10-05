@@ -30,6 +30,8 @@
 #include "persistance.h"
 #include "pidgin-helpers.h"
 
+#include <libotr-ng/debug.h>
+
 #ifdef ENABLE_NLS
 /* internationalisation header */
 #include <glib/gi18n-lib.h>
@@ -191,6 +193,7 @@ void persistance_read_prekey_profile(otrng_global_state_s *otrng_state) {
 int persistance_write_prekey_messages(otrng_global_state_s *otrng_state) {
   FILE *fp = NULL;
   gchar *f = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
+
   if (!f) {
     return -1;
   }
@@ -202,6 +205,7 @@ int persistance_write_prekey_messages(otrng_global_state_s *otrng_state) {
     return -1;
   }
 
+  fclose(fp);
   return 0;
 }
 

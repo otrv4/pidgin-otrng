@@ -2052,7 +2052,7 @@ static int otrng_plugin_init_userstate(void) {
   profiles_set_callbacks(callbacks);
   prekeys_set_callbacks(callbacks);
 
-  otrng_state = otrng_global_state_new(callbacks, otrng_false);
+  otrng_state = otrng_global_state_new(callbacks, otrng_true);
 
   /* Read instance tags to both V4 and V3 libraries' storage */
   otrng_plugin_read_instance_tags_FILEp(instagf);

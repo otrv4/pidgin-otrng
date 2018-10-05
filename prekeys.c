@@ -25,6 +25,7 @@
 #include "persistance.h"
 #include "pidgin-helpers.h"
 #include "prekeys.h"
+#include <libotr-ng/debug.h>
 
 extern otrng_global_state_s *otrng_state;
 

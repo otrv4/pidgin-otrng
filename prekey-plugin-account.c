@@ -104,20 +104,15 @@ get_prekey_client_for_publishing(PurpleAccount *account, otrng_client_s *client,
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
                                        char *server_identity, void *ctx) {
-  // TODO: @ola
-  // Once ensure_state can handle prekey messages, it should be called here
-  // And then trigger a maybe_publish later
-
-  otrng_plugin_get_prekey_client(ctx, get_prekey_client_for_publishing, NULL);
+  otrng_client_ensure_correct_state(client);
+  trigger_potential_publishing(client);
 }
 
 int build_prekey_publication_message_cb(
     otrng_client_s *client, otrng_prekey_publication_message_s *msg,
     otrng_prekey_publication_policy_s *policy, void *ctx) {
-  otrng_debug_enter("build_prekey_publication_message_cb");
   if (!ctx) {
     otrng_debug_fprintf(stderr, "Received invalid ctx\n");
-    otrng_debug_exit("build_prekey_publication_message_cb");
     return 0;
   }
 
@@ -155,7 +150,6 @@ int build_prekey_publication_message_cb(
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
   }
 
-  otrng_debug_exit("build_prekey_publication_message_cb");
   return 1;
 }
 
