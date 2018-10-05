@@ -1906,6 +1906,43 @@ static void smp_update_v4(const otrng_smp_event_t event,
   otrng_plugin_conversation_free(conv);
 }
 
+static void display_error_message(const otrng_error_event event,
+                                          string_p *to_display,
+                                          const struct otrng_s *cconv) {
+  if (!cconv) { //TODO: prob not needed
+    return;
+  }
+
+  const char *unreadable_msg_error = "Unreadable message";
+  const char *not_in_private_error = "Not in private state message";
+  const char *encryption_error = "Encryption error";
+  const char *malformed_error = "Malformed message";
+
+  switch (event) {
+  case OTRNG_ERROR_UNREADABLE_EVENT:
+    *to_display =
+        otrng_xstrndup(unreadable_msg_error, strlen(unreadable_msg_error));
+    break;
+  case OTRNG_ERROR_NOT_IN_PRIVATE_EVENT:
+    *to_display =
+        otrng_xstrndup(not_in_private_error, strlen(not_in_private_error));
+    break;
+  case OTRNG_ERROR_ENCRYPTION_ERROR_EVENT:
+    *to_display =
+        otrng_xstrndup(encryption_error, strlen(encryption_error));
+    break;
+  case OTRNG_ERROR_MALFORMED_EVENT:
+    *to_display =
+        otrng_xstrndup(malformed_error, strlen(malformed_error));
+    break;
+  case OTRNG_ERROR_NONE:
+    break;
+  default:
+    // should be an error
+    break;
+  }
+}
+
 static otrng_shared_session_state_s
 get_shared_session_state_cb(const otrng_s *conv) {
   // TODO: Get those values from the conversation
@@ -1942,6 +1979,7 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   cb->smp_ask_for_secret = smp_ask_for_secret_v4;
   cb->smp_ask_for_answer = smp_ask_for_answer_v4;
   cb->smp_update = smp_update_v4;
+  cb->display_error_message = display_error_message;
   cb->get_shared_session_state = get_shared_session_state_cb;
 
   return cb;
