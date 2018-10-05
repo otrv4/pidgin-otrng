@@ -55,172 +55,93 @@ static FILE *open_file_write_mode(gchar *filename) {
 #ifndef WIN32
   umask(mask);
 #endif /* WIN32 */
-  g_free(filename);
+
   return f;
 }
 
+#define PERSISTANCE_READ(filename, fn)                                         \
+  do {                                                                         \
+    gchar *f = g_build_filename(purple_user_dir(), filename, NULL);            \
+    if (!f) {                                                                  \
+      return;                                                                  \
+    }                                                                          \
+                                                                               \
+    FILE *fp = g_fopen(f, "rb");                                               \
+    g_free(f);                                                                 \
+                                                                               \
+    if (fp) {                                                                  \
+      fn(otrng_state, fp, protocol_and_account_to_purple_conversation);        \
+      fclose(fp);                                                              \
+    }                                                                          \
+  } while (0);
+
+#define PERSISTANCE_WRITE(filename, fn)                                        \
+  do {                                                                         \
+    FILE *fp;                                                                  \
+    int err = 0;                                                               \
+    gchar *f = g_build_filename(purple_user_dir(), filename, NULL);            \
+    if (!f) {                                                                  \
+      return -1;                                                               \
+    }                                                                          \
+                                                                               \
+    fp = open_file_write_mode(f);                                              \
+    g_free(f);                                                                 \
+                                                                               \
+    if (otrng_failed(fn(otrng_state, fp))) {                                   \
+      err = -1;                                                                \
+    }                                                                          \
+    if (fp) {                                                                  \
+      fclose(fp);                                                              \
+    }                                                                          \
+                                                                               \
+    return err;                                                                \
+  } while (0);
+
 int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state) {
-  FILE *privf;
-  gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
-  if (!privkeyfile) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-
-  privf = open_file_write_mode(privkeyfile);
-
-  if (!privf) {
-    fprintf(stderr, _("Could not write private key file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(
-          otrng_global_state_private_key_v4_write_to(otrng_state, privf))) {
-    err = -1;
-  }
-  fclose(privf);
-
-  return err;
+  PERSISTANCE_WRITE(PRIVKEY_FILE_NAME_V4,
+                    otrng_global_state_private_key_v4_write_to);
 }
 
 void persistance_read_private_keys_v4(otrng_global_state_s *otrng_state) {
-  gchar *f = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME_V4, NULL);
-  if (!f) {
-    return;
-  }
-
-  FILE *fp = g_fopen(f, "rb");
-  g_free(f);
-
-  otrng_global_state_private_key_v4_read_from(
-      otrng_state, fp, protocol_and_account_to_purple_conversation);
-
-  if (fp) {
-    fclose(fp);
-  }
+  PERSISTANCE_READ(PRIVKEY_FILE_NAME_V4,
+                   otrng_global_state_private_key_v4_read_from);
 }
 
 int persistance_write_client_profile_FILEp(otrng_global_state_s *otrng_state) {
-  FILE *f;
-
-  gchar *file_name =
-      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
-  if (!file_name) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-  f = open_file_write_mode(file_name);
-
-  if (!f) {
-    fprintf(stderr, _("Could not write client profile file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(
-          otrng_global_state_client_profile_write_to(otrng_state, f))) {
-    err = -1;
-  }
-  fclose(f);
-
-  return err;
+  PERSISTANCE_WRITE(CLIENT_PROFILE_FILE_NAME,
+                    otrng_global_state_client_profile_write_to);
 }
 
 void persistance_read_client_profile(otrng_global_state_s *otrng_state) {
-  gchar *f =
-      g_build_filename(purple_user_dir(), CLIENT_PROFILE_FILE_NAME, NULL);
-  if (!f) {
-    return;
-  }
-
-  FILE *fp = g_fopen(f, "rb");
-  g_free(f);
-
-  otrng_global_state_client_profile_read_from(
-      otrng_state, fp, protocol_and_account_to_purple_conversation);
-
-  if (fp) {
-    fclose(fp);
-  }
+  PERSISTANCE_READ(CLIENT_PROFILE_FILE_NAME,
+                   otrng_global_state_client_profile_read_from);
 }
 
 int persistance_write_prekey_profile_FILEp(otrng_global_state_s *otrng_state) {
-  FILE *f;
-
-  gchar *file_name =
-      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
-  if (!file_name) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-  f = open_file_write_mode(file_name);
-
-  if (!f) {
-    fprintf(stderr, _("Could not write prekey profile file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(
-          otrng_global_state_prekey_profile_write_to(otrng_state, f))) {
-    err = -1;
-  }
-  fclose(f);
-
-  return err;
+  PERSISTANCE_WRITE(PREKEY_PROFILE_FILE_NAME,
+                    otrng_global_state_prekey_profile_write_to);
 }
 
 void persistance_read_prekey_profile(otrng_global_state_s *otrng_state) {
-  gchar *f =
-      g_build_filename(purple_user_dir(), PREKEY_PROFILE_FILE_NAME, NULL);
-  if (!f) {
-    return;
-  }
-
-  FILE *fp = g_fopen(f, "rb");
-  g_free(f);
-
-  otrng_global_state_prekey_profile_read_from(
-      otrng_state, fp, protocol_and_account_to_purple_conversation);
-
-  if (fp) {
-    fclose(fp);
-  }
+  PERSISTANCE_READ(PREKEY_PROFILE_FILE_NAME,
+                   otrng_global_state_prekey_profile_read_from);
 }
 
 int persistance_write_prekey_messages(otrng_global_state_s *otrng_state) {
-  FILE *fp = NULL;
-  gchar *f = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
-
-  if (!f) {
-    return -1;
-  }
-
-  fp = open_file_write_mode(f);
-
-  if (!otrng_global_state_prekey_messages_write_to(otrng_state, fp)) {
-    fclose(fp);
-    return -1;
-  }
-
-  fclose(fp);
-  return 0;
+  PERSISTANCE_WRITE(PREKEYS_FILE_NAME,
+                    otrng_global_state_prekey_messages_write_to);
 }
 
 void persistance_read_prekey_messages(otrng_global_state_s *otrng_state) {
-  gchar *f = g_build_filename(purple_user_dir(), PREKEYS_FILE_NAME, NULL);
-  if (!f) {
-    return;
-  }
+  PERSISTANCE_READ(PREKEYS_FILE_NAME, otrng_global_state_prekeys_read_from);
+}
 
-  FILE *fp = g_fopen(f, "rb");
-  g_free(f);
+int persistance_write_forging_key(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_WRITE(FORGING_KEY_FILE_NAME,
+                    otrng_global_state_forging_key_write_to);
+}
 
-  if (fp) {
-    otrng_global_state_prekeys_read_from(
-        otrng_state, fp, protocol_and_account_to_purple_conversation);
-    fclose(fp);
-  }
+void persistance_read_forging_key(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_READ(FORGING_KEY_FILE_NAME,
+                   otrng_global_state_forging_key_read_from);
 }

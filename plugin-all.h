@@ -43,7 +43,6 @@
 #define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
 #define EXP_PREKEY_PROFILE_FILE_NAME "otr4.exp_prekey_profile"
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
-#define FORGING_KEY_FILE_NAME "otr4.forging_key"
 
 #define PRIVKEY_FILE_NAME "otr.private_key"
 #define STORE_FILE_NAME "otr.fingerprints"
@@ -67,9 +66,6 @@ otrl_instag_t otrng_plugin_conv_to_selected_instag(PurpleConversation *conv,
  * error dialog if that account isn't currently logged in. */
 void otrng_plugin_inject_message(PurpleAccount *account, const char *recipient,
                                  const char *message);
-
-/* Generate a forging key */
-void otrng_plugin_create_forging_key(const PurpleAccount *account);
 
 /* Generate a V3 private key */
 void otrng_plugin_create_privkey_v3(const PurpleAccount *account);

@@ -130,14 +130,6 @@ static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
   }
 }
 
-static void otrng_plugin_read_forging_keys(FILE *f) {
-  if (otrng_failed(otrng_global_state_forging_key_read_from(
-          otrng_state, f, protocol_and_account_to_purple_conversation))) {
-    // TODO: react better on failure
-    return;
-  }
-}
-
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
   if (otrng_failed(
           otrng_global_state_instance_tags_read_from(otrng_state, instagf))) {
@@ -321,40 +313,6 @@ static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
   return err;
 }
 
-static int otrng_plugin_write_forging_key_FILEp(void) {
-#ifndef WIN32
-  mode_t mask;
-#endif /* WIN32 */
-  FILE *f;
-
-  gchar *fn = g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
-  if (!fn) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-#ifndef WIN32
-  mask = umask(0077);
-#endif /* WIN32 */
-  f = g_fopen(fn, "w+b");
-#ifndef WIN32
-  umask(mask);
-#endif /* WIN32 */
-
-  g_free(fn);
-  if (!f) {
-    fprintf(stderr, _("Could not write forging key file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(otrng_global_state_forging_key_write_to(otrng_state, f))) {
-    err = -1;
-  }
-  fclose(f);
-
-  return err;
-}
-
 static int otrng_plugin_write_expired_client_profile_FILEp(void) {
 #ifndef WIN32
   mode_t mask;
@@ -425,15 +383,6 @@ static int otrng_plugin_write_expired_prekey_profile_FILEp(void) {
   fclose(filep);
 
   return err;
-}
-
-/* Generate a forging_key for the given accountname/protocol */
-void otrng_plugin_create_forging_key(const PurpleAccount *account) {
-  if (otrng_succeeded(otrng_global_state_generate_forging_key(
-          otrng_state, purple_account_to_client_id(account)))) {
-    // TODO: check the return value
-    otrng_plugin_write_forging_key_FILEp();
-  }
 }
 
 /* Generate a private key for the given accountname/protocol */
@@ -1794,10 +1743,6 @@ client_conversation_to_plugin_conversation(const otrng_s *conv) {
   return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
 }
 
-static void create_forging_key(const otrng_client_id_s opdata) {
-  otrng_plugin_create_forging_key(client_id_to_purple_account(opdata));
-}
-
 static void create_privkey_v3(const otrng_client_id_s opdata) {
   otrng_plugin_create_privkey_v3(client_id_to_purple_account(opdata));
 }
@@ -1988,7 +1933,6 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   cb->create_instag = create_instag_cb;
   // TODO move to long_term_keys.c
   cb->create_privkey_v3 = create_privkey_v3;
-  cb->create_forging_key = create_forging_key;
   cb->write_expired_client_profile = write_expired_client_profile;
   cb->write_expired_prekey_profile = write_expired_prekey_profile;
   cb->gone_secure = gone_secure_v4;
@@ -2004,15 +1948,12 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
 }
 
 static int otrng_plugin_init_userstate(void) {
-  gchar *forging_key_file = NULL;
   gchar *privkeyfile3 = NULL;
   gchar *storefile = NULL;
   gchar *instagfile = NULL;
   gchar *exp_client_profile_filename = NULL;
   gchar *exp_prekey_profile_filename = NULL;
 
-  forging_key_file =
-      g_build_filename(purple_user_dir(), FORGING_KEY_FILE_NAME, NULL);
   privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
   storefile = g_build_filename(purple_user_dir(), STORE_FILE_NAME_v4, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAG_FILE_NAME, NULL);
@@ -2021,9 +1962,8 @@ static int otrng_plugin_init_userstate(void) {
   exp_prekey_profile_filename =
       g_build_filename(purple_user_dir(), EXP_PREKEY_PROFILE_FILE_NAME, NULL);
 
-  if (!forging_key_file || !privkeyfile3 || !storefile || !instagfile ||
+  if (!privkeyfile3 || !storefile || !instagfile ||
       !exp_client_profile_filename || !exp_prekey_profile_filename) {
-    g_free(forging_key_file);
     g_free(privkeyfile3);
     g_free(storefile);
     g_free(instagfile);
@@ -2033,14 +1973,12 @@ static int otrng_plugin_init_userstate(void) {
     return 1;
   }
 
-  FILE *forgf = g_fopen(forging_key_file, "rb");
   FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *storef = g_fopen(storefile, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
   FILE *exp_client_profile_f = g_fopen(exp_client_profile_filename, "rb");
   FILE *exp_prekey_profile_filep = g_fopen(exp_prekey_profile_filename, "rb");
 
-  g_free(forging_key_file);
   g_free(privkeyfile3);
   g_free(storefile);
   g_free(instagfile);
@@ -2060,9 +1998,6 @@ static int otrng_plugin_init_userstate(void) {
   // Read V3 private key from files
   otrng_plugin_read_private_keys(priv3f, NULL);
 
-  /* Read forging key from file */
-  otrng_plugin_read_forging_keys(forgf);
-
   /* Read fingerprints to OTR4 fingerprint store */
   otrng_plugin_fingerprint_store_create();
   otrng_plugin_read_fingerprints_FILEp(storef);
@@ -2076,10 +2011,6 @@ static int otrng_plugin_init_userstate(void) {
 
   if (priv3f) {
     fclose(priv3f);
-  }
-
-  if (forgf) {
-    fclose(forgf);
   }
 
   if (storef) {

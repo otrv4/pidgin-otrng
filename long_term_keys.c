@@ -34,10 +34,6 @@
 
 extern otrng_global_state_s *otrng_state;
 
-void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata) {
-  persistance_read_private_keys_v4(otrng_state);
-}
-
 /* Generate a private key for the given accountname/protocol */
 void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
   PurpleAccount *account = client_id_to_purple_account(opdata);
@@ -47,12 +43,31 @@ void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
   }
 }
 
+void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata) {
+  persistance_read_private_keys_v4(otrng_state);
+}
+
 void long_term_keys_store_private_key_v4(otrng_client_s *client) {
   persistance_write_privkey_v4_FILEp(otrng_state);
+}
+
+static void create_forging_key(const otrng_client_id_s opdata) {
+  otrng_global_state_generate_forging_key(otrng_state, opdata);
+}
+
+static void load_forging_key(struct otrng_client_s *client) {
+  persistance_read_forging_key(otrng_state);
+}
+
+static void store_forging_key(struct otrng_client_s *client) {
+  persistance_write_forging_key(otrng_state);
 }
 
 void long_term_keys_set_callbacks(otrng_client_callbacks_s *callbacks) {
   callbacks->create_privkey_v4 = long_term_keys_create_privkey_v4;
   callbacks->load_privkey_v4 = long_term_keys_load_private_key_v4;
   callbacks->store_privkey_v4 = long_term_keys_store_private_key_v4;
+  callbacks->create_forging_key = create_forging_key;
+  callbacks->load_forging_key = load_forging_key;
+  callbacks->store_forging_key = store_forging_key;
 }

@@ -29,6 +29,7 @@
 #define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
 #define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
+#define FORGING_KEY_FILE_NAME "otr4.forging_key"
 
 int persistance_write_privkey_v4_FILEp(otrng_global_state_s *otrng_state);
 
@@ -45,5 +46,9 @@ void persistance_read_prekey_profile(otrng_global_state_s *otrng_state);
 int persistance_write_prekey_messages(otrng_global_state_s *otrng_state);
 
 void persistance_read_prekey_messages(otrng_global_state_s *otrng_state);
+
+int persistance_write_forging_key(otrng_global_state_s *otrng_state);
+
+void persistance_read_forging_key(otrng_global_state_s *otrng_state);
 
 #endif
