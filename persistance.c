@@ -157,3 +157,15 @@ void persistance_read_expired_client_profile(
   PERSISTANCE_READ(EXP_CLIENT_PROFILE_FILE_NAME,
                    otrng_global_state_expired_client_profile_read_from);
 }
+
+int persistance_write_expired_prekey_profile(
+    otrng_global_state_s *otrng_state) {
+  PERSISTANCE_WRITE(EXP_PREKEY_PROFILE_FILE_NAME,
+                    otrng_global_state_expired_prekey_profile_write_to);
+}
+
+void persistance_read_expired_prekey_profile(
+    otrng_global_state_s *otrng_state) {
+  PERSISTANCE_READ(EXP_PREKEY_PROFILE_FILE_NAME,
+                   otrng_global_state_expired_prekey_profile_read_from);
+}

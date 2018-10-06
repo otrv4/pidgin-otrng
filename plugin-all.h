@@ -40,7 +40,6 @@
 #define STORE_FILE_NAME_v4 "otr4.fingerprints"
 #define SHARED_PREKEY_FILE_NAME "otr4.shared_prekey"
 #define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
-#define EXP_PREKEY_PROFILE_FILE_NAME "otr4.exp_prekey_profile"
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
 
 #define PRIVKEY_FILE_NAME "otr.private_key"
