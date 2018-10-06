@@ -1043,7 +1043,9 @@ void otrng_plugin_continue_smp(otrng_plugin_conversation *conv,
   free(tosend);
 }
 
-#define OTRG_PLUGIN_DEFAULT_QUERY "?OTRv34?"
+#define OTRG_PLUGIN_DEFAULT_QUERY                                              \
+  "?OTRv34? Attempting to start an OTR conversation. If you don't have the "   \
+  "plugin to support this, please install it."
 
 void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
   PurpleConversation *purp_conv = NULL;
@@ -1069,7 +1071,11 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
 
   // TODO: Use policy?
   // prefs.policy
-  msg = otrng_client_query_message(conv->peer, "", client);
+  msg = otrng_client_query_message(
+      conv->peer,
+      "Attempting to start an OTR conversation. If you don't have the plugin "
+      "to support this, please install it.",
+      client);
 
   otrng_plugin_inject_message(account, conv->peer,
                               msg ? msg : OTRG_PLUGIN_DEFAULT_QUERY);
@@ -1095,7 +1101,11 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
 
   // TODO: Use policy?
   // prefs.policy
-  msg = otrng_client_query_message(peer, "", client);
+  msg = otrng_client_query_message(
+      peer,
+      "Attempting to start an OTR conversation. If you don't have the plugin "
+      "to support this, please install it.",
+      client);
   otrng_plugin_inject_message(account, peer,
                               msg ? msg : OTRG_PLUGIN_DEFAULT_QUERY);
   free(peer);
