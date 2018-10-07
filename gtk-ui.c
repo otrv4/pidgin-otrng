@@ -176,11 +176,12 @@ static void otrng_gtk_ui_update_keylist(void) {
     plugin_conv.peer = fp->username;
     TrustLevel level = otrng_plugin_conversation_to_trust(&plugin_conv);
 
+    char *protocol_v4 = "OTRv4: ";
+    char *protocol_v3 = "OTRv3: ";
     titles[0] = fp->username;
-    // titles[1] = _("Unused");
     titles[1] = (gchar *)_(trust_states[level]);
     titles[2] = (fp->trusted) ? _("Yes") : _("No");
-    titles[3] = fp->fp;
+    titles[3] = g_strdup_printf("%s %s \n%s", protocol_v4, fp->fp, protocol_v3);
     titles[4] = g_strdup_printf("%s (%s)", fp->account, fp->protocol);
 
     i = gtk_clist_append(GTK_CLIST(keylist), titles);
@@ -759,8 +760,9 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 0, 90);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 1, 90);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 2, 60);
-  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 400);
+  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 950);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 4, 200);
+  gtk_clist_set_row_height(GTK_CLIST(ui_layout.keylist), 30);
   gtk_clist_set_selection_mode(GTK_CLIST(ui_layout.keylist),
                                GTK_SELECTION_SINGLE);
   gtk_clist_column_titles_active(GTK_CLIST(ui_layout.keylist));
