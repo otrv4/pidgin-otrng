@@ -1321,6 +1321,7 @@ static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   if (!conv) {
     return;
   }
+
   dialog_update_label_conv(conv, level);
 }
 
@@ -2743,7 +2744,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
   TrustLevel current_level = TRUST_NOT_PRIVATE;
 
-  TrustLevel *previous_level;
+  TrustLevel *previous_level = NULL;
   char *buf;
   char *status = "";
 
@@ -2753,10 +2754,14 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   otrng_plugin_conversation_free(plugin_conv);
 
   previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
-
-  if (!previous_level || (previous_level && *previous_level == current_level)) {
+  if (!previous_level) {
     return;
   }
+
+  // TODO: unsure what is tried to be achieved with this check
+  // if(previous_level == current_level) {
+  //  return;
+  //}
 
   buf = _("The privacy status of the current conversation is now: "
           "<a href=\"%s%s\">%s</a>");
