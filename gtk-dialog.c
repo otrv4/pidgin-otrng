@@ -1218,7 +1218,6 @@ static void otr_refresh_otr_buttons(PurpleConversation *conv);
 static void otr_destroy_top_menu_objects(PurpleConversation *conv);
 static void otr_add_top_otr_menu(PurpleConversation *conv);
 static void otr_add_buddy_top_menus(PurpleConversation *conv);
-static void otr_check_conv_status_change(PurpleConversation *conv);
 
 static void destroy_menuitem(GtkWidget *widget, gpointer data) {
   gtk_widget_destroy(widget);
@@ -1293,7 +1292,6 @@ static void dialog_update_label_conv(PurpleConversation *conv,
                            level);
 
   conv = gtkconv->active_conv;
-  otr_check_conv_status_change(conv);
 
   /* Update other widgets */
   if (gtkconv != pidgin_conv_window_get_active_gtkconv(gtkconv->win)) {
@@ -2738,57 +2736,6 @@ static void otr_add_buddy_top_menus(PurpleConversation *conv) {
   }
 
   g_list_free(full_buddy_list);
-}
-
-static void otr_check_conv_status_change(PurpleConversation *conv) {
-  PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
-  TrustLevel current_level = TRUST_NOT_PRIVATE;
-
-  TrustLevel *previous_level = NULL;
-  char *buf;
-  char *status = "";
-
-  otrng_plugin_conversation *plugin_conv =
-      purple_conversation_to_plugin_conversation(conv);
-  current_level = otrng_plugin_conversation_to_trust(plugin_conv);
-  otrng_plugin_conversation_free(plugin_conv);
-
-  previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
-  if (!previous_level) {
-    return;
-  }
-
-  // TODO: unsure what is tried to be achieved with this check
-  // if(previous_level == current_level) {
-  //  return;
-  //}
-
-  buf = _("The privacy status of the current conversation is now: "
-          "%s");
-
-  switch (current_level) {
-  case TRUST_NOT_PRIVATE:
-    status = _("Not Private");
-    break;
-  case TRUST_UNVERIFIED:
-    status = _("Unverified");
-    break;
-  case TRUST_PRIVATE:
-    status = _("Private");
-    break;
-  case TRUST_FINISHED:
-    status = _("Finished");
-    break;
-  }
-
-  buf = g_strdup_printf(buf, status);
-
-  /* Write a new message indicating the level change. The timestamp image will
-   * be appended as the message timestamp signal is caught, which will also
-   * update the privacy level for this gtkconv */
-  purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
-
-  g_free(buf);
 }
 
 /* If the conversation switches on us */
