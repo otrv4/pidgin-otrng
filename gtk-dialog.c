@@ -2764,7 +2764,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   //}
 
   buf = _("The privacy status of the current conversation is now: "
-          "<a href=\"%s%s\">%s</a>");
+          "%s");
 
   switch (current_level) {
   case TRUST_NOT_PRIVATE:
@@ -2781,7 +2781,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
     break;
   }
 
-  buf = g_strdup_printf(buf, LEVELS_HELPURL, _("?lang=en"), status);
+  buf = g_strdup_printf(buf, status);
 
   /* Write a new message indicating the level change. The timestamp image will
    * be appended as the message timestamp signal is caught, which will also
