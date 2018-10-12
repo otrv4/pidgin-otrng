@@ -26,6 +26,7 @@
 #include <libotr/context.h>
 #include <libotr/proto.h>
 
+#include "fingerprint.h"
 #include "plugin-all.h"
 
 //#include "otrng-plugin.h"

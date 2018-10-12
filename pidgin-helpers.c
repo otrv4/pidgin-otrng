@@ -152,3 +152,12 @@ otrng_client_id_s protocol_and_account_to_purple_conversation(FILE *privf) {
 
   return null_result;
 }
+
+otrng_plugin_conversation *
+client_conversation_to_plugin_conversation(const otrng_s *conv) {
+  const char *accountname = conv->client->client_id.account;
+  const char *protocol = conv->client->client_id.protocol;
+
+  // TODO: Instance tag?
+  return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
+}

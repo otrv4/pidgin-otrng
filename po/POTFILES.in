@@ -2,6 +2,8 @@
 
 dialogs.c
 dialogs.h
+fingerprint.c
+fingerprint.h
 gtk-dialog.c
 gtk-dialog.h
 gtk-ui.c
@@ -14,6 +16,8 @@ persistance.c
 persistance.h
 plugin-all.c
 plugin-all.h
+plugin-conversation.c
+plugin-conversation.h
 prekeys.c
 prekeys.h
 prekey-plugin.c

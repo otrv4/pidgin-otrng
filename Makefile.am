@@ -43,6 +43,7 @@ pidgin_otrng_la_SOURCES 	= otrng-plugin.c \
 				  prekey-discovery-jabber.c \
 				  prekeys.c \
 				  plugin-all.c \
+				  plugin-conversation.c \
 				  ui.c \
 				  dialogs.c \
 				  gtk-ui.c \

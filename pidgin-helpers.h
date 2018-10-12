@@ -30,6 +30,8 @@
 
 #include <libotr-ng/messaging.h>
 
+#include "plugin-conversation.h"
+
 otrng_client_id_s protocol_and_account_to_client_id(const char *protocol,
                                                     const char *account);
 
@@ -48,5 +50,8 @@ otrng_conversation_s *
 purple_conversation_to_otrng_conversation(const PurpleConversation *conv);
 
 otrng_client_id_s protocol_and_account_to_purple_conversation(FILE *privf);
+
+otrng_plugin_conversation *
+client_conversation_to_plugin_conversation(const otrng_s *conv);
 
 #endif

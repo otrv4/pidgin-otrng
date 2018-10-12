@@ -37,13 +37,9 @@
 /* libotrng headers */
 #include "otrng-client.h"
 
-#define STORE_FILE_NAME_v4 "otr4.fingerprints"
-#define SHARED_PREKEY_FILE_NAME "otr4.shared_prekey"
-#define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
-#define PREKEYS_FILE_NAME "otr4.prekey_messages"
+#include "plugin-conversation.h"
 
 #define PRIVKEY_FILE_NAME "otr.private_key"
-#define STORE_FILE_NAME "otr.fingerprints"
 #define INSTAG_FILE_NAME "otr.instance_tags"
 #define MAX_MSG_SIZE_FILE_NAME "otr.max_message_size"
 
@@ -72,13 +68,6 @@ void otrng_plugin_create_privkey_v3(const PurpleAccount *account);
 void otrng_plugin_create_instag(const PurpleAccount *account);
 
 // TODO: REPLACE by using opdata to get this information
-typedef struct {
-  char *account;
-  char *protocol;
-  char *peer;
-  uint16_t their_instance_tag;
-  uint16_t our_instance_tag;
-} otrng_plugin_conversation;
 
 otrng_plugin_conversation *
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv);
@@ -165,26 +154,6 @@ otrng_plugin_conversation_to_purple_conv(const otrng_plugin_conversation *conv,
   return otrng_plugin_userinfo_to_conv(conv->account, conv->protocol,
                                        conv->peer, force);
 }
-
-typedef struct {
-  char *protocol;
-  char *account;
-  char *username;
-  char fp[OTRNG_FPRINT_HUMAN_LEN];
-  int trusted; // 0 - no, 1 - yes
-} otrng_plugin_fingerprint;
-
-// otrng_plugin_fingerprint*
-// otrng_plugin_fingerprint_get(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
-
-otrng_conversation_s *
-otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f);
-
-GList *otrng_plugin_fingerprint_get_all(void);
-
-otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer);
-
-void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
 
 gboolean otrng_plugin_unload(PurplePlugin *handle);
 gboolean otrng_plugin_load(PurplePlugin *handle);

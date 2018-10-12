@@ -27,6 +27,10 @@
 
 #include <libotr-ng/client.h>
 
+#include <plugin.h>
+
+#define FINGERPRINT_STORE_FILE_NAME_V4 "otr4.fingerprints"
+
 typedef struct {
   char *protocol;
   char *account;
@@ -43,5 +47,17 @@ GList *otrng_plugin_fingerprint_get_all(void);
 otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer);
 
 void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
+
+void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb);
+
+gboolean otrng_plugin_fingerprints_load(PurplePlugin *handle);
+
+gboolean otrng_plugin_fingerprints_unload(PurplePlugin *handle);
+
+void write_fingerprints_cb_v3(void *opdata);
+void confirm_fingerprint_cb_v3(void *opdata, OtrlUserState us,
+                               const char *accountname, const char *protocol,
+                               const char *username,
+                               unsigned char fingerprint[20]);
 
 #endif

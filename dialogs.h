@@ -31,6 +31,7 @@
 
 #include <libotr/message.h>
 
+#include "fingerprint.h"
 #include "plugin-all.h"
 
 /* The various help URLs */
