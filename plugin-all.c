@@ -114,12 +114,6 @@ otrng_global_state_s *otrng_state = NULL;
  * protocols. */
 GHashTable *otrng_max_message_size_table = NULL;
 
-static void otrng_plugin_read_private_keys(FILE *priv3, FILE *priv4) {
-  if (!otrng_global_state_private_key_v3_read_from(otrng_state, priv3)) {
-    // TODO: error?
-  }
-}
-
 static void otrng_plugin_read_instance_tags_FILEp(FILE *instagf) {
   if (otrng_failed(
           otrng_global_state_instance_tags_read_from(otrng_state, instagf))) {
@@ -219,58 +213,6 @@ static OtrlPolicy policy_cb(void *opdata, ConnContext *context) {
   return prefs.policy;
 }
 
-static int otrng_plugin_write_privkey_v3_FILEp(PurpleAccount *account) {
-#ifndef WIN32
-  mode_t mask;
-#endif /* WIN32 */
-  FILE *privf;
-
-  gchar *privkeyfile =
-      g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
-  if (!privkeyfile) {
-    fprintf(stderr, _("Out of memory building filenames!\n"));
-    return -1;
-  }
-#ifndef WIN32
-  mask = umask(0077);
-#endif /* WIN32 */
-  privf = g_fopen(privkeyfile, "w+b");
-#ifndef WIN32
-  umask(mask);
-#endif /* WIN32 */
-
-  g_free(privkeyfile);
-  if (!privf) {
-    fprintf(stderr, _("Could not write private key file\n"));
-    return -1;
-  }
-
-  int err = 0;
-  if (otrng_failed(otrng_global_state_private_key_v3_generate_into(
-          otrng_state, purple_account_to_client_id(account), privf))) {
-    err = -1;
-  }
-  fclose(privf);
-
-  return err;
-}
-
-/* Generate a private key for the given accountname/protocol */
-void otrng_plugin_create_privkey_v3(const PurpleAccount *account) {
-  OtrgDialogWaitHandle waithandle;
-  const char *accountname = purple_account_get_username(account);
-  const char *protocol = purple_account_get_protocol_id(account);
-
-  waithandle = otrng_dialog_private_key_wait_start(accountname, protocol);
-
-  // TODO: check the return value
-  otrng_plugin_write_privkey_v3_FILEp((PurpleAccount *)account);
-  otrng_ui_update_fingerprint();
-
-  /* Mark the dialog as done. */
-  otrng_dialog_private_key_wait_done(waithandle);
-}
-
 /* Generate a instance tag for the given accountname/protocol */
 void otrng_plugin_create_instag(const PurpleAccount *account) {
   FILE *instagf;
@@ -298,7 +240,7 @@ void otrng_plugin_create_instag(const PurpleAccount *account) {
 
 static void create_privkey_cb(void *opdata, const char *account_name,
                               const char *protocol_name) {
-  otrng_plugin_create_privkey_v3(opdata);
+  // This should never happen, so make this an empty callback for now
 }
 
 static void create_instag_cb(const otrng_client_id_s opdata) {
@@ -1442,10 +1384,6 @@ static void otrng_free_mms_table() {
   otrng_max_message_size_table = NULL;
 }
 
-static void create_privkey_v3(const otrng_client_id_s opdata) {
-  otrng_plugin_create_privkey_v3(client_id_to_purple_account(opdata));
-}
-
 static void gone_secure_v4(const otrng_s *cconv) {
   otrng_plugin_conversation *conv =
       client_conversation_to_plugin_conversation(cconv);
@@ -1595,8 +1533,6 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
 
   cb->get_account_and_protocol = get_account_and_protocol_cb;
   cb->create_instag = create_instag_cb;
-  // TODO move to long_term_keys.c
-  cb->create_privkey_v3 = create_privkey_v3;
   cb->gone_secure = gone_secure_v4;
   cb->gone_insecure = gone_insecure_v4;
   cb->smp_ask_for_secret = smp_ask_for_secret_v4;
@@ -1609,23 +1545,18 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
 }
 
 static int otrng_plugin_init_userstate(void) {
-  gchar *privkeyfile3 = NULL;
   gchar *instagfile = NULL;
 
-  privkeyfile3 = g_build_filename(purple_user_dir(), PRIVKEY_FILE_NAME, NULL);
   instagfile = g_build_filename(purple_user_dir(), INSTAG_FILE_NAME, NULL);
 
-  if (!privkeyfile3 || !instagfile) {
-    g_free(privkeyfile3);
+  if (!instagfile) {
     g_free(instagfile);
 
     return 1;
   }
 
-  FILE *priv3f = g_fopen(privkeyfile3, "rb");
   FILE *instagf = g_fopen(instagfile, "rb");
 
-  g_free(privkeyfile3);
   g_free(instagfile);
 
   otrng_client_callbacks_s *callbacks = otrng_plugin_client_callbacks_new();
@@ -1638,13 +1569,6 @@ static int otrng_plugin_init_userstate(void) {
 
   /* Read instance tags to both V4 and V3 libraries' storage */
   otrng_plugin_read_instance_tags_FILEp(instagf);
-
-  // Read V3 private key from files
-  otrng_plugin_read_private_keys(priv3f, NULL);
-
-  if (priv3f) {
-    fclose(priv3f);
-  }
 
   if (instagf) {
     fclose(instagf);

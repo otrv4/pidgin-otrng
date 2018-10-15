@@ -26,6 +26,7 @@
 #include <libotr-ng/messaging.h>
 
 #define PRIVKEY_FILE_NAME_V4 "otr4.private_key"
+#define PRIVKEY_FILE_NAME_V3 "otr.private_key"
 #define CLIENT_PROFILE_FILE_NAME "otr4.client_profile"
 #define PREKEY_PROFILE_FILE_NAME "otr4.prekey_profile"
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
@@ -60,5 +61,9 @@ void persistance_read_expired_client_profile(otrng_global_state_s *otrng_state);
 int persistance_write_expired_prekey_profile(otrng_global_state_s *otrng_state);
 
 void persistance_read_expired_prekey_profile(otrng_global_state_s *otrng_state);
+
+int persistance_write_private_keys_v3(otrng_global_state_s *otrng_state);
+
+void persistance_read_private_keys_v3(otrng_global_state_s *otrng_state);
 
 #endif

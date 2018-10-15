@@ -32,4 +32,6 @@ void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata);
 
 void long_term_keys_set_callbacks(otrng_client_callbacks_s *);
 
+void long_term_keys_create_private_key_v3(otrng_client_s *client);
+
 #endif

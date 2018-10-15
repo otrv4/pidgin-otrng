@@ -43,11 +43,11 @@ void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
   }
 }
 
-void long_term_keys_load_private_key_v4(const otrng_client_id_s opdata) {
+static void load_private_key_v4(const otrng_client_id_s opdata) {
   persistance_read_private_keys_v4(otrng_state);
 }
 
-void long_term_keys_store_private_key_v4(otrng_client_s *client) {
+static void store_private_key_v4(otrng_client_s *client) {
   persistance_write_privkey_v4_FILEp(otrng_state);
 }
 
@@ -63,11 +63,29 @@ static void store_forging_key(struct otrng_client_s *client) {
   persistance_write_forging_key(otrng_state);
 }
 
+void long_term_keys_create_private_key_v3(otrng_client_s *client) {
+  if (otrng_succeeded(otrng_global_state_generate_private_key_v3(
+          otrng_state, client->client_id))) {
+    otrng_ui_update_fingerprint();
+  }
+}
+
+static void load_private_key_v3(otrng_client_s *client) {
+  persistance_read_private_keys_v3(otrng_state);
+}
+
+static void store_private_key_v3(otrng_client_s *client) {
+  persistance_write_private_keys_v3(otrng_state);
+}
+
 void long_term_keys_set_callbacks(otrng_client_callbacks_s *callbacks) {
   callbacks->create_privkey_v4 = long_term_keys_create_privkey_v4;
-  callbacks->load_privkey_v4 = long_term_keys_load_private_key_v4;
-  callbacks->store_privkey_v4 = long_term_keys_store_private_key_v4;
+  callbacks->load_privkey_v4 = load_private_key_v4;
+  callbacks->store_privkey_v4 = store_private_key_v4;
   callbacks->create_forging_key = create_forging_key;
   callbacks->load_forging_key = load_forging_key;
   callbacks->store_forging_key = store_forging_key;
+  callbacks->create_privkey_v3 = long_term_keys_create_private_key_v3;
+  callbacks->store_privkey_v3 = store_private_key_v3;
+  callbacks->load_privkey_v3 = load_private_key_v3;
 }

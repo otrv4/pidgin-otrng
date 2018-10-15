@@ -214,7 +214,7 @@ static void generate(GtkWidget *widget, gpointer data) {
 
   // Do we actually have to create both keys at the same time?
   long_term_keys_create_privkey_v4(purple_account_to_client_id(account));
-  otrng_plugin_create_privkey_v3(account);
+  long_term_keys_create_private_key_v3(purple_account_to_otrng_client(account));
 }
 
 static void ui_destroyed(GtkObject *object) {

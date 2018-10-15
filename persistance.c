@@ -169,3 +169,13 @@ void persistance_read_expired_prekey_profile(
   PERSISTANCE_READ(EXP_PREKEY_PROFILE_FILE_NAME,
                    otrng_global_state_expired_prekey_profile_read_from);
 }
+
+int persistance_write_private_keys_v3(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_WRITE(PRIVKEY_FILE_NAME_V3,
+                    otrng_global_state_private_key_v3_write_to);
+}
+
+void persistance_read_private_keys_v3(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_READ(PRIVKEY_FILE_NAME_V3,
+                   otrng_global_state_private_key_v3_read_from);
+}
