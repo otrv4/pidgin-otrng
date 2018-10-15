@@ -28,31 +28,27 @@
 
 extern otrng_global_state_s *otrng_state;
 
-static void create_client_profile(otrng_client_s *client,
-                                  const otrng_client_id_s opdata) {
-  otrng_global_state_generate_client_profile(otrng_state, opdata);
+static void create_client_profile(otrng_client_s *client) {
+  otrng_global_state_generate_client_profile(otrng_state, client->client_id);
 }
 
-static void load_client_profile(const otrng_client_id_s client_opdata) {
+static void load_client_profile(otrng_client_s *client) {
   persistance_read_client_profile(otrng_state);
 }
 
-static void create_prekey_profile(otrng_client_s *client,
-                                  const otrng_client_id_s opdata) {
-  otrng_global_state_generate_prekey_profile(otrng_state, opdata);
+static void create_prekey_profile(otrng_client_s *client) {
+  otrng_global_state_generate_prekey_profile(otrng_state, client->client_id);
 }
 
-static void load_prekey_profile(const otrng_client_id_s client_opdata) {
+static void load_prekey_profile(otrng_client_s *client) {
   persistance_read_prekey_profile(otrng_state);
 }
 
-static void store_client_profile(otrng_client_s *client,
-                                 const otrng_client_id_s client_opdata) {
+static void store_client_profile(otrng_client_s *client) {
   persistance_write_client_profile_FILEp(otrng_state);
 }
 
-static void store_prekey_profile(otrng_client_s *client,
-                                 const otrng_client_id_s client_opdata) {
+static void store_prekey_profile(otrng_client_s *client) {
   persistance_write_prekey_profile_FILEp(otrng_state);
 }
 

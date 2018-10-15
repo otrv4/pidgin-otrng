@@ -243,8 +243,8 @@ static void create_privkey_cb(void *opdata, const char *account_name,
   // This should never happen, so make this an empty callback for now
 }
 
-static void create_instag_cb(const otrng_client_id_s opdata) {
-  otrng_plugin_create_instag(client_id_to_purple_account(opdata));
+static void create_instag_cb(otrng_client_s *client) {
+  otrng_plugin_create_instag(client_id_to_purple_account(client->client_id));
 }
 
 static int is_logged_in_cb(void *opdata, const char *accountname,
@@ -1518,20 +1518,10 @@ get_shared_session_state_cb(const otrng_s *conv) {
   };
 }
 
-static otrng_result
-get_account_and_protocol_cb(char **account_name, char **protocol_name,
-                            const otrng_client_id_s client_id) {
-  *account_name = g_strdup(client_id.account);
-  *protocol_name = g_strdup(client_id.protocol);
-
-  return OTRNG_SUCCESS;
-}
-
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   otrng_client_callbacks_s *cb =
       otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
 
-  cb->get_account_and_protocol = get_account_and_protocol_cb;
   cb->create_instag = create_instag_cb;
   cb->gone_secure = gone_secure_v4;
   cb->gone_insecure = gone_insecure_v4;

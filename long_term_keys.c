@@ -35,15 +35,15 @@
 extern otrng_global_state_s *otrng_state;
 
 /* Generate a private key for the given accountname/protocol */
-void long_term_keys_create_privkey_v4(const otrng_client_id_s opdata) {
-  PurpleAccount *account = client_id_to_purple_account(opdata);
+void long_term_keys_create_privkey_v4(otrng_client_s *client) {
+  PurpleAccount *account = client_id_to_purple_account(client->client_id);
   if (otrng_succeeded(otrng_global_state_generate_private_key(
           otrng_state, purple_account_to_client_id(account)))) {
     otrng_ui_update_fingerprint();
   }
 }
 
-static void load_private_key_v4(const otrng_client_id_s opdata) {
+static void load_private_key_v4(otrng_client_s *client) {
   persistance_read_private_keys_v4(otrng_state);
 }
 
@@ -51,8 +51,8 @@ static void store_private_key_v4(otrng_client_s *client) {
   persistance_write_privkey_v4_FILEp(otrng_state);
 }
 
-static void create_forging_key(const otrng_client_id_s opdata) {
-  otrng_global_state_generate_forging_key(otrng_state, opdata);
+static void create_forging_key(otrng_client_s *client) {
+  otrng_global_state_generate_forging_key(otrng_state, client->client_id);
 }
 
 static void load_forging_key(struct otrng_client_s *client) {
