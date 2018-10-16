@@ -50,9 +50,16 @@ void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
 
 void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb);
 
-gboolean otrng_plugin_fingerprints_load(PurplePlugin *handle);
+gboolean otrng_plugin_fingerprints_load(
+    PurplePlugin *handle, void (*update_keylist_init)(void),
+    void (*resensitize_init)(void), void (*update_fingerprint_init)(void),
+    void (*unknown_fingerprint_init)(OtrlUserState, const char *, const char *,
+                                     const char *, const unsigned char[20]));
 
 gboolean otrng_plugin_fingerprints_unload(PurplePlugin *handle);
+
+/* Write the fingerprints to disk. */
+void otrng_plugin_write_fingerprints(void);
 
 void write_fingerprints_cb_v3(void *opdata);
 void confirm_fingerprint_cb_v3(void *opdata, OtrlUserState us,

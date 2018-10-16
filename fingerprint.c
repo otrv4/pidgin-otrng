@@ -26,13 +26,8 @@
 #include <glib/gstdio.h>
 
 #include "fingerprint.h"
-
 #include "pidgin-helpers.h"
-
-#include "dialogs.h"
-#include "ui.h"
-//#include "plugin-all.h"
-#include "pidgin-helpers.h"
+#include "plugin-conversation.h"
 
 #ifdef ENABLE_NLS
 /* internationalisation header */
@@ -42,7 +37,15 @@
 #define N_(x) (x)
 #endif
 
+extern otrng_global_state_s *otrng_state;
+
 GHashTable *otrng_fingerprints_table = NULL;
+
+void (*update_keylist)(void) = NULL;
+void (*update_fingerprint)(void) = NULL;
+void (*resensitize)(void) = NULL;
+void (*unknown_fingerprint)(OtrlUserState, const char *, const char *,
+                            const char *, const unsigned char[20]) = NULL;
 
 static void destroy_plugin_fingerprint(gpointer data) {
   otrng_plugin_fingerprint *fp = data;
@@ -87,14 +90,13 @@ void confirm_fingerprint_cb_v3(void *opdata, OtrlUserState us,
                                const char *accountname, const char *protocol,
                                const char *username,
                                unsigned char fingerprint[20]) {
-  otrng_dialog_unknown_fingerprint(us, accountname, protocol, username,
-                                   fingerprint);
+  unknown_fingerprint(us, accountname, protocol, username, fingerprint);
 }
 
 void write_fingerprints_cb_v3(void *opdata) {
   otrng_plugin_write_fingerprints();
-  otrng_ui_update_keylist();
-  otrng_dialog_resensitize_all();
+  update_keylist();
+  resensitize();
 }
 
 static void add_fingerprint_to_file(gpointer key, gpointer value,
@@ -229,8 +231,8 @@ static void fingerprint_seen_v3(const otrng_fingerprint_v3 fp,
     return;
   }
 
-  otrng_dialog_unknown_fingerprint(otrng_state->user_state_v3, conv->account,
-                                   conv->protocol, conv->peer, fp);
+  unknown_fingerprint(otrng_state->user_state_v3, conv->account, conv->protocol,
+                      conv->peer, fp);
   otrng_plugin_conversation_free(conv);
 }
 
@@ -267,7 +269,7 @@ static void fingerprint_seen_v4(const otrng_fingerprint fp,
   buf =
       g_strdup_printf(_("%s has not been authenticated yet.  You "
                         "should <a href=\"%s%s\">authenticate</a> this buddy."),
-                      info->username, AUTHENTICATE_HELPURL, _("?lang=en"));
+                      info->username, "authenticate.php", _("?lang=en"));
 
   PurpleConversation *purple_conv = otrng_plugin_userinfo_to_conv(
       conv->account, conv->protocol, conv->peer, 0);
@@ -326,7 +328,16 @@ void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb) {
   cb->fingerprint_seen_v3 = fingerprint_seen_v3;
 }
 
-gboolean otrng_plugin_fingerprints_load(PurplePlugin *handle) {
+gboolean otrng_plugin_fingerprints_load(
+    PurplePlugin *handle, void (*update_keylist_init)(void),
+    void (*update_fingerprint_init)(void), void (*resensitize_init)(void),
+    void (*unknown_fingerprint_init)(OtrlUserState, const char *, const char *,
+                                     const char *, const unsigned char[20])) {
+  update_keylist = update_keylist_init;
+  update_fingerprint = update_fingerprint_init;
+  resensitize = resensitize_init;
+  unknown_fingerprint = unknown_fingerprint_init;
+
   gchar *f =
       g_build_filename(purple_user_dir(), FINGERPRINT_STORE_FILE_NAME_V4, NULL);
   if (!f) {
@@ -337,7 +348,7 @@ gboolean otrng_plugin_fingerprints_load(PurplePlugin *handle) {
 
   fingerprint_store_create();
   read_fingerprints_FILEp(fp);
-  otrng_ui_update_fingerprint();
+  update_fingerprint();
 
   if (fp) {
     fclose(fp);
@@ -348,8 +359,13 @@ gboolean otrng_plugin_fingerprints_load(PurplePlugin *handle) {
 
 gboolean otrng_plugin_fingerprints_unload(PurplePlugin *handle) {
   g_hash_table_remove_all(otrng_fingerprints_table);
-  otrng_ui_update_fingerprint(); // Updates the view
+  update_fingerprint();
+
   otrng_fingerprints_table = NULL;
+  update_keylist = NULL;
+  update_fingerprint = NULL;
+  resensitize = NULL;
+  unknown_fingerprint = NULL;
 
   return TRUE;
 }

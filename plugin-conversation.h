@@ -35,4 +35,6 @@ otrng_plugin_conversation *otrng_plugin_conversation_new(const char *account,
                                                          const char *protocol,
                                                          const char *peer);
 
+void otrng_plugin_conversation_free(otrng_plugin_conversation *);
+
 #endif // __OTRG_PLUGIN_CONVERSATION_H__

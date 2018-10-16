@@ -54,4 +54,11 @@ otrng_client_id_s protocol_and_account_to_purple_conversation(FILE *privf);
 otrng_plugin_conversation *
 client_conversation_to_plugin_conversation(const otrng_s *conv);
 
+/* Find the PurpleConversation appropriate to the given userinfo.  If
+ * one doesn't yet exist, create it if force_create is true. */
+PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
+                                                  const char *protocol,
+                                                  const char *username,
+                                                  int force_create);
+
 #endif

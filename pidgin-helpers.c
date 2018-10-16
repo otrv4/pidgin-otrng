@@ -161,3 +161,26 @@ client_conversation_to_plugin_conversation(const otrng_s *conv) {
   // TODO: Instance tag?
   return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
 }
+
+/* Find the PurpleConversation appropriate to the given userinfo.  If
+ * one doesn't yet exist, create it if force_create is true. */
+PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
+                                                  const char *protocol,
+                                                  const char *username,
+                                                  int force_create) {
+  PurpleAccount *account;
+  PurpleConversation *conv;
+
+  account = purple_accounts_find(accountname, protocol);
+  if (account == NULL) {
+    return NULL;
+  }
+
+  conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username,
+                                               account);
+  if (conv == NULL && force_create) {
+    conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, username);
+  }
+
+  return conv;
+}

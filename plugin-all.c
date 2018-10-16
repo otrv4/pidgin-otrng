@@ -794,23 +794,6 @@ purple_conversation_to_plugin_conversation(const PurpleConversation *conv) {
   return result;
 }
 
-void otrng_plugin_conversation_free(otrng_plugin_conversation *conv) {
-  if (!conv) {
-    return;
-  }
-
-  g_free(conv->account);
-  conv->account = NULL;
-
-  g_free(conv->protocol);
-  conv->protocol = NULL;
-
-  g_free(conv->peer);
-  conv->peer = NULL;
-
-  free(conv);
-}
-
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
@@ -1176,29 +1159,6 @@ void otrng_plugin_disconnect(otrng_plugin_conversation *conv) {
   }
 
   free(msg);
-}
-
-/* Find the PurpleConversation appropriate to the given userinfo.  If
- * one doesn't yet exist, create it if force_create is true. */
-PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
-                                                  const char *protocol,
-                                                  const char *username,
-                                                  int force_create) {
-  PurpleAccount *account;
-  PurpleConversation *conv;
-
-  account = purple_accounts_find(accountname, protocol);
-  if (account == NULL) {
-    return NULL;
-  }
-
-  conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, username,
-                                               account);
-  if (conv == NULL && force_create) {
-    conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, username);
-  }
-
-  return conv;
 }
 
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
@@ -1775,7 +1735,9 @@ gboolean otrng_plugin_load(PurplePlugin *handle) {
   // Loads prekey plugin
   otrng_prekey_plugin_load(handle);
   otrng_plugin_prekey_discovery_load();
-  otrng_plugin_fingerprints_load(handle);
+  otrng_plugin_fingerprints_load(
+      handle, otrng_ui_update_keylist, otrng_ui_update_fingerprint,
+      otrng_dialog_resensitize_all, otrng_dialog_unknown_fingerprint);
 
   return TRUE;
 }

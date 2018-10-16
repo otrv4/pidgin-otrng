@@ -39,6 +39,8 @@
 
 #include "plugin-conversation.h"
 
+#include "pidgin-helpers.h"
+
 #define PRIVKEY_FILE_NAME "otr.private_key"
 #define INSTAG_FILE_NAME "otr.instance_tags"
 #define MAX_MSG_SIZE_FILE_NAME "otr.max_message_size"
@@ -80,8 +82,6 @@ otrng_plugin_conversation_to_client(const otrng_plugin_conversation *conv);
 otrng_plugin_conversation *
 otrng_plugin_conversation_copy(const otrng_plugin_conversation *);
 
-void otrng_plugin_conversation_free(otrng_plugin_conversation *);
-
 /* Start the Socialist Millionaires' Protocol over the current connection,
  * using the given initial secret, and optionally a question to pass to
  * the buddy. */
@@ -106,20 +106,10 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv);
  * appropriate. */
 void otrng_plugin_disconnect(otrng_plugin_conversation *conv);
 
-/* Write the fingerprints to disk. */
-void otrng_plugin_write_fingerprints(void);
-
 /* Find the ConnContext appropriate to a given PurpleConversation. */
 ConnContext *otrng_plugin_conv_to_context(PurpleConversation *conv,
                                           otrl_instag_t their_instance,
                                           int force_create);
-
-/* Find the PurpleConversation appropriate to the given userinfo.  If
- * one doesn't yet exist, create it if force_create is true. */
-PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
-                                                  const char *protocol,
-                                                  const char *username,
-                                                  int force_create);
 
 /* Find the PurpleConversation appropriate to the given ConnContext.  If
  * one doesn't yet exist, create it if force_create is true. */

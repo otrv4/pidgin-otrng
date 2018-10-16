@@ -43,3 +43,15 @@ otrng_plugin_conversation *otrng_plugin_conversation_new(const char *account,
 
   return ret;
 }
+
+void otrng_plugin_conversation_free(otrng_plugin_conversation *conv) {
+  if (!conv) {
+    return;
+  }
+
+  g_free(conv->account);
+  g_free(conv->protocol);
+  g_free(conv->peer);
+
+  free(conv);
+}
