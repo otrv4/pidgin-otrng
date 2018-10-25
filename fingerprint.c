@@ -266,10 +266,9 @@ static void fingerprint_seen_v4(const otrng_fingerprint fp,
     return; // ERROR
   }
 
-  buf =
-      g_strdup_printf(_("%s has not been authenticated yet.  You "
-                        "should <a href=\"%s%s\">authenticate</a> this buddy."),
-                      info->username, "authenticate.php", _("?lang=en"));
+  buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
+                          "should authenticate this buddy."),
+                        info->username);
 
   PurpleConversation *purple_conv = otrng_plugin_userinfo_to_conv(
       conv->account, conv->protocol, conv->peer, 0);

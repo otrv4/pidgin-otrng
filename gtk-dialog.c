@@ -1191,16 +1191,14 @@ otrng_gtk_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
   }
 
   if (seenbefore) {
-    buf = g_strdup_printf(
-        _("%s is contacting you from an unrecognized "
-          "computer.  You should <a href=\"%s%s\">authenticate</a> "
-          "this buddy."),
-        who, AUTHENTICATE_HELPURL, _("?lang=en"));
+    buf = g_strdup_printf(_("%s is contacting you from an unrecognized "
+                            "computer.  You should authenticate "
+                            "this buddy."),
+                          who);
   } else {
-    buf = g_strdup_printf(
-        _("%s has not been authenticated yet.  You "
-          "should <a href=\"%s%s\">authenticate</a> this buddy."),
-        who, AUTHENTICATE_HELPURL, _("?lang=en"));
+    buf = g_strdup_printf(_("%s has not been authenticated yet.  You "
+                            "should authenticate this buddy."),
+                          who);
   }
 
   conv = otrng_plugin_userinfo_to_conv(accountname, protocol, who, TRUE);
@@ -1633,9 +1631,8 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
     break;
 
   case TRUST_UNVERIFIED:
-    format_buf = g_strdup_printf(_("<a href=\"%s%s\">Unverified</a> "
-                                   "conversation started.%%s%%s"),
-                                 UNVERIFIED_HELPURL, _("?lang=en"));
+    format_buf = g_strdup_printf(_("Unverified "
+                                   "conversation started.%%s%%s"));
     break;
 
   default:
@@ -1671,10 +1668,9 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
       *have_warned_instances = TRUE;
       buf = g_strdup_printf(
           _("Your buddy is logged in multiple times and"
-            " OTR has established <a href=\"%s%s\">multiple sessions"
-            "</a>. Use the icon menu above if you wish to select the "
-            "outgoing session."),
-          SESSIONS_HELPURL, _("?lang=en"));
+            " OTR has established multiple sessions."
+            " Use the icon menu above if you wish to select the "
+            "outgoing session."));
       otrng_gtk_dialog_display_otr_message(context->account, context->protocol,
                                            context->peer, buf, 0);
       g_free(buf);
@@ -1775,11 +1771,9 @@ static void otrng_gtk_dialog_stillconnected(ConnContext *context) {
     break;
 
   case TRUST_UNVERIFIED:
-    format_buf =
-        g_strdup_printf(_("Successfully refreshed the "
-                          "<a href=\"%s%s\">unverified</a> conversation with "
-                          "%%s.%%s"),
-                        UNVERIFIED_HELPURL, _("?lang=en"));
+    format_buf = g_strdup_printf(_("Successfully refreshed the "
+                                   "unverified conversation with "
+                                   "%%s.%%s"));
     break;
 
   default:
