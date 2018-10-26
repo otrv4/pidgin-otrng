@@ -508,7 +508,7 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 
   if (smppair->responder) {
     label_text = g_strdup_printf(
-        "<small><i>\n%s\n</i></small>",
+        "<small>\n%s\n</small>",
         _("Your buddy is attempting to determine if they are really "
           "talking to you, or if it's someone pretending to be you.  "
           "Your buddy has asked the question indicated below.  "
@@ -516,9 +516,9 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
           "click OK."));
   } else {
     label_text = g_strdup_printf(
-        "<small><i>\n%s\n</i></small>",
+        "<small>\n%s\n</small>",
         _("To authenticate using a question, pick a question whose "
-          "answer is known only to you and your buddy.  Enter this "
+          "answer is known only to you and your buddy. Enter this "
           "question and this answer and then wait for your buddy to "
           "enter the answer too. If the answers "
           "don't match, then you may be talking to an imposter."));
@@ -619,7 +619,7 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   char *label_text_2;
 
   label_text = g_strdup_printf(
-      "<small><i>\n%s\n</i></small>",
+      "<small>\n%s\n</small>",
       _("To authenticate, pick a secret known "
         "only to you and your buddy.  Enter this secret, then "
         "wait for your buddy to enter it too.  If the secrets "
@@ -693,12 +693,12 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   }
 
   label_text = g_strdup_printf(
-      "<small><i>\n%s %s\n</i></small>",
+      "<small>\n%s %s\n</small>",
       _("To verify the fingerprint, contact your buddy via some "
-        "<i>other</i> authenticated channel, such as the telephone "
-        "or GPG-signed email.  Each of you should tell your fingerprint "
+        "other authenticated channel, such as the telephone "
+        "or GPG-signed email. Each of you should tell your fingerprint "
         "to the other."),
-      _("If everything matches up, you should choose <b>I have</b> "
+      _("If everything matches up, you should choose the <b>I have</b> option "
         "in the menu below."));
 
   label = gtk_label_new(NULL);
@@ -875,7 +875,7 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
         g_strdup_printf("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
                         (primary ? primary : ""),
                         _("Authenticating a buddy helps ensure that the person "
-                          "you are talking to is who he or she claims to be."));
+                          "you are talking to is who they claim to be."));
 
     label = gtk_label_new(NULL);
 
