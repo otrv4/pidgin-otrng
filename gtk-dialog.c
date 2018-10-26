@@ -509,18 +509,18 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
   if (smppair->responder) {
     label_text = g_strdup_printf(
         "<small><i>\n%s\n</i></small>",
-        _("Your buddy is attempting to determine if he or she is really "
+        _("Your buddy is attempting to determine if they are really "
           "talking to you, or if it's someone pretending to be you.  "
-          "Your buddy has asked a question, indicated below.  "
-          "To authenticate to your buddy, enter the answer and "
+          "Your buddy has asked the question indicated below.  "
+          "To authenticate to your buddy, enter the answer and then "
           "click OK."));
   } else {
     label_text = g_strdup_printf(
         "<small><i>\n%s\n</i></small>",
         _("To authenticate using a question, pick a question whose "
           "answer is known only to you and your buddy.  Enter this "
-          "question and this answer, then wait for your buddy to "
-          "enter the answer too.  If the answers "
+          "question and this answer and then wait for your buddy to "
+          "enter the answer too. If the answers "
           "don't match, then you may be talking to an imposter."));
   }
 

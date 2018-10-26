@@ -1440,10 +1440,12 @@ static void display_error_message(const otrng_error_event event,
     return;
   }
 
-  const char *unreadable_msg_error = "Unreadable message";
-  const char *not_in_private_error = "Not in private state message";
-  const char *encryption_error = "Encryption error";
-  const char *malformed_error = "Malformed message";
+  const char *unreadable_msg_error = "You transmitted an unreadable message.";
+  const char *not_in_private_error = "You try sending an encrypted message to "
+                                     "someone who wasn't expecting it.";
+  const char *encryption_error =
+      "An error occurred while trying to encrypt the message.";
+  const char *malformed_error = "You transmitted a malformed message.";
 
   switch (event) {
   case OTRNG_ERROR_UNREADABLE_EVENT:
@@ -1686,7 +1688,7 @@ static void warn_otrv3_installed(void) {
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
   g_free(buf);
   buf = g_strdup_printf(
-      _("You have enabled two conflicing plugins providing "
+      _("You have enabled two conflicting plugins providing "
         "different versions of the Off-the-Record Messaging plugin. "
         "It is recommended that you go to Tools->Plugins and disable "
         "the plugin named \"Off-the-Record Messaging\", while leaving "
