@@ -271,22 +271,6 @@ static void smp_progress_response_cb(GtkDialog *dialog, gint response,
   otrng_plugin_conversation_free(context);
 }
 
-static void display_smp_help(AuthSignalData *auth_opt_data) {
-  char *helpurl = g_strdup_printf(
-      "%s%s&context=%s", AUTHENTICATE_HELPURL, _("?lang=en"),
-      auth_opt_data->smppair->smp_type == AUTH_SMP_QUESTION
-          ? (/* Question and Answer */
-             auth_opt_data->smppair->responder ? "answer" : "question")
-          : auth_opt_data->smppair->smp_type == AUTH_SMP_SHARED_SECRET
-                ? (/* Shared secret */
-                   auth_opt_data->smppair->responder ? "secretresp" : "secret")
-                :
-                /* Fingerprint */
-                "fingerprint");
-  purple_notify_uri(otrng_plugin_handle, helpurl);
-  g_free(helpurl);
-}
-
 static int start_or_continue_smp(SmpResponsePair *smppair) {
   GtkEntry *question_entry = smppair->question_entry;
   GtkEntry *entry = smppair->entry;
@@ -370,11 +354,6 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
     /* launch progress bar window */
     create_smp_progress_dialog(GTK_WINDOW(dialog), smppair->conv);
-  } else if (response == GTK_RESPONSE_HELP) {
-    display_smp_help(auth_opt_data);
-
-    /* Don't destroy the window */
-    return;
   } else {
     otrng_plugin_abort_smp(smppair->conv);
   }
@@ -841,9 +820,8 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
     gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
 
     dialog = gtk_dialog_new_with_buttons(
-        title ? title : PIDGIN_ALERT_TITLE, NULL, 0, GTK_STOCK_HELP,
-        GTK_RESPONSE_HELP, GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-        _("_Authenticate"), GTK_RESPONSE_ACCEPT, NULL);
+        title ? title : PIDGIN_ALERT_TITLE, NULL, 0, GTK_STOCK_CANCEL,
+        GTK_RESPONSE_REJECT, _("_Authenticate"), GTK_RESPONSE_ACCEPT, NULL);
     gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
     auth_vbox = gtk_vbox_new(FALSE, 0);
