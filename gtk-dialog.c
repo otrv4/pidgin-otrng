@@ -1850,10 +1850,25 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data) {
   otrng_plugin_conversation_free(plugin_conv);
 }
 
-static void menu_whatsthis(GtkWidget *widget, gpointer data) {
-  char *uri = g_strdup_printf("%s%s", LEVELS_HELPURL, _("?lang=en"));
-  purple_notify_uri(otrng_plugin_handle, uri);
-  g_free(uri);
+static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
+  GtkWidget *dialog;
+  GtkWidget *dialog_text;
+  gchar *buf = NULL;
+  dialog = gtk_dialog_new_with_buttons(
+      PIDGIN_ALERT_TITLE, NULL, 0, GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+  dialog_text = gtk_label_new(NULL);
+  gtk_widget_set_size_request(dialog_text, 300, 300);
+  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+  buf = g_strdup_printf(_("Some text"));
+  gtk_label_set_text(GTK_LABEL(dialog_text), buf);
+  gtk_widget_show(dialog_text);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text, TRUE, TRUE,
+                     0);
+  gtk_dialog_run(GTK_DIALOG(dialog));
+  gtk_widget_destroy(dialog);
+  g_free(buf);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
@@ -2007,7 +2022,7 @@ static void otr_build_status_submenu(PidginWindow *win,
   GtkWidget *buddy_status;
   GtkWidget *menusep, *menusep2;
   GdkPixbuf *pixbuf;
-  GtkWidget *whatsthis;
+  GtkWidget *understanding_otrv4;
 
   gchar *text = NULL;
 
@@ -2062,9 +2077,10 @@ static void otr_build_status_submenu(PidginWindow *win,
 
   menusep = gtk_separator_menu_item_new();
   menusep2 = gtk_separator_menu_item_new();
-  whatsthis = gtk_image_menu_item_new_with_mnemonic(_("_What's this?"));
+  understanding_otrv4 =
+      gtk_image_menu_item_new_with_mnemonic(_("_Understanding OTRv4"));
   gtk_image_menu_item_set_image(
-      GTK_IMAGE_MENU_ITEM(whatsthis),
+      GTK_IMAGE_MENU_ITEM(understanding_otrv4),
       gtk_image_new_from_stock(
           GTK_STOCK_HELP,
           gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_EXTRA_SMALL)));
@@ -2073,20 +2089,20 @@ static void otr_build_status_submenu(PidginWindow *win,
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_name);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), buddy_status);
   gtk_menu_shell_append(GTK_MENU_SHELL(menu), menusep2);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menu), whatsthis);
+  gtk_menu_shell_append(GTK_MENU_SHELL(menu), understanding_otrv4);
 
   gtk_widget_show(menusep);
   gtk_widget_show_all(buddy_name);
   gtk_widget_show_all(buddy_status);
   gtk_widget_show(menusep2);
-  gtk_widget_show_all(whatsthis);
+  gtk_widget_show_all(understanding_otrv4);
 
   gtk_signal_connect(GTK_OBJECT(buddy_name), "select",
                      GTK_SIGNAL_FUNC(force_deselect), NULL);
   gtk_signal_connect(GTK_OBJECT(buddy_status), "select",
                      GTK_SIGNAL_FUNC(force_deselect), NULL);
-  gtk_signal_connect(GTK_OBJECT(whatsthis), "activate",
-                     GTK_SIGNAL_FUNC(menu_whatsthis), conv);
+  gtk_signal_connect(GTK_OBJECT(understanding_otrv4), "activate",
+                     GTK_SIGNAL_FUNC(menu_understanding_otrv4), conv);
 }
 
 static void build_otr_menu(PurpleConversation *conv, GtkWidget *menu,
