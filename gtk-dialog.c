@@ -1853,22 +1853,33 @@ static void socialist_millionaires(GtkWidget *widget, gpointer data) {
 static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   GtkWidget *dialog;
   GtkWidget *dialog_text;
-  gchar *buf = NULL;
+  gchar *label = NULL;
+
   dialog = gtk_dialog_new_with_buttons(
       PIDGIN_ALERT_TITLE, NULL, 0, GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
   dialog_text = gtk_label_new(NULL);
   gtk_widget_set_size_request(dialog_text, 300, 300);
+  gtk_container_set_border_width(GTK_CONTAINER(dialog), 30);
+  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+  gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
+  gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(dialog)->vbox), 12);
+  gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 6);
+
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
-  buf = g_strdup_printf(_("Some text"));
-  gtk_label_set_text(GTK_LABEL(dialog_text), buf);
+
+  label = g_strdup_printf("<span weight=\"bold\" size=\"larger\">%s</span>\n\n",
+                          _("Understanding OTRv4"));
+  gtk_label_set_markup(GTK_LABEL(dialog_text), label);
+  gtk_label_set_selectable(GTK_LABEL(dialog_text), FALSE);
   gtk_widget_show(dialog_text);
+
   gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text, TRUE, TRUE,
-                     0);
+                     12);
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
-  g_free(buf);
+  g_free(label);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
