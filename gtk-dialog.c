@@ -1865,9 +1865,9 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   GtkWidget *img = NULL;
   gchar *label = NULL;
 
-  // TODO: put a title
-  dialog = gtk_dialog_new_with_buttons(
-      PIDGIN_ALERT_TITLE, NULL, 0, GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+  dialog =
+      gtk_dialog_new_with_buttons(_("Understanding OTRv4"), NULL, 0,
+                                  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
 
   hbox = gtk_hbox_new(FALSE, 15);
@@ -1882,13 +1882,15 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), hbox);
 
   img = gtk_image_new_from_stock(
-      PIDGIN_STOCK_DIALOG_AUTH,
+      PIDGIN_STOCK_DIALOG_INFO,
       gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
   gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
   gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
 
-  label = g_strdup_printf("<span weight=\"bold\" size=\"larger\">%s</span>\n\n",
-                          _("Understanding OTRv4"));
+  label = g_strdup_printf(
+      "<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+      _("Understanding OTRv4"),
+      _("OTRv4 is the fourth version of the Off-the-Record Protocol"));
   gtk_label_set_markup(GTK_LABEL(dialog_text), label);
   gtk_label_set_selectable(GTK_LABEL(dialog_text), FALSE);
   g_free(label);
