@@ -784,9 +784,9 @@ static void add_other_authentication_options(GtkWidget *vbox,
   g_signal_connect(combo, "changed", G_CALLBACK(redraw_auth_vbox), data);
 }
 
-static GtkWidget *create_smp_dialog(const char *title, const char *primary,
-                                    const otrng_plugin_conversation *pconv,
-                                    gboolean responder, const char *question) {
+static void create_smp_dialog(const char *title, const char *primary,
+                              const otrng_plugin_conversation *pconv,
+                              gboolean responder, const char *question) {
   GtkWidget *dialog;
   PurpleConversation *conv = otrng_plugin_conversation_to_purple_conv(pconv, 1);
 
@@ -808,15 +808,25 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
     GtkWidget *label;
     GtkWidget *img = NULL;
     char *label_text;
-    const char *icon_name = NULL;
     SmpResponsePair *smppair;
     GtkWidget *notebook;
     AuthSignalData *auth_opt_data;
 
+    smppair = malloc(sizeof(SmpResponsePair));
+    if (!smppair) {
+      return;
+    }
+
+    auth_opt_data = malloc(sizeof(AuthSignalData));
+    if (!auth_opt_data) {
+      free(smppair);
+      return;
+    }
+
     smp_data->their_instance = pconv->their_instance_tag;
-    icon_name = PIDGIN_STOCK_DIALOG_AUTH;
     img = gtk_image_new_from_stock(
-        icon_name, gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
+        PIDGIN_STOCK_DIALOG_AUTH,
+        gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
     gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
 
     dialog = gtk_dialog_new_with_buttons(
@@ -828,12 +838,10 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
     hbox = gtk_hbox_new(FALSE, 15);
     vbox = gtk_vbox_new(FALSE, 0);
 
-    smppair = malloc(sizeof(SmpResponsePair));
     smppair->responder = responder;
     smppair->conv = otrng_plugin_conversation_copy(pconv);
 
     notebook = gtk_notebook_new();
-    auth_opt_data = malloc(sizeof(AuthSignalData));
     auth_opt_data->smppair = smppair;
 
     gtk_window_set_focus_on_map(GTK_WINDOW(dialog), !responder);
@@ -930,8 +938,6 @@ static GtkWidget *create_smp_dialog(const char *title, const char *primary,
       smp_data->smp_secret_smppair->responder = responder;
     }
   }
-
-  return smp_data->smp_secret_dialog;
 }
 
 static GtkWidget *
