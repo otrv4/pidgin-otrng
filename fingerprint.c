@@ -26,6 +26,7 @@
 #include <glib/gstdio.h>
 
 #include "fingerprint.h"
+#include "persistance.h"
 #include "pidgin-helpers.h"
 #include "plugin-conversation.h"
 
@@ -54,11 +55,6 @@ static void destroy_plugin_fingerprint(gpointer data) {
   free(fp->account);
   free(fp->username);
   free(fp);
-}
-
-static void fingerprint_store_create() {
-  otrng_fingerprints_table = g_hash_table_new_full(
-      g_str_hash, g_str_equal, g_free, destroy_plugin_fingerprint);
 }
 
 otrng_plugin_fingerprint *
@@ -133,94 +129,9 @@ void otrng_plugin_write_fingerprints_v4(void) {
   fclose(storef);
 }
 
-/* Write the fingerprints to disk. */
 void otrng_plugin_write_fingerprints(void) {
   // TODO: write otrv3 fingerprints
-  otrng_plugin_write_fingerprints_v4();
-}
-
-static void read_fingerprints_FILEp(FILE *storef) {
-  char storeline[1000];
-  size_t maxsize = sizeof(storeline);
-
-  if (!storef) {
-    return;
-  }
-
-  while (fgets(storeline, maxsize, storef)) {
-    char *username;
-    char *accountname;
-    char *protocol;
-    char *fp_human;
-    char *trust;
-    char *tab;
-    char *eol;
-    otrng_plugin_fingerprint *fng;
-
-    /* Parse the line, which should be of the form:
-     *    username\taccountname\tprotocol\t40_hex_nybbles\n          */
-    username = storeline;
-    tab = strchr(username, '\t');
-    if (!tab) {
-      continue;
-    }
-    *tab = '\0';
-
-    accountname = tab + 1;
-    tab = strchr(accountname, '\t');
-    if (!tab) {
-      continue;
-    }
-    *tab = '\0';
-
-    protocol = tab + 1;
-    tab = strchr(protocol, '\t');
-    if (!tab) {
-      continue;
-    }
-    *tab = '\0';
-
-    fp_human = tab + 1;
-    tab = strchr(fp_human, '\t');
-    if (!tab) {
-      eol = strchr(fp_human, '\r');
-      if (!eol) {
-        eol = strchr(fp_human, '\n');
-      }
-      if (!eol) {
-        continue;
-      }
-      *eol = '\0';
-      trust = NULL;
-    } else {
-      *tab = '\0';
-      trust = tab + 1;
-      eol = strchr(trust, '\r');
-      if (!eol) {
-        eol = strchr(trust, '\n');
-      }
-      if (!eol) {
-        continue;
-      }
-      *eol = '\0';
-    }
-
-    if (strlen(fp_human) != OTRNG_FPRINT_HUMAN_LEN - 1) {
-      continue;
-    }
-
-    fng = otrng_plugin_fingerprint_get(fp_human);
-    if (!fng) {
-      fng = otrng_plugin_fingerprint_new(fp_human, protocol, accountname,
-                                         username);
-    }
-
-    if (!fng) {
-      continue;
-    }
-
-    fng->trusted = strlen(trust) ? 1 : 0;
-  }
+  persistance_write_fingerprints_v4(otrng_state);
 }
 
 static void fingerprint_seen_v3(const otrng_fingerprint_v3 fp,
@@ -322,9 +233,20 @@ void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]) {
   g_hash_table_remove(otrng_fingerprints_table, fp);
 }
 
+static void fingerprint_store_v4(otrng_client_s *client) {
+  persistance_write_fingerprints_v4(otrng_state);
+}
+
+static void fingerprint_load_v4(otrng_client_s *client) {
+  persistance_read_fingerprints_v4(otrng_state);
+  update_fingerprint();
+}
+
 void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb) {
   cb->fingerprint_seen = fingerprint_seen_v4;
   cb->fingerprint_seen_v3 = fingerprint_seen_v3;
+  cb->store_fingerprints_v4 = fingerprint_store_v4;
+  cb->load_fingerprints_v4 = fingerprint_load_v4;
 }
 
 gboolean otrng_plugin_fingerprints_load(
@@ -336,23 +258,6 @@ gboolean otrng_plugin_fingerprints_load(
   update_fingerprint = update_fingerprint_init;
   resensitize = resensitize_init;
   unknown_fingerprint = unknown_fingerprint_init;
-
-  gchar *f =
-      g_build_filename(purple_user_dir(), FINGERPRINT_STORE_FILE_NAME_V4, NULL);
-  if (!f) {
-    return FALSE;
-  }
-  FILE *fp = g_fopen(f, "rb");
-  g_free(f);
-
-  fingerprint_store_create();
-  read_fingerprints_FILEp(fp);
-  update_fingerprint();
-
-  if (fp) {
-    fclose(fp);
-  }
-
   return TRUE;
 }
 
