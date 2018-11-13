@@ -750,9 +750,23 @@ static void process_sending_im(PurpleAccount *account, char *who,
 /* Abort the SMP protocol.  Used when malformed or unexpected messages
  * are received. */
 void otrng_plugin_abort_smp(const otrng_plugin_conversation *conv) {
-  // TODO: create and inject abort SMP message.
-  // otrng_client_adapter_smp_abort(&tosend, conv->peer, question, secret,
-  // secretlen, client);
+  otrng_client_s *client = otrng_plugin_conversation_to_client(conv);
+  if (!client) {
+    return;
+  }
+
+  char *to_send = NULL;
+  if (otrng_failed(otrng_client_smp_abort(&to_send, conv->peer, client))) {
+    return; // ERROR?
+  }
+
+  PurpleConversation *purp_conv = NULL;
+  PurpleAccount *account = NULL;
+  purp_conv = otrng_plugin_userinfo_to_conv(conv->account, conv->protocol,
+                                            conv->peer, 1);
+  account = purple_conversation_get_account(purp_conv);
+  otrng_plugin_inject_message(account, conv->peer, to_send);
+  free(to_send);
 }
 
 // TODO: REMOVE
