@@ -1494,6 +1494,11 @@ get_shared_session_state_cb(const otrng_s *conv) {
   };
 }
 
+static otrng_policy_s define_policy(struct otrng_client_s *client) {
+  otrng_policy_s policy = {.allows = OTRNG_ALLOW_V34};
+  return policy;
+}
+
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   otrng_client_callbacks_s *cb =
       otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
@@ -1506,6 +1511,7 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   cb->smp_update = smp_update_v4;
   cb->display_error_message = display_error_message;
   cb->get_shared_session_state = get_shared_session_state_cb;
+  cb->define_policy = define_policy;
 
   return cb;
 }
