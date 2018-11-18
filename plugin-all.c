@@ -1495,7 +1495,21 @@ get_shared_session_state_cb(const otrng_s *conv) {
 }
 
 static otrng_policy_s define_policy(struct otrng_client_s *client) {
-  otrng_policy_s policy = {.allows = OTRNG_ALLOW_V34};
+  PurpleAccount *account;
+  otrng_policy_s policy;
+  policy.allows = OTRNG_POLICY_DEFAULT;
+  otrng_ui_prefs prefs;
+
+  if (!client)
+    return policy;
+
+  account = client_id_to_purple_account(client->client_id);
+  if (!account)
+    return policy;
+
+  otrng_v4_ui_get_prefs(&prefs, account);
+  return prefs.policy;
+
   return policy;
 }
 
@@ -1677,6 +1691,7 @@ static void otrng_plugin_unwatch_libpurple_events(void) {
                            PURPLE_CALLBACK(supply_extended_menu));
 }
 
+// TODO: this function does not make sense
 /* Return 1 if the given protocol supports OTR, 0 otherwise. */
 int otrng_plugin_proto_supports_otr(const char *proto) {
   /* Right now, OTR should work on all protocols, possibly

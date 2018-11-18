@@ -1083,6 +1083,32 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
   }
 }
 
+// TODO: unify with above func
+/* Load the preferences for a particular account / username for v4 */
+static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
+                                      PurpleAccount *account) {
+  // PurpleBuddy *buddy;
+  gboolean otrenabled, otrautomatic, otronlyprivate, otravoidloggingotr;
+  // gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate;
+  //    buddyavoidloggingotr;
+
+  prefs->policy.allows = OTRL_POLICY_DEFAULT;
+  prefs->avoid_logging_otr = FALSE;
+  prefs->show_otr_button = FALSE;
+
+  /* Get the default policy */
+  otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
+                                 &otravoidloggingotr);
+  otrng_gtk_ui_global_options_load(&(prefs->show_otr_button));
+
+  if (otrenabled) {
+    prefs->policy.allows = OTRL_POLICY_MANUAL;
+    prefs->avoid_logging_otr = otravoidloggingotr;
+  } else {
+    prefs->policy.allows = OTRL_POLICY_NEVER;
+  }
+}
+
 /* Initialize the OTR UI subsystem */
 static void otrng_gtk_ui_init(void) { /* Nothing to do */
 }
@@ -1096,7 +1122,8 @@ static const OtrgUiUiOps gtk_ui_ui_ops = {otrng_gtk_ui_init,
                                           otrng_gtk_ui_update_fingerprint,
                                           otrng_gtk_ui_update_keylist,
                                           otrng_gtk_ui_config_buddy,
-                                          otrng_gtk_ui_get_prefs};
+                                          otrng_gtk_ui_get_prefs,
+                                          otrng_gtk_ui_get_prefs_v4};
 
 /* Get the GTK UI ops */
 const OtrgUiUiOps *otrng_gtk_ui_get_ui_ops(void) { return &gtk_ui_ui_ops; }

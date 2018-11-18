@@ -156,3 +156,25 @@ void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
   prefsp->avoid_logging_otr = TRUE;
   prefsp->show_otr_button = FALSE;
 }
+
+// TODO: change the name later and remove the above func
+/* Load the preferences for a particular account / username */
+void otrng_v4_ui_get_prefs(otrng_ui_prefs *prefs, PurpleAccount *account) {
+  /* Check to see if the protocol for this account supports OTR at all. */
+  const char *proto = purple_account_get_protocol_id(account);
+  if (!otrng_plugin_proto_supports_otr(proto)) {
+    prefs->policy.allows = OTRNG_ALLOW_NONE;
+    prefs->avoid_logging_otr = TRUE;
+    prefs->show_otr_button = FALSE;
+    return;
+  }
+
+  if (ui_ops != NULL) {
+    ui_ops->get_prefs_v4(prefs, account);
+    return;
+  }
+  /* If we've got no other way to get the prefs, use sensible defaults */
+  prefs->policy.allows = OTRNG_POLICY_DEFAULT;
+  prefs->avoid_logging_otr = TRUE;
+  prefs->show_otr_button = FALSE;
+}

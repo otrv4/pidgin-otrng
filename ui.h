@@ -39,6 +39,12 @@ typedef struct {
 } OtrgUiPrefs;
 
 typedef struct {
+  otrng_policy_s policy;
+  gboolean avoid_logging_otr;
+  gboolean show_otr_button;
+} otrng_ui_prefs;
+
+typedef struct {
   void (*init)(void);
 
   void (*cleanup)(void);
@@ -51,6 +57,7 @@ typedef struct {
 
   void (*get_prefs)(OtrgUiPrefs *prefsp, PurpleAccount *account,
                     const char *name);
+  void (*get_prefs_v4)(otrng_ui_prefs *prefs, PurpleAccount *account);
 } OtrgUiUiOps;
 
 /* Set the UI ops */
@@ -87,5 +94,8 @@ void otrng_ui_config_buddy(PurpleBuddy *buddy);
 /* Load the preferences for a particular account / username */
 void otrng_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
                         const char *name);
+
+/* Load the preferences for a particular account / username for v4 */
+void otrng_v4_ui_get_prefs(otrng_ui_prefs *prefs, PurpleAccount *account);
 
 #endif
