@@ -670,6 +670,7 @@ static void send_offline_message(char **message, const char *username,
 
   otrng_plugin_get_prekey_client(
       account, get_prekey_client_for_sending_offline_message, ctx);
+
   return;
 }
 
@@ -682,6 +683,7 @@ void otrng_plugin_send_non_interactive_auth(const char *username,
 
   *message = "\0";
   send_offline_message(message, username, account);
+
   return;
 }
 
@@ -1509,8 +1511,6 @@ static otrng_policy_s define_policy(struct otrng_client_s *client) {
 
   otrng_v4_ui_get_prefs(&prefs, account);
   return prefs.policy;
-
-  return policy;
 }
 
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {

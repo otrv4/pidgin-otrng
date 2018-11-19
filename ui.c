@@ -169,10 +169,11 @@ void otrng_v4_ui_get_prefs(otrng_ui_prefs *prefs, PurpleAccount *account) {
     return;
   }
 
-  if (ui_ops != NULL) {
-    ui_ops->get_prefs_v4(prefs, account);
-    return;
-  }
+  // TODO: for the moment
+  // if (ui_ops != NULL) {
+  //  ui_ops->get_prefs_v4(prefs, account);
+  //  return;
+  //}
   /* If we've got no other way to get the prefs, use sensible defaults */
   prefs->policy.allows = OTRNG_POLICY_DEFAULT;
   prefs->avoid_logging_otr = TRUE;
