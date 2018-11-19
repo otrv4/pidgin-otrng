@@ -1088,24 +1088,25 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
 static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
                                       PurpleAccount *account) {
   // PurpleBuddy *buddy;
-  gboolean otrenabled, otrautomatic, otronlyprivate, otravoidloggingotr;
+  gboolean otrng_enabled, otrng_automatic, otrng_only_private,
+      otrng_avoid_logging_otr;
   // gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate;
   //    buddyavoidloggingotr;
 
-  prefs->policy.allows = OTRL_POLICY_DEFAULT;
+  prefs->policy.allows = OTRNG_POLICY_DEFAULT;
   prefs->avoid_logging_otr = FALSE;
   prefs->show_otr_button = FALSE;
 
   /* Get the default policy */
-  otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
-                                 &otravoidloggingotr);
+  otrng_gtk_ui_global_prefs_load(&otrng_enabled, &otrng_automatic,
+                                 &otrng_only_private, &otrng_avoid_logging_otr);
   otrng_gtk_ui_global_options_load(&(prefs->show_otr_button));
 
-  if (otrenabled) {
-    prefs->policy.allows = OTRL_POLICY_MANUAL;
+  if (otrng_enabled) {
+    prefs->policy.allows = OTRNG_POLICY_MANUAL;
     prefs->avoid_logging_otr = otravoidloggingotr;
   } else {
-    prefs->policy.allows = OTRL_POLICY_NEVER;
+    prefs->policy.allows = OTRNG_POLICY_NEVER;
   }
 }
 
