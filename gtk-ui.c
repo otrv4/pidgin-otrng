@@ -1104,7 +1104,7 @@ static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
 
   if (otrng_enabled) {
     prefs->policy.allows = OTRNG_POLICY_MANUAL;
-    prefs->avoid_logging_otr = otravoidloggingotr;
+    prefs->avoid_logging_otr = otrng_avoid_logging_otr;
   } else {
     prefs->policy.allows = OTRNG_POLICY_NEVER;
   }
