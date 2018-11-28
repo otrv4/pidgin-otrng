@@ -1459,8 +1459,6 @@ static void display_error_message(const otrng_error_event event,
   const char *unreadable_msg_error = "You transmitted an unreadable message.";
   const char *not_in_private_error = "You try sending an encrypted message to "
                                      "someone who wasn't expecting it.";
-  const char *encryption_error =
-      "An error occurred while trying to encrypt the message.";
   const char *malformed_error = "You transmitted a malformed message.";
 
   switch (event) {
@@ -1471,9 +1469,6 @@ static void display_error_message(const otrng_error_event event,
   case OTRNG_ERROR_NOT_IN_PRIVATE_EVENT:
     *to_display =
         otrng_xstrndup(not_in_private_error, strlen(not_in_private_error));
-    break;
-  case OTRNG_ERROR_ENCRYPTION_ERROR_EVENT:
-    *to_display = otrng_xstrndup(encryption_error, strlen(encryption_error));
     break;
   case OTRNG_ERROR_MALFORMED_EVENT:
     *to_display = otrng_xstrndup(malformed_error, strlen(malformed_error));
