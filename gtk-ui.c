@@ -456,12 +456,12 @@ static void create_otrsettings_buttons(struct otrsettingsdata *os,
   GtkWidget *tempbox1, *tempbox2;
 
   os->enablebox = gtk_check_button_new_with_label(_("Enable private "
-                                                    "messaging"));
+                                                    "messaging with OTR"));
   os->automaticbox =
       gtk_check_button_new_with_label(_("Automatically "
-                                        "initiate private messaging"));
+                                        "initiate private messaging with OTR"));
   os->onlyprivatebox = gtk_check_button_new_with_label(_("Require private "
-                                                         "messaging"));
+                                                         "messaging with OTR"));
   os->avoidloggingotrbox =
       gtk_check_button_new_with_label(_("Don't log OTR conversations"));
 
@@ -697,7 +697,7 @@ static void make_settings_ui(GtkWidget *vbox) {
   GtkWidget *fbox;
   GtkWidget *frame;
 
-  frame = gtk_frame_new(_("Default OTR Settings"));
+  frame = gtk_frame_new(_("OTR Settings"));
   gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
   fbox = gtk_vbox_new(FALSE, 0);
@@ -840,9 +840,9 @@ GtkWidget *otrng_gtk_ui_make_widget(PurplePlugin *plugin) {
   GtkWidget *configbox = gtk_vbox_new(FALSE, 5);
   GtkWidget *notebook = gtk_notebook_new();
 
-  gtk_container_set_border_width(GTK_CONTAINER(vbox), 2);
-  gtk_container_set_border_width(GTK_CONTAINER(fingerprintbox), 5);
-  gtk_container_set_border_width(GTK_CONTAINER(configbox), 5);
+  gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+  gtk_container_set_border_width(GTK_CONTAINER(fingerprintbox), 15);
+  gtk_container_set_border_width(GTK_CONTAINER(configbox), 15);
 
   gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
