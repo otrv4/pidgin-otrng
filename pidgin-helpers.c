@@ -116,9 +116,8 @@ purple_conversation_to_otrng_conversation(const PurpleConversation *conv) {
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
 
-  // TODO: should we force creation here?
   otrng_conversation_s *result =
-      otrng_client_get_conversation(0, recipient, client);
+      otrng_client_get_conversation(1, recipient, client);
   free(recipient);
 
   assert(result != NULL);

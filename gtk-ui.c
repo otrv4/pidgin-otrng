@@ -163,13 +163,20 @@ static void keylist_all_do(const otrng_client_s *client,
   int i;
   gchar *titles[5];
 
-  plugin_conv.account = g_strdup(client->client_id.account);
-  plugin_conv.protocol = g_strdup(client->client_id.protocol);
-  plugin_conv.peer = fp->username;
-
-  TrustLevel level = otrng_plugin_conversation_to_trust(&plugin_conv);
-  g_free(plugin_conv.account);
-  g_free(plugin_conv.protocol);
+  TrustLevel level;
+  otrng_conversation_s *otr_conv =
+      otrng_client_get_conversation(0, fp->username, (otrng_client_s *)client);
+  if (otr_conv != NULL && otr_conv->conn != NULL) {
+    plugin_conv.account = g_strdup(client->client_id.account);
+    plugin_conv.protocol = g_strdup(client->client_id.protocol);
+    plugin_conv.peer = fp->username;
+    plugin_conv.conv = otr_conv->conn;
+    level = otrng_plugin_conversation_to_trust(&plugin_conv);
+    g_free(plugin_conv.account);
+    g_free(plugin_conv.protocol);
+  } else {
+    level = TRUST_NOT_PRIVATE;
+  }
 
   titles[0] = fp->username;
   titles[1] = (gchar *)_(trust_states[level]);

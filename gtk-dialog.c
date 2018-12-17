@@ -652,24 +652,46 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 }
 
+static char *
+create_verify_fingerprint_label(const otrng_known_fingerprint_s *other_fprint,
+                                const char *protocol, const char *account) {
+  char our_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
+  char other_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
+  PurplePlugin *p;
+  char *proto_name;
+  char *label_text;
+
+  strncpy(our_human_fprint, _("[none]"), OTRNG_FPRINT_HUMAN_LEN - 1);
+
+  otrng_client_s *client = get_otrng_client(protocol, account);
+  char *our_fp_human_tmp = otrv4_client_adapter_privkey_fingerprint(client);
+  if (our_fp_human_tmp) {
+    strncpy(our_human_fprint, our_fp_human_tmp, OTRNG_FPRINT_HUMAN_LEN);
+  }
+  free(our_fp_human_tmp);
+
+  p = purple_find_prpl(protocol);
+  proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
+
+  otrng_fingerprint_hash_to_human(other_human_fprint, other_fprint->fp);
+
+  label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
+                                 "Purported fingerprint for %s:\n%s\n"),
+                               account, proto_name, our_human_fprint,
+                               other_fprint->username, other_human_fprint);
+
+  return label_text;
+}
+
 static void
 add_to_vbox_verify_fingerprint(GtkWidget *vbox,
                                const otrng_plugin_conversation *conv,
                                SmpResponsePair *smppair) {
-  char our_hash[OTRNG_FPRINT_HUMAN_LEN];
   GtkWidget *label;
   char *label_text;
   vrfy_fingerprint_data *vfd;
-  PurplePlugin *p;
-  char *proto_name;
 
-  otrng_known_fingerprint_s *fprint = NULL;
-
-  PurpleConversation *pconv = otrng_plugin_conversation_to_purple_conv(conv, 0);
-  PurpleAccount *account = purple_conversation_get_account(pconv);
-  otrng_client_id_s client_id = purple_account_to_client_id(account);
-
-  fprint = otrng_plugin_fingerprint_get_active(conv);
+  otrng_known_fingerprint_s *fprint = otrng_plugin_fingerprint_get_active(conv);
   if (fprint == NULL) {
     return;
   }
@@ -690,23 +712,11 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-  strncpy(our_hash, _("[none]"), OTRNG_FPRINT_HUMAN_LEN - 1);
-
-  otrng_client_s *client = get_otrng_client(conv->protocol, conv->account);
-  char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
-  if (our_fp_human) {
-    strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
+  label_text =
+      create_verify_fingerprint_label(fprint, conv->protocol, conv->account);
+  if (label_text == NULL) {
+    return;
   }
-
-  free(our_fp_human);
-  our_hash[OTRNG_FPRINT_HUMAN_LEN - 1] = '\0';
-
-  p = purple_find_prpl(conv->protocol);
-  proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
-  label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
-                                 "Purported fingerprint for %s:\n%s\n"),
-                               conv->account, proto_name, our_hash,
-                               fprint->username, fprint->fp);
 
   label = gtk_label_new(NULL);
 
@@ -721,7 +731,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-  vfd = vrfy_fingerprint_data_new(client_id, fprint);
+  vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id, fprint);
 
   add_vrfy_fingerprint(vbox, vfd);
   g_signal_connect(G_OBJECT(vbox), "destroy",
@@ -1423,11 +1433,9 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
   gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
 }
 
-// TODO: this has duplicated logic. See: add_to_vbox_verify_fingerprint
 static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
                                otrng_known_fingerprint_s *fprint) {
   GtkWidget *dialog;
-  char our_hash[OTRNG_FPRINT_HUMAN_LEN];
   char *primary;
   char *secondary;
   vrfy_fingerprint_data *vfd;
@@ -1438,29 +1446,19 @@ static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
 
   primary = g_strdup_printf(_("Verify fingerprint for %s"), fprint->username);
 
-  strncpy(our_hash, _("[none]"), OTRNG_FPRINT_HUMAN_LEN - 1);
-
-  otrng_client_s *client = get_otrng_client_from_id(client_id);
-  char *our_fp_human = otrv4_client_adapter_privkey_fingerprint(client);
-  if (our_fp_human) {
-    strncpy(our_hash, our_fp_human, OTRNG_FPRINT_HUMAN_LEN);
-  }
-
-  free(our_fp_human);
-  our_hash[OTRNG_FPRINT_HUMAN_LEN - 1] = '\0';
-
+  char *label_fpr = create_verify_fingerprint_label(fprint, client_id.protocol,
+                                                    client_id.account);
   secondary = g_strdup_printf(
       _("<small><i>%s %s\n\n</i></small>"
-        "Fingerprint for you, %s (%s):\n%s\n\n"
-        "Purported fingerprint for %s:\n%s\n"),
+        "%s"),
       _("To verify the fingerprint, contact your buddy via some "
         "<i>other</i> authenticated channel, such as the telephone "
         "or GPG-signed email.  Each of you should tell your fingerprint "
         "to the other."),
       _("If everything matches up, you should indicate in the above "
         "dialog that you <b>have</b> verified the fingerprint."),
-      client_id.account, client_id.protocol, our_hash, fprint->username,
-      fprint->fp);
+      label_fpr);
+  g_free(label_fpr);
 
   vfd = vrfy_fingerprint_data_new(client_id, fprint);
   dialog =

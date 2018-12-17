@@ -97,6 +97,7 @@ static void fingerprint_seen_v4(const otrng_fingerprint fp,
       otrng_fingerprint_get_by_username(cconv->client, conv->peer) != NULL;
 
   otrng_fingerprint_add(cconv->client, fp, conv->peer, otrng_false);
+  otrng_plugin_write_fingerprints();
 
   char *buf;
   if (seen) {
