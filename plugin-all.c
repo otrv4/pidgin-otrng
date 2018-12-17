@@ -779,8 +779,7 @@ otrng_plugin_conversation_to_client(const otrng_plugin_conversation *conv) {
 
 otrng_plugin_conversation *
 otrng_plugin_conversation_copy(const otrng_plugin_conversation *conv) {
-  otrng_plugin_conversation *ret =
-      otrng_plugin_conversation_new(conv->account, conv->protocol, conv->peer);
+  otrng_plugin_conversation *ret = otrng_plugin_conversation_new(conv->conv);
   if (!ret) {
     return ret;
   }
@@ -793,21 +792,9 @@ otrng_plugin_conversation_copy(const otrng_plugin_conversation *conv) {
 
 otrng_plugin_conversation *
 purple_conversation_to_plugin_conversation(const PurpleConversation *conv) {
-  PurpleAccount *account = purple_conversation_get_account(conv);
-
-  account = purple_conversation_get_account(conv);
-
-  char *accountname =
-      g_strdup(purple_normalize(account, purple_account_get_username(account)));
-  const char *protocol = purple_account_get_protocol_id(account);
-  char *peer =
-      g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
-
-  otrng_plugin_conversation *result =
-      otrng_plugin_conversation_new(accountname, protocol, peer);
-  free(peer);
-  free(accountname);
-  return result;
+  otrng_conversation_s *otr_conv =
+      purple_conversation_to_otrng_conversation(conv);
+  return otrng_plugin_conversation_new(otr_conv->conn);
 }
 
 /* Start the Socialist Millionaires' Protocol over the current connection,
@@ -1209,8 +1196,7 @@ otrng_plugin_conversation_to_trust(const otrng_plugin_conversation *conv) {
     return otrng_plugin_context_to_trust(otr_conv->conn->v3_conn->ctx);
   }
 
-  otrng_plugin_fingerprint *fp =
-      otrng_plugin_fingerprint_get_active(conv->peer);
+  otrng_known_fingerprint_s *fp = otrng_plugin_fingerprint_get_active(conv);
 
   if (otrng_conversation_is_encrypted(otr_conv)) {
     if (fp->trusted) {

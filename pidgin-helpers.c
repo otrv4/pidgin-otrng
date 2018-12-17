@@ -76,11 +76,13 @@ PurpleAccount *client_id_to_purple_account(const otrng_client_id_s client_id) {
 
 otrng_client_s *get_otrng_client(const char *protocol,
                                  const char *accountname) {
-  otrng_client_s *result = otrng_client_get(
-      otrng_state, protocol_and_account_to_client_id(protocol, accountname));
+  return get_otrng_client_from_id(
+      protocol_and_account_to_client_id(protocol, accountname));
+}
 
+otrng_client_s *get_otrng_client_from_id(const otrng_client_id_s client_id) {
+  otrng_client_s *result = otrng_client_get(otrng_state, client_id);
   assert(result != NULL);
-
   return result;
 }
 
@@ -155,11 +157,8 @@ otrng_client_id_s protocol_and_account_to_purple_conversation(FILE *privf) {
 
 otrng_plugin_conversation *
 client_conversation_to_plugin_conversation(const otrng_s *conv) {
-  const char *accountname = conv->client->client_id.account;
-  const char *protocol = conv->client->client_id.protocol;
-
   // TODO: Instance tag?
-  return otrng_plugin_conversation_new(accountname, protocol, conv->peer);
+  return otrng_plugin_conversation_new(conv);
 }
 
 /* Find the PurpleConversation appropriate to the given userinfo.  If

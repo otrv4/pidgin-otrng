@@ -67,7 +67,8 @@ typedef struct {
                               const char *protocol, const char *who,
                               const unsigned char fingerprint[20]);
 
-  void (*verify_fingerprint)(otrng_plugin_fingerprint *fprint);
+  void (*verify_fingerprint)(otrng_client_id_s client_id,
+                             otrng_known_fingerprint_s *fprint);
 
   void (*socialist_millionaires)(const otrng_plugin_conversation *conv,
                                  const char *question, gboolean responder);
@@ -149,7 +150,8 @@ void otrng_dialog_unknown_fingerprint(OtrlUserState us, const char *accountname,
                                       const unsigned char fingerprint[20]);
 
 /* Show a dialog asking the user to verify the given fingerprint. */
-void otrng_dialog_verify_fingerprint(otrng_plugin_fingerprint *fprint);
+void otrng_dialog_verify_fingerprint(otrng_client_id_s client_id,
+                                     otrng_known_fingerprint_s *fprint);
 
 /* Show a dialog asking the user to give an SMP secret. */
 void otrng_dialog_socialist_millionaires(const otrng_plugin_conversation *conv);

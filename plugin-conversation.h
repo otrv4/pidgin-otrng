@@ -23,17 +23,19 @@
 #ifndef __OTRG_PLUGIN_CONVERSATION_H__
 #define __OTRG_PLUGIN_CONVERSATION_H__
 
+#include <libotr-ng/client.h>
+
 typedef struct {
   char *account;
   char *protocol;
   char *peer;
   uint16_t their_instance_tag;
   uint16_t our_instance_tag;
+
+  const otrng_s *conv;
 } otrng_plugin_conversation;
 
-otrng_plugin_conversation *otrng_plugin_conversation_new(const char *account,
-                                                         const char *protocol,
-                                                         const char *peer);
+otrng_plugin_conversation *otrng_plugin_conversation_new(const otrng_s *from);
 
 void otrng_plugin_conversation_free(otrng_plugin_conversation *);
 

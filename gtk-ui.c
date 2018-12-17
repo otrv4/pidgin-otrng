@@ -73,7 +73,8 @@ static struct {
   GtkWidget *scrollwin;
   GtkWidget *keylist;
   gint sortcol, sortdir;
-  otrng_plugin_fingerprint *selected_fprint;
+  otrng_client_id_s selected_client_id;
+  otrng_known_fingerprint_s *selected_fprint;
   GtkWidget *connect_button;
   GtkWidget *disconnect_button;
   GtkWidget *forget_button;
@@ -150,11 +151,51 @@ static void clist_all_unselected(void) {
   ui_layout.selected_fprint = NULL;
 }
 
+typedef struct keylist_all_ctx {
+  int selected_row;
+  GtkWidget *keylist;
+} keylist_all_ctx;
+
+static void keylist_all_do(const otrng_client_s *client,
+                           otrng_known_fingerprint_s *fp, void *_ctx) {
+  keylist_all_ctx *ctx = _ctx;
+  otrng_plugin_conversation plugin_conv;
+  int i;
+  gchar *titles[5];
+
+  plugin_conv.account = g_strdup(client->client_id.account);
+  plugin_conv.protocol = g_strdup(client->client_id.protocol);
+  plugin_conv.peer = fp->username;
+
+  TrustLevel level = otrng_plugin_conversation_to_trust(&plugin_conv);
+  g_free(plugin_conv.account);
+  g_free(plugin_conv.protocol);
+
+  titles[0] = fp->username;
+  titles[1] = (gchar *)_(trust_states[level]);
+  titles[2] = (fp->trusted) ? _("Yes") : _("No");
+
+  char *fphuman = malloc(OTRNG_FPRINT_HUMAN_LEN);
+  if (!fphuman) {
+    return;
+  }
+  otrng_fingerprint_hash_to_human(fphuman, fp->fp);
+  titles[3] = g_strdup_printf("OTRv4: %s \nOTRv3: ", fphuman);
+  free(fphuman);
+
+  titles[4] = g_strdup_printf("%s (%s)", client->client_id.account,
+                              client->client_id.protocol);
+
+  i = gtk_clist_append(GTK_CLIST(ctx->keylist), titles);
+  g_free(titles[4]);
+  gtk_clist_set_row_data(GTK_CLIST(ctx->keylist), i, fp);
+  if (ui_layout.selected_fprint == fp) {
+    ctx->selected_row = i;
+  }
+}
+
 /* Update the keylist, if it's visible */
 static void otrng_gtk_ui_update_keylist(void) {
-  gchar *titles[5];
-  int selected_row = -1;
-
   GtkWidget *keylist = ui_layout.keylist;
 
   if (keylist == NULL) {
@@ -164,43 +205,19 @@ static void otrng_gtk_ui_update_keylist(void) {
   gtk_clist_freeze(GTK_CLIST(keylist));
   gtk_clist_clear(GTK_CLIST(keylist));
 
-  GList *fingerprints = otrng_plugin_fingerprint_get_all();
-  GList *iter;
-  for (iter = fingerprints; iter != NULL; iter = iter->next) {
-    otrng_plugin_conversation plugin_conv;
-    int i;
-    otrng_plugin_fingerprint *fp = iter->data;
+  keylist_all_ctx kac;
+  kac.selected_row = -1;
+  kac.keylist = keylist;
 
-    plugin_conv.account = fp->account;
-    plugin_conv.protocol = fp->protocol;
-    plugin_conv.peer = fp->username;
-    TrustLevel level = otrng_plugin_conversation_to_trust(&plugin_conv);
+  otrng_global_state_do_all_fingerprints(otrng_state, keylist_all_do, &kac);
 
-    char *protocol_v4 = "OTRv4: ";
-    char *protocol_v3 = "OTRv3: ";
-    titles[0] = fp->username;
-    titles[1] = (gchar *)_(trust_states[level]);
-    titles[2] = (fp->trusted) ? _("Yes") : _("No");
-    titles[3] = g_strdup_printf("%s %s \n%s", protocol_v4, fp->fp, protocol_v3);
-    titles[4] = g_strdup_printf("%s (%s)", fp->account, fp->protocol);
-
-    i = gtk_clist_append(GTK_CLIST(keylist), titles);
-    g_free(titles[4]);
-    gtk_clist_set_row_data(GTK_CLIST(keylist), i, fp);
-    if (ui_layout.selected_fprint == fp) {
-      selected_row = i;
-    }
-  }
-  g_list_free(fingerprints);
-
-  if (selected_row >= 0) {
-    gtk_clist_select_row(GTK_CLIST(keylist), selected_row, 0);
+  if (kac.selected_row >= 0) {
+    gtk_clist_select_row(GTK_CLIST(keylist), kac.selected_row, 0);
   } else {
     clist_all_unselected();
   }
 
   gtk_clist_sort(GTK_CLIST(keylist));
-
   gtk_clist_thaw(GTK_CLIST(keylist));
 }
 
@@ -235,20 +252,25 @@ static void ui_destroyed(GtkObject *object) {
   ui_layout.os.onlyprivatebox = NULL;
 }
 
+typedef struct fingerprint_row_data {
+  otrng_client_id_s client_id;
+  otrng_known_fingerprint_s *fp;
+} fingerprint_row_data;
+
 static void clist_selected(GtkWidget *widget, gint row, gint column,
                            GdkEventButton *event, gpointer data) {
   int connect_sensitive = 0;
   int disconnect_sensitive = 0;
   int forget_sensitive = 0;
   int verify_sensitive = 0;
-  otrng_plugin_fingerprint *f =
+  fingerprint_row_data *rfp =
       gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist), row);
   // ConnContext *context_iter;
 
-  otrng_conversation_s *otr_conv =
-      otrng_plugin_fingerprint_to_otr_conversation(f);
+  otrng_conversation_s *otr_conv = otrng_plugin_fingerprint_to_otr_conversation(
+      get_otrng_client_from_id(rfp->client_id), rfp->fp);
 
-  if (f && otr_conv) {
+  if (otr_conv) {
     verify_sensitive = 1;
     forget_sensitive = 1;
 
@@ -268,7 +290,8 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   gtk_widget_set_sensitive(ui_layout.disconnect_button, disconnect_sensitive);
   gtk_widget_set_sensitive(ui_layout.forget_button, forget_sensitive);
   gtk_widget_set_sensitive(ui_layout.verify_button, verify_sensitive);
-  ui_layout.selected_fprint = f;
+  ui_layout.selected_client_id = rfp->client_id;
+  ui_layout.selected_fprint = rfp->fp;
 }
 
 static void clist_unselected(GtkWidget *widget, gint row, gint column,
@@ -389,48 +412,53 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
     return;
   }
 
-  otrng_plugin_fingerprint *fp = ui_layout.selected_fprint;
-  account = purple_accounts_find(fp->account, fp->protocol);
+  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint;
+  otrng_client_id_s cid = ui_layout.selected_client_id;
+  account = purple_accounts_find(cid.account, cid.protocol);
   if (!account) {
-    PurplePlugin *p = purple_find_prpl(fp->protocol);
-    msg = g_strdup_printf(_("Account %s (%s) could not be found"), fp->account,
+    PurplePlugin *p = purple_find_prpl(cid.protocol);
+    msg = g_strdup_printf(_("Account %s (%s) could not be found"), cid.account,
                           (p && p->info->name) ? p->info->name : _("Unknown"));
-    otrng_dialog_notify_error(fp->account, fp->protocol, fp->username,
+    otrng_dialog_notify_error(cid.account, cid.protocol, fp->username,
                               _("Account not found"), msg, NULL);
     g_free(msg);
     return;
   }
 
   otrng_plugin_conversation conv[1];
-  conv->protocol = fp->protocol;
-  conv->account = fp->account;
+  conv->protocol = g_strdup(cid.protocol);
+  conv->account = g_strdup(cid.account);
   conv->peer = fp->username;
   connect_connection_ui(conv);
+  g_free(conv->protocol);
+  g_free(conv->account);
 }
 
 static void disconnect_connection(GtkWidget *widget, gpointer data) {
   /* Forget whatever state we've got with this context */
   otrng_plugin_conversation conv[1];
-  otrng_plugin_fingerprint *fp = ui_layout.selected_fprint;
+  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint;
 
   if (!fp) {
     return;
   }
 
-  conv->protocol = fp->protocol;
-  conv->account = fp->account;
+  conv->protocol = g_strdup(ui_layout.selected_client_id.protocol);
+  conv->account = g_strdup(ui_layout.selected_client_id.account);
   conv->peer = fp->username;
   otrng_ui_disconnect_connection(conv);
+  g_free(conv->protocol);
+  g_free(conv->account);
 }
 
 static void forget_fingerprint(GtkWidget *widget, gpointer data) {
-  otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-  otrng_ui_forget_fingerprint(fingerprint);
+  otrng_ui_forget_fingerprint(ui_layout.selected_client_id,
+                              ui_layout.selected_fprint);
 }
 
 static void verify_fingerprint(GtkWidget *widget, gpointer data) {
-  otrng_plugin_fingerprint *fingerprint = ui_layout.selected_fprint;
-  otrng_dialog_verify_fingerprint(fingerprint);
+  otrng_dialog_verify_fingerprint(ui_layout.selected_client_id,
+                                  ui_layout.selected_fprint);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,

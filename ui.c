@@ -108,13 +108,16 @@ void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv) {
 
 // TODO: should not this be in another file?
 /* Forget a fingerprint */
-void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
+void otrng_ui_forget_fingerprint(otrng_client_id_s cid,
+                                 otrng_known_fingerprint_s *fingerprint) {
   if (fingerprint == NULL) {
     return;
   }
 
+  otrng_client_s *client = get_otrng_client_from_id(cid);
+
   otrng_conversation_s *otr_conv =
-      otrng_plugin_fingerprint_to_otr_conversation(fingerprint);
+      otrng_plugin_fingerprint_to_otr_conversation(client, fingerprint);
 
   /* Don't do anything with the active fingerprint if we're in the
    * ENCRYPTED state. */
@@ -122,7 +125,7 @@ void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint) {
     return;
   }
 
-  otrng_plugin_fingerprint_forget(fingerprint->fp);
+  otrng_plugin_fingerprint_forget(client, fingerprint);
   otrng_plugin_write_fingerprints();
 
   otrng_ui_update_keylist();

@@ -27,19 +27,18 @@
 
 #include "plugin-conversation.h"
 
-otrng_plugin_conversation *otrng_plugin_conversation_new(const char *account,
-                                                         const char *protocol,
-                                                         const char *peer) {
+otrng_plugin_conversation *otrng_plugin_conversation_new(const otrng_s *from) {
   otrng_plugin_conversation *ret = malloc(sizeof(otrng_plugin_conversation));
   if (!ret) {
     return ret;
   }
 
-  ret->account = g_strdup(account);
-  ret->protocol = g_strdup(protocol);
-  ret->peer = g_strdup(peer);
+  ret->account = g_strdup(from->client->client_id.account);
+  ret->protocol = g_strdup(from->client->client_id.protocol);
+  ret->peer = g_strdup(from->peer);
   ret->their_instance_tag = 0;
   ret->our_instance_tag = 0;
+  ret->conv = from;
 
   return ret;
 }

@@ -86,7 +86,8 @@ void otrng_ui_connect_connection(ConnContext *context);
 void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv);
 
 /* Forget a fingerprint */
-void otrng_ui_forget_fingerprint(otrng_plugin_fingerprint *fingerprint);
+void otrng_ui_forget_fingerprint(otrng_client_id_s cid,
+                                 otrng_known_fingerprint_s *fingerprint);
 
 /* Configure OTR for a particular buddy */
 void otrng_ui_config_buddy(PurpleBuddy *buddy);

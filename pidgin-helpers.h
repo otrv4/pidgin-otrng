@@ -43,6 +43,7 @@ PurpleAccount *protocol_and_account_to_purple_account(const char *protocol,
 PurpleAccount *client_id_to_purple_account(const otrng_client_id_s client_id);
 
 otrng_client_s *get_otrng_client(const char *protocol, const char *accountname);
+otrng_client_s *get_otrng_client_from_id(const otrng_client_id_s client_id);
 
 otrng_client_s *purple_account_to_otrng_client(const PurpleAccount *account);
 

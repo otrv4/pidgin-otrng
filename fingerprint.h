@@ -26,39 +26,33 @@
 #include <glib.h>
 
 #include <libotr-ng/client.h>
+#include <libotr-ng/fingerprint.h>
 
 #include <plugin.h>
 
-#define FINGERPRINT_STORE_FILE_NAME_V4 "otr4.fingerprints"
-
-typedef struct {
-  char *protocol;
-  char *account;
-  char *username;
-  char fp[OTRNG_FPRINT_HUMAN_LEN];
-  int trusted; // 0 - no, 1 - yes
-} otrng_plugin_fingerprint;
+#include "plugin-conversation.h"
 
 otrng_conversation_s *
-otrng_plugin_fingerprint_to_otr_conversation(otrng_plugin_fingerprint *f);
+otrng_plugin_fingerprint_to_otr_conversation(otrng_client_s *client,
+                                             otrng_known_fingerprint_s *f);
 
-GList *otrng_plugin_fingerprint_get_all(void);
+otrng_known_fingerprint_s *
+otrng_plugin_fingerprint_get_active(const otrng_plugin_conversation *conv);
 
-otrng_plugin_fingerprint *otrng_plugin_fingerprint_get_active(const char *peer);
-
-void otrng_plugin_fingerprint_forget(const char fp[OTRNG_FPRINT_HUMAN_LEN]);
+void otrng_plugin_fingerprint_forget(otrng_client_s *client,
+                                     otrng_known_fingerprint_s *fp);
 
 void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb);
 
 gboolean otrng_plugin_fingerprints_load(
     PurplePlugin *handle, void (*update_keylist_init)(void),
     void (*resensitize_init)(void), void (*update_fingerprint_init)(void),
-    void (*unknown_fingerprint_init)(OtrlUserState, const char *, const char *,
-                                     const char *, const unsigned char[20]));
+    void (*unknown_fingerprint_v3_init)(OtrlUserState, const char *,
+                                        const char *, const char *,
+                                        const unsigned char[20]));
 
 gboolean otrng_plugin_fingerprints_unload(PurplePlugin *handle);
 
-/* Write the fingerprints to disk. */
 void otrng_plugin_write_fingerprints(void);
 
 void write_fingerprints_cb_v3(void *opdata);
