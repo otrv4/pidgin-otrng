@@ -1128,7 +1128,8 @@ static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
   // gboolean buddyusedefault, buddyenabled, buddyautomatic, buddyonlyprivate;
   //    buddyavoidloggingotr;
 
-  prefs->policy.allows = OTRNG_POLICY_DEFAULT;
+  prefs->policy.allows = OTRNG_ALLOW_NONE;
+  prefs->policy.type = OTRNG_POLICY_DEFAULT;
   prefs->avoid_logging_otr = FALSE;
   prefs->show_otr_button = FALSE;
 
@@ -1138,7 +1139,8 @@ static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
   otrng_gtk_ui_global_options_load(&(prefs->show_otr_button));
 
   if (otrng_enabled) {
-    prefs->policy.allows = OTRNG_POLICY_MANUAL;
+    prefs->policy.allows = OTRNG_ALLOW_V34;
+    prefs->policy.type = OTRNG_POLICY_MANUAL;
     prefs->avoid_logging_otr = otrng_avoid_logging_otr;
   } else {
     prefs->policy.allows = OTRNG_POLICY_NEVER;
