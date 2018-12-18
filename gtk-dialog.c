@@ -189,25 +189,25 @@ static SMPData *otrng_gtk_dialog_add_smp_data(PurpleConversation *conv) {
 
 static GtkWidget *otr_icon(GtkWidget *image, TrustLevel level,
                            gboolean sensitivity) {
-  GdkPixbuf *pixbuf = NULL;
-  const guint8 *data = NULL;
+  const char **data = NULL;
 
   switch (level) {
   case TRUST_NOT_PRIVATE:
-    data = not_private_pixbuf;
+    data = otrng_not_private_icon;
     break;
   case TRUST_UNVERIFIED:
-    data = unverified_pixbuf;
+    data = otrng_unverified_icon;
     break;
   case TRUST_PRIVATE:
-    data = private_pixbuf;
+    data = otrng_private_icon;
     break;
   case TRUST_FINISHED:
-    data = finished_pixbuf;
+    data = otrng_finished_icon;
     break;
   }
 
-  pixbuf = gdk_pixbuf_new_from_inline(-1, data, FALSE, NULL);
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_xpm_data(data);
+
   if (image) {
     gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
   } else {
