@@ -40,6 +40,7 @@
 #include <debug.h>
 #include <notify.h>
 #include <pidgin.h>
+#include <pidginstock.h>
 #include <util.h>
 #include <version.h>
 
@@ -1686,38 +1687,66 @@ int otrng_plugin_conversation_to_protocol_version(
 }
 
 #if defined USING_GTK
+static void destroy_plugin_warning_cb(GtkDialog *dialog, gint response) {
+  gtk_widget_destroy(GTK_WIDGET(dialog));
+}
+
 static void warn_otrv3_installed(void) {
   GtkWidget *dialog;
   GtkWidget *dialog_text;
   PidginBuddyList *blist;
+  GtkWidget *hbox;
+  GtkWidget *img = NULL;
   gchar *buf = NULL;
 
   blist = pidgin_blist_get_default_gtk_blist();
 
-  buf = g_strdup_printf(_("OTRNG PLUGIN v%s"), PIDGIN_OTR_VERSION);
+  buf = g_strdup_printf(_("OTRNG plugin v%s has conflict"), PIDGIN_OTR_VERSION);
   dialog = gtk_dialog_new_with_buttons(buf, GTK_WINDOW(blist->window),
                                        GTK_DIALOG_MODAL |
                                            GTK_DIALOG_DESTROY_WITH_PARENT,
                                        GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, NULL);
-  dialog_text = gtk_label_new(NULL);
-  gtk_widget_set_size_request(dialog_text, 550, 300);
-  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
   g_free(buf);
-  buf = g_strdup_printf(
+
+  hbox = gtk_hbox_new(FALSE, 15);
+  dialog_text = gtk_label_new(NULL);
+
+  gtk_container_set_border_width(GTK_CONTAINER(dialog), 30);
+  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+  gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
+  gtk_box_set_spacing(GTK_BOX(GTK_DIALOG(dialog)->vbox), 12);
+  gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 6);
+
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), hbox);
+
+  img = gtk_image_new_from_stock(
+      PIDGIN_STOCK_DIALOG_ERROR,
+      gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_HUGE));
+  gtk_misc_set_alignment(GTK_MISC(img), 0, 0);
+  gtk_box_pack_start(GTK_BOX(hbox), img, FALSE, FALSE, 0);
+
+  gchar *label = NULL;
+  label = g_strdup_printf(
       _("You have enabled two conflicting plugins providing "
-        "different versions of the Off-the-Record Messaging plugin. "
+        "different versions of the Off-the-Record Messaging plugin. \n\n"
         "It is recommended that you go to Tools->Plugins and disable "
         "the plugin named \"Off-the-Record Messaging\", while leaving "
         "the plugin named \"Off-the-Record Messaging nextgen\" enabled, "
-        "and then restart. "
+        "and then restart. \n\n"
         "Not doing so could produce unwanted effects, including crashes."));
-  gtk_label_set_text(GTK_LABEL(dialog_text), buf);
-  gtk_widget_show(dialog_text);
-  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), dialog_text, TRUE, TRUE,
-                     0);
-  gtk_dialog_run(GTK_DIALOG(dialog));
-  gtk_widget_destroy(dialog);
-  g_free(buf);
+  gtk_label_set_markup(GTK_LABEL(dialog_text), label);
+  g_free(label);
+  gtk_label_set_selectable(GTK_LABEL(dialog_text), FALSE);
+  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+  gtk_misc_set_alignment(GTK_MISC(dialog_text), 0, 0);
+
+  g_signal_connect(G_OBJECT(dialog), "response",
+                   G_CALLBACK(destroy_plugin_warning_cb), NULL);
+
+  gtk_box_pack_start(GTK_BOX(hbox), dialog_text, FALSE, FALSE, 0);
+
+  gtk_widget_show_all(dialog);
 }
 #endif
 
