@@ -509,16 +509,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
           "don't match, then you may be talking to an imposter."));
   }
 
-  otrng_known_fingerprint_s *fp =
-      otrng_plugin_fingerprint_get_active(smppair->conv);
-
-  if (fp && fp->trusted && !(smppair->responder)) {
-    label_text_2 = g_strdup_printf("<b>\n%s\n</b>",
-                                   _("This buddy is already authenticated."));
-    label2 = gtk_label_new(NULL);
-    gtk_label_set_markup(GTK_LABEL(label2), label_text_2);
-  }
-
   label = gtk_label_new(NULL);
 
   gtk_label_set_markup(GTK_LABEL(label), label_text);
@@ -527,6 +517,19 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+  otrng_known_fingerprint_s *fp =
+      otrng_plugin_fingerprint_get_active(smppair->conv);
+
+  if (fp && fp->trusted && !(smppair->responder)) {
+    label_text_2 = g_strdup_printf("<b>\n%s\n</b>",
+                                   _("This buddy is already authenticated."));
+    label2 = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label2), label_text_2);
+
+    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
+  }
 
   if (smppair->responder) {
     label_text = g_strdup_printf(_("This is the question asked by "
@@ -588,11 +591,6 @@ static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
 
   /* Leave a blank line */
   gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-
-  if (label2) {
-    gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-  }
 }
 
 static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
@@ -626,15 +624,11 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
                                    _("This buddy is already authenticated."));
     label2 = gtk_label_new(NULL);
     gtk_label_set_markup(GTK_LABEL(label2), label_text_2);
-  }
 
-  /* Leave a blank line */
-  gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
-
-  if (label2) {
     gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
   }
+
   label_text = g_strdup_printf(_("Enter secret here:"));
   label = gtk_label_new(label_text);
   gtk_label_set_selectable(GTK_LABEL(label), FALSE);
