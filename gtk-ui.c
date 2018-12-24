@@ -86,6 +86,11 @@ static struct {
 static const gchar *trust_states[] = {N_("Not private"), N_("Unverified"),
                                       N_("Private"), N_("Finished")};
 
+typedef struct fingerprint_row_data {
+  otrng_client_id_s client_id;
+  otrng_known_fingerprint_s *fp;
+} fingerprint_row_data;
+
 static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
                                     void *data) {
   GtkWidget *fprint = ui_layout.fprint_label;
@@ -195,7 +200,11 @@ static void keylist_all_do(const otrng_client_s *client,
 
   i = gtk_clist_append(GTK_CLIST(ctx->keylist), titles);
   g_free(titles[4]);
-  gtk_clist_set_row_data(GTK_CLIST(ctx->keylist), i, fp);
+  fingerprint_row_data *row_data = malloc(sizeof(fingerprint_row_data));
+  row_data->fp = fp;
+  row_data->client_id = client->client_id;
+  // When does this get freed?
+  gtk_clist_set_row_data(GTK_CLIST(ctx->keylist), i, row_data);
   if (ui_layout.selected_fprint == fp) {
     ctx->selected_row = i;
   }
@@ -258,11 +267,6 @@ static void ui_destroyed(GtkObject *object) {
   ui_layout.os.automaticbox = NULL;
   ui_layout.os.onlyprivatebox = NULL;
 }
-
-typedef struct fingerprint_row_data {
-  otrng_client_id_s client_id;
-  otrng_known_fingerprint_s *fp;
-} fingerprint_row_data;
 
 static void clist_selected(GtkWidget *widget, gint row, gint column,
                            GdkEventButton *event, gpointer data) {
