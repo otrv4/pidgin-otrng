@@ -189,3 +189,13 @@ void persistance_read_fingerprints_v4(otrng_global_state_s *otrng_state) {
   PERSISTANCE_READ(FINGERPRINT_STORE_FILE_NAME_V4,
                    otrng_global_state_fingerprints_v4_read_from);
 }
+
+int persistance_write_fingerprints_v3(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_WRITE(FINGERPRINT_STORE_FILE_NAME_V3,
+                    otrng_global_state_fingerprints_v3_write_to);
+}
+
+void persistance_read_fingerprints_v3(otrng_global_state_s *otrng_state) {
+  PERSISTANCE_READ(FINGERPRINT_STORE_FILE_NAME_V3,
+                   otrng_global_state_fingerprints_v3_read_from);
+}

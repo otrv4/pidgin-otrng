@@ -60,7 +60,7 @@ void write_fingerprints_cb_v3(void *opdata) {
 }
 
 void otrng_plugin_write_fingerprints(void) {
-  // TODO: write otrv3 fingerprints
+  persistance_write_fingerprints_v3(otrng_state);
   persistance_write_fingerprints_v4(otrng_state);
 }
 
@@ -145,8 +145,17 @@ static void fingerprint_store_v4(otrng_client_s *client) {
   persistance_write_fingerprints_v4(otrng_state);
 }
 
+static void fingerprint_store_v3(otrng_client_s *client) {
+  persistance_write_fingerprints_v3(otrng_state);
+}
+
 static void fingerprint_load_v4(otrng_client_s *client) {
   persistance_read_fingerprints_v4(otrng_state);
+  update_fingerprint();
+}
+
+static void fingerprint_load_v3(otrng_client_s *client) {
+  persistance_read_fingerprints_v3(otrng_state);
   update_fingerprint();
 }
 
@@ -155,6 +164,8 @@ void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb) {
   cb->fingerprint_seen_v3 = fingerprint_seen_v3;
   cb->store_fingerprints_v4 = fingerprint_store_v4;
   cb->load_fingerprints_v4 = fingerprint_load_v4;
+  cb->store_fingerprints_v3 = fingerprint_store_v3;
+  cb->load_fingerprints_v3 = fingerprint_load_v3;
 }
 
 gboolean otrng_plugin_fingerprints_load(
