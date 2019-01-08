@@ -479,6 +479,9 @@ static GtkWidget *create_dialog(GtkWindow *parent, PurpleNotifyMsgType type,
   return dialog;
 }
 
+// TODO: I think we need to make sure we have v3 support for all these dialogs
+// as well.
+
 static void add_to_vbox_init_one_way_auth(GtkWidget *vbox,
                                           AuthSignalData *auth_opt_data,
                                           const char *question) {

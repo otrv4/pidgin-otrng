@@ -74,7 +74,8 @@ static struct {
   GtkWidget *keylist;
   gint sortcol, sortdir;
   otrng_client_id_s selected_client_id;
-  otrng_known_fingerprint_s *selected_fprint;
+  otrng_known_fingerprint_s *selected_fprint_v4;
+  otrng_known_fingerprint_v3_s *selected_fprint_v3;
   GtkWidget *connect_button;
   GtkWidget *disconnect_button;
   GtkWidget *forget_button;
@@ -88,7 +89,8 @@ static const gchar *trust_states[] = {N_("Not private"), N_("Unverified"),
 
 typedef struct fingerprint_row_data {
   otrng_client_id_s client_id;
-  otrng_known_fingerprint_s *fp;
+  otrng_known_fingerprint_s *fp_v4;
+  otrng_known_fingerprint_v3_s *fp_v3;
 } fingerprint_row_data;
 
 static void account_menu_changed_cb(GtkWidget *item, PurpleAccount *account,
@@ -153,7 +155,8 @@ static void clist_all_unselected(void) {
   if (ui_layout.verify_button) {
     gtk_widget_set_sensitive(ui_layout.verify_button, 0);
   }
-  ui_layout.selected_fprint = NULL;
+  ui_layout.selected_fprint_v3 = NULL;
+  ui_layout.selected_fprint_v4 = NULL;
 }
 
 typedef struct keylist_all_ctx {
@@ -161,12 +164,66 @@ typedef struct keylist_all_ctx {
   GtkWidget *keylist;
 } keylist_all_ctx;
 
-static void keylist_all_do(const otrng_client_s *client,
-                           otrng_known_fingerprint_s *fp, void *_ctx) {
+static otrng_known_fingerprint_v3_s *
+copy_known_fingerprint_v3(const otrng_known_fingerprint_v3_s *fp) {
+  otrng_known_fingerprint_v3_s *fp_new =
+      malloc(sizeof(otrng_known_fingerprint_v3_s));
+  fp_new->username = fp->username;
+  fp_new->fp = fp->fp;
+  return fp_new;
+}
+
+static void keylist_all_do_v3(const otrng_client_s *client,
+                              otrng_known_fingerprint_v3_s *fp, void *_ctx) {
   keylist_all_ctx *ctx = _ctx;
   otrng_plugin_conversation plugin_conv;
   int i;
-  gchar *titles[5];
+  char hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
+  gchar *titles[6];
+
+  TrustLevel level;
+  otrng_conversation_s *otr_conv =
+      otrng_client_get_conversation(0, fp->username, (otrng_client_s *)client);
+  if (otr_conv != NULL && otr_conv->conn != NULL) {
+    plugin_conv.account = g_strdup(client->client_id.account);
+    plugin_conv.protocol = g_strdup(client->client_id.protocol);
+    plugin_conv.peer = fp->username;
+    plugin_conv.conv = otr_conv->conn;
+    level = otrng_plugin_conversation_to_trust(&plugin_conv);
+    g_free(plugin_conv.account);
+    g_free(plugin_conv.protocol);
+  } else {
+    level = TRUST_NOT_PRIVATE;
+  }
+
+  titles[0] = fp->username;
+  titles[1] = (gchar *)_(trust_states[level]);
+  titles[2] = (fp->fp->trust && fp->fp->trust[0]) ? _("Yes") : _("No");
+  titles[3] = "v3";
+  otrl_privkey_hash_to_human(hash, fp->fp->fingerprint);
+  titles[4] = hash;
+  titles[5] = g_strdup_printf("%s (%s)", client->client_id.account,
+                              client->client_id.protocol);
+
+  i = gtk_clist_append(GTK_CLIST(ctx->keylist), titles);
+  g_free(titles[5]);
+  fingerprint_row_data *row_data = malloc(sizeof(fingerprint_row_data));
+  row_data->fp_v4 = NULL;
+  row_data->fp_v3 = copy_known_fingerprint_v3(fp);
+  row_data->client_id = client->client_id;
+  gtk_clist_set_row_data(GTK_CLIST(ctx->keylist), i, row_data);
+  if (ui_layout.selected_fprint_v3 != NULL &&
+      ui_layout.selected_fprint_v3->fp == fp->fp) {
+    ctx->selected_row = i;
+  }
+}
+
+static void keylist_all_do_v4(const otrng_client_s *client,
+                              otrng_known_fingerprint_s *fp, void *_ctx) {
+  keylist_all_ctx *ctx = _ctx;
+  otrng_plugin_conversation plugin_conv;
+  int i;
+  gchar *titles[6];
 
   TrustLevel level;
   otrng_conversation_s *otr_conv =
@@ -186,26 +243,26 @@ static void keylist_all_do(const otrng_client_s *client,
   titles[0] = fp->username;
   titles[1] = (gchar *)_(trust_states[level]);
   titles[2] = (fp->trusted) ? _("Yes") : _("No");
+  titles[3] = "v4";
 
   char *fphuman = malloc(OTRNG_FPRINT_HUMAN_LEN);
   if (!fphuman) {
     return;
   }
   otrng_fingerprint_hash_to_human(fphuman, fp->fp);
-  titles[3] = g_strdup_printf("OTRv4: %s \nOTRv3: ", fphuman);
-  free(fphuman);
-
-  titles[4] = g_strdup_printf("%s (%s)", client->client_id.account,
+  titles[4] = fphuman;
+  titles[5] = g_strdup_printf("%s (%s)", client->client_id.account,
                               client->client_id.protocol);
 
   i = gtk_clist_append(GTK_CLIST(ctx->keylist), titles);
-  g_free(titles[4]);
+  free(fphuman);
+  g_free(titles[5]);
   fingerprint_row_data *row_data = malloc(sizeof(fingerprint_row_data));
-  row_data->fp = fp;
+  row_data->fp_v4 = fp;
+  row_data->fp_v3 = NULL;
   row_data->client_id = client->client_id;
-  // When does this get freed?
   gtk_clist_set_row_data(GTK_CLIST(ctx->keylist), i, row_data);
-  if (ui_layout.selected_fprint == fp) {
+  if (ui_layout.selected_fprint_v4 == fp) {
     ctx->selected_row = i;
   }
 }
@@ -225,7 +282,9 @@ static void otrng_gtk_ui_update_keylist(void) {
   kac.selected_row = -1;
   kac.keylist = keylist;
 
-  otrng_global_state_do_all_fingerprints(otrng_state, keylist_all_do, &kac);
+  otrng_global_state_do_all_fingerprints(otrng_state, keylist_all_do_v4, &kac);
+  otrng_global_state_do_all_fingerprints_v3(otrng_state, keylist_all_do_v3,
+                                            &kac);
 
   if (kac.selected_row >= 0) {
     gtk_clist_select_row(GTK_CLIST(keylist), kac.selected_row, 0);
@@ -258,7 +317,8 @@ static void ui_destroyed(GtkObject *object) {
   ui_layout.generate_button = NULL;
   ui_layout.scrollwin = NULL;
   ui_layout.keylist = NULL;
-  ui_layout.selected_fprint = NULL;
+  ui_layout.selected_fprint_v3 = NULL;
+  ui_layout.selected_fprint_v4 = NULL;
   ui_layout.connect_button = NULL;
   ui_layout.disconnect_button = NULL;
   ui_layout.forget_button = NULL;
@@ -279,7 +339,7 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   // ConnContext *context_iter;
 
   otrng_conversation_s *otr_conv = otrng_plugin_fingerprint_to_otr_conversation(
-      get_otrng_client_from_id(rfp->client_id), rfp->fp);
+      get_otrng_client_from_id(rfp->client_id), rfp->fp_v4);
 
   if (otr_conv) {
     verify_sensitive = 1;
@@ -302,7 +362,8 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   gtk_widget_set_sensitive(ui_layout.forget_button, forget_sensitive);
   gtk_widget_set_sensitive(ui_layout.verify_button, verify_sensitive);
   ui_layout.selected_client_id = rfp->client_id;
-  ui_layout.selected_fprint = rfp->fp;
+  ui_layout.selected_fprint_v3 = rfp->fp_v3;
+  ui_layout.selected_fprint_v4 = rfp->fp_v4;
 }
 
 static void clist_unselected(GtkWidget *widget, gint row, gint column,
@@ -358,6 +419,8 @@ static int fngsortval(Fingerprint *f) {
   return result;
 }
 
+// TODO: this is probably not going to work - probably crash, because of
+// fngsortval
 static gint statuscmp(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
   const GtkCListRow *a = ptr1;
   const GtkCListRow *b = ptr2;
@@ -414,16 +477,17 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
   otrng_plugin_send_default_query(conv);
 }
 
+// TODO: this should be updated to include v3 functionality as well
 static void connect_connection(GtkWidget *widget, gpointer data) {
   /* Send an OTR Query to the other side. */
   PurpleAccount *account;
   char *msg;
 
-  if (ui_layout.selected_fprint == NULL) {
+  if (ui_layout.selected_fprint_v4 == NULL) {
     return;
   }
 
-  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint;
+  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint_v4;
   otrng_client_id_s cid = ui_layout.selected_client_id;
   account = purple_accounts_find(cid.account, cid.protocol);
   if (!account) {
@@ -445,10 +509,11 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
   g_free(conv->account);
 }
 
+// TODO: this should be updated to support v3 fingerprints as well
 static void disconnect_connection(GtkWidget *widget, gpointer data) {
   /* Forget whatever state we've got with this context */
   otrng_plugin_conversation conv[1];
-  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint;
+  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint_v4;
 
   if (!fp) {
     return;
@@ -462,14 +527,16 @@ static void disconnect_connection(GtkWidget *widget, gpointer data) {
   g_free(conv->account);
 }
 
+// TODO: this should be updated to support v3 fingerprints too
 static void forget_fingerprint(GtkWidget *widget, gpointer data) {
   otrng_ui_forget_fingerprint(ui_layout.selected_client_id,
-                              ui_layout.selected_fprint);
+                              ui_layout.selected_fprint_v4);
 }
 
+// TODO: this should be updated to support v3 fingerprints too
 static void verify_fingerprint(GtkWidget *widget, gpointer data) {
   otrng_dialog_verify_fingerprint(ui_layout.selected_client_id,
-                                  ui_layout.selected_fprint);
+                                  ui_layout.selected_fprint_v4);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,
@@ -783,24 +850,26 @@ static void make_fingerprints_ui(GtkWidget *vbox) {
   GtkWidget *hbox;
   GtkWidget *table;
   GtkWidget *label;
-  char *titles[5];
+  char *titles[6];
 
   titles[0] = _("Screenname");
   titles[1] = _("Status");
   titles[2] = _("Verified");
-  titles[3] = _("Fingerprint");
-  titles[4] = _("Account");
+  titles[3] = _("Version");
+  titles[4] = _("Fingerprint");
+  titles[5] = _("Account");
 
   ui_layout.scrollwin = gtk_scrolled_window_new(0, 0);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ui_layout.scrollwin),
                                  GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
-  ui_layout.keylist = gtk_clist_new_with_titles(5, titles);
+  ui_layout.keylist = gtk_clist_new_with_titles(6, titles);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 0, 90);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 1, 90);
   gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 2, 60);
-  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 950);
-  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 4, 200);
+  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 3, 30);
+  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 4, 950);
+  gtk_clist_set_column_width(GTK_CLIST(ui_layout.keylist), 5, 200);
   gtk_clist_set_row_height(GTK_CLIST(ui_layout.keylist), 30);
   gtk_clist_set_selection_mode(GTK_CLIST(ui_layout.keylist),
                                GTK_SELECTION_SINGLE);
