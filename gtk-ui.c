@@ -375,64 +375,6 @@ static void clist_unselected(GtkWidget *widget, gint row, gint column,
   clist_all_unselected();
 }
 
-/* For a given fingerprint, find the master context that the fingerprint is
- * pointing to, iterate through it and all its children.
- * Of the contexts that are using this fingerprint, return a value that
- * corresponds to the "best" trust level among these.
- */
-static int fngsortval(Fingerprint *f) {
-  int result = 200;
-  ConnContext *context_iter;
-
-  for (context_iter = f->context->m_context;
-       context_iter && context_iter->m_context == f->context->m_context;
-       context_iter = context_iter->next) {
-
-    int is_active = 0;
-    // TODO: get the correct trustlevel. See
-    // otrng_plugin_context_to_trust(ConnContext *context)
-    TrustLevel level = TRUST_NOT_PRIVATE;
-
-    if (context_iter->msgstate == OTRL_MSGSTATE_ENCRYPTED &&
-        context_iter->active_fingerprint == f) {
-      is_active = 1;
-    }
-
-    // level = otrng_plugin_context_to_trust(context_iter);
-
-    if (level == TRUST_PRIVATE) {
-      if (is_active) {
-        result = 0;
-        break;
-      }
-      result = result > 100 ? 100 : result;
-
-    } else if (level == TRUST_UNVERIFIED) {
-      if (is_active) {
-        result = 1;
-      } else {
-        result = result > 100 ? 100 : result;
-      }
-    } else if (level == TRUST_FINISHED) {
-      result = result > 2 ? 2 : result;
-    } else if (level == TRUST_NOT_PRIVATE) {
-      result = result > 3 ? 3 : result;
-    }
-  }
-
-  return result;
-}
-
-// TODO: this is probably not going to work - probably crash, because of
-// fngsortval
-static gint statuscmp(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
-  const GtkCListRow *a = ptr1;
-  const GtkCListRow *b = ptr2;
-  int as = fngsortval(a->data);
-  int bs = fngsortval(b->data);
-  return (as - bs);
-}
-
 static void clist_click_column(GtkCList *clist, gint column, gpointer data) {
   if (ui_layout.sortcol == column) {
     ui_layout.sortdir = -(ui_layout.sortdir);
@@ -444,13 +386,9 @@ static void clist_click_column(GtkCList *clist, gint column, gpointer data) {
   gtk_clist_set_sort_column(clist, ui_layout.sortcol);
   gtk_clist_set_sort_type(clist, ui_layout.sortdir == 1 ? GTK_SORT_ASCENDING
                                                         : GTK_SORT_DESCENDING);
-  if (column == 1) {
-    gtk_clist_set_compare_func(clist, statuscmp);
-  } else {
-    /* Just use the default compare function for the rest of the
-     * columns */
-    gtk_clist_set_compare_func(clist, NULL);
-  }
+  /* Just use the default compare function for the rest of the
+   * columns */
+  gtk_clist_set_compare_func(clist, NULL);
   gtk_clist_sort(clist);
 }
 
