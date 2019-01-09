@@ -337,21 +337,25 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   fingerprint_row_data *rfp =
       gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist), row);
   // ConnContext *context_iter;
-
-  otrng_conversation_s *otr_conv = otrng_plugin_fingerprint_to_otr_conversation(
-      get_otrng_client_from_id(rfp->client_id), rfp->fp_v4);
-
-  if (otr_conv) {
+  if (rfp && rfp->fp_v4) {
     verify_sensitive = 1;
     forget_sensitive = 1;
 
-    // TODO: and this is the active fingerprint
-    if (otrng_conversation_is_encrypted(otr_conv)) {
-      disconnect_sensitive = 1;
-      forget_sensitive = 0;
-    } else if (otrng_conversation_is_finished(otr_conv)) {
-      disconnect_sensitive = 0;
-      connect_sensitive = 1;
+    otrng_conversation_s *otr_conv =
+        otrng_plugin_fingerprint_to_otr_conversation(
+            get_otrng_client_from_id(rfp->client_id), rfp->fp_v4);
+
+    if (otr_conv) {
+      // TODO: and this is the active fingerprint
+      if (otrng_conversation_is_encrypted(otr_conv)) {
+        disconnect_sensitive = 1;
+        forget_sensitive = 0;
+      } else if (otrng_conversation_is_finished(otr_conv)) {
+        disconnect_sensitive = 0;
+        connect_sensitive = 1;
+      } else {
+        connect_sensitive = 1;
+      }
     } else {
       connect_sensitive = 1;
     }
