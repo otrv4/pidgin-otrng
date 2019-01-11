@@ -1468,6 +1468,27 @@ static void display_error_message(const otrng_error_event event,
   }
 }
 
+static void handle_event(const otrng_msg_event event) {
+  switch (event) {
+  case OTRNG_MSG_EVENT_NONE:
+    break;
+  case OTRNG_MSG_EVENT_ENCRYPTION_REQUIRED:
+    break;
+  case OTRNG_MSG_EVENT_ENCRYPTION_ERROR:
+    break;
+  case OTRNG_MSG_EVENT_HEARTBEAT_RECEIVED:
+    break;
+  case OTRNG_MSG_EVENT_HEARTBEAT_SENT:
+    break;
+  case OTRNG_MSG_EVENT_WRONG_INSTANCE:
+    break;
+  case OTRNG_MSG_EVENT_INCORRECT_AMMOUNT_PREKEYS:
+    printf("You attempted to publish more prekey "
+           "messages than allowed");
+    break;
+  }
+}
+
 static otrng_shared_session_state_s
 get_shared_session_state_cb(const otrng_s *conv) {
   // TODO: Get those values from the conversation
@@ -1506,6 +1527,7 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   cb->smp_ask_for_answer = smp_ask_for_answer_v4;
   cb->smp_update = smp_update_v4;
   cb->display_error_message = display_error_message;
+  cb->handle_event = handle_event;
   cb->get_shared_session_state = get_shared_session_state_cb;
   cb->define_policy = define_policy;
 
