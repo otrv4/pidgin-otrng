@@ -85,6 +85,10 @@ void otrng_ui_connect_connection(ConnContext *context);
 /* Drop a context to PLAINTEXT state */
 void otrng_ui_disconnect_connection(otrng_plugin_conversation *conv);
 
+/* Forget a fingerprint v3*/
+void otrng_ui_forget_fingerprint_v3(otrng_client_id_s cid,
+                                    otrng_known_fingerprint_v3_s *fingerprint);
+
 /* Forget a fingerprint */
 void otrng_ui_forget_fingerprint(otrng_client_id_s cid,
                                  otrng_known_fingerprint_s *fingerprint);

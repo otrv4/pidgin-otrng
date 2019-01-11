@@ -131,6 +131,15 @@ otrng_plugin_fingerprint_to_otr_conversation(otrng_client_s *client,
   return otrng_client_get_conversation(0, f->username, client);
 }
 
+otrng_conversation_s *otrng_plugin_fingerprint_v3_to_otr_conversation(
+    otrng_client_s *client, otrng_known_fingerprint_v3_s *f) {
+  if (!f || !client) {
+    return NULL;
+  }
+
+  return otrng_client_get_conversation(0, f->username, client);
+}
+
 otrng_known_fingerprint_s *
 otrng_plugin_fingerprint_get_active(const otrng_plugin_conversation *conv) {
   return otrng_fingerprint_get_current(conv->conv);
@@ -139,6 +148,11 @@ otrng_plugin_fingerprint_get_active(const otrng_plugin_conversation *conv) {
 void otrng_plugin_fingerprint_forget(otrng_client_s *client,
                                      otrng_known_fingerprint_s *fp) {
   otrng_fingerprint_forget(client, fp);
+}
+
+void otrng_plugin_fingerprint_v3_forget(otrng_client_s *client,
+                                        otrng_known_fingerprint_v3_s *fp) {
+  otrl_context_forget_fingerprint(fp->fp, 1);
 }
 
 static void fingerprint_store_v4(otrng_client_s *client) {

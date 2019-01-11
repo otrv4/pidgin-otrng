@@ -36,11 +36,17 @@ otrng_conversation_s *
 otrng_plugin_fingerprint_to_otr_conversation(otrng_client_s *client,
                                              otrng_known_fingerprint_s *f);
 
+otrng_conversation_s *otrng_plugin_fingerprint_v3_to_otr_conversation(
+    otrng_client_s *client, otrng_known_fingerprint_v3_s *f);
+
 otrng_known_fingerprint_s *
 otrng_plugin_fingerprint_get_active(const otrng_plugin_conversation *conv);
 
 void otrng_plugin_fingerprint_forget(otrng_client_s *client,
                                      otrng_known_fingerprint_s *fp);
+
+void otrng_plugin_fingerprint_v3_forget(otrng_client_s *client,
+                                        otrng_known_fingerprint_v3_s *fp);
 
 void otrng_fingerprints_set_callbacks(otrng_client_callbacks_s *cb);
 

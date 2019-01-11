@@ -337,13 +337,18 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
   fingerprint_row_data *rfp =
       gtk_clist_get_row_data(GTK_CLIST(ui_layout.keylist), row);
   // ConnContext *context_iter;
-  if (rfp && rfp->fp_v4) {
+  otrng_conversation_s *otr_conv = NULL;
+  if (rfp) {
     verify_sensitive = 1;
     forget_sensitive = 1;
 
-    otrng_conversation_s *otr_conv =
-        otrng_plugin_fingerprint_to_otr_conversation(
-            get_otrng_client_from_id(rfp->client_id), rfp->fp_v4);
+    if (rfp->fp_v4) {
+      otr_conv = otrng_plugin_fingerprint_to_otr_conversation(
+          get_otrng_client_from_id(rfp->client_id), rfp->fp_v4);
+    } else if (rfp->fp_v3) {
+      otr_conv = otrng_plugin_fingerprint_v3_to_otr_conversation(
+          get_otrng_client_from_id(rfp->client_id), rfp->fp_v3);
+    }
 
     if (otr_conv) {
       // TODO: and this is the active fingerprint
@@ -469,10 +474,16 @@ static void disconnect_connection(GtkWidget *widget, gpointer data) {
   g_free(conv->account);
 }
 
-// TODO: this should be updated to support v3 fingerprints too
 static void forget_fingerprint(GtkWidget *widget, gpointer data) {
-  otrng_ui_forget_fingerprint(ui_layout.selected_client_id,
-                              ui_layout.selected_fprint_v4);
+  if (ui_layout.selected_fprint_v4 != NULL) {
+    otrng_ui_forget_fingerprint(ui_layout.selected_client_id,
+                                ui_layout.selected_fprint_v4);
+  }
+
+  if (ui_layout.selected_fprint_v3 != NULL) {
+    otrng_ui_forget_fingerprint_v3(ui_layout.selected_client_id,
+                                   ui_layout.selected_fprint_v3);
+  }
 }
 
 // TODO: this should be updated to support v3 fingerprints too
