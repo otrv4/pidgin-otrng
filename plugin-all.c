@@ -1486,6 +1486,18 @@ static void handle_event(const otrng_msg_event event) {
     printf("You attempted to publish more prekey "
            "messages than allowed");
     break;
+  case OTRNG_MSG_EVENT_SENDING_NOT_IN_ENCRYPTED_STATE:
+    break;
+  case OTRNG_MSG_EVENT_INVALID_MSG:
+    break;
+  case OTRNG_MSG_EVENT_MALFORMED_PREKEY:
+    break;
+  case OTRNG_MSG_EVENT_MSG_KEYS_STORAGE_FULL:
+    break;
+  case OTRNG_MSG_EVENT_RCV_UNENCRYPTED:
+    break;
+  case OTRNG_MSG_EVENT_CONNECTION_ENDED:
+    break;
   }
 }
 
