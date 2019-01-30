@@ -424,24 +424,34 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
   otrng_plugin_send_default_query(conv);
 }
 
-// TODO: this should be updated to include v3 functionality as well
+/* Should this _only_ connect using the selected fingerprint? Or with any of
+   them? Actually, we can't really control that, since it's the OTHER persons
+   fingerprint. OK, so what about version? If we choose a v3 fingerprint, should
+   we only connect using v3? For now, we will not do anything specific */
 static void connect_connection(GtkWidget *widget, gpointer data) {
   /* Send an OTR Query to the other side. */
   PurpleAccount *account;
   char *msg;
+  char *username;
 
-  if (ui_layout.selected_fprint_v4 == NULL) {
+  if (ui_layout.selected_fprint_v3 == NULL &&
+      ui_layout.selected_fprint_v4 == NULL) {
     return;
   }
 
-  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint_v4;
+  if (ui_layout.selected_fprint_v3 != NULL) {
+    username = ui_layout.selected_fprint_v3->username;
+  } else {
+    username = ui_layout.selected_fprint_v4->username;
+  }
+
   otrng_client_id_s cid = ui_layout.selected_client_id;
   account = purple_accounts_find(cid.account, cid.protocol);
   if (!account) {
     PurplePlugin *p = purple_find_prpl(cid.protocol);
     msg = g_strdup_printf(_("Account %s (%s) could not be found"), cid.account,
                           (p && p->info->name) ? p->info->name : _("Unknown"));
-    otrng_dialog_notify_error(cid.account, cid.protocol, fp->username,
+    otrng_dialog_notify_error(cid.account, cid.protocol, username,
                               _("Account not found"), msg, NULL);
     g_free(msg);
     return;
@@ -450,7 +460,7 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
   otrng_plugin_conversation conv[1];
   conv->protocol = g_strdup(cid.protocol);
   conv->account = g_strdup(cid.account);
-  conv->peer = fp->username;
+  conv->peer = username;
   connect_connection_ui(conv);
   g_free(conv->protocol);
   g_free(conv->account);
