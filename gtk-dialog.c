@@ -81,6 +81,13 @@ static int img_id_finished = 0;
 #define AUTH_SMP_SHARED_SECRET 1
 #define AUTH_FINGERPRINT_VERIFICATION -1
 
+typedef struct vrfy_fingerprint_data {
+  otrng_plugin_fingerprint_s *fprint;
+  char *accountname, *protocol;
+  otrl_instag_t their_instance;
+  int newtrust;
+} vrfy_fingerprint_data;
+
 typedef struct {
   otrng_plugin_conversation *conv;
 
@@ -91,6 +98,7 @@ typedef struct {
                              * challenge (0) or shared secret (1) */
   gboolean responder;       /* Whether or not this is the first side to give
                              * their secret */
+  vrfy_fingerprint_data *vfd;
 } SmpResponsePair;
 
 /* Information used by the plugin that is specific to both the
@@ -224,12 +232,6 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget) {
   gtk_widget_destroy(GTK_WIDGET(widget));
 }
 
-typedef struct vrfy_fingerprint_data {
-  otrng_plugin_fingerprint_s *fprint;
-  char *accountname, *protocol;
-  otrl_instag_t their_instance;
-} vrfy_fingerprint_data;
-
 /* Forward declarations for the benefit of smp_message_response_cb/redraw
  * authvbox */
 static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
@@ -245,6 +247,22 @@ static void conversation_switched(PurpleConversation *conv, void *data);
 static GtkWidget *
 create_smp_progress_dialog(GtkWindow *parent,
                            const otrng_plugin_conversation *conv);
+
+static int plugin_fingerprint_get_trusted(otrng_plugin_fingerprint_s *fprint) {
+  if (fprint->version == 3) {
+    return fprint->v3->fp->trust && fprint->v3->fp->trust[0];
+  }
+  return fprint->v4->trusted;
+}
+
+static void plugin_fingerprint_set_trust(otrng_plugin_fingerprint_s *fprint,
+                                         int trust) {
+  if (fprint->version == 3) {
+    otrl_context_set_trust(fprint->v3->fp, trust ? "verified" : "");
+  } else {
+    fprint->v4->trusted = trust;
+  }
+}
 
 /* Called when a button is pressed on the "progress bar" smp dialog */
 static void smp_progress_response_cb(GtkDialog *dialog, gint response,
@@ -361,6 +379,26 @@ static void smp_secret_response_cb(GtkDialog *dialog, gint response,
 
     /* launch progress bar window */
     create_smp_progress_dialog(GTK_WINDOW(dialog), smppair->conv);
+  } else if (response == GTK_RESPONSE_ACCEPT && smppair->vfd) {
+    int oldtrust;
+    otrng_plugin_fingerprint_s *fprint;
+
+    fprint = smppair->vfd->fprint;
+
+    if (fprint == NULL) {
+      return;
+    }
+
+    oldtrust = plugin_fingerprint_get_trusted(fprint);
+    if (smppair->vfd->newtrust != oldtrust) {
+      plugin_fingerprint_set_trust(fprint, smppair->vfd->newtrust);
+
+      /* Write the new info to disk, redraw the ui, and redraw the
+       * OTR buttons. */
+      otrng_plugin_write_fingerprints();
+      otrng_ui_update_keylist();
+      otrng_dialog_resensitize_all();
+    }
   } else {
     otrng_plugin_abort_smp(smppair->conv);
   }
@@ -389,12 +427,14 @@ static void close_smp_window(PurpleConversation *conv) {
   }
 }
 
-static GtkWidget *create_dialog(GtkWindow *parent, PurpleNotifyMsgType type,
-                                const char *title, const char *primary,
-                                const char *secondary, int sensitive,
-                                GtkWidget **labelp,
-                                void (*add_custom)(GtkWidget *vbox, void *data),
-                                void *add_custom_data) {
+static GtkWidget *
+create_dialog(GtkWindow *parent, PurpleNotifyMsgType type, const char *title,
+              const char *primary, const char *secondary, int sensitive,
+              GtkWidget **labelp,
+              void (*add_custom)(GtkWidget *vbox, void *data),
+              void *add_custom_data,
+              void (*custom_response)(GtkDialog *dialog, gint id, void *data),
+              void *custom_response_data) {
   GtkWidget *dialog;
   GtkWidget *hbox;
   GtkWidget *vbox;
@@ -434,8 +474,13 @@ static GtkWidget *create_dialog(GtkWindow *parent, PurpleNotifyMsgType type,
   gtk_window_set_focus_on_map(GTK_WINDOW(dialog), FALSE);
   gtk_window_set_role(GTK_WINDOW(dialog), "notify_dialog");
 
-  g_signal_connect(G_OBJECT(dialog), "response",
-                   G_CALLBACK(message_response_cb), dialog);
+  if (custom_response != NULL) {
+    g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(custom_response),
+                     custom_response_data);
+  } else {
+    g_signal_connect(G_OBJECT(dialog), "response",
+                     G_CALLBACK(message_response_cb), dialog);
+  }
   gtk_dialog_set_response_sensitive(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT,
                                     sensitive);
 
@@ -793,6 +838,8 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
   vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id, fp);
 
+  smppair->vfd = vfd;
+
   add_vrfy_fingerprint(vbox, vfd);
   g_signal_connect(G_OBJECT(vbox), "destroy",
                    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
@@ -1133,7 +1180,8 @@ otrng_gtk_dialog_notify_message(PurpleNotifyMsgType type,
                                 const char *accountname, const char *protocol,
                                 const char *username, const char *title,
                                 const char *primary, const char *secondary) {
-  create_dialog(NULL, type, title, primary, secondary, 1, NULL, NULL, NULL);
+  create_dialog(NULL, type, title, primary, secondary, 1, NULL, NULL, NULL,
+                NULL, NULL);
 }
 
 struct s_OtrgDialogWait {
@@ -1164,7 +1212,7 @@ otrng_gtk_dialog_private_key_wait_start(const char *account,
                               account, protocol_print);
 
   dialog = create_dialog(NULL, PURPLE_NOTIFY_MSG_INFO, title, primary,
-                         secondary, 0, &label, NULL, NULL);
+                         secondary, 0, &label, NULL, NULL, NULL, NULL);
   handle = malloc(sizeof(struct s_OtrgDialogWait));
   handle->dialog = dialog;
   handle->label = label;
@@ -1385,22 +1433,6 @@ plugin_fingerprint_get_username(otrng_plugin_fingerprint_s *fprint) {
   return fprint->v4->username;
 }
 
-static int plugin_fingerprint_get_trusted(otrng_plugin_fingerprint_s *fprint) {
-  if (fprint->version == 3) {
-    return fprint->v3->fp->trust && fprint->v3->fp->trust[0];
-  }
-  return fprint->v4->trusted;
-}
-
-static void plugin_fingerprint_set_trust(otrng_plugin_fingerprint_s *fprint,
-                                         int trust) {
-  if (fprint->version == 3) {
-    otrl_context_set_trust(fprint->v3->fp, trust ? "verified" : "");
-  } else {
-    fprint->v4->trusted = trust;
-  }
-}
-
 static otrng_plugin_conversation *
 conn_context_to_plugin_conversation(ConnContext *context) {
   if (!context) {
@@ -1449,30 +1481,8 @@ static void vrfy_fingerprint_destroyed(GtkWidget *w,
 
 static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data) {
   vrfy_fingerprint_data *vfd = data;
-  otrng_plugin_fingerprint_s *fprint;
-  int oldtrust, trust;
-
-  fprint = vfd->fprint;
-
-  if (fprint == NULL) {
-    return;
-  }
-
-  oldtrust = plugin_fingerprint_get_trusted(fprint);
-  trust = gtk_combo_box_get_active(combo) == 1 ? 1 : 0;
-
-  /* See if anything's changed */
-  if (trust == oldtrust) {
-    return;
-  }
-
-  plugin_fingerprint_set_trust(fprint, trust);
-
-  /* Write the new info to disk, redraw the ui, and redraw the
-   * OTR buttons. */
-  otrng_plugin_write_fingerprints();
-  otrng_ui_update_keylist();
-  otrng_dialog_resensitize_all();
+  int trust = gtk_combo_box_get_active(combo) == 1 ? 1 : 0;
+  vfd->newtrust = trust;
 }
 
 /* Add the verify widget and the help text for the verify fingerprint box. */
@@ -1515,6 +1525,31 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
   gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new(NULL), FALSE, FALSE, 0);
 }
 
+static void verify_fingerprint_response_cb(GtkDialog *dialog, gint response,
+                                           void *data) {
+  vrfy_fingerprint_data *vfd = data;
+  if (response == GTK_RESPONSE_ACCEPT) {
+    int oldtrust;
+    otrng_plugin_fingerprint_s *fprint = vfd->fprint;
+
+    if (fprint == NULL) {
+      return;
+    }
+
+    oldtrust = plugin_fingerprint_get_trusted(fprint);
+    if (vfd->newtrust != oldtrust) {
+      plugin_fingerprint_set_trust(fprint, vfd->newtrust);
+
+      /* Write the new info to disk, redraw the ui, and redraw the
+       * OTR buttons. */
+      otrng_plugin_write_fingerprints();
+      otrng_ui_update_keylist();
+      otrng_dialog_resensitize_all();
+    }
+  }
+  gtk_widget_destroy(GTK_WIDGET(dialog));
+}
+
 static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
                                otrng_plugin_fingerprint_s *fprint) {
   GtkWidget *dialog;
@@ -1546,7 +1581,8 @@ static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
   vfd = vrfy_fingerprint_data_new(client_id, fprint);
   dialog =
       create_dialog(parent, PURPLE_NOTIFY_MSG_INFO, _("Verify fingerprint"),
-                    primary, secondary, 1, NULL, add_vrfy_fingerprint, vfd);
+                    primary, secondary, 1, NULL, add_vrfy_fingerprint, vfd,
+                    verify_fingerprint_response_cb, vfd);
   g_signal_connect(G_OBJECT(dialog), "destroy",
                    G_CALLBACK(vrfy_fingerprint_destroyed), vfd);
 
@@ -1977,12 +2013,14 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
   gtk_misc_set_alignment(GTK_MISC(dialog_text), 0, 0);
 
-  label = g_strdup_printf(_(
-      "OTRng -the plugin you are using- is the plugin that implements the 4th "
-      "version of the OTR protocol. This version provides better deniability "
-      "properties by the use of a deniable authenticated key exchange (DAKE), "
-      "and better forward secrecy through the use of the double ratchet "
-      "algorithm."));
+  label = g_strdup_printf(
+      _("OTRng -the plugin you are using- is the plugin that implements the "
+        "4th "
+        "version of the OTR protocol. This version provides better deniability "
+        "properties by the use of a deniable authenticated key exchange "
+        "(DAKE), "
+        "and better forward secrecy through the use of the double ratchet "
+        "algorithm."));
 
   gtk_label_set_markup(GTK_LABEL(dialog_text_1), label);
   gtk_label_set_selectable(GTK_LABEL(dialog_text_1), FALSE);
@@ -2000,7 +2038,8 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
       _("These are the properties that make OTRv4 different to other "
         "protocols:"),
       _("Online Deniability: "),
-      _("Users using OTRv4 cannot provide proof of participation to any third "
+      _("Users using OTRv4 cannot provide proof of participation to any "
+        "third "
         "parties "
         "without making themselves vulnerable to KCI attacks, even if they "
         "perform "
@@ -2505,8 +2544,8 @@ static void select_meta_ctx(GtkWidget *widget, gpointer data) {
 }
 
 // TODO: Review this function. ConnContext was null when I had a buddy with
-// multiple emails and both have a running OTR connvection. I guess this is what
-// the pigdin-otr (version 3) calls "multi-instance".
+// multiple emails and both have a running OTR connvection. I guess this is
+// what the pigdin-otr (version 3) calls "multi-instance".
 static void select_menu_ctx(GtkWidget *widget, gpointer data) {
   ConnContext *context = (ConnContext *)data;
   PurpleConversation *conv = otrng_plugin_context_to_conv(context, 1);
@@ -3266,8 +3305,8 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
   return NULL;
 }
 
-/* If the user has selected a meta instance, an incoming message may trigger an
- * instance change... we need to update the GUI appropriately */
+/* If the user has selected a meta instance, an incoming message may trigger
+ * an instance change... we need to update the GUI appropriately */
 static gboolean check_incoming_instance_change(PurpleAccount *account,
                                                char *sender, char *message,
                                                PurpleConversation *conv,
