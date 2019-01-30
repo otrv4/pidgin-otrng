@@ -32,6 +32,14 @@
 
 #include "plugin-conversation.h"
 
+typedef struct otrng_plugin_fingerprint_s {
+  uint8_t version;
+  union {
+    otrng_known_fingerprint_v3_s *v3;
+    otrng_known_fingerprint_s *v4;
+  };
+} otrng_plugin_fingerprint_s;
+
 otrng_conversation_s *
 otrng_plugin_fingerprint_to_otr_conversation(otrng_client_s *client,
                                              otrng_known_fingerprint_s *f);

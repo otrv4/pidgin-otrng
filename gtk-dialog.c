@@ -225,19 +225,19 @@ static void message_response_cb(GtkDialog *dialog, gint id, GtkWidget *widget) {
 }
 
 typedef struct vrfy_fingerprint_data {
-  otrng_known_fingerprint_s *fprint;
-  char *accountname, *username, *protocol;
+  otrng_plugin_fingerprint_s *fprint;
+  char *accountname, *protocol;
   otrl_instag_t their_instance;
 } vrfy_fingerprint_data;
 
 /* Forward declarations for the benefit of smp_message_response_cb/redraw
  * authvbox */
 static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
-                               otrng_known_fingerprint_s *fprint);
+                               otrng_plugin_fingerprint_s *fprint);
 static void add_vrfy_fingerprint(GtkWidget *vbox, void *data);
 static struct vrfy_fingerprint_data *
 vrfy_fingerprint_data_new(otrng_client_id_s client_id,
-                          otrng_known_fingerprint_s *fprint);
+                          otrng_plugin_fingerprint_s *fprint);
 static void vrfy_fingerprint_destroyed(GtkWidget *w,
                                        vrfy_fingerprint_data *vfd);
 static void conversation_switched(PurpleConversation *conv, void *data);
@@ -649,9 +649,36 @@ static void add_to_vbox_init_two_way_auth(GtkWidget *vbox,
   gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 }
 
-static char *
-create_verify_fingerprint_label(const otrng_known_fingerprint_s *other_fprint,
-                                const char *protocol, const char *account) {
+static char *create_verify_fingerprint_label_v3(
+    const otrng_known_fingerprint_v3_s *other_fprint, const char *protocol,
+    const char *account) {
+  char our_human_fprint[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
+  char other_human_fprint[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
+  PurplePlugin *p;
+  char *proto_name;
+  char *label_text;
+
+  strncpy(our_human_fprint, _("[none]"), OTRL_PRIVKEY_FPRINT_HUMAN_LEN - 1);
+
+  otrl_privkey_fingerprint(otrng_state->user_state_v3, our_human_fprint,
+                           account, protocol);
+
+  p = purple_find_prpl(protocol);
+  proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
+
+  otrl_privkey_hash_to_human(other_human_fprint, other_fprint->fp->fingerprint);
+
+  label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
+                                 "Purported fingerprint for %s:\n%s\n"),
+                               account, proto_name, our_human_fprint,
+                               other_fprint->username, other_human_fprint);
+
+  return label_text;
+}
+
+static char *create_verify_fingerprint_label_v4(
+    const otrng_known_fingerprint_s *other_fprint, const char *protocol,
+    const char *account) {
   char our_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
   char other_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
   PurplePlugin *p;
@@ -680,6 +707,29 @@ create_verify_fingerprint_label(const otrng_known_fingerprint_s *other_fprint,
   return label_text;
 }
 
+static char *
+create_verify_fingerprint_label(const otrng_plugin_fingerprint_s *other_fprint,
+                                const char *protocol, const char *account) {
+  if (other_fprint->version == 3) {
+    return create_verify_fingerprint_label_v3(other_fprint->v3, protocol,
+                                              account);
+  }
+  return create_verify_fingerprint_label_v4(other_fprint->v4, protocol,
+                                            account);
+}
+
+static otrng_plugin_fingerprint_s *otrng_plugin_fingerprint_new(int version,
+                                                                void *data) {
+  otrng_plugin_fingerprint_s *fp = malloc(sizeof(otrng_plugin_fingerprint_s));
+  fp->version = version;
+  if (version == 3) {
+    fp->v3 = data;
+  } else if (version == 4) {
+    fp->v4 = data;
+  }
+  return fp;
+}
+
 static void
 add_to_vbox_verify_fingerprint(GtkWidget *vbox,
                                const otrng_plugin_conversation *conv,
@@ -688,6 +738,8 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   char *label_text;
   vrfy_fingerprint_data *vfd;
 
+  // TODO: here we should handle the case when we are having a v3 conversation
+  // as well
   otrng_known_fingerprint_s *fprint = otrng_plugin_fingerprint_get_active(conv);
   if (fprint == NULL) {
     return;
@@ -710,7 +762,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
   label_text =
-      create_verify_fingerprint_label(fprint, conv->protocol, conv->account);
+      create_verify_fingerprint_label_v4(fprint, conv->protocol, conv->account);
   if (label_text == NULL) {
     return;
   }
@@ -728,7 +780,8 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-  vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id, fprint);
+  vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id,
+                                  otrng_plugin_fingerprint_new(4, fprint));
 
   add_vrfy_fingerprint(vbox, vfd);
   g_signal_connect(G_OBJECT(vbox), "destroy",
@@ -1314,6 +1367,30 @@ static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   dialog_update_label_conv(conv, level);
 }
 
+static char *
+plugin_fingerprint_get_username(otrng_plugin_fingerprint_s *fprint) {
+  if (fprint->version == 3) {
+    return fprint->v3->username;
+  }
+  return fprint->v4->username;
+}
+
+static int plugin_fingerprint_get_trusted(otrng_plugin_fingerprint_s *fprint) {
+  if (fprint->version == 3) {
+    return fprint->v3->fp->trust && fprint->v3->fp->trust[0];
+  }
+  return fprint->v4->trusted;
+}
+
+static void plugin_fingerprint_set_trust(otrng_plugin_fingerprint_s *fprint,
+                                         int trust) {
+  if (fprint->version == 3) {
+    otrl_context_set_trust(fprint->v3->fp, trust ? "verified" : "");
+  } else {
+    fprint->v4->trusted = trust;
+  }
+}
+
 static otrng_plugin_conversation *
 conn_context_to_plugin_conversation(ConnContext *context) {
   if (!context) {
@@ -1335,20 +1412,19 @@ conn_context_to_plugin_conversation(ConnContext *context) {
 
 static void vrfy_fingerprint_data_free(struct vrfy_fingerprint_data *vfd) {
   free(vfd->accountname);
-  free(vfd->username);
   free(vfd->protocol);
+  free(vfd->fprint);
   free(vfd);
 }
 
 static vrfy_fingerprint_data *
 vrfy_fingerprint_data_new(otrng_client_id_s client_id,
-                          otrng_known_fingerprint_s *fprint) {
+                          otrng_plugin_fingerprint_s *fprint) {
   vrfy_fingerprint_data *vfd;
 
   vfd = malloc(sizeof(vrfy_fingerprint_data));
   vfd->fprint = fprint;
   vfd->accountname = strdup(client_id.account);
-  vfd->username = strdup(fprint->username);
   vfd->protocol = strdup(client_id.protocol);
   // TODO: Why do you need their instance tag?
   // vfd->their_instance = context->their_instance;
@@ -1363,18 +1439,16 @@ static void vrfy_fingerprint_destroyed(GtkWidget *w,
 
 static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data) {
   vrfy_fingerprint_data *vfd = data;
-  otrng_known_fingerprint_s *fprint;
+  otrng_plugin_fingerprint_s *fprint;
   int oldtrust, trust;
 
-  // TODO: maybe we need to get the reference again?
-  // otrng_plugin_fingerprint_get(vfd->fprint->fingerprint)
   fprint = vfd->fprint;
 
   if (fprint == NULL) {
     return;
   }
 
-  oldtrust = fprint->trusted;
+  oldtrust = plugin_fingerprint_get_trusted(fprint);
   trust = gtk_combo_box_get_active(combo) == 1 ? 1 : 0;
 
   /* See if anything's changed */
@@ -1382,7 +1456,7 @@ static void vrfy_fingerprint_changed(GtkComboBox *combo, void *data) {
     return;
   }
 
-  fprint->trusted = trust;
+  plugin_fingerprint_set_trust(fprint, trust);
 
   /* Write the new info to disk, redraw the ui, and redraw the
    * OTR buttons. */
@@ -1397,7 +1471,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
   GtkWidget *combo, *label;
   vrfy_fingerprint_data *vfd = data;
   char *labelt;
-  int verified = vfd->fprint->trusted;
+  int verified = plugin_fingerprint_get_trusted(vfd->fprint);
 
   hbox = gtk_hbox_new(FALSE, 0);
   combo = gtk_combo_box_new_text();
@@ -1420,7 +1494,8 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
 
   hbox = gtk_hbox_new(FALSE, 0);
   /* 4th message */
-  labelt = g_strdup_printf(_("fingerprint for %s."), vfd->username);
+  labelt = g_strdup_printf(_("fingerprint for %s."),
+                           plugin_fingerprint_get_username(vfd->fprint));
   label = gtk_label_new(labelt);
   g_free(labelt);
   gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -1431,7 +1506,7 @@ static void add_vrfy_fingerprint(GtkWidget *vbox, void *data) {
 }
 
 static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
-                               otrng_known_fingerprint_s *fprint) {
+                               otrng_plugin_fingerprint_s *fprint) {
   GtkWidget *dialog;
   char *primary;
   char *secondary;
@@ -1441,7 +1516,8 @@ static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
     return;
   }
 
-  primary = g_strdup_printf(_("Verify fingerprint for %s"), fprint->username);
+  primary = g_strdup_printf(_("Verify fingerprint for %s"),
+                            plugin_fingerprint_get_username(fprint));
 
   char *label_fpr = create_verify_fingerprint_label(fprint, client_id.protocol,
                                                     client_id.account);
@@ -1470,7 +1546,7 @@ static void verify_fingerprint(GtkWindow *parent, otrng_client_id_s client_id,
 
 static void
 otrng_gtk_dialog_verify_fingerprint(otrng_client_id_s client_id,
-                                    otrng_known_fingerprint_s *fprint) {
+                                    otrng_plugin_fingerprint_s *fprint) {
   verify_fingerprint(NULL, client_id, fprint);
 }
 

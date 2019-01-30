@@ -486,10 +486,17 @@ static void forget_fingerprint(GtkWidget *widget, gpointer data) {
   }
 }
 
-// TODO: this should be updated to support v3 fingerprints too
 static void verify_fingerprint(GtkWidget *widget, gpointer data) {
-  otrng_dialog_verify_fingerprint(ui_layout.selected_client_id,
-                                  ui_layout.selected_fprint_v4);
+  otrng_plugin_fingerprint_s *fp = malloc(sizeof(otrng_plugin_fingerprint_s));
+  if (ui_layout.selected_fprint_v4 != NULL) {
+    fp->version = 4;
+    fp->v4 = ui_layout.selected_fprint_v4;
+  } else if (ui_layout.selected_fprint_v3 != NULL) {
+    fp->version = 3;
+    fp->v3 = ui_layout.selected_fprint_v3;
+  }
+
+  otrng_dialog_verify_fingerprint(ui_layout.selected_client_id, fp);
 }
 
 static void otrsettings_clicked_cb(GtkButton *button,
