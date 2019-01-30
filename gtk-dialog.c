@@ -459,9 +459,8 @@ static GtkWidget *create_dialog(GtkWindow *parent, PurpleNotifyMsgType type,
                       (secondary ? secondary : ""));
 
   label = gtk_label_new(NULL);
-
   gtk_label_set_markup(GTK_LABEL(label), label_text);
-  gtk_label_set_selectable(GTK_LABEL(label), 1);
+  gtk_label_set_selectable(GTK_LABEL(label), TRUE);
   g_free(label_text);
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
@@ -769,7 +768,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
 
   label = gtk_label_new(NULL);
   gtk_label_set_markup(GTK_LABEL(label), label_text);
-  gtk_label_set_selectable(GTK_LABEL(label), FALSE);
+  gtk_label_set_selectable(GTK_LABEL(label), TRUE);
   g_free(label_text);
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -786,7 +785,6 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   /* Make the label containing the fingerprints selectable, but
    * not auto-selected. */
   gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-  g_object_set(label, "can-focus", FALSE, NULL);
 
   g_free(label_text);
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
@@ -1078,14 +1076,14 @@ create_smp_progress_dialog(GtkWindow *parent,
   label = gtk_label_new(NULL);
 
   gtk_label_set_markup(GTK_LABEL(label), label_text);
-  gtk_label_set_selectable(GTK_LABEL(label), 1);
+  gtk_label_set_selectable(GTK_LABEL(label), TRUE);
   g_free(label_text);
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
   proglabel = gtk_label_new(NULL);
-  gtk_label_set_selectable(GTK_LABEL(proglabel), 1);
+  gtk_label_set_selectable(GTK_LABEL(proglabel), TRUE);
   gtk_label_set_line_wrap(GTK_LABEL(proglabel), TRUE);
   gtk_misc_set_alignment(GTK_MISC(proglabel), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), proglabel, FALSE, FALSE, 0);
@@ -2011,11 +2009,11 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
       _("Anyone can forge a transcript between two users by only using the "
         "long-term "
         "public keys. "),
-      _("Backward and Post-Compromise Secrey: "), _("TBD"),
-      _("End-to-end encryption: "), _("TBD"));
+      _("Backward and Post-Compromise Secrey: "), _("TBD"), /*TODO*/
+      _("End-to-end encryption: "), _("TBD"));              /*TODO*/
 
   gtk_label_set_markup(GTK_LABEL(dialog_text_2), label);
-  gtk_label_set_selectable(GTK_LABEL(dialog_text_2), FALSE);
+  gtk_label_set_selectable(GTK_LABEL(dialog_text_2), TRUE);
   g_free(label);
 
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text_2), TRUE);
@@ -2037,7 +2035,7 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
       _("SHAKE-256"));
 
   gtk_label_set_markup(GTK_LABEL(dialog_text_3), label);
-  gtk_label_set_selectable(GTK_LABEL(dialog_text_3), FALSE);
+  gtk_label_set_selectable(GTK_LABEL(dialog_text_3), TRUE);
   g_free(label);
 
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text_3), TRUE);
