@@ -737,12 +737,25 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   GtkWidget *label;
   char *label_text;
   vrfy_fingerprint_data *vfd;
+  otrng_plugin_fingerprint_s *fp;
 
-  // TODO: here we should handle the case when we are having a v3 conversation
-  // as well
-  otrng_known_fingerprint_s *fprint = otrng_plugin_fingerprint_get_active(conv);
-  if (fprint == NULL) {
-    return;
+  if (conv->conv->running_version == 3) {
+    otrng_known_fingerprint_v3_s *ff;
+    Fingerprint *fprint = conv->conv->v3_conn->ctx->active_fingerprint;
+    if (fprint == NULL)
+      return;
+    if (fprint->fingerprint == NULL)
+      return;
+    ff = malloc(sizeof(otrng_known_fingerprint_v3_s));
+    ff->fp = fprint;
+    ff->username = conv->conv->v3_conn->ctx->username;
+    fp = otrng_plugin_fingerprint_new(3, ff);
+  } else {
+    otrng_known_fingerprint_s *fprint =
+        otrng_plugin_fingerprint_get_active(conv);
+    if (fprint == NULL)
+      return;
+    fp = otrng_plugin_fingerprint_new(4, fprint);
   }
 
   label_text = g_strdup_printf(
@@ -762,7 +775,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
   label_text =
-      create_verify_fingerprint_label_v4(fprint, conv->protocol, conv->account);
+      create_verify_fingerprint_label(fp, conv->protocol, conv->account);
   if (label_text == NULL) {
     return;
   }
@@ -780,8 +793,7 @@ add_to_vbox_verify_fingerprint(GtkWidget *vbox,
   gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
   gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
-  vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id,
-                                  otrng_plugin_fingerprint_new(4, fprint));
+  vfd = vrfy_fingerprint_data_new(conv->conv->client->client_id, fp);
 
   add_vrfy_fingerprint(vbox, vfd);
   g_signal_connect(G_OBJECT(vbox), "destroy",
