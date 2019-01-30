@@ -424,6 +424,18 @@ static void connect_connection_ui(otrng_plugin_conversation *conv) {
   otrng_plugin_send_default_query(conv);
 }
 
+static char *get_ui_layout_username() {
+  char *username = NULL;
+
+  if (ui_layout.selected_fprint_v3 != NULL) {
+    username = ui_layout.selected_fprint_v3->username;
+  } else if (ui_layout.selected_fprint_v4 != NULL) {
+    username = ui_layout.selected_fprint_v4->username;
+  }
+
+  return username;
+}
+
 /* Should this _only_ connect using the selected fingerprint? Or with any of
    them? Actually, we can't really control that, since it's the OTHER persons
    fingerprint. OK, so what about version? If we choose a v3 fingerprint, should
@@ -432,17 +444,11 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
   /* Send an OTR Query to the other side. */
   PurpleAccount *account;
   char *msg;
-  char *username;
+  char *username = get_ui_layout_username();
+  ;
 
-  if (ui_layout.selected_fprint_v3 == NULL &&
-      ui_layout.selected_fprint_v4 == NULL) {
+  if (username == NULL) {
     return;
-  }
-
-  if (ui_layout.selected_fprint_v3 != NULL) {
-    username = ui_layout.selected_fprint_v3->username;
-  } else {
-    username = ui_layout.selected_fprint_v4->username;
   }
 
   otrng_client_id_s cid = ui_layout.selected_client_id;
@@ -466,19 +472,18 @@ static void connect_connection(GtkWidget *widget, gpointer data) {
   g_free(conv->account);
 }
 
-// TODO: this should be updated to support v3 fingerprints as well
 static void disconnect_connection(GtkWidget *widget, gpointer data) {
   /* Forget whatever state we've got with this context */
   otrng_plugin_conversation conv[1];
-  otrng_known_fingerprint_s *fp = ui_layout.selected_fprint_v4;
+  char *username = get_ui_layout_username();
 
-  if (!fp) {
+  if (username == NULL) {
     return;
   }
 
   conv->protocol = g_strdup(ui_layout.selected_client_id.protocol);
   conv->account = g_strdup(ui_layout.selected_client_id.account);
-  conv->peer = fp->username;
+  conv->peer = username;
   otrng_ui_disconnect_connection(conv);
   g_free(conv->protocol);
   g_free(conv->account);
