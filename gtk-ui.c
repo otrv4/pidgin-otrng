@@ -362,7 +362,13 @@ static void clist_selected(GtkWidget *widget, gint row, gint column,
         connect_sensitive = 1;
       }
     } else {
-      connect_sensitive = 1;
+      const PurpleAccount *account =
+          purple_accounts_find(rfp->client_id.account, rfp->client_id.protocol);
+      if (account && purple_account_is_connected(account)) {
+        connect_sensitive = 1;
+      } else {
+        connect_sensitive = 0;
+      }
     }
   }
 
