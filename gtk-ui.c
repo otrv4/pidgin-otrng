@@ -177,27 +177,47 @@ static void keylist_all_do_v3(const otrng_client_s *client,
                               otrng_known_fingerprint_v3_s *fp, void *_ctx) {
   keylist_all_ctx *ctx = _ctx;
   otrng_plugin_conversation plugin_conv;
+  PurpleAccount *account = NULL;
+  PurpleConversation *pconv = NULL;
   int i;
   char hash[OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
   gchar *titles[6];
 
-  TrustLevel level;
+  account = client_id_to_purple_account(client->client_id);
+  if (account) {
+    pconv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
+                                                  fp->username, account);
+  }
+
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, fp->username, (otrng_client_s *)client);
   if (otr_conv != NULL && otr_conv->conn != NULL) {
+    Fingerprint *current_fp = NULL;
+    if (otr_conv->conn->v3_conn && otr_conv->conn->v3_conn->ctx) {
+      current_fp = otr_conv->conn->v3_conn->ctx->active_fingerprint;
+    }
     plugin_conv.account = g_strdup(client->client_id.account);
     plugin_conv.protocol = g_strdup(client->client_id.protocol);
     plugin_conv.peer = fp->username;
     plugin_conv.conv = otr_conv->conn;
-    level = otrng_plugin_conversation_to_trust(&plugin_conv);
+    if (current_fp && current_fp->fingerprint &&
+        memcmp(fp->fp->fingerprint, current_fp->fingerprint, 20) == 0) {
+      titles[1] = (gchar *)_(
+          trust_states[otrng_plugin_conversation_to_trust(&plugin_conv)]);
+    } else {
+      titles[1] = (gchar *)_(N_("No conversation"));
+    }
     g_free(plugin_conv.account);
     g_free(plugin_conv.protocol);
   } else {
-    level = TRUST_NOT_PRIVATE;
+    if (pconv) {
+      titles[1] = (gchar *)_(trust_states[TRUST_NOT_PRIVATE]);
+    } else {
+      titles[1] = (gchar *)_(N_("No conversation"));
+    }
   }
 
   titles[0] = fp->username;
-  titles[1] = (gchar *)_(trust_states[level]);
   titles[2] = (fp->fp->trust && fp->fp->trust[0]) ? _("Yes") : _("No");
   titles[3] = "v3";
   otrl_privkey_hash_to_human(hash, fp->fp->fingerprint);
@@ -222,26 +242,45 @@ static void keylist_all_do_v4(const otrng_client_s *client,
                               otrng_known_fingerprint_s *fp, void *_ctx) {
   keylist_all_ctx *ctx = _ctx;
   otrng_plugin_conversation plugin_conv;
+  PurpleAccount *account = NULL;
+  PurpleConversation *pconv = NULL;
   int i;
   gchar *titles[6];
 
-  TrustLevel level;
+  account = client_id_to_purple_account(client->client_id);
+  if (account) {
+    pconv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM,
+                                                  fp->username, account);
+  }
+
   otrng_conversation_s *otr_conv =
       otrng_client_get_conversation(0, fp->username, (otrng_client_s *)client);
   if (otr_conv != NULL && otr_conv->conn != NULL) {
+    otrng_known_fingerprint_s *current_fp;
+
     plugin_conv.account = g_strdup(client->client_id.account);
     plugin_conv.protocol = g_strdup(client->client_id.protocol);
     plugin_conv.peer = fp->username;
     plugin_conv.conv = otr_conv->conn;
-    level = otrng_plugin_conversation_to_trust(&plugin_conv);
+
+    current_fp = otrng_plugin_fingerprint_get_active(&plugin_conv);
+    if (current_fp && memcmp(fp->fp, current_fp->fp, FPRINT_LEN_BYTES) == 0) {
+      titles[1] = (gchar *)_(
+          trust_states[otrng_plugin_conversation_to_trust(&plugin_conv)]);
+    } else {
+      titles[1] = (gchar *)_(N_("No conversation"));
+    }
     g_free(plugin_conv.account);
     g_free(plugin_conv.protocol);
   } else {
-    level = TRUST_NOT_PRIVATE;
+    if (pconv) {
+      titles[1] = (gchar *)_(trust_states[TRUST_NOT_PRIVATE]);
+    } else {
+      titles[1] = (gchar *)_(N_("No conversation"));
+    }
   }
 
   titles[0] = fp->username;
-  titles[1] = (gchar *)_(trust_states[level]);
   titles[2] = (fp->trusted) ? _("Yes") : _("No");
   titles[3] = "v4";
 
