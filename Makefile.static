@@ -22,38 +22,48 @@
 
 LIBOTRDIR?=/usr/lib
 LIBGCRYPTDIR?=/usr/lib
+LIBGPGERRORDIR?=/usr/lib
 LIBOTRNGDIR?=/usr/lib
-# /usr/local/lib/libgoldilocks.a ??
+LIBGOLDILOCKSDIR?=/usr/lib
+LIBSODIUMDIR?=/usr/lib
 
 #TODO: use libtool to generate both the dynamic and static
 .libs/pidgin-otrng.so: FORCE
-	# Build everything from the standard Makefile
 	make
+	rm -rf .libs/pidgin-otrng-shared.o .libs/pidgin-otrng.so .libs/pidgin-otrng-static.o
+	ld -r  .libs/dialogs.o \
+		   .libs/fingerprint.o \
+		   .libs/gtk-dialog.o \
+		   .libs/gtk-ui.o \
+		   .libs/long_term_keys.o \
+		   .libs/otrng-client.o \
+		   .libs/otrng-plugin.o \
+		   .libs/persistance.o \
+		   .libs/pidgin-helpers.o \
+		   .libs/plugin-all.o \
+		   .libs/plugin-conversation.o \
+		   .libs/prekey-discovery-jabber.o \
+		   .libs/prekey-discovery.o \
+		   .libs/prekey-plugin-account.o \
+		   .libs/prekey-plugin-peers.o \
+		   .libs/prekey-plugin-shared.o \
+		   .libs/prekey-plugin.o \
+		   .libs/prekeys.o \
+		   .libs/profiles.o \
+		   .libs/tooltipmenu.o \
+		   .libs/ui.o \
+		   $(LIBOTRNGDIR)/libotr-ng.a \
+		   $(LIBGPGERRORDIR)/libgpg-error.a \
+		   $(LIBGCRYPTDIR)/libgcrypt.a \
+		   $(LIBGOLDILOCKSDIR)/libgoldilocks.a \
+		   $(LIBSODIUMDIR)/libsodium.a \
+		   $(LIBOTRDIR)/libotr.a \
+		-o .libs/pidgin-otrng-shared.o
 
-	# Link everything, including libotr and libgcrypt, together into
-	# a single .o file
-	ld -r  .libs/otrng-plugin.o \
-		.libs/plugin-all.o \
-		.libs/ui.o \
-		.libs/dialogs.o \
-		.libs/gtk-ui.o \
-		.libs/gtk-dialog.o \
-		.libs/tooltipmenu.o \
-		.libs/otrng-client.o \
-		.libs/prekey-discovery.o \
-		.libs/prekey-discovery-jabber.o \
-		$(LIBOTRDIR)/libotr.a \
-		$(LIBOTRNGDIR)/libotr-ng.a \
-		$(LIBGCRYPTDIR)/libgcrypt.a \
-		$(LIBGCRYPTDIR)/libgpg-error.a \
-		-o .libs/pidgin-otr-shared.o
 
-	# Make all the libgcrypt references local to that .o file
-	objcopy -w -L '*gcry*' .libs/pidgin-otr-shared.o \
-		.libs/pidgin-otr-static.o
-
-	# Turn the .o into a .so
-	gcc -shared .libs/pidgin-otr-static.o -Wl,-soname -Wl,pidgin-otr.so \
-		-o .libs/pidgin-otr.so
+	objcopy -w -L '*gcry*' .libs/pidgin-otrng-shared.o .libs/pidgin-otrng-static.o
+	gcc -shared .libs/pidgin-otrng-static.o -Wl,-soname -Wl,pidgin-otrng.so -o .libs/pidgin-otrng.so
 
 FORCE:
+
+
