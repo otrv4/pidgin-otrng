@@ -1,4 +1,4 @@
-# 
+#
 #  Off-the-Record Messaging plugin for pidgin
 #  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
 #                           Chris Alexander, Willy Lew,
@@ -104,8 +104,8 @@ override CFLAGS += -g -O2 -Wall $(CC_HARDENING_OPTIONS) \
 	-DPIDGIN_OTR_VERSION=\"$(PIDGIN_OTR_VERSION)\" \
 	-I$(LIBINTLINCDIR) -DENABLE_NLS \
 	-DGETTEXT_PACKAGE=\"$(GETTEXT_PACKAGE)\"
-	#-DPIDGIN_NAME=\"Pidgin\" 
- 
+	#-DPIDGIN_NAME=\"Pidgin\"
+
 all: $(TARGET)
 	$(MAKE) -C po -f Makefile.mingw
 
@@ -132,7 +132,7 @@ prepare_win32_export: all
 	cp -a $(LIBOTRSRCDIR)/COPYING win32_export/COPYING.txt
 	cp -a $(LIBOTRSRCDIR)/COPYING.LIB win32_export/COPYING.LIB.txt
 	cp -a $(TARGET) win32_export/
-	cp -a README win32_export/README.txt
+	cp -a README.md win32_export/README.txt
 	cp -a packaging/windows/pidgin-otr.nsi win32_export/
 	for i in po/*.gmo; do \
 		l=`basename $$i .gmo`; \

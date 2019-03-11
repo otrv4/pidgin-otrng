@@ -29,7 +29,7 @@ AM_CONFIG_HEADER(config.h)
 # Silent compilation so warnings can be spotted.
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AM_INIT_AUTOMAKE([-Wall -Werror])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
