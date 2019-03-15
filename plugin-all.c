@@ -1528,6 +1528,23 @@ static otrng_policy_s define_policy(struct otrng_client_s *client) {
   return prefs.policy;
 }
 
+static uint32_t default_session_expiration_cb(const otrng_s *conv) {
+  /* This should be possible to configure per user and account at some point
+     For now we will just randomly set the expiry to be 7 hours */
+  return 7 * 3600;
+}
+
+static void inject_message_v4_cb(const otrng_s *conv, char *message) {
+  otrng_plugin_conversation *plugin_conv =
+      client_conversation_to_plugin_conversation(conv);
+  PurpleConversation *purp_conv = otrng_plugin_userinfo_to_conv(
+      plugin_conv->account, plugin_conv->protocol, plugin_conv->peer, 1);
+  PurpleAccount *account = purple_conversation_get_account(purp_conv);
+
+  otrng_plugin_inject_message(account, plugin_conv->peer, message);
+  free(message);
+}
+
 static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   otrng_client_callbacks_s *cb =
       otrng_xmalloc_z(sizeof(otrng_client_callbacks_s));
@@ -1542,6 +1559,9 @@ static otrng_client_callbacks_s *otrng_plugin_client_callbacks_new(void) {
   cb->handle_event = handle_event;
   cb->get_shared_session_state = get_shared_session_state_cb;
   cb->define_policy = define_policy;
+
+  cb->session_expiration_time_for = default_session_expiration_cb;
+  cb->inject_message = inject_message_v4_cb;
 
   return cb;
 }
@@ -1784,6 +1804,25 @@ static void warn_otrv3_installed(void) {
 }
 #endif
 
+static gboolean timed_trigger_otrng_poll(gpointer data) {
+  (void)data;
+
+  otrng_poll(otrng_state);
+
+  return TRUE;
+}
+
+static guint otrng_poll_handle;
+
+static void setup_polling_functions(void) {
+  otrng_poll_handle =
+      purple_timeout_add_seconds(60, timed_trigger_otrng_poll, NULL);
+}
+
+static void teardown_polling_functions(void) {
+  purple_timeout_remove(otrng_poll_handle);
+}
+
 gboolean otrng_plugin_load(PurplePlugin *handle) {
   PurplePlugin *plug = purple_plugins_find_with_id("otr");
   if (plug != NULL && purple_plugin_is_loaded(plug)) {
@@ -1820,10 +1859,14 @@ gboolean otrng_plugin_load(PurplePlugin *handle) {
       handle, otrng_ui_update_keylist, otrng_ui_update_fingerprint,
       otrng_dialog_resensitize_all, otrng_dialog_unknown_fingerprint);
 
+  setup_polling_functions();
+
   return TRUE;
 }
 
 gboolean otrng_plugin_unload(PurplePlugin *handle) {
+  teardown_polling_functions();
+
   otrng_plugin_fingerprints_unload(handle);
 
   otrng_plugin_prekey_discovery_unload(handle);
