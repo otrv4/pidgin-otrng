@@ -623,7 +623,7 @@ typedef struct {
 
 static void get_prekey_client_for_sending_offline_message(
     PurpleAccount *account, otrng_client_s *client,
-    otrng_prekey_client_s *prekey_client, void *xctx) {
+    xyz_otrng_prekey_client_s *prekey_client, void *xctx) {
   prekey_client_offline_message_ctx_s *c = xctx;
 
   // Try to send an offline message
@@ -648,7 +648,7 @@ static void get_prekey_client_for_sending_offline_message(
   // TODO: here we should NOT user the server identity from the prekey_client
   //    since it will only work if we're on the same server
   char *send_to_prekey_server =
-      otrng_prekey_client_retrieve_prekeys(c->username, "4", prekey_client);
+      xyz_otrng_prekey_client_retrieve_prekeys(c->username, "4", prekey_client);
   otrng_plugin_inject_message(account, prekey_client->server_identity,
                               send_to_prekey_server);
   free(send_to_prekey_server);

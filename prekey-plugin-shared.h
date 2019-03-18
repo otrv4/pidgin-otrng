@@ -29,7 +29,7 @@
 #include <libotr-ng/prekey_client.h>
 
 typedef void (*WithPrekeyClient)(PurpleAccount *, otrng_client_s *,
-                                 otrng_prekey_client_s *, void *);
+                                 xyz_otrng_prekey_client_s *, void *);
 
 typedef struct {
   PurpleAccount *account;

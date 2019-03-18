@@ -34,13 +34,13 @@
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
                                        char *server_identity, void *ctx);
 void storage_status_received_cb(
-    otrng_client_s *client, const otrng_prekey_storage_status_message_s *msg,
-    void *ctx);
+    otrng_client_s *client,
+    const xyz_otrng_prekey_storage_status_message_s *msg, void *ctx);
 void success_received_cb(otrng_client_s *client, void *ctx);
 void failure_received_cb(otrng_client_s *client, void *ctx);
 int build_prekey_publication_message_cb(
-    otrng_client_s *client, otrng_prekey_publication_message_s *msg,
-    otrng_prekey_publication_policy_s *policy, void *ctx);
+    otrng_client_s *client, xyz_otrng_prekey_publication_message_s *msg,
+    xyz_otrng_prekey_publication_policy_s *policy, void *ctx);
 
 gboolean otrng_prekey_plugin_account_load(PurplePlugin *handle);
 gboolean otrng_prekey_plugin_account_unload(PurplePlugin *handle);

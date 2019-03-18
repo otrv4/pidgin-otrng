@@ -62,7 +62,7 @@ void trigger_potential_publishing(otrng_client_s *client) {
   otrng_debug_exit("trigger_potential_publishing");
 }
 
-extern otrng_prekey_client_callbacks_s prekey_client_cb;
+extern xyz_otrng_prekey_client_callbacks_s prekey_client_cb;
 
 static void
 found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
@@ -71,7 +71,7 @@ found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
   const char *prekey_server_identity = srv->identity;
   free(srv);
 
-  otrng_prekey_client_s *pclient = otrng_client_get_prekey_client(
+  xyz_otrng_prekey_client_s *pclient = otrng_client_get_prekey_client(
       prekey_server_identity, &prekey_client_cb, cc->client);
   if (cc->found == 0) {
     cc->next(cc->account, cc->client, pclient, cc->ctx);

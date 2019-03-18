@@ -67,7 +67,7 @@ static void notify_error_cb(otrng_client_s *client, int error, void *ctx) {
                       client->client_id.account, error);
 }
 
-otrng_prekey_client_callbacks_s prekey_client_cb = {
+xyz_otrng_prekey_client_callbacks_s prekey_client_cb = {
     .ctx = NULL,
     .notify_error = notify_error_cb,
     .storage_status_received = storage_status_received_cb,
