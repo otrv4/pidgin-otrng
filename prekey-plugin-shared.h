@@ -26,7 +26,7 @@
 #include <prpl.h>
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/prekey_client.h>
+#include <libotr-ng/xyz_prekey_client.h>
 
 typedef void (*WithPrekeyClient)(PurpleAccount *, otrng_client_s *,
                                  xyz_otrng_prekey_client_s *, void *);

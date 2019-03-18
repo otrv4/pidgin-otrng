@@ -29,7 +29,7 @@
 #define PREKEYS_FILE_NAME "otr4.prekey_messages"
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/prekey_client.h>
+#include <libotr-ng/xyz_prekey_client.h>
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client,
                                        char *server_identity, void *ctx);

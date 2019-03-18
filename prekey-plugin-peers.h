@@ -27,7 +27,7 @@
 #include <prpl.h>
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/prekey_client.h>
+#include <libotr-ng/xyz_prekey_client.h>
 
 typedef struct {
   PurpleAccount *account;

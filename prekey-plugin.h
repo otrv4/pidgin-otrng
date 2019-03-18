@@ -24,13 +24,13 @@
 #include <account.h>
 #include <plugin.h>
 
-#include <libotr-ng/prekey_client.h>
+#include <libotr-ng/xyz_prekey_client.h>
 
 #ifndef OTRNG_PIDGIN_PREKEY_PLUGIN
 #define OTRNG_PIDGIN_PREKEY_PLUGIN
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/prekey_client.h>
+#include <libotr-ng/xyz_prekey_client.h>
 
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle);
 gboolean otrng_prekey_plugin_unload(PurplePlugin *handle);
