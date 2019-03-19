@@ -89,7 +89,7 @@ otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
     return FALSE;
   }
 
-  return otrng_prekey_client_receive(tosend, server, message, client);
+  return xyz_otrng_prekey_client_receive(tosend, server, message, client);
 }
 
 static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
