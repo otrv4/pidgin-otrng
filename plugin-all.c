@@ -874,9 +874,7 @@ void otrng_plugin_send_default_query(otrng_plugin_conversation *conv) {
     return;
   }
 
-  // TODO: Use policy?
-  // prefs.policy
-  msg = otrng_client_query_message(
+  msg = otrng_client_init_message(
       conv->peer,
       "Attempting to start an OTR conversation. If you don't have the plugin "
       "to support this, please install it.",
@@ -904,9 +902,7 @@ void otrng_plugin_send_default_query_conv(PurpleConversation *conv) {
       g_strdup(purple_normalize(account, purple_conversation_get_name(conv)));
   otrng_ui_get_prefs(&prefs, account, peer);
 
-  // TODO: Use policy?
-  // prefs.policy
-  msg = otrng_client_query_message(
+  msg = otrng_client_init_message(
       peer,
       "Attempting to start an OTR conversation. If you don't have the plugin "
       "to support this, please install it.",
