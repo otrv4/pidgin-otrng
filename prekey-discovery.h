@@ -57,6 +57,8 @@ int otrng_plugin_lookup_prekey_servers_for(PurpleAccount *account,
                                            PrekeyServerResult result_cb,
                                            void *context);
 
+char *otrng_plugin_prekey_domain_for(PurpleAccount *account, const char *who);
+
 /**
  * Has to be called to initialize this part of the plugin.
  */

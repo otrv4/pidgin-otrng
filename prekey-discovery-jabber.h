@@ -45,6 +45,9 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
                                                   PrekeyServerResult result_cb,
                                                   void *context);
 
+char *otrng_plugin_jabber_prekey_domain_for(PurpleAccount *account,
+                                            const char *who);
+
 void otrng_plugin_prekey_discovery_jabber_load();
 void otrng_plugin_prekey_discovery_jabber_unload();
 

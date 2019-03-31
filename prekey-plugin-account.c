@@ -57,8 +57,8 @@
 extern otrng_global_state_s *otrng_state;
 
 void storage_status_received_cb(
-    otrng_client_s *client,
-    const xyz_otrng_prekey_storage_status_message_s *msg, void *ctx) {
+    otrng_client_s *client, const otrng_prekey_storage_status_message_s *msg,
+    void *ctx) {
   otrng_debug_fprintf(
       stderr, "[%s] Prekey Server: we have %d prekey messages stored.\n",
       client->client_id.account, msg->stored_prekeys);
@@ -80,45 +80,42 @@ void failure_received_cb(otrng_client_s *client, void *ctx) {
       client->client_id.account);
 }
 
-static void
-get_prekey_client_for_publishing(PurpleAccount *account, otrng_client_s *client,
-                                 xyz_otrng_prekey_client_s *prekey_client,
-                                 void *ctx) {
+static void publishing_after_server_identity(PurpleAccount *account,
+                                             otrng_client_s *client,
+                                             void *ctx) {
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
     otrng_debug_fprintf(stderr, "No connection. \n");
     return;
   }
 
-  if (!prekey_client) {
-    otrng_debug_fprintf(stderr, "No prekey client. \n");
-    return;
-  }
-
   char *message = NULL;
   otrng_client_start_publishing(client);
-  message = xyz_otrng_prekey_client_publish(prekey_client);
 
-  serv_send_im(connection, prekey_client->server_identity, message, 0);
+  // TODO: deal with errors here
+  otrng_prekey_publish(&message, client, ctx);
+
+  char *domain = otrng_plugin_prekey_domain_for(
+      account, purple_account_get_username(account));
+  otrng_prekey_server_s *si =
+      otrng_prekey_get_server_identity_for(client, domain);
+  g_free(domain);
+
+  serv_send_im(connection, si->identity, message, 0);
 }
 
-void low_prekey_messages_in_storage_cb(otrng_client_s *client,
-                                       char *server_identity, void *ctx) {
+void low_prekey_messages_in_storage_cb(otrng_client_s *client, void *ctx) {
   otrng_client_ensure_correct_state(client);
   trigger_potential_publishing(client);
 }
 
-int build_prekey_publication_message_cb(
-    otrng_client_s *client, xyz_otrng_prekey_publication_message_s *msg,
-    xyz_otrng_prekey_publication_policy_s *policy, void *ctx) {
-  if (!ctx) {
-    otrng_debug_fprintf(stderr, "Received invalid ctx\n");
-    return 0;
-  }
+int build_prekey_publication_message_cb(otrng_client_s *client,
+                                        otrng_prekey_publication_message_s *msg,
+                                        void *ctx) {
 
   otrng_client_ensure_correct_state(client);
 
-  xyz_otrng_prekey_client_add_prekey_messages_for_publication(client, msg);
+  otrng_prekey_add_prekey_messages_for_publication(client, msg);
 
   if (msg->num_prekey_messages > 0) {
     otrng_debug_fprintf(stderr,
@@ -153,13 +150,10 @@ int build_prekey_publication_message_cb(
   return 1;
 }
 
-static void get_prekey_client_for_account_signed_on(
-    PurpleAccount *account, otrng_client_s *client,
-    xyz_otrng_prekey_client_s *prekey_client, void *ctx) {
+static void account_signed_on_after_server_identity(PurpleAccount *account,
+                                                    otrng_client_s *client,
+                                                    void *ctx) {
   char *message = NULL;
-  if (!prekey_client) {
-    return;
-  }
 
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
@@ -167,25 +161,26 @@ static void get_prekey_client_for_account_signed_on(
     return;
   }
 
-  prekey_client->callbacks->ctx = account;
+  // TODO: handle error here
+  otrng_prekey_request_storage_information(&message, client, account);
 
-  message = xyz_otrng_prekey_client_request_storage_information(prekey_client);
-
-  // 1. Publish prekeys
-  // message = otrng_prekey_client_publish_prekeys(prekey_client);
-
-  // 2. Retrieve the status of storage for yourself
-  // message = otrng_prekey_client_request_storage_information(prekey_client);
+  char *domain = otrng_plugin_prekey_domain_for(
+      account, purple_account_get_username(account));
+  otrng_prekey_server_s *si =
+      otrng_prekey_get_server_identity_for(client, domain);
+  g_free(domain);
 
   // TODO: we should probably set some Purple flags on this call, instead of the
   // 0
-  serv_send_im(connection, prekey_client->server_identity, message, 0);
+  serv_send_im(connection, si->identity, message, 0);
   free(message);
 }
 
 static void account_signed_on_cb(PurpleConnection *conn, void *data) {
-  otrng_plugin_get_prekey_client(purple_connection_get_account(conn),
-                                 get_prekey_client_for_account_signed_on, NULL);
+  PurpleAccount *account = purple_connection_get_account(conn);
+  otrng_plugin_ensure_server_identity(
+      account, purple_account_get_username(account),
+      account_signed_on_after_server_identity, NULL);
 }
 
 static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
@@ -199,8 +194,10 @@ static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
     return;
   }
   otrng_debug_fprintf(stderr, "Prekey: we have been asked to publish...\n");
-  otrng_plugin_get_prekey_client(client_id_to_purple_account(client->client_id),
-                                 get_prekey_client_for_publishing, NULL);
+  PurpleAccount *account = client_id_to_purple_account(client->client_id);
+  otrng_plugin_ensure_server_identity(account,
+                                      purple_account_get_username(account),
+                                      publishing_after_server_identity, NULL);
   otrng_debug_exit("maybe_publish_prekey_data");
 }
 

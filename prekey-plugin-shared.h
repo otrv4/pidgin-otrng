@@ -26,24 +26,25 @@
 #include <prpl.h>
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/xyz_prekey_client.h>
 
-typedef void (*WithPrekeyClient)(PurpleAccount *, otrng_client_s *,
-                                 xyz_otrng_prekey_client_s *, void *);
+typedef void (*AfterServerIdentity)(PurpleAccount *, otrng_client_s *, void *);
 
 typedef struct {
   PurpleAccount *account;
   otrng_client_s *client;
   int found;
-  WithPrekeyClient next;
+  char *domain;
+  AfterServerIdentity next;
   void *ctx;
-} lookup_prekey_server_for_prekey_client_ctx_s;
+} lookup_prekey_server_for_server_identity_ctx_s;
 
-void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
-                                    void *uctx);
 void trigger_potential_publishing(otrng_client_s *client);
 
 void send_message(PurpleAccount *account, const char *recipient,
                   const char *message);
+
+void otrng_plugin_ensure_server_identity(PurpleAccount *account,
+                                         const char *username,
+                                         AfterServerIdentity cb, void *uctx);
 
 #endif // OTRNG_PIDGIN_PREKEY_PLUGIN_SHARED

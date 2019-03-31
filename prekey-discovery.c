@@ -49,6 +49,17 @@ int otrng_plugin_lookup_prekey_servers_for(PurpleAccount *account,
   return 0;
 }
 
+char *otrng_plugin_prekey_domain_for(PurpleAccount *account, const char *who) {
+  const char *protocol = purple_account_get_protocol_id(account);
+
+  if (purple_strequal(protocol, "prpl-jabber")) {
+    return otrng_plugin_jabber_prekey_domain_for(account, who);
+  }
+
+  // TODO: we should do some warning here
+  return NULL;
+}
+
 void otrng_plugin_prekey_discovery_load() {
   otrng_plugin_prekey_discovery_jabber_load();
 }

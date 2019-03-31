@@ -27,18 +27,15 @@
 #include <prpl.h>
 
 #include <libotr-ng/client.h>
-#include <libotr-ng/xyz_prekey_client.h>
 
-typedef struct {
-  PurpleAccount *account;
-  char *message;
-  char *recipient;
-} otrng_plugin_offline_message_ctx;
-
-void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx);
+void otrng_prekey_plugin_add_to_mapped_prekey_ensembles_responses(
+    const otrng_client_s *client, PurpleAccount *account, char *message,
+    char *recipient);
+void no_prekey_in_storage_received_cb(otrng_client_s *client,
+                                      const char *identity);
 void prekey_ensembles_received_cb(otrng_client_s *client,
                                   prekey_ensemble_s *const *const ensembles,
-                                  uint8_t num_ensembles, void *ctx);
+                                  uint8_t num_ensembles, const char *identity);
 
 gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle);
 gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle);

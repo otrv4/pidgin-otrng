@@ -271,6 +271,11 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
   return 1;
 }
 
+char *otrng_plugin_jabber_prekey_domain_for(PurpleAccount *account,
+                                            const char *who) {
+  return get_domain_from_jid(who);
+}
+
 void otrng_plugin_prekey_discovery_jabber_load() {
   iq_callbacks = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 }

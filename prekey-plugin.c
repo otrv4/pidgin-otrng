@@ -56,6 +56,7 @@
 #include <libotr-ng/debug.h>
 #include <libotr-ng/deserialize.h>
 #include <libotr-ng/messaging.h>
+#include <libotr-ng/prekey_manager.h>
 
 #include "pidgin-helpers.h"
 #include "prekey-discovery.h"
@@ -67,29 +68,40 @@ static void notify_error_cb(otrng_client_s *client, int error, void *ctx) {
                       client->client_id.account, error);
 }
 
-xyz_otrng_prekey_client_callbacks_s prekey_client_cb = {
-    .ctx = NULL,
-    .notify_error = notify_error_cb,
-    .storage_status_received = storage_status_received_cb,
-    .success_received = success_received_cb,
-    .failure_received = failure_received_cb,
-    .no_prekey_in_storage_received = no_prekey_in_storage_received_cb,
-    .low_prekey_messages_in_storage = low_prekey_messages_in_storage_cb,
-    .prekey_ensembles_received = prekey_ensembles_received_cb,
-    .build_prekey_publication_message = build_prekey_publication_message_cb,
+static void set_prekey_client_callbacks(otrng_client_s *client) {
+  client->prekey_manager->callbacks->notify_error = notify_error_cb;
+  client->prekey_manager->callbacks->storage_status_received =
+      storage_status_received_cb;
+  client->prekey_manager->callbacks->success_received = success_received_cb;
+  client->prekey_manager->callbacks->failure_received = failure_received_cb;
+  client->prekey_manager->callbacks->no_prekey_in_storage_received =
+      no_prekey_in_storage_received_cb;
+  client->prekey_manager->callbacks->low_prekey_messages_in_storage =
+      low_prekey_messages_in_storage_cb;
+  client->prekey_manager->callbacks->prekey_ensembles_received =
+      prekey_ensembles_received_cb;
+  client->prekey_manager->callbacks->build_prekey_publication_message =
+      build_prekey_publication_message_cb;
 };
 
-static gboolean
-otrng_plugin_receive_prekey_protocol_message(char **tosend, const char *server,
-                                             const char *message,
-                                             PurpleAccount *account) {
+void otrng_prekey_plugin_ensure_prekey_manager(otrng_client_s *client) {
+  if (otrng_prekey_ensure_manager(client, client->client_id.account) ==
+      otrng_true) {
+    set_prekey_client_callbacks(client);
+  }
+}
+
+static gboolean receive_prekey_protocol_message(char **tosend,
+                                                const char *server,
+                                                const char *message,
+                                                PurpleAccount *account) {
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
-  if (!client || !client->prekey_client) {
+  if (!client) {
     return FALSE;
   }
 
-  return xyz_otrng_prekey_client_receive(tosend, server, message, client);
+  return otrng_prekey_receive(tosend, client, server, message);
 }
 
 static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
@@ -103,8 +115,8 @@ static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
   char *username = g_strdup(purple_normalize(account, *who));
 
   char *tosend = NULL;
-  gboolean ignore = otrng_plugin_receive_prekey_protocol_message(
-      &tosend, username, *message, account);
+  gboolean ignore =
+      receive_prekey_protocol_message(&tosend, username, *message, account);
   free(username);
 
   if (tosend) {

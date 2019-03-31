@@ -35,7 +35,23 @@
 
 extern otrng_global_state_s *otrng_state;
 
-void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx) {
+typedef struct message_waiting_ctx {
+  PurpleAccount *account;
+  char *message;
+  char *recipient;
+
+  struct message_waiting_ctx *next;
+} message_waiting_ctx;
+
+typedef struct messages_waiting_ctx {
+  const otrng_client_s *client;
+  message_waiting_ctx *msg;
+
+  struct messages_waiting_ctx *next;
+} messages_waiting_ctx;
+
+void no_prekey_in_storage_received_cb(otrng_client_s *client,
+                                      const char *identity) {
   otrng_debug_fprintf(
       stderr,
       "[%s] Prekey Server: there are no prekey in storage for the requested "
@@ -45,7 +61,7 @@ void no_prekey_in_storage_received_cb(otrng_client_s *client, void *ctx) {
 
 static void send_offline_messages_to_each_ensemble(
     prekey_ensemble_s *const *const ensembles, uint8_t num_ensembles,
-    otrng_plugin_offline_message_ctx *ctx) {
+    message_waiting_ctx *ctx) {
 
   PurpleAccount *account = ctx->account;
   const char *message = ctx->message;
@@ -91,25 +107,110 @@ static void send_offline_messages_to_each_ensemble(
   // 3. Send a single query message (dependencia na outra direção).
 }
 
+static messages_waiting_ctx *prekey_waiting_to_send_messages = NULL;
+
+static messages_waiting_ctx *
+find_messages_waiting_for_client(const otrng_client_s *client) {
+  messages_waiting_ctx *curr = prekey_waiting_to_send_messages;
+
+  for (; curr != NULL; curr = curr->next) {
+    if (curr->client == client) {
+      return curr;
+    }
+  }
+
+  return NULL;
+}
+
+static message_waiting_ctx *
+pop_waiting_message_for(const otrng_client_s *client, const char *recipient) {
+  message_waiting_ctx *curr = NULL, *prev = NULL;
+  messages_waiting_ctx *msgs = find_messages_waiting_for_client(client);
+
+  if (msgs == NULL) {
+    return NULL;
+  }
+
+  for (curr = msgs->msg; curr != NULL; curr = curr->next) {
+    if (strcmp(curr->recipient, recipient) == 0) {
+      if (prev == NULL) {
+        msgs->msg = curr->next;
+      } else {
+        prev->next = curr->next;
+      }
+      curr->next = NULL;
+      return curr;
+    }
+    prev = curr;
+  }
+
+  return NULL;
+}
+
+static void free_waiting_message(message_waiting_ctx *head) {
+  message_waiting_ctx *curr = head, *next = NULL;
+
+  for (; curr != NULL; curr = next) {
+    next = curr->next;
+    free(curr->message);
+    free(curr->recipient);
+    free(curr);
+  }
+}
+
+static void free_all_waiting_messages() {
+  messages_waiting_ctx *curr = prekey_waiting_to_send_messages, *next = NULL;
+
+  for (; curr != NULL; curr = next) {
+    next = curr->next;
+    free_waiting_message(curr->msg);
+    free(curr);
+  }
+}
+
+void otrng_prekey_plugin_add_to_mapped_prekey_ensembles_responses(
+    const otrng_client_s *client, PurpleAccount *account, char *message,
+    char *recipient) {
+  message_waiting_ctx *ctx = malloc(sizeof(message_waiting_ctx));
+  messages_waiting_ctx *msgs = find_messages_waiting_for_client(client);
+
+  if (msgs == NULL) {
+    msgs = malloc(sizeof(messages_waiting_ctx));
+    msgs->client = client;
+    msgs->msg = NULL;
+    msgs->next = prekey_waiting_to_send_messages;
+    prekey_waiting_to_send_messages = msgs;
+  }
+
+  ctx->account = account;
+  ctx->message = g_strdup(message);
+  ctx->recipient = recipient;
+  ctx->next = msgs->msg;
+  msgs->msg = ctx;
+}
+
 void prekey_ensembles_received_cb(otrng_client_s *client,
                                   prekey_ensemble_s *const *const ensembles,
-                                  uint8_t num_ensembles, void *ctx) {
+                                  uint8_t num_ensembles, const char *identity) {
   otrng_debug_fprintf(stderr, "[%s] Prekey Server: we received %d ensembles.\n",
                       client->client_id.account, num_ensembles);
 
-  if (!ctx) {
-    otrng_debug_fprintf(stderr, "Invalid NULL context\n");
+  if (!identity) {
+    otrng_debug_fprintf(stderr, "Invalid NULL identity\n");
   }
 
-  otrng_plugin_offline_message_ctx *c = ctx;
+  message_waiting_ctx *msg = pop_waiting_message_for(client, identity);
+  send_offline_messages_to_each_ensemble(ensembles, num_ensembles, msg);
 
-  send_offline_messages_to_each_ensemble(ensembles, num_ensembles, c);
-
-  free(c->message);
-  free(c->recipient);
-  free(c);
+  free(msg->message);
+  free(msg->recipient);
+  free(msg);
 }
 
 gboolean otrng_prekey_plugin_peers_load(PurplePlugin *handle) { return TRUE; }
 
-gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle) { return TRUE; }
+gboolean otrng_prekey_plugin_peers_unload(PurplePlugin *handle) {
+  free_all_waiting_messages();
+
+  return TRUE;
+}

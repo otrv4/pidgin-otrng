@@ -26,6 +26,8 @@
 
 #include "prekey-discovery.h"
 
+#include "prekey-plugin.h"
+
 #include <libotr-ng/client_orchestration.h>
 #include <libotr-ng/debug.h>
 #include <libotr-ng/messaging.h>
@@ -62,57 +64,44 @@ void trigger_potential_publishing(otrng_client_s *client) {
   otrng_debug_exit("trigger_potential_publishing");
 }
 
-extern xyz_otrng_prekey_client_callbacks_s prekey_client_cb;
-
 static void
-found_plugin_prekey_server_for_prekey_client(otrng_plugin_prekey_server *srv,
-                                             void *ctx) {
-  lookup_prekey_server_for_prekey_client_ctx_s *cc = ctx;
-  const char *prekey_server_identity = srv->identity;
+found_plugin_prekey_server_for_server_identity(otrng_plugin_prekey_server *srv,
+                                               void *ctx) {
+  lookup_prekey_server_for_server_identity_ctx_s *cc = ctx;
+  otrng_debug_fprintf(
+      stderr, "We received server identity for domain %s - prekey server %s\n",
+      cc->domain, srv->identity);
+  otrng_prekey_provide_server_identity_for(
+      cc->client, cc->domain, srv->identity, (uint8_t *)srv->fingerprint);
   free(srv);
 
-  xyz_otrng_prekey_client_s *pclient = otrng_client_get_prekey_client(
-      prekey_server_identity, &prekey_client_cb, cc->client);
   if (cc->found == 0) {
-    cc->next(cc->account, cc->client, pclient, cc->ctx);
+    cc->next(cc->account, cc->client, cc->ctx);
   }
   cc->found++;
 }
 
-void otrng_plugin_get_prekey_client(PurpleAccount *account, WithPrekeyClient cb,
-                                    void *uctx) {
+void otrng_plugin_ensure_server_identity(PurpleAccount *account,
+                                         const char *username,
+                                         AfterServerIdentity cb, void *uctx) {
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
-  if (!client) {
-    cb(account, client, NULL, uctx);
+  otrng_prekey_plugin_ensure_prekey_manager(client);
+  char *domain = otrng_plugin_prekey_domain_for(account, username);
+  if (otrng_prekey_has_server_identity_for(client, domain) != otrng_true) {
+    lookup_prekey_server_for_server_identity_ctx_s *lctx =
+        otrng_xmalloc_z(sizeof(lookup_prekey_server_for_server_identity_ctx_s));
+    lctx->account = account;
+    lctx->client = client;
+    lctx->found = 0;
+    lctx->next = cb;
+    lctx->ctx = uctx;
+    lctx->domain = domain;
+    // TODO: take care of error here
+    otrng_plugin_lookup_prekey_servers_for(
+        account, username, found_plugin_prekey_server_for_server_identity,
+        lctx);
   } else {
-    otrng_client_ensure_correct_state(client);
-    trigger_potential_publishing(client);
-
-    /* you can set here some preferences */
-    // otrng_client_set_minimum_stored_prekey_msg(10000, client);
-    // otrng_client_set_max_published_prekey_msg(10, client);
-
-    if (client->prekey_client) {
-      cb(account, client, client->prekey_client, uctx);
-    } else {
-      /* TOOD: this ctx will leak -  */
-      /*     we don't know how to make it not, right now */
-      lookup_prekey_server_for_prekey_client_ctx_s *ctx =
-          malloc(sizeof(lookup_prekey_server_for_prekey_client_ctx_s));
-      if (!ctx) {
-        cb(account, client, NULL, uctx);
-      } else {
-        ctx->account = account;
-        ctx->client = client;
-        ctx->found = 0;
-        ctx->next = cb;
-        ctx->ctx = uctx;
-        if (!otrng_plugin_lookup_prekey_servers_for_self(
-                account, found_plugin_prekey_server_for_prekey_client, ctx)) {
-          cb(account, client, NULL, uctx);
-        }
-      }
-    }
+    cb(account, client, uctx);
   }
 }

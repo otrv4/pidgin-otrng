@@ -621,42 +621,34 @@ typedef struct {
   char **message;
 } prekey_client_offline_message_ctx_s;
 
-static void get_prekey_client_for_sending_offline_message(
-    PurpleAccount *account, otrng_client_s *client,
-    xyz_otrng_prekey_client_s *prekey_client, void *xctx) {
-  prekey_client_offline_message_ctx_s *c = xctx;
-
-  // Try to send an offline message
-  otrng_debug_fprintf(stderr, "Should try to send an offline message to %s\n",
-                      c->username);
-
-  // 1. get prekey ensemble for this person
-  if (!prekey_client) {
-    return;
-  }
-
-  otrng_plugin_offline_message_ctx *ctx =
-      malloc(sizeof(otrng_plugin_offline_message_ctx));
-  ctx->account = account;
-  ctx->message = g_strdup(*c->message);
-  ctx->recipient = c->username;
-
-  // TODO: This should probably be passed as a parameter to
-  // otrng_prekey_client_retrieve_prekeys
-  prekey_client->callbacks->ctx = ctx;
-
-  // TODO: here we should NOT user the server identity from the prekey_client
-  //    since it will only work if we're on the same server
-  char *send_to_prekey_server =
-      xyz_otrng_prekey_client_retrieve_prekeys(c->username, "4", prekey_client);
-  otrng_plugin_inject_message(account, prekey_client->server_identity,
-                              send_to_prekey_server);
-  free(send_to_prekey_server);
-}
-
 int otrng_plugin_buddy_is_offline(PurpleAccount *account, PurpleBuddy *buddy) {
   return buddy && purple_account_supports_offline_message(account, buddy) &&
          !PURPLE_BUDDY_IS_ONLINE(buddy);
+}
+
+static void start_process_retrieving_prekey_ensembles(PurpleAccount *account,
+                                                      otrng_client_s *client,
+                                                      void *xctx) {
+  prekey_client_offline_message_ctx_s *c = xctx;
+  char *send_to_prekey_server = NULL;
+  char *domain;
+
+  otrng_debug_fprintf(stderr,
+                      "Start process of retrieving a prekey ensemble for %s\n",
+                      c->username);
+
+  otrng_prekey_plugin_add_to_mapped_prekey_ensembles_responses(
+      client, account, *c->message, c->username);
+
+  otrng_prekey_retrieve_prekeys(&send_to_prekey_server, client, c->username,
+                                "4");
+  /* This can't fail, since we check this before going down the path */
+  domain = otrng_plugin_prekey_domain_for(account, c->username);
+  otrng_prekey_server_s *si =
+      otrng_prekey_get_server_identity_for(client, domain);
+  g_free(domain);
+  otrng_plugin_inject_message(account, si->identity, send_to_prekey_server);
+  free(send_to_prekey_server);
 }
 
 static void send_offline_message(char **message, const char *username,
@@ -668,11 +660,8 @@ static void send_offline_message(char **message, const char *username,
   }
   ctx->username = g_strdup(purple_normalize(account, username));
   ctx->message = message;
-
-  otrng_plugin_get_prekey_client(
-      account, get_prekey_client_for_sending_offline_message, ctx);
-
-  return;
+  otrng_plugin_ensure_server_identity(
+      account, ctx->username, start_process_retrieving_prekey_ensembles, ctx);
 }
 
 void otrng_plugin_send_non_interactive_auth(const char *username,
