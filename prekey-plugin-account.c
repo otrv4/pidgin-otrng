@@ -160,6 +160,7 @@ static void account_signed_on_after_server_identity(PurpleAccount *account,
     otrng_debug_fprintf(stderr, "No connection. \n");
     return;
   }
+  otrng_client_ensure_correct_state(client);
 
   // TODO: handle error here
   otrng_prekey_request_storage_information(&message, client, account);

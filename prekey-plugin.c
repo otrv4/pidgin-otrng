@@ -68,6 +68,12 @@ static void notify_error_cb(otrng_client_s *client, int error, void *ctx) {
                       client->client_id.account, error);
 }
 
+static const char *domain_for_account_cb(otrng_client_s *client, void *ctx) {
+  PurpleAccount *account = ctx;
+  return otrng_plugin_prekey_domain_for(account,
+                                        purple_account_get_username(account));
+}
+
 static void set_prekey_client_callbacks(otrng_client_s *client) {
   client->prekey_manager->callbacks->notify_error = notify_error_cb;
   client->prekey_manager->callbacks->storage_status_received =
@@ -82,6 +88,7 @@ static void set_prekey_client_callbacks(otrng_client_s *client) {
       prekey_ensembles_received_cb;
   client->prekey_manager->callbacks->build_prekey_publication_message =
       build_prekey_publication_message_cb;
+  client->prekey_manager->callbacks->domain_for_account = domain_for_account_cb;
 };
 
 void otrng_prekey_plugin_ensure_prekey_manager(otrng_client_s *client) {
