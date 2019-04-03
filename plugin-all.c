@@ -565,6 +565,7 @@ static gboolean timer_fired_cb(gpointer data);
 /* Stop the timer, if it's currently running.  If interval > 0, start it
  * to periodically fire every interval seconds. */
 static void stop_start_timer(unsigned int interval) {
+  otrng_debug_enter("stop_start_timer");
   if (otrng_plugin_timerid) {
     g_source_remove(otrng_plugin_timerid);
     otrng_plugin_timerid = 0;
@@ -573,6 +574,7 @@ static void stop_start_timer(unsigned int interval) {
     otrng_plugin_timerid =
         g_timeout_add_seconds(interval, timer_fired_cb, NULL);
   }
+  otrng_debug_exit("stop_start_timer");
 }
 
 /* Called by libotr */
@@ -1800,12 +1802,16 @@ static gboolean timed_trigger_otrng_poll(gpointer data) {
 static guint otrng_poll_handle;
 
 static void setup_polling_functions(void) {
+  otrng_debug_enter("setup_polling_functions");
   otrng_poll_handle =
       purple_timeout_add_seconds(60, timed_trigger_otrng_poll, NULL);
+  otrng_debug_exit("setup_polling_functions");
 }
 
 static void teardown_polling_functions(void) {
+  otrng_debug_enter("teardown_polling_functions");
   purple_timeout_remove(otrng_poll_handle);
+  otrng_debug_exit("teardown_polling_functions");
 }
 
 gboolean otrng_plugin_load(PurplePlugin *handle) {

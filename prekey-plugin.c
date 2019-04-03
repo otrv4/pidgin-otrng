@@ -141,7 +141,9 @@ static gboolean receiving_im_msg_cb(PurpleAccount *account, char **who,
 }
 
 gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {
+  otrng_debug_enter("otrng_prekey_plugin_load");
   if (!otrng_state) {
+    otrng_debug_exit("otrng_prekey_plugin_load");
     return FALSE;
   }
 
@@ -154,10 +156,12 @@ gboolean otrng_prekey_plugin_load(PurplePlugin *handle) {
 
   // Do the same on the already connected accounts
   // GList *connections = purple_connections_get_all();
+  otrng_debug_exit("otrng_prekey_plugin_load");
   return TRUE;
 }
 
 gboolean otrng_prekey_plugin_unload(PurplePlugin *handle) {
+  otrng_debug_enter("otrng_prekey_plugin_unload");
   otrng_prekey_plugin_peers_unload(handle);
   otrng_prekey_plugin_account_unload(handle);
 
@@ -165,5 +169,6 @@ gboolean otrng_prekey_plugin_unload(PurplePlugin *handle) {
                            "receiving-im-msg", handle,
                            PURPLE_CALLBACK(receiving_im_msg_cb));
 
+  otrng_debug_exit("otrng_prekey_plugin_unload");
   return TRUE;
 }
