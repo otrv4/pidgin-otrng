@@ -83,9 +83,11 @@ void failure_received_cb(otrng_client_s *client, void *ctx) {
 static void publishing_after_server_identity(PurpleAccount *account,
                                              otrng_client_s *client,
                                              void *ctx) {
+  otrng_debug_enter("publishing_after_server_identity");
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
     otrng_debug_fprintf(stderr, "No connection. \n");
+    otrng_debug_exit("publishing_after_server_identity");
     return;
   }
 
@@ -102,16 +104,20 @@ static void publishing_after_server_identity(PurpleAccount *account,
   g_free(domain);
 
   serv_send_im(connection, si->identity, message, 0);
+  otrng_debug_exit("publishing_after_server_identity");
 }
 
 void low_prekey_messages_in_storage_cb(otrng_client_s *client, void *ctx) {
+  otrng_debug_enter("low_prekey_messages_in_storage_cb");
   otrng_client_ensure_correct_state(client);
   trigger_potential_publishing(client);
+  otrng_debug_exit("low_prekey_messages_in_storage_cb");
 }
 
 int build_prekey_publication_message_cb(otrng_client_s *client,
                                         otrng_prekey_publication_message_s *msg,
                                         void *ctx) {
+  otrng_debug_enter("build_prekey_publication_message_cb");
 
   otrng_client_ensure_correct_state(client);
 
@@ -147,17 +153,20 @@ int build_prekey_publication_message_cb(otrng_client_s *client,
     otrng_prekey_profile_copy(msg->prekey_profile, prekey_profile);
   }
 
+  otrng_debug_exit("build_prekey_publication_message_cb");
   return 1;
 }
 
 static void account_signed_on_after_server_identity(PurpleAccount *account,
                                                     otrng_client_s *client,
                                                     void *ctx) {
+  otrng_debug_enter("account_signed_on_after_server_identity");
   char *message = NULL;
 
   PurpleConnection *connection = purple_account_get_connection(account);
   if (!connection) {
     otrng_debug_fprintf(stderr, "No connection. \n");
+    otrng_debug_exit("account_signed_on_after_server_identity");
     return;
   }
   otrng_client_ensure_correct_state(client);
@@ -175,13 +184,16 @@ static void account_signed_on_after_server_identity(PurpleAccount *account,
   // 0
   serv_send_im(connection, si->identity, message, 0);
   free(message);
+  otrng_debug_exit("account_signed_on_after_server_identity");
 }
 
 static void account_signed_on_cb(PurpleConnection *conn, void *data) {
+  otrng_debug_enter("account_signed_on_cb");
   PurpleAccount *account = purple_connection_get_account(conn);
   otrng_plugin_ensure_server_identity(
       account, purple_account_get_username(account),
       account_signed_on_after_server_identity, NULL);
+  otrng_debug_exit("account_signed_on_cb");
 }
 
 static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
@@ -196,9 +208,9 @@ static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
   }
   otrng_debug_fprintf(stderr, "Prekey: we have been asked to publish...\n");
   PurpleAccount *account = client_id_to_purple_account(client->client_id);
-  otrng_plugin_ensure_server_identity(account,
-                                      purple_account_get_username(account),
-                                      publishing_after_server_identity, NULL);
+  otrng_plugin_ensure_server_identity(
+      account, purple_account_get_username(account),
+      publishing_after_server_identity, account);
   otrng_debug_exit("maybe_publish_prekey_data");
 }
 

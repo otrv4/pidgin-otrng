@@ -84,6 +84,7 @@ found_plugin_prekey_server_for_server_identity(otrng_plugin_prekey_server *srv,
 void otrng_plugin_ensure_server_identity(PurpleAccount *account,
                                          const char *username,
                                          AfterServerIdentity cb, void *uctx) {
+  otrng_debug_enter("otrng_plugin_ensure_server_identity");
   otrng_client_s *client =
       otrng_client_get(otrng_state, purple_account_to_client_id(account));
   otrng_prekey_plugin_ensure_prekey_manager(client);
@@ -101,7 +102,9 @@ void otrng_plugin_ensure_server_identity(PurpleAccount *account,
     otrng_plugin_lookup_prekey_servers_for(
         account, username, found_plugin_prekey_server_for_server_identity,
         lctx);
+    otrng_debug_exit("otrng_plugin_ensure_server_identity");
   } else {
     cb(account, client, uctx);
+    otrng_debug_exit("otrng_plugin_ensure_server_identity");
   }
 }
