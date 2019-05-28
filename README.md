@@ -38,6 +38,13 @@ before you installed pidgin-otr, you will need to restart it.) Find the
 Off-the-Record Messaging plugin, and enable it by selecting the checkbox next
 to it.  That should be all you need to do.
 
+If you want to run it with the OTRv4 debug output, enable that on the libotr-ng
+library and run:
+
+```
+OTRNG_DEBUG=true pidgin
+```
+
 ## Configuration
 
 Click "Configure Plugin" to bring up the OTR UI.  The UI has two "pages":
