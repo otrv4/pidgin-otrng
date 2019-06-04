@@ -64,8 +64,30 @@
 extern otrng_global_state_s *otrng_state;
 
 static void notify_error_cb(otrng_client_s *client, int error, void *ctx) {
-  otrng_debug_fprintf(stderr, "[%s] Prekey Server: an error happened: %d\n",
-                      client->client_id.account, error);
+  char *error_msg = NULL;
+
+  switch (error) {
+  case 1:
+    error_msg = "Malformed message";
+    break;
+  case 2:
+    error_msg = "Invalid DAKE 2 message";
+    break;
+  case 3:
+    error_msg = "Invalid storage status";
+    break;
+  case 4:
+    error_msg = "Invalid success_message";
+    break;
+  case 5:
+    error_msg = "Invalid failure_message";
+    break;
+  default:
+    break;
+  }
+
+  otrng_debug_fprintf(stderr, "[%s] Prekey Server: an error happened: %d %s\n",
+                      client->client_id.account, error, error_msg);
 }
 
 static const char *domain_for_account_cb(otrng_client_s *client, void *ctx) {
