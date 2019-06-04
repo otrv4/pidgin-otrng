@@ -204,9 +204,10 @@ static void maybe_publish_prekey_data(void *client_pre, void *ignored) {
   otrng_debug_fprintf(stderr, "client=%s\n", client->client_id.account);
 
   if (!otrng_client_should_publish(client)) {
-    otrng_debug_exit("maybe_publish_prekey_data");
+    otrng_debug_exit("do_not_publish_prekey_data");
     return;
   }
+
   otrng_debug_fprintf(stderr, "Prekey: we have been asked to publish...\n");
   PurpleAccount *account = client_id_to_purple_account(client->client_id);
   otrng_plugin_ensure_server_identity(
