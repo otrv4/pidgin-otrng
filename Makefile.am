@@ -27,6 +27,7 @@ AM_CFLAGS+=	-DUSING_GTK -DPURPLE_PLUGINS \
 		-I$(PIDGIN_TOP)/pidgin \
 		-DPIDGIN_OTR_VERSION=\"@VERSION@\" \
 		-DLOCALEDIR=\"$(datadir)/locale\"
+ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS=	po test
 

@@ -22,7 +22,10 @@
 
 dnl Process this file with autoconf to produce configure.
 
+AC_PREREQ([2.68])
 AC_INIT(pidgin-otrng, 0.0.1)
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([.])
 
 AM_CONFIG_HEADER(config.h)
 
