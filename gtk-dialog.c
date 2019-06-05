@@ -1,4 +1,3 @@
-
 /*
  *  Off-the-Record Messaging plugin for pidgin
  *  Copyright (C) 2004-2018  Ian Goldberg, Rob Smits,
@@ -82,10 +81,6 @@ static int img_id_finished = 0;
 #define AUTH_SMP_SHARED_SECRET 1
 #define AUTH_FINGERPRINT_VERIFICATION -1
 
-static const char *OTRv4_OPTION_NAME = "Understanding OTRv4";
-static const char *OTRv4_TAB_MAIN_INFORMATION = "Main Information";
-static const char *OTRv4_TAB_PROPERTIES = "OTRv4 Properties";
-static const char *OTRv4_TAB_CRYPTOGRAPHIC_SUITE = "OTRv4 Cryptographic Suite";
 
 typedef struct vrfy_fingerprint_data {
   otrng_plugin_fingerprint_s *fprint;
@@ -253,14 +248,6 @@ static void conversation_switched(PurpleConversation *conv, void *data);
 static GtkWidget *
 create_smp_progress_dialog(GtkWindow *parent,
                            const otrng_plugin_conversation *conv);
-
-/* OTRv4 Information header */
-static GtkWidget *get_tab_content();
-static GtkWidget *get_notebook();
-static void set_notebook_tab();
-static gchar *get_text_main();
-static gchar *get_text_properties();
-static gchar *get_text_cryptographic();
 
 static int plugin_fingerprint_get_trusted(otrng_plugin_fingerprint_s *fprint) {
   if (fprint->version == 3) {
@@ -1988,49 +1975,6 @@ static void destroy_dialog_cb(GtkDialog *dialog, gint response) {
   gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
-static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
-  GtkWidget *dialog, *notebook;
-
-  dialog = gtk_dialog_new_with_buttons(OTRv4_OPTION_NAME, NULL, 0, NULL,
-                                       GTK_RESPONSE_CLOSE, NULL);
-  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
-  gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-  gtk_widget_set_size_request(dialog, 550, 610);
-
-  notebook = get_notebook();
-
-  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
-  gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
-  g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(destroy_dialog_cb),
-                   NULL);
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
-
-  gtk_widget_show_all(dialog);
-}
-
-static GtkWidget *get_notebook() {
-
-  GtkWidget *notebook;
-
-  gchar *textMain, *textProperties, *textCryptographic;
-
-  notebook = gtk_notebook_new();
-
-  textMain = get_text_main();
-  textProperties = get_text_properties();
-  textCryptographic = get_text_cryptographic();
-
-  set_notebook_tab(notebook, OTRv4_TAB_MAIN_INFORMATION, textMain);
-  set_notebook_tab(notebook, OTRv4_TAB_PROPERTIES, textProperties);
-  set_notebook_tab(notebook, OTRv4_TAB_CRYPTOGRAPHIC_SUITE, textCryptographic);
-
-  g_free(textMain);
-  g_free(textProperties);
-  g_free(textCryptographic);
-
-  return notebook;
-}
-
 static gchar *get_text_main() {
   gchar *text;
 
@@ -2052,25 +1996,37 @@ static gchar *get_text_properties() {
   gchar *text;
 
   text = g_strdup_printf(
-      "<span weight=\"bold\" "
-      "size=\"larger\">%s</span>\n\n%s\n\n<b>%s</b>\n\n<u>%s</u> "
-      "%s\n\n<u>%s</u> "
-      "%s\n\n<u>%s</u>\n\n<u>%s</u>\n\n<u>%s</u>\n\n<u>%s</u>\n\n<u>%s</"
-      "u>\n\n<b>%s</b>\n\n<u>%s</u>\n\n<u>%s</u>\n\n<u>%s</u>",
+      "<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s\n\n<b>%s</b>\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<b>%s</b>\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<i>%s</i> %s\n\n<i>%s</i> %s\n\n<i>%s</i> %s",
       "OTRv4 Properties",
       "These are the properties that make OTRv4 different to other protocols:",
-      "Cryptographic properties:", "Online Deniability:",
-      "Users using OTRv4 cannot provide proof of participation to any third \
-parties without making themselves vulnerable to KCI attacks, even if they perform\
-arbitrary protocols with these third parties.",
+      "Cryptographic properties ",
+      "Online Deniability:",
+      "Users using OTRv4 cannot provide proof of participation to third parties without making themselves vulnerable to key compromise impersonation (KCI) attacks, even if they perform arbitrary protocols with these third parties during the exchange.",
       "Offline Deniability:",
-      "Anyone can forge a transcript between two users by only using the \
-long-term public keys.",
-      "Backward and Post-Compromise Secrecy:", "End-to-end encryption:",
-      "Participation deniability:", "Message deniability:",
-      "Immediate decryption:", "Network properties:",
-      "Message-loss resilience:", "Support of out-of-order:",
-      "Support of different modes:");
+      "Anyone can forge a transcript between any two parties using only their long-term public keys. Consequently, no transcript provides evidence of a past key exchange, because it could have been forged.",
+      "Forward Secrecy and Post-Compromise Security:",
+      "When using OTRv4 if the state of a party is leaked, none of the previous messages should get compromised (FS) and once the exposure of the party’s state ends, security is restored after a few communication rounds (PCS).",
+      "End-to-end encryption:",
+      "OTRv4 provides end-to-end encryption, which is a system by which information is sent over a network in such a way that only the recipient and sender can read it.",
+      "Participation deniability:", 
+      "Given a conversation through OTRv4 and all cryptographic key material for all but one accused (honest) participant, there is no evidence that the honest participant was in a conversation with any of the other participants.",
+      "Message deniability:",
+      "Given a conversation using OTRv4 and all cryptographic keys, there is no evidence that a given message was authored by any particular user.",
+      "Immediate decryption:",
+      "Using OTRv4 implies that parties seamlessly recover if a given message is permanently lost.",
+      "Network properties",
+      "Message-loss resilience:",
+      "With OTRv4, if a message is permanently lost by the network, parties should still be able to communicate.",
+      "Support of out-of-order:",
+      "OTRv4 support Out-of-Order Resilient. If a message is delayed in transit, but eventually arrives, its contents are accessible upon arrival.",
+      "Support of different modes:",
+      "OTRv4 define three different modes:",
+      "OTRv3-compatible mode:",
+      "a mode with backwards compatibility with OTRv3. This mode will know how to handle plaintext messages, including query messages and whitespace tags.",
+      "OTRv4-standalone mode:",
+      "an always encrypted mode. This mode will not know how to handle any kind of plaintext messages, including query messages and whitespace tags. It supports both interactive and non-interactive conversations. It is not backwards compatible with OTRv3.",
+      "OTRv4-interactive-only:",
+      "an always encrypted mode that provides higher deniability properties when compared to the previous two modes, as it achieves offline and online deniability for both participants in a conversation. It only supports interactive conversations. It is not backwards compatible with OTRv3. This mode can be used by network models that do not have a central infrastructure, like Ricochet (keep in mind, though, that if OTRv4 is used over Ricochet, some online deniability properties will be lost)");
 
   return text;
 }
@@ -2094,39 +2050,89 @@ Key generation (algorithms used for the key generation): ECDH (Ed448) and DH (dh
   return text;
 }
 
-static void set_notebook_tab(GtkWidget *notebook, char *tabTitle,
-                             gchar *tabContentMain) {
-  GtkWidget *labelTab, *contentTab;
-
-  labelTab = gtk_label_new(tabTitle);
-
-  contentTab = get_tab_content(tabContentMain);
-
-  gtk_notebook_append_page(GTK_NOTEBOOK(notebook), contentTab, labelTab);
-}
-
 static GtkWidget *get_tab_content(gchar *label) {
-  GtkWidget *dialog_text, *scrolled_window;
+
+  GtkWidget *dialog_text, *scrolled_window, *viewport;
+  GtkAdjustment *horizontal, *vertical;
 
   dialog_text = gtk_label_new(NULL);
+  gtk_label_set_use_markup(GTK_LABEL(dialog_text), TRUE);
+  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
+  gtk_label_set_markup(GTK_LABEL(dialog_text), label);
+  gtk_label_set_selectable(GTK_LABEL(dialog_text), FALSE);
 
   scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+  horizontal =
+      gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+  vertical =
+      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+  viewport = gtk_viewport_new(horizontal, vertical);
 
   gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
+  gtk_container_set_border_width(GTK_CONTAINER(viewport), 5);
 
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
-  gtk_label_set_markup(GTK_LABEL(dialog_text), label);
-  gtk_label_set_selectable(GTK_LABEL(dialog_text), TRUE);
-
-  gtk_container_add(GTK_CONTAINER(scrolled_window), dialog_text);
-
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
                                         dialog_text);
 
   return scrolled_window;
+}
+
+static void set_notebook_tab(GtkWidget *notebook, char *tab_title,
+                             gchar *tab_content_main) {
+
+  GtkWidget *label_tab, *content_tab;
+
+  label_tab = gtk_label_new(tab_title);
+
+  content_tab = get_tab_content(tab_content_main);
+
+  gtk_notebook_append_page(GTK_NOTEBOOK(notebook), content_tab, label_tab);
+}
+
+static GtkWidget *get_notebook() {
+
+  GtkWidget *notebook;
+
+  gchar *text_main, *text_properties, *text_cryptographic;
+
+  notebook = gtk_notebook_new();
+
+  text_main = get_text_main();
+  text_properties = get_text_properties();
+  text_cryptographic = get_text_cryptographic();
+
+  set_notebook_tab(notebook, _("Main Information"), text_main);
+  set_notebook_tab(notebook, _("OTRv4 Properties"), text_properties);
+  set_notebook_tab(notebook, _("OTRv4 Cryptographic Suite"),
+                   text_cryptographic);
+
+  g_free(text_main);
+  g_free(text_properties);
+  g_free(text_cryptographic);
+
+  return notebook;
+}
+
+static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
+  GtkWidget *dialog, *notebook;
+
+  dialog = gtk_dialog_new_with_buttons(_("Understanding OTRv4"), NULL, 0, NULL,
+                                       GTK_RESPONSE_CLOSE, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
+  gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+  gtk_widget_set_size_request(dialog, 550, 400);
+
+  notebook = get_notebook();
+
+  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+  gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
+  g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(destroy_dialog_cb),
+                   NULL);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
+
+  gtk_widget_show_all(dialog);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
