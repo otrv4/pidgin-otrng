@@ -33,7 +33,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-AM_PROG_AR
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+AC_PROG_CC
 
 dnl We do not want to create a .a for the plugin, so disable by default.
 LT_INIT([disable-static])
