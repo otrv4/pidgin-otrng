@@ -95,7 +95,11 @@ static void publishing_after_server_identity(PurpleAccount *account,
   otrng_client_start_publishing(client);
 
   // TODO: deal with errors here
-  otrng_prekey_publish(&message, client, ctx);
+  if (otrng_prekey_publish(&message, client, ctx) == OTRNG_ERROR) {
+    otrng_debug_fprintf(stderr, "An error occurred while trying to publish. \n");
+    otrng_debug_exit("publishing_after_server_identity");
+    return;
+  }
 
   char *domain = otrng_plugin_prekey_domain_for(
       account, purple_account_get_username(account));

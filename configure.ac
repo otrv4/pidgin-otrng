@@ -26,6 +26,7 @@ AC_PREREQ([2.68])
 AC_INIT(pidgin-otrng, 0.0.1)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([.])
+AM_SILENT_RULES([no])
 
 AM_CONFIG_HEADER(config.h)
 
@@ -34,9 +35,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
-AC_PROG_CC
+AM_PROG_AR
 
 dnl We do not want to create a .a for the plugin, so disable by default.
 LT_INIT([disable-static])
