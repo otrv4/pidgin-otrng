@@ -81,7 +81,6 @@ static int img_id_finished = 0;
 #define AUTH_SMP_SHARED_SECRET 1
 #define AUTH_FINGERPRINT_VERIFICATION -1
 
-
 typedef struct vrfy_fingerprint_data {
   otrng_plugin_fingerprint_s *fprint;
   char *accountname, *protocol;
@@ -1996,37 +1995,69 @@ static gchar *get_text_properties() {
   gchar *text;
 
   text = g_strdup_printf(
-      "<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s\n\n<b>%s</b>\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<b>%s</b>\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<i>%s</i> %s\n\n<i>%s</i> %s\n\n<i>%s</i> %s",
+      "<span weight=\"bold\" "
+      "size=\"larger\">%s</span>\n\n%s\n\n<b>%s</b>\n\n<u>%s</u> "
+      "%s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<u>%s</u> "
+      "%s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<b>%s</b>\n\n<u>%s</u> "
+      "%s\n\n<u>%s</u> %s\n\n<u>%s</u> %s\n\n<i>%s</i> %s\n\n<i>%s</i> "
+      "%s\n\n<i>%s</i> %s",
       "OTRv4 Properties",
       "These are the properties that make OTRv4 different to other protocols:",
-      "Cryptographic properties ",
-      "Online Deniability:",
-      "Users using OTRv4 cannot provide proof of participation to third parties without making themselves vulnerable to key compromise impersonation (KCI) attacks, even if they perform arbitrary protocols with these third parties during the exchange.",
+      "Cryptographic properties ", "Online Deniability:",
+      "Users using OTRv4 cannot provide proof of participation to third "
+      "parties without making themselves vulnerable to key compromise "
+      "impersonation (KCI) attacks, even if they perform arbitrary protocols "
+      "with these third parties during the exchange.",
       "Offline Deniability:",
-      "Anyone can forge a transcript between any two parties using only their long-term public keys. Consequently, no transcript provides evidence of a past key exchange, because it could have been forged.",
+      "Anyone can forge a transcript between any two parties using only their "
+      "long-term public keys. Consequently, no transcript provides evidence of "
+      "a past key exchange, because it could have been forged.",
       "Forward Secrecy and Post-Compromise Security:",
-      "When using OTRv4 if the state of a party is leaked, none of the previous messages should get compromised (FS) and once the exposure of the party’s state ends, security is restored after a few communication rounds (PCS).",
+      "When using OTRv4 if the state of a party is leaked, none of the "
+      "previous messages should get compromised (FS) and once the exposure of "
+      "the party’s state ends, security is restored after a few communication "
+      "rounds (PCS).",
       "End-to-end encryption:",
-      "OTRv4 provides end-to-end encryption, which is a system by which information is sent over a network in such a way that only the recipient and sender can read it.",
-      "Participation deniability:", 
-      "Given a conversation through OTRv4 and all cryptographic key material for all but one accused (honest) participant, there is no evidence that the honest participant was in a conversation with any of the other participants.",
+      "OTRv4 provides end-to-end encryption, which is a system by which "
+      "information is sent over a network in such a way that only the "
+      "recipient and sender can read it.",
+      "Participation deniability:",
+      "Given a conversation through OTRv4 and all cryptographic key material "
+      "for all but one accused (honest) participant, there is no evidence that "
+      "the honest participant was in a conversation with any of the other "
+      "participants.",
       "Message deniability:",
-      "Given a conversation using OTRv4 and all cryptographic keys, there is no evidence that a given message was authored by any particular user.",
+      "Given a conversation using OTRv4 and all cryptographic keys, there is "
+      "no evidence that a given message was authored by any particular user.",
       "Immediate decryption:",
-      "Using OTRv4 implies that parties seamlessly recover if a given message is permanently lost.",
-      "Network properties",
-      "Message-loss resilience:",
-      "With OTRv4, if a message is permanently lost by the network, parties should still be able to communicate.",
+      "Using OTRv4 implies that parties seamlessly recover if a given message "
+      "is permanently lost.",
+      "Network properties", "Message-loss resilience:",
+      "With OTRv4, if a message is permanently lost by the network, parties "
+      "should still be able to communicate.",
       "Support of out-of-order:",
-      "OTRv4 support Out-of-Order Resilient. If a message is delayed in transit, but eventually arrives, its contents are accessible upon arrival.",
-      "Support of different modes:",
-      "OTRv4 define three different modes:",
+      "OTRv4 support Out-of-Order Resilient. If a message is delayed in "
+      "transit, but eventually arrives, its contents are accessible upon "
+      "arrival.",
+      "Support of different modes:", "OTRv4 define three different modes:",
       "OTRv3-compatible mode:",
-      "a mode with backwards compatibility with OTRv3. This mode will know how to handle plaintext messages, including query messages and whitespace tags.",
+      "a mode with backwards compatibility with OTRv3. This mode will know how "
+      "to handle plaintext messages, including query messages and whitespace "
+      "tags.",
       "OTRv4-standalone mode:",
-      "an always encrypted mode. This mode will not know how to handle any kind of plaintext messages, including query messages and whitespace tags. It supports both interactive and non-interactive conversations. It is not backwards compatible with OTRv3.",
+      "an always encrypted mode. This mode will not know how to handle any "
+      "kind of plaintext messages, including query messages and whitespace "
+      "tags. It supports both interactive and non-interactive conversations. "
+      "It is not backwards compatible with OTRv3.",
       "OTRv4-interactive-only:",
-      "an always encrypted mode that provides higher deniability properties when compared to the previous two modes, as it achieves offline and online deniability for both participants in a conversation. It only supports interactive conversations. It is not backwards compatible with OTRv3. This mode can be used by network models that do not have a central infrastructure, like Ricochet (keep in mind, though, that if OTRv4 is used over Ricochet, some online deniability properties will be lost)");
+      "an always encrypted mode that provides higher deniability properties "
+      "when compared to the previous two modes, as it achieves offline and "
+      "online deniability for both participants in a conversation. It only "
+      "supports interactive conversations. It is not backwards compatible with "
+      "OTRv3. This mode can be used by network models that do not have a "
+      "central infrastructure, like Ricochet (keep in mind, though, that if "
+      "OTRv4 is used over Ricochet, some online deniability properties will be "
+      "lost)");
 
   return text;
 }

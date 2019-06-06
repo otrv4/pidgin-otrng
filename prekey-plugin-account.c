@@ -96,7 +96,8 @@ static void publishing_after_server_identity(PurpleAccount *account,
 
   // TODO: deal with errors here
   if (otrng_prekey_publish(&message, client, ctx) == OTRNG_ERROR) {
-    otrng_debug_fprintf(stderr, "An error occurred while trying to publish. \n");
+    otrng_debug_fprintf(stderr,
+                        "An error occurred while trying to publish. \n");
     otrng_debug_exit("publishing_after_server_identity");
     return;
   }
