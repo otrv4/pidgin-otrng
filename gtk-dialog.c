@@ -1358,7 +1358,6 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   g_free(buf);
 }
 
-// TODO: This function calls build_otr_menu 3 times.
 static void dialog_update_label_conv(PurpleConversation *conv,
                                      TrustLevel level) {
   GtkWidget *label;
@@ -1417,7 +1416,6 @@ static void dialog_update_label_conv(PurpleConversation *conv,
   convctx->convctx_type = convctx_conv;
   convctx->conv = conv;
 
-  // TODO: These can be removed because otr_add_top_otr_menu already calls it.
   build_otr_menu(conv, menu, level); // TODO: first call to build_otr_menu
   otr_build_status_submenu(pidgin_conv_get_window(gtkconv), convctx, menu,
                            level);
@@ -1438,6 +1436,8 @@ static void dialog_update_label_conv(PurpleConversation *conv,
 static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   PurpleAccount *account;
   PurpleConversation *conv;
+
+  printf("dialog_update_label_real");
 
   TrustLevel level = otrng_plugin_conversation_to_trust(context);
 
