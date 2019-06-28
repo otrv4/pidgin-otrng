@@ -1324,7 +1324,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
 
   // Not show the message for an unchanged status
-  if ((previous_level && *previous_level == current_level) || !previous_level) {
+  if (previous_level && *previous_level == current_level) {
     return;
   }
 
