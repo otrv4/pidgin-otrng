@@ -1324,7 +1324,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
 
   // Not show the message for an unchanged status
-  if (previous_level && *previous_level == current_level) {
+  if ((previous_level && *previous_level == current_level) || !previous_level) {
     return;
   }
 
@@ -1353,7 +1353,6 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
    * update the privacy level for this gtkconv */
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
 
-  // TODO: Set the previous level now
   if (conv == gtkconv->active_conv) {
     /* 'free' is handled by the hashtable */
     TrustLevel *current_level_ptr = malloc(sizeof(TrustLevel));
