@@ -1309,9 +1309,10 @@ static void otr_build_status_submenu(PidginWindow *win,
 
 static void otr_check_conv_status_change(PurpleConversation *conv) {
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
-  TrustLevel current_level = TRUST_NOT_PRIVATE;
 
-  TrustLevel *previous_level = NULL;
+  TrustLevel current_level = TRUST_NOT_PRIVATE;
+  TrustLevel *previous_level = TRUST_NOT_PRIVATE;
+
   char *buf;
   char *status = "";
 
@@ -1320,17 +1321,14 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   current_level = otrng_plugin_conversation_to_trust(plugin_conv);
   otrng_plugin_conversation_free(plugin_conv);
 
-  previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
-  if (!previous_level) {
+  previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
+
+  // Not show the message for an unchanged status
+  if (previous_level && *previous_level == current_level) {
     return;
   }
 
-  // TODO: unsure what is tried to be achieved with this check
-  // if(previous_level == current_level) {
-  //  return;
-  //}
-
-  buf = _("The privacy status of the current conversation is now: "
+  buf = _("The privacy status of the current conversation is: "
           "%s");
 
   switch (current_level) {
@@ -1354,6 +1352,14 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
    * be appended as the message timestamp signal is caught, which will also
    * update the privacy level for this gtkconv */
   purple_conversation_write(conv, NULL, buf, PURPLE_MESSAGE_SYSTEM, time(NULL));
+
+  // TODO: Set the previous level now
+  if (conv == gtkconv->active_conv) {
+    /* 'free' is handled by the hashtable */
+    TrustLevel *current_level_ptr = malloc(sizeof(TrustLevel));
+    *current_level_ptr = current_level;
+    g_hash_table_replace(otr_win_status, gtkconv, current_level_ptr);
+  }
 
   g_free(buf);
 }
@@ -1436,8 +1442,6 @@ static void dialog_update_label_conv(PurpleConversation *conv,
 static void dialog_update_label_real(const otrng_plugin_conversation *context) {
   PurpleAccount *account;
   PurpleConversation *conv;
-
-  printf("dialog_update_label_real");
 
   TrustLevel level = otrng_plugin_conversation_to_trust(context);
 
@@ -2826,35 +2830,22 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
                                     gboolean show_date) {
 
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+
   TrustLevel current_level = TRUST_NOT_PRIVATE;
-  TrustLevel *previous_level;
-  int id;
+  TrustLevel *previous_level = TRUST_NOT_PRIVATE;
+
+  int id = 0;
 
   otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
   current_level = otrng_plugin_conversation_to_trust(plugin_conv);
   otrng_plugin_conversation_free(plugin_conv);
 
-  previous_level = g_hash_table_lookup(otr_win_status, gtkconv);
+  previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
 
-  if (previous_level && *previous_level == current_level) {
+  if ((previous_level && *previous_level == current_level) || !previous_level) {
     return NULL;
   }
-
-  /* We want to update this gtkconv's privacy level only if the new privacy
-   * level we received corresponds to the active conversation.  */
-  if (conv == gtkconv->active_conv) {
-    /* 'free' is handled by the hashtable */
-    TrustLevel *current_level_ptr = malloc(sizeof(TrustLevel));
-    *current_level_ptr = current_level;
-    g_hash_table_replace(otr_win_status, gtkconv, current_level_ptr);
-  }
-
-  if (!previous_level) {
-    return NULL;
-  }
-
-  id = -1;
 
   switch (current_level) {
   case TRUST_NOT_PRIVATE:
