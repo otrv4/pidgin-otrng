@@ -1311,7 +1311,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
 
   TrustLevel current_level = TRUST_NOT_PRIVATE;
-  TrustLevel *previous_level = TRUST_NOT_PRIVATE;
+  TrustLevel *previous_level = NULL;
 
   char *buf;
   char *status = "";
@@ -1321,7 +1321,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   current_level = otrng_plugin_conversation_to_trust(plugin_conv);
   otrng_plugin_conversation_free(plugin_conv);
 
-  previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
+  previous_level = (TrustLevel *)g_hash_table_lookup(otr_win_status, gtkconv);
 
   // Not show the message for an unchanged status
   if (previous_level && *previous_level == current_level) {
@@ -2831,7 +2831,7 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
   PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
 
   TrustLevel current_level = TRUST_NOT_PRIVATE;
-  TrustLevel *previous_level = TRUST_NOT_PRIVATE;
+  TrustLevel *previous_level = NULL;
 
   int id = 0;
 
@@ -2840,7 +2840,7 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
   current_level = otrng_plugin_conversation_to_trust(plugin_conv);
   otrng_plugin_conversation_free(plugin_conv);
 
-  previous_level = (TrustLevel *) g_hash_table_lookup(otr_win_status, gtkconv);
+  previous_level = (TrustLevel *)g_hash_table_lookup(otr_win_status, gtkconv);
 
   if ((previous_level && *previous_level == current_level) || !previous_level) {
     return NULL;
