@@ -2331,7 +2331,7 @@ static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query,
       GTK_LABEL(label), (!insecure && authen) ? _("Re_authenticate buddy")
                                               : _("_Authenticate buddy"));
 
-  gtk_widget_set_sensitive(GTK_WIDGET(end), !insecure || finished);
+  gtk_widget_set_sensitive(GTK_WIDGET(end), !(insecure || finished) );
   gtk_widget_set_sensitive(GTK_WIDGET(smp), !insecure);
 }
 
