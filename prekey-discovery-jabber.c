@@ -251,6 +251,9 @@ int otrng_plugin_jabber_lookup_prekey_servers_for(PurpleAccount *account,
 
   char *nwho = g_strdup(purple_normalize(account, who));
   char *server = get_domain_from_jid(nwho);
+  if (!server) {
+    return 0;
+  }
 
   otrng_plugin_prekey_discovery_status *iq_handle =
       malloc(sizeof(otrng_plugin_prekey_discovery_status));
