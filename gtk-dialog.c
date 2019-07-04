@@ -1313,7 +1313,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   TrustLevel current_level = TRUST_NOT_PRIVATE;
   TrustLevel *previous_level = NULL;
 
-  char *buf;
+  char *buf = NULL;
   char *status = "";
 
   otrng_plugin_conversation *plugin_conv =
@@ -1356,6 +1356,11 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   if (conv == gtkconv->active_conv) {
     /* 'free' is handled by the hashtable */
     TrustLevel *current_level_ptr = malloc(sizeof(TrustLevel));
+    if (!current_level_ptr) {
+      g_free(buf);
+      return;
+    }
+
     *current_level_ptr = current_level;
     g_hash_table_replace(otr_win_status, gtkconv, current_level_ptr);
   }
@@ -2331,7 +2336,7 @@ static void otr_set_menu_labels(PurpleConversation *conv, GtkWidget *query,
       GTK_LABEL(label), (!insecure && authen) ? _("Re_authenticate buddy")
                                               : _("_Authenticate buddy"));
 
-  gtk_widget_set_sensitive(GTK_WIDGET(end), !(insecure || finished) );
+  gtk_widget_set_sensitive(GTK_WIDGET(end), !(insecure || finished));
   gtk_widget_set_sensitive(GTK_WIDGET(smp), !insecure);
 }
 
@@ -2841,8 +2846,11 @@ static char *conversation_timestamp(PurpleConversation *conv, time_t mtime,
   otrng_plugin_conversation_free(plugin_conv);
 
   previous_level = (TrustLevel *)g_hash_table_lookup(otr_win_status, gtkconv);
+  if (!previous_level) {
+    return NULL;
+  }
 
-  if ((previous_level && *previous_level == current_level) || !previous_level) {
+  if ((previous_level && *previous_level == current_level)) {
     return NULL;
   }
 
