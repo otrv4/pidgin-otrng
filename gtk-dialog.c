@@ -1360,7 +1360,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   if (conv == gtkconv->active_conv) {
     /* 'free' is handled by the hashtable */
     TrustLevel *current_level_ptr = malloc(sizeof(TrustLevel));
-
+  
     if (!current_level_ptr) {
       g_free(buf);
       return;
