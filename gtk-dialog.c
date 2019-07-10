@@ -2188,7 +2188,7 @@ static GtkWidget *get_notebook() {
   return notebook;
 }
 
-static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
+static void otr_show_help_dialog() {
   GtkWidget *dialog, *notebook;
 
   dialog = gtk_dialog_new_with_buttons(_("Understanding OTRv4"), NULL, 0, NULL,
@@ -2206,6 +2206,10 @@ static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), notebook);
 
   gtk_widget_show_all(dialog);
+}
+
+static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
+  otr_show_help_dialog();
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
