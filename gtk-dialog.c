@@ -3005,6 +3005,8 @@ static void otrng_gtk_dialog_init(void) {
 
   purple_signal_connect(purple_get_core(), "quitting", otrng_plugin_handle,
                         PURPLE_CALLBACK(dialog_quitting), NULL);
+
+  otrng_utils_init();
 }
 
 /* Deinitialize the OTR dialog subsystem */
@@ -3041,6 +3043,8 @@ static void otrng_gtk_dialog_cleanup(void) {
   g_hash_table_destroy(otr_win_menus);
 
   g_hash_table_destroy(otr_win_status);
+
+  otrng_utils_uninit();
 }
 
 static const OtrgDialogUiOps gtk_dialog_ui_ops = {
@@ -3065,4 +3069,46 @@ static const OtrgDialogUiOps gtk_dialog_ui_ops = {
 /* Get the GTK dialog UI ops */
 const OtrgDialogUiOps *otrng_gtk_dialog_get_ui_ops(void) {
   return &gtk_dialog_ui_ops;
+}
+
+static void otr_show_status_dialog() {
+  // TODO: Refactor `otr_show_help_dialog` to accept parameters
+  // to specify what tab is required to be shown
+  otr_show_help_dialog();
+}
+
+static gboolean otrng_open_status_help_dialog(GtkIMHtml *imhtml,
+                                              GtkIMHtmlLink *link) {
+  const char *url;
+  const char *status;
+
+  url = gtk_imhtml_link_get_url(link);
+  if (!url || strlen(url) < sizeof("viewstatus:"))
+    return FALSE;
+
+  // TODO: check if the status value is valid
+  status = url + sizeof("viewstatus:") - 1;
+
+  if (status) {
+    otr_show_status_dialog();
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static gboolean otrng_status_context_menu(GtkIMHtml *imhtml,
+                                          GtkIMHtmlLink *link,
+                                          GtkWidget *menu) {
+  // TODO: Check if necessary to create a context menu here
+  return TRUE;
+}
+
+void otrng_utils_init(void) {
+  gtk_imhtml_class_register_protocol("viewstatus:", otrng_open_status_help_dialog,
+                                     otrng_status_context_menu);
+}
+
+void otrng_utils_uninit(void) {
+  gtk_imhtml_class_register_protocol("viewstatus:", NULL, NULL);
 }

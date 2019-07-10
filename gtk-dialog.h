@@ -28,4 +28,14 @@
 /* Get the GTK dialog UI ops */
 const OtrgDialogUiOps *otrng_gtk_dialog_get_ui_ops(void);
 
+/**
+ * Initialize some utility functions.
+ */
+void otrng_utils_init(void);
+
+/**
+ * Uninitialize some utility functions.
+ */
+void otrng_utils_uninit(void);
+
 #endif
