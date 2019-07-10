@@ -1315,6 +1315,7 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
 
   char *buf = NULL;
   char *status = "";
+  int level = -1;
 
   otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
@@ -1329,24 +1330,28 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   }
 
   buf = _("The privacy status of the current conversation is: "
-          "%s");
+          "<a href=\"viewstatus:%d\">%s</a>");
 
   switch (current_level) {
   case TRUST_NOT_PRIVATE:
     status = _("Not Private");
+    level = 0;
     break;
   case TRUST_UNVERIFIED:
     status = _("Unverified");
+    level = 1;
     break;
   case TRUST_PRIVATE:
     status = _("Private");
+    level = 2;
     break;
   case TRUST_FINISHED:
     status = _("Finished");
+    level = 3;
     break;
   }
 
-  buf = g_strdup_printf(buf, status);
+  buf = g_strdup_printf(buf, level, status);
 
   if (previous_level) {
     /* Write a new message indicating the level change.
