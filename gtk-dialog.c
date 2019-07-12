@@ -2204,6 +2204,7 @@ static GtkWidget *get_notebook() {
   g_free(text_main);
   g_free(text_properties);
   g_free(text_cryptographic);
+  g_free(text_conversation_status);
 
   return notebook;
 }
