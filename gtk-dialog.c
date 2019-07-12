@@ -2128,6 +2128,17 @@ Key generation (algorithms used for the key generation): ECDH (Ed448) and DH (dh
   return text;
 }
 
+static gchar *get_text_conversation_status() {
+  gchar *text;
+
+  text = g_strdup_printf("<span weight=\"bold\" "
+                         "size=\"larger\">%s</span>\n\n%s",
+                         "OTRv4 Conversation Privacy Status",
+                         "Show information about each privacy status.");
+
+  return text;
+}
+
 static GtkWidget *get_tab_content(gchar *label) {
 
   GtkWidget *dialog_text, *scrolled_window, *viewport;
@@ -2173,18 +2184,22 @@ static GtkWidget *get_notebook() {
 
   GtkWidget *notebook;
 
-  gchar *text_main, *text_properties, *text_cryptographic;
+  gchar *text_main, *text_properties, *text_cryptographic,
+      *text_conversation_status;
 
   notebook = gtk_notebook_new();
 
   text_main = get_text_main();
   text_properties = get_text_properties();
   text_cryptographic = get_text_cryptographic();
+  text_conversation_status = get_text_conversation_status();
 
   set_notebook_tab(notebook, _("Main Information"), text_main);
   set_notebook_tab(notebook, _("OTRv4 Properties"), text_properties);
   set_notebook_tab(notebook, _("OTRv4 Cryptographic Suite"),
                    text_cryptographic);
+  set_notebook_tab(notebook, _("Conversation Status"),
+                   text_conversation_status);
 
   g_free(text_main);
   g_free(text_properties);
@@ -3105,8 +3120,8 @@ static gboolean otrng_status_context_menu(GtkIMHtml *imhtml,
 }
 
 void otrng_utils_init(void) {
-  gtk_imhtml_class_register_protocol("viewstatus:", otrng_open_status_help_dialog,
-                                     otrng_status_context_menu);
+  gtk_imhtml_class_register_protocol(
+      "viewstatus:", otrng_open_status_help_dialog, otrng_status_context_menu);
 }
 
 void otrng_utils_uninit(void) {
