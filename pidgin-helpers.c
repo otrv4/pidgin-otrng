@@ -23,6 +23,7 @@
 #include <account.h>
 #include <assert.h>
 #include <glib.h>
+#include <gtkconv.h>
 
 #include "fingerprint.h"
 #include "pidgin-helpers.h"
@@ -168,6 +169,7 @@ PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
                                                   int force_create) {
   PurpleAccount *account;
   PurpleConversation *conv;
+  const char *hide_im_conversations;
 
   account = purple_accounts_find(accountname, protocol);
   if (account == NULL) {
@@ -178,6 +180,14 @@ PurpleConversation *otrng_plugin_userinfo_to_conv(const char *accountname,
                                                account);
   if (conv == NULL && force_create) {
     conv = purple_conversation_new(PURPLE_CONV_TYPE_IM, account, username);
+    hide_im_conversations = purple_prefs_get_string("/pidgin/conversations/im/hide_new");
+
+    if( strcmp(hide_im_conversations,"always")==0 ){
+    	  PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
+    	  PidginWindow *win = pidgin_conv_get_window(gtkconv);
+    	  pidgin_conv_window_hide( win );
+    }
+
   }
 
   return conv;
