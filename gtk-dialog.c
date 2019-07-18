@@ -2131,10 +2131,32 @@ Key generation (algorithms used for the key generation): ECDH (Ed448) and DH (dh
 static gchar *get_text_conversation_status() {
   gchar *text;
 
-  text = g_strdup_printf("<span weight=\"bold\" "
-                         "size=\"larger\">%s</span>\n\n%s",
-                         "OTRv4 Conversation Privacy Status",
-                         "Show information about each privacy status.");
+  text = g_strdup_printf(
+      "<span weight=\"bold\" "
+      "size=\"larger\">%s</span>\n\n<b>%s</b>\n%s\n\n<b>%s</b>\n%s\n\n"
+      "<b>%s</b>\n%s\n\n<b>%s</b>\n%s",
+      "OTRv4 Conversation Privacy Status",
+      "Not private",
+      "Alice and Bob are communicating with no cryptographic protection; they "
+      "are not using OTR at all. Mallory, who is watching the network, can "
+      "read everything they are saying to each other.",
+      "Private",
+      "Alice and Bob are using OTR, and they have authenticated each other. "
+      "They are assured that they are actually talking to each other, and not "
+      "to an imposter. They are also confident that no one watching the "
+      "network can read their messages.",
+      "Unverified",
+      "Alice and Bob are using OTR, but they have not authenticated each "
+      "other, which means they do not know for certain who they are talking "
+      "to. It is possible that Mallory is impersonating one of them, or "
+      "intercepting their conversation and reading everything they say to each "
+      "other.",
+      "Finished",
+      "Alice was talking to Bob using OTR, but Bob has decided to stop using "
+      "it. In this level, Alice is prevented from accidentally sending a "
+      "private message without protection, by preventing her from sending any "
+      "further messages to Bob at all. She must explicitly either end her "
+      "side of the private conversation, or else start a new one.");
 
   return text;
 }
@@ -2180,10 +2202,8 @@ static void set_notebook_tab(GtkWidget *notebook, char *tab_title,
   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), content_tab, label_tab);
 }
 
-static GtkWidget *get_notebook() {
-
+static GtkWidget *get_notebook(gint page_num) {
   GtkWidget *notebook;
-
   gchar *text_main, *text_properties, *text_cryptographic,
       *text_conversation_status;
 
@@ -2201,6 +2221,10 @@ static GtkWidget *get_notebook() {
   set_notebook_tab(notebook, _("Conversation Status"),
                    text_conversation_status);
 
+  if (page_num) {
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 3);
+  }
+
   g_free(text_main);
   g_free(text_properties);
   g_free(text_cryptographic);
@@ -2209,8 +2233,9 @@ static GtkWidget *get_notebook() {
   return notebook;
 }
 
-static void otr_show_help_dialog() {
+static void otr_show_help_dialog(gint page_num) {
   GtkWidget *dialog, *notebook;
+  gint select_page_num = page_num;
 
   dialog = gtk_dialog_new_with_buttons(_("Understanding OTRv4"), NULL, 0, NULL,
                                        GTK_RESPONSE_CLOSE, NULL);
@@ -2218,7 +2243,7 @@ static void otr_show_help_dialog() {
   gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
   gtk_widget_set_size_request(dialog, 550, 400);
 
-  notebook = get_notebook();
+  notebook = get_notebook(select_page_num);
 
   gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
   gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
@@ -2230,7 +2255,8 @@ static void otr_show_help_dialog() {
 }
 
 static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
-  otr_show_help_dialog();
+  gint default_page = 0;
+  otr_show_help_dialog(default_page);
 }
 
 static void menu_end_private_conversation(GtkWidget *widget, gpointer data) {
@@ -3088,9 +3114,8 @@ const OtrgDialogUiOps *otrng_gtk_dialog_get_ui_ops(void) {
 }
 
 static void otr_show_status_dialog() {
-  // TODO: Refactor `otr_show_help_dialog` to accept parameters
-  // to specify what tab is required to be shown
-  otr_show_help_dialog();
+  gint status_page = 3;
+  otr_show_help_dialog(status_page);
 }
 
 static gboolean otrng_open_status_help_dialog(GtkIMHtml *imhtml,
