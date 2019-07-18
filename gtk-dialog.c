@@ -2135,8 +2135,7 @@ static gchar *get_text_conversation_status() {
       "<span weight=\"bold\" "
       "size=\"larger\">%s</span>\n\n<b>%s</b>\n%s\n\n<b>%s</b>\n%s\n\n"
       "<b>%s</b>\n%s\n\n<b>%s</b>\n%s",
-      "OTRv4 Conversation Privacy Status",
-      "Not private",
+      "OTRv4 Conversation Privacy Status", "Not private",
       "Alice and Bob are communicating with no cryptographic protection; they "
       "are not using OTR at all. Mallory, who is watching the network, can "
       "read everything they are saying to each other.",
