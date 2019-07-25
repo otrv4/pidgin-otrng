@@ -2160,16 +2160,25 @@ static gchar *get_text_conversation_status() {
   return text;
 }
 
+static void set_label_wrap_size(GtkWidget *label, GtkAllocation *alloc,
+                                gpointer data) {
+  gtk_widget_set_size_request(label, alloc->width - 2, -1);
+}
+
 static GtkWidget *get_tab_content(gchar *label) {
 
   GtkWidget *dialog_text, *scrolled_window, *viewport;
   GtkAdjustment *horizontal, *vertical;
 
   dialog_text = gtk_label_new(NULL);
+  gtk_misc_set_alignment(GTK_MISC(dialog_text), 0.5, 0.5);
   gtk_label_set_use_markup(GTK_LABEL(dialog_text), TRUE);
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
   gtk_label_set_markup(GTK_LABEL(dialog_text), label);
   gtk_label_set_selectable(GTK_LABEL(dialog_text), FALSE);
+
+  g_signal_connect(G_OBJECT(dialog_text), "size-allocate",
+                   G_CALLBACK(set_label_wrap_size), NULL);
 
   scrolled_window = gtk_scrolled_window_new(NULL, NULL);
   horizontal =
