@@ -2207,6 +2207,8 @@ static void set_notebook_tab(GtkWidget *notebook, char *tab_title,
 
   content_tab = get_tab_content(tab_content_main);
 
+  gtk_widget_set_visible(content_tab, TRUE);
+
   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), content_tab, label_tab);
 }
 
@@ -2230,7 +2232,7 @@ static GtkWidget *get_notebook(gint page_num) {
                    text_conversation_status);
 
   if (page_num) {
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 3);
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), page_num);
   }
 
   g_free(text_main);
