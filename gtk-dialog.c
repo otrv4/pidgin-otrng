@@ -2253,7 +2253,7 @@ static void otr_show_help_dialog(gint page_num) {
 
   notebook = get_notebook(select_page_num);
 
-  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+  gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
   gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
   g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(destroy_dialog_cb),
                    NULL);
