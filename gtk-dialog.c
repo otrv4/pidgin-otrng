@@ -2137,21 +2137,21 @@ static gchar *get_text_conversation_status() {
       "<b>%s</b>\n%s\n\n<b>%s</b>\n%s",
       "OTRv4 Conversation Privacy Status", "Not private",
       "Alice and Bob are communicating with no cryptographic protection; they "
-      "are not using OTR at all. Mallory, who is watching the network, can "
+      "are not using OTRv4 at all. Mallory, who is watching the network, can "
       "read everything they are saying to each other.",
       "Private",
-      "Alice and Bob are using OTR, and they have authenticated each other. "
+      "Alice and Bob are using OTRv4, and they have authenticated each other. "
       "They are assured that they are actually talking to each other, and not "
       "to an imposter. They are also confident that no one watching the "
       "network can read their messages.",
       "Unverified",
-      "Alice and Bob are using OTR, but they have not authenticated each "
+      "Alice and Bob are using OTRv4, but they have not authenticated each "
       "other, which means they do not know for certain who they are talking "
       "to. It is possible that Mallory is impersonating one of them, or "
       "intercepting their conversation and reading everything they say to each "
       "other.",
       "Finished",
-      "Alice was talking to Bob using OTR, but Bob has decided to stop using "
+      "Alice was talking to Bob using OTRv4, but Bob has decided to stop using "
       "it. In this level, Alice is prevented from accidentally sending a "
       "private message without protection, by preventing her from sending any "
       "further messages to Bob at all. She must explicitly either end her "
