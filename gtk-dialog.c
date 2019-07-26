@@ -2171,7 +2171,7 @@ static GtkWidget *get_tab_content(gchar *label) {
   GtkAdjustment *horizontal, *vertical;
 
   dialog_text = gtk_label_new(NULL);
-  gtk_misc_set_alignment(GTK_MISC(dialog_text), 0.5, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(dialog_text), 0, 0.5);
   gtk_label_set_use_markup(GTK_LABEL(dialog_text), TRUE);
   gtk_label_set_line_wrap(GTK_LABEL(dialog_text), TRUE);
   gtk_label_set_markup(GTK_LABEL(dialog_text), label);
@@ -2219,6 +2219,8 @@ static GtkWidget *get_notebook(gint page_num) {
 
   notebook = gtk_notebook_new();
 
+  gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
+
   text_main = get_text_main();
   text_properties = get_text_properties();
   text_cryptographic = get_text_cryptographic();
@@ -2251,7 +2253,7 @@ static void otr_show_help_dialog(gint page_num) {
                                        GTK_RESPONSE_CLOSE, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
   gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-  gtk_widget_set_size_request(dialog, 550, 400);
+  gtk_window_set_default_size(GTK_WINDOW(dialog), 700, 400);
 
   notebook = get_notebook(select_page_num);
 
