@@ -1316,6 +1316,8 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   char *buf = NULL;
   char *status = "";
   int level = -1;
+  char *ssid = NULL;
+  uint8_t emptySSID[SSID_BYTES] = {0};
 
   otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
@@ -1373,6 +1375,33 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
 
     *current_level_ptr = current_level;
     g_hash_table_replace(otr_win_status, gtkconv, current_level_ptr);
+  }
+
+  // Get the SSID and show as another line in the conversation window
+  otrng_conversation_s *otr_conv =
+      purple_conversation_to_otrng_conversation(conv);
+
+  if (memcmp(otr_conv->conn->keys->ssid, emptySSID, 8) != 0) {
+
+    if (otr_conv->conn->keys->ssid_half_first) {
+
+      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
+               "<b>%02X%02X%02X%02X</b> %02X%02X%02X%02X");
+    } else {
+
+      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
+               "%02X%02X%02X%02X <b>%02X%02X%02X%02X</b>");
+    }
+
+    ssid = g_strdup_printf(
+        ssid, otr_conv->conn->keys->ssid[0], otr_conv->conn->keys->ssid[1],
+        otr_conv->conn->keys->ssid[2], otr_conv->conn->keys->ssid[3],
+        otr_conv->conn->keys->ssid[4], otr_conv->conn->keys->ssid[5],
+        otr_conv->conn->keys->ssid[6], otr_conv->conn->keys->ssid[7]);
+
+    purple_conversation_write(conv, NULL, ssid, PURPLE_MESSAGE_RAW, time(NULL));
+
+    g_free(ssid);
   }
 
   g_free(buf);
@@ -2266,6 +2295,62 @@ static void otr_show_help_dialog(gint page_num) {
   gtk_widget_show_all(dialog);
 }
 
+static void otr_show_info_ssid() {
+  GtkWidget *dialog, *text;
+  GtkTextBuffer *buffer;
+  gchar *textSSID;
+
+  textSSID =
+      "The secure session ID (SSID) is a 8-byte value. If the participant "
+      "requests to see it, it should be displayed as two 4-byte big-endian "
+      "unsigned values. For example, in C language, in \"%08x\" format. \n"
+      "If the party transmitted the Auth-R message during the DAKE, then "
+      "display the first 4 bytes in bold, and the second 4 bytes in non-bold. "
+      " If the party transmitted the Auth-I message instead, display the first "
+      "4 bytes in non-bold, and the second 4 bytes in bold. "
+      "If the party transmitted the Non-Interactive-Auth message during the "
+      "DAKE, then display the first 4 bytes in bold, and the second 4 bytes in "
+      "non-bold. "
+      "If the party received the Non-Interactive-Auth message instead, display "
+      "the first 4 bytes in non-bold, and the second 4 bytes in bold.\n"
+      "This Secure Session ID can be used by the parties to verify (over the "
+      "telephone, assuming the parties recognize each others' voices) that "
+      "there is no man-in-the-middle"
+      " by having each side read his bold part to the other. \nNote that this "
+      "only needs to be done in the event that the participants do not trust "
+      "that their long-term keys have not been compromised.";
+
+  // TextView
+  text = gtk_text_view_new();
+
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+  gtk_text_view_set_justification(GTK_TEXT_VIEW(text), GTK_JUSTIFY_FILL);
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), TRUE);
+  gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(text), 5);
+  gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(text), 5);
+  gtk_text_view_set_pixels_inside_wrap(GTK_TEXT_VIEW(text), 5);
+  gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 10);
+  gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 10);
+
+  // Buffer
+  buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+  gtk_text_buffer_set_text(buffer, textSSID, -1);
+
+  dialog = gtk_dialog_new_with_buttons(_("SSID"), NULL, 0, NULL,
+                                       GTK_RESPONSE_CLOSE, NULL);
+  gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
+  gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
+  gtk_widget_set_size_request(dialog, 550, 400);
+  gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
+  gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
+  g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(destroy_dialog_cb),
+                   NULL);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), text);
+
+  gtk_widget_show_all(dialog);
+}
+
 static void menu_understanding_otrv4(GtkWidget *widget, gpointer data) {
   gint default_page = 0;
   otr_show_help_dialog(default_page);
@@ -3150,6 +3235,13 @@ static gboolean otrng_open_status_help_dialog(GtkIMHtml *imhtml,
   return FALSE;
 }
 
+static gboolean otrng_open_info_ssid(GtkIMHtml *imhtml, GtkIMHtmlLink *link) {
+
+  otr_show_info_ssid();
+
+  return TRUE;
+}
+
 static gboolean otrng_status_context_menu(GtkIMHtml *imhtml,
                                           GtkIMHtmlLink *link,
                                           GtkWidget *menu) {
@@ -3160,8 +3252,10 @@ static gboolean otrng_status_context_menu(GtkIMHtml *imhtml,
 void otrng_utils_init(void) {
   gtk_imhtml_class_register_protocol(
       "viewstatus:", otrng_open_status_help_dialog, otrng_status_context_menu);
+  gtk_imhtml_class_register_protocol("ssid", otrng_open_info_ssid, NULL);
 }
 
 void otrng_utils_uninit(void) {
   gtk_imhtml_class_register_protocol("viewstatus:", NULL, NULL);
+  gtk_imhtml_class_register_protocol("ssid", NULL, NULL);
 }
