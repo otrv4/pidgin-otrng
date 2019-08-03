@@ -1316,8 +1316,6 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
   char *buf = NULL;
   char *status = "";
   int level = -1;
-  char *ssid = NULL;
-  uint8_t emptySSID[SSID_BYTES] = {0};
 
   otrng_plugin_conversation *plugin_conv =
       purple_conversation_to_plugin_conversation(conv);
@@ -1375,33 +1373,6 @@ static void otr_check_conv_status_change(PurpleConversation *conv) {
 
     *current_level_ptr = current_level;
     g_hash_table_replace(otr_win_status, gtkconv, current_level_ptr);
-  }
-
-  // Get the SSID and show as another line in the conversation window
-  otrng_conversation_s *otr_conv =
-      purple_conversation_to_otrng_conversation(conv);
-
-  if (memcmp(otr_conv->conn->keys->ssid, emptySSID, 8) != 0) {
-
-    if (otr_conv->conn->keys->ssid_half_first) {
-
-      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
-               "<b>%02X%02X%02X%02X</b> %02X%02X%02X%02X");
-    } else {
-
-      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
-               "%02X%02X%02X%02X <b>%02X%02X%02X%02X</b>");
-    }
-
-    ssid = g_strdup_printf(
-        ssid, otr_conv->conn->keys->ssid[0], otr_conv->conn->keys->ssid[1],
-        otr_conv->conn->keys->ssid[2], otr_conv->conn->keys->ssid[3],
-        otr_conv->conn->keys->ssid[4], otr_conv->conn->keys->ssid[5],
-        otr_conv->conn->keys->ssid[6], otr_conv->conn->keys->ssid[7]);
-
-    purple_conversation_write(conv, NULL, ssid, PURPLE_MESSAGE_RAW, time(NULL));
-
-    g_free(ssid);
   }
 
   g_free(buf);
@@ -1788,6 +1759,8 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
   OtrgUiPrefs prefs;
   gboolean *is_multi_inst;
   int protocol_version;
+  char *ssid = NULL;
+  uint8_t emptySSID[SSID_BYTES] = {0};
 
   conv = otrng_plugin_conversation_to_purple_conv(context, TRUE);
   level = otrng_plugin_conversation_to_trust(context);
@@ -1828,6 +1801,30 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
 
   g_free(buf);
   g_free(format_buf);
+
+  // Get the SSID and show as another line in the conversation window
+  otrng_conversation_s *otr_conv =
+      purple_conversation_to_otrng_conversation(conv);
+
+  if (memcmp(otr_conv->conn->keys->ssid, emptySSID, 8) != 0) {
+    if (otr_conv->conn->keys->ssid_half_first) {
+      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
+               "<b>%02X%02X%02X%02X</b> %02X%02X%02X%02X");
+    } else {
+      ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
+               "%02X%02X%02X%02X <b>%02X%02X%02X%02X</b>");
+    }
+
+    ssid = g_strdup_printf(
+        ssid, otr_conv->conn->keys->ssid[0], otr_conv->conn->keys->ssid[1],
+        otr_conv->conn->keys->ssid[2], otr_conv->conn->keys->ssid[3],
+        otr_conv->conn->keys->ssid[4], otr_conv->conn->keys->ssid[5],
+        otr_conv->conn->keys->ssid[6], otr_conv->conn->keys->ssid[7]);
+
+    purple_conversation_write(conv, NULL, ssid, PURPLE_MESSAGE_RAW, time(NULL));
+
+    g_free(ssid);
+  }
 
   dialog_update_label_real(context);
 
@@ -2300,31 +2297,20 @@ static void otr_show_info_ssid() {
   GtkTextBuffer *buffer;
   gchar *textSSID;
 
-  textSSID =
-      "The secure session ID (SSID) is a 8-byte value. If the participant "
-      "requests to see it, it should be displayed as two 4-byte big-endian "
-      "unsigned values. For example, in C language, in \"%08x\" format. \n"
-      "If the party transmitted the Auth-R message during the DAKE, then "
-      "display the first 4 bytes in bold, and the second 4 bytes in non-bold. "
-      " If the party transmitted the Auth-I message instead, display the first "
-      "4 bytes in non-bold, and the second 4 bytes in bold. "
-      "If the party transmitted the Non-Interactive-Auth message during the "
-      "DAKE, then display the first 4 bytes in bold, and the second 4 bytes in "
-      "non-bold. "
-      "If the party received the Non-Interactive-Auth message instead, display "
-      "the first 4 bytes in non-bold, and the second 4 bytes in bold.\n"
-      "This Secure Session ID can be used by the parties to verify (over the "
-      "telephone, assuming the parties recognize each others' voices) that "
-      "there is no man-in-the-middle"
-      " by having each side read his bold part to the other. \nNote that this "
-      "only needs to be done in the event that the participants do not trust "
-      "that their long-term keys have not been compromised.";
+  textSSID = "The secure session ID (SSID) is a 8-byte value. It can be used "
+             "by participants in a conversation to verify (over the telephone, "
+             "for example, "
+             "assuming the participants recognize each others' voices) that "
+             "there is no man-in-the-middle "
+             "(https://en.wikipedia.org/wiki/Man-in-the-middle_attack) "
+             "by having each side read his bold part to the other. In order to "
+             "verify it, tell the bold side of the SSID to the person you "
+             "are talking to and they should tell you their side.";
 
   // TextView
   text = gtk_text_view_new();
 
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
-  gtk_text_view_set_justification(GTK_TEXT_VIEW(text), GTK_JUSTIFY_FILL);
   gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), TRUE);
   gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(text), 5);
@@ -2341,7 +2327,7 @@ static void otr_show_info_ssid() {
                                        GTK_RESPONSE_CLOSE, NULL);
   gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_CLOSE);
   gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
-  gtk_widget_set_size_request(dialog, 550, 400);
+  gtk_widget_set_size_request(dialog, 350, 200);
   gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
   gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
   g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(destroy_dialog_cb),
