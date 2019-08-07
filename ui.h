@@ -36,12 +36,14 @@ typedef struct {
   OtrlPolicy policy;
   gboolean avoid_logging_otr;
   gboolean show_otr_button;
+  gboolean show_ssid_button;
 } OtrgUiPrefs;
 
 typedef struct {
   otrng_policy_s policy;
   gboolean avoid_logging_otr;
   gboolean show_otr_button;
+  gboolean show_ssid_button;
 } otrng_ui_prefs;
 
 typedef struct {

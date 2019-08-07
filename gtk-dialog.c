@@ -1806,7 +1806,8 @@ otrng_gtk_dialog_connected_real(const otrng_plugin_conversation *context) {
   otrng_conversation_s *otr_conv =
       purple_conversation_to_otrng_conversation(conv);
 
-  if (memcmp(otr_conv->conn->keys->ssid, emptySSID, 8) != 0) {
+  if (memcmp(otr_conv->conn->keys->ssid, emptySSID, 8) != 0 &&
+		  purple_prefs_get_bool("/OTR/showssidbutton") ){
     if (otr_conv->conn->keys->ssid_half_first) {
       ssid = _("The <a href=\"ssid\">SSID</a> for this conversation is: "
                "<b>%02X%02X%02X%02X</b> %02X%02X%02X%02X");
