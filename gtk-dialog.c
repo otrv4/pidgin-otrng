@@ -3094,7 +3094,6 @@ static void connection_signing_off_cb(PurpleConnection *gc) {
       if (otr_conv && otr_plugin_conv &&
           otrng_conversation_is_encrypted(otr_conv)) {
         otrng_ui_disconnect_connection(otr_plugin_conv);
-        // TODO: check if necessary to free `otr_conv`
         otrng_plugin_conversation_free(otr_plugin_conv);
       }
     }
