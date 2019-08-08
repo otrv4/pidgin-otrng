@@ -616,7 +616,6 @@ static void create_otrsettings_buttons(struct otrsettingsdata *os,
                    G_CALLBACK(otrsettings_clicked_cb), os);
   g_signal_connect(G_OBJECT(os->avoidloggingotrbox), "clicked",
                    G_CALLBACK(otrsettings_clicked_cb), os);
-
 }
 
 static void otroptions_clicked_cb(GtkButton *button,
@@ -634,8 +633,7 @@ static void create_otroptions_buttons(struct otroptionsdata *oo,
       gtk_check_button_new_with_label(_("Show OTR button in toolbar"));
 
   oo->showssidbutton =
-        gtk_check_button_new_with_label(_("Show Secure Session ID (SSID)"));
-
+      gtk_check_button_new_with_label(_("Show Secure Session ID (SSID)"));
 
   gtk_box_pack_start(GTK_BOX(vbox), oo->showotrbutton, FALSE, FALSE, 0);
 
@@ -734,7 +732,8 @@ static void load_otrsettings(struct otrsettingsdata *os) {
 }
 
 /* Load the global OTR UI options */
-static void otrng_gtk_ui_global_options_load(gboolean *showotrbuttonp , gboolean *showssidbuttonp) {
+static void otrng_gtk_ui_global_options_load(gboolean *showotrbuttonp,
+                                             gboolean *showssidbuttonp) {
   if (purple_prefs_exists("/OTR/showotrbutton")) {
     *showotrbuttonp = purple_prefs_get_bool("/OTR/showotrbutton");
   } else {
@@ -742,28 +741,29 @@ static void otrng_gtk_ui_global_options_load(gboolean *showotrbuttonp , gboolean
   }
 
   if (purple_prefs_exists("/OTR/showssidbutton")) {
-      *showssidbuttonp = purple_prefs_get_bool("/OTR/showssidbutton");
-    } else {
-      *showssidbuttonp = FALSE;
-    }
+    *showssidbuttonp = purple_prefs_get_bool("/OTR/showssidbutton");
+  } else {
+    *showssidbuttonp = FALSE;
+  }
 }
 
 /* Save the global OTR UI options */
-static void otrng_gtk_ui_global_options_save(gboolean showotrbutton , gboolean showssidbutton) {
+static void otrng_gtk_ui_global_options_save(gboolean showotrbutton,
+                                             gboolean showssidbutton) {
   if (!purple_prefs_exists("/OTR")) {
     purple_prefs_add_none("/OTR");
   }
 
   if (!purple_prefs_exists("/OTR/showotrbutton")) {
     purple_prefs_add_bool("/OTR/showotrbutton", showotrbutton);
-  }else{
-	  purple_prefs_set_bool("/OTR/showotrbutton", showotrbutton);
+  } else {
+    purple_prefs_set_bool("/OTR/showotrbutton", showotrbutton);
   }
 
   if (!purple_prefs_exists("/OTR/showssidbutton")) {
     purple_prefs_add_bool("/OTR/showssidbutton", showssidbutton);
-  }else{
-	purple_prefs_set_bool("/OTR/showssidbutton", showssidbutton);
+  } else {
+    purple_prefs_set_bool("/OTR/showssidbutton", showssidbutton);
   }
 }
 
@@ -771,13 +771,13 @@ static void load_otroptions(struct otroptionsdata *oo) {
   gboolean showotrbutton;
   gboolean showssidbutton;
 
-  otrng_gtk_ui_global_options_load(&showotrbutton,&showssidbutton);
+  otrng_gtk_ui_global_options_load(&showotrbutton, &showssidbutton);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->showotrbutton),
                                showotrbutton);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(oo->showssidbutton),
-		  	  	  	  	  	   showssidbutton);
+                               showssidbutton);
 
   otroptions_clicked_cb(GTK_BUTTON(oo->showotrbutton), oo);
   otroptions_clicked_cb(GTK_BUTTON(oo->showssidbutton), oo);
@@ -846,7 +846,7 @@ static void otrsettings_save_cb(GtkButton *button, struct otrsettingsdata *os) {
 static void otroptions_save_cb(GtkButton *button, struct otroptionsdata *oo) {
   otrng_gtk_ui_global_options_save(
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oo->showotrbutton)),
-	  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oo->showssidbutton)));
+      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oo->showssidbutton)));
 
   otrng_dialog_resensitize_all();
 }
@@ -1074,7 +1074,6 @@ static void load_buddyprefs(struct cbdata *data) {
                                  onlyprivate);
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox),
                                  avoidloggingotr);
-
   }
 
   default_clicked_cb(GTK_BUTTON(data->defaultbox), data);
@@ -1095,7 +1094,8 @@ static void config_buddy_clicked_cb(GtkButton *button, struct cbdata *data) {
       enabled,
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->os.automaticbox)),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->os.onlyprivatebox)),
-      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox)));
+      gtk_toggle_button_get_active(
+          GTK_TOGGLE_BUTTON(data->os.avoidloggingotrbox)));
 
   otrng_dialog_resensitize_all();
 }
@@ -1201,7 +1201,8 @@ static void otrng_gtk_ui_get_prefs(OtrgUiPrefs *prefsp, PurpleAccount *account,
   /* Get the default policy */
   otrng_gtk_ui_global_prefs_load(&otrenabled, &otrautomatic, &otronlyprivate,
                                  &otravoidloggingotr);
-  otrng_gtk_ui_global_options_load(&(prefsp->show_otr_button),&(prefsp->show_ssid_button));
+  otrng_gtk_ui_global_options_load(&(prefsp->show_otr_button),
+                                   &(prefsp->show_ssid_button));
 
   if (otrenabled) {
     if (otrautomatic) {
@@ -1267,7 +1268,8 @@ static void otrng_gtk_ui_get_prefs_v4(otrng_ui_prefs *prefs,
   /* Get the default policy */
   otrng_gtk_ui_global_prefs_load(&otrng_enabled, &otrng_automatic,
                                  &otrng_only_private, &otrng_avoid_logging_otr);
-  otrng_gtk_ui_global_options_load(&(prefs->show_otr_button),&(prefs->show_ssid_button));
+  otrng_gtk_ui_global_options_load(&(prefs->show_otr_button),
+                                   &(prefs->show_ssid_button));
 
   if (otrng_enabled) {
     prefs->policy.allows = OTRNG_ALLOW_V34;
