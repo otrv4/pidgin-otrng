@@ -3195,6 +3195,14 @@ static void otrng_gtk_dialog_cleanup(void) {
                            otrng_plugin_handle,
                            PURPLE_CALLBACK(check_incoming_instance_change));
 
+  purple_signal_disconnect(purple_connections_get_handle(), "signing-off",
+                        finch_conv_get_handle(),
+                        PURPLE_CALLBACK(connection_signing_off_cb));
+
+  purple_signal_disconnect(purple_accounts_get_handle(), "account-signed-off",
+                        finch_conv_get_handle(),
+                        PURPLE_CALLBACK(account_signed_off_cb));
+
   /* If we're quitting, the imgstore will already have been destroyed
    * by purple, but we should have already called dialog_quitting(),
    * so the img_id_* should be -1, and all should be OK. */
