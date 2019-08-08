@@ -3075,6 +3075,37 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
   return 0;
 }
 
+static gpointer finch_conv_get_handle(void) {
+  static int handle;
+  return &handle;
+}
+
+static void connection_signing_off_cb(PurpleConnection *gc) {
+  GList *convs = NULL;
+  PurpleConversation *conv;
+  otrng_conversation_s *otr_conv;
+  otrng_plugin_conversation *otr_plugin_conv;
+
+  for (convs = purple_get_conversations(); convs != NULL; convs = convs->next) {
+    conv = convs->data;
+    if (conv) {
+      otr_conv = purple_conversation_to_otrng_conversation(conv);
+      otr_plugin_conv = purple_conversation_to_plugin_conversation(conv);
+      if (otr_conv && otr_plugin_conv &&
+          otrng_conversation_is_encrypted(otr_conv)) {
+        otrng_ui_disconnect_connection(otr_plugin_conv);
+        // TODO: check if necessary to free `otr_conv`
+        otrng_plugin_conversation_free(otr_plugin_conv);
+      }
+    }
+  }
+}
+
+static void account_signed_off_cb(PurpleAccount *account) {
+  // TODO: check if we need to check if the conversation
+  // has finished once the account is signed off
+}
+
 static void unref_img_by_id(int *id) {
   if (id && *id > 0) {
     purple_imgstore_unref_by_id(*id);
@@ -3131,6 +3162,14 @@ static void otrng_gtk_dialog_init(void) {
 
   purple_signal_connect(purple_get_core(), "quitting", otrng_plugin_handle,
                         PURPLE_CALLBACK(dialog_quitting), NULL);
+
+  purple_signal_connect(purple_connections_get_handle(), "signing-off",
+                        finch_conv_get_handle(),
+                        PURPLE_CALLBACK(connection_signing_off_cb), NULL);
+
+  purple_signal_connect(purple_accounts_get_handle(), "account-signed-off",
+                        finch_conv_get_handle(),
+                        PURPLE_CALLBACK(account_signed_off_cb), NULL);
 
   otrng_utils_init();
 }
