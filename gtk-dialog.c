@@ -3075,7 +3075,7 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
   return 0;
 }
 
-static gpointer finch_conv_get_handle(void) {
+static gpointer otrng_plugin_handle(void) {
   static int handle;
   return &handle;
 }
@@ -3164,11 +3164,11 @@ static void otrng_gtk_dialog_init(void) {
                         PURPLE_CALLBACK(dialog_quitting), NULL);
 
   purple_signal_connect(purple_connections_get_handle(), "signing-off",
-                        finch_conv_get_handle(),
+                        otrng_plugin_handle(),
                         PURPLE_CALLBACK(connection_signing_off_cb), NULL);
 
   purple_signal_connect(purple_accounts_get_handle(), "account-signed-off",
-                        finch_conv_get_handle(),
+                        otrng_plugin_handle(),
                         PURPLE_CALLBACK(account_signed_off_cb), NULL);
 
   otrng_utils_init();
@@ -3196,11 +3196,11 @@ static void otrng_gtk_dialog_cleanup(void) {
                            PURPLE_CALLBACK(check_incoming_instance_change));
 
   purple_signal_disconnect(purple_connections_get_handle(), "signing-off",
-                        finch_conv_get_handle(),
+                        otrng_plugin_handle(),
                         PURPLE_CALLBACK(connection_signing_off_cb));
 
   purple_signal_disconnect(purple_accounts_get_handle(), "account-signed-off",
-                        finch_conv_get_handle(),
+                        otrng_plugin_handle(),
                         PURPLE_CALLBACK(account_signed_off_cb));
 
   /* If we're quitting, the imgstore will already have been destroyed
