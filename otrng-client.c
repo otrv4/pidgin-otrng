@@ -39,6 +39,6 @@ char *otrv4_client_adapter_privkey_fingerprint(const otrng_client_s *client) {
     return NULL;
   }
 
-  otrng_fingerprint_hash_to_human(ret, our_fp);
+  otrng_fingerprint_hash_to_human(ret, our_fp, sizeof(our_fp));
   return ret;
 }

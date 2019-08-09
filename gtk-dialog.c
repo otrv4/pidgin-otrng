@@ -700,10 +700,10 @@ static char *create_verify_fingerprint_label_v3(
 }
 
 static char *create_verify_fingerprint_label_v4(
-    const otrng_known_fingerprint_s *other_fprint, const char *protocol,
+    const otrng_known_fingerprint_s *their_fprint, const char *protocol,
     const char *account) {
   char our_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
-  char other_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
+  char their_human_fprint[OTRNG_FPRINT_HUMAN_LEN];
   PurplePlugin *p;
   char *proto_name;
   char *label_text;
@@ -720,24 +720,24 @@ static char *create_verify_fingerprint_label_v4(
   p = purple_find_prpl(protocol);
   proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
 
-  otrng_fingerprint_hash_to_human(other_human_fprint, other_fprint->fp);
+  otrng_fingerprint_hash_to_human(their_human_fprint, their_fprint->fp, sizeof(their_fprint->fp));
 
   label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
                                  "Purported fingerprint for %s:\n%s\n"),
                                account, proto_name, our_human_fprint,
-                               other_fprint->username, other_human_fprint);
+                               their_fprint->username, their_human_fprint);
 
   return label_text;
 }
 
 static char *
-create_verify_fingerprint_label(const otrng_plugin_fingerprint_s *other_fprint,
+create_verify_fingerprint_label(const otrng_plugin_fingerprint_s *their_fprint,
                                 const char *protocol, const char *account) {
-  if (other_fprint->version == 3) {
-    return create_verify_fingerprint_label_v3(other_fprint->v3, protocol,
+  if (their_fprint->version == 3) {
+    return create_verify_fingerprint_label_v3(their_fprint->v3, protocol,
                                               account);
   }
-  return create_verify_fingerprint_label_v4(other_fprint->v4, protocol,
+  return create_verify_fingerprint_label_v4(their_fprint->v4, protocol,
                                             account);
 }
 

@@ -289,7 +289,7 @@ static void keylist_all_do_v4(const otrng_client_s *client,
   if (!fphuman) {
     return;
   }
-  otrng_fingerprint_hash_to_human(fphuman, fp->fp);
+  otrng_fingerprint_hash_to_human(fphuman, fp->fp, sizeof(fp->fp));
   titles[4] = fphuman;
   titles[5] = g_strdup_printf("%s (%s)", client->client_id.account,
                               client->client_id.protocol);
