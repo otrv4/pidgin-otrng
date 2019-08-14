@@ -3115,11 +3115,6 @@ static void connection_signing_off_cb(PurpleConnection *conn) {
   }
 }
 
-static void account_signed_off_cb(PurpleAccount *account) {
-  // TODO: check if we need to check if the conversation
-  // has finished once the account is signed off
-}
-
 static void unref_img_by_id(int *id) {
   if (id && *id > 0) {
     purple_imgstore_unref_by_id(*id);
@@ -3181,10 +3176,6 @@ static void otrng_gtk_dialog_init(void) {
                         otrng_plugin_handle,
                         PURPLE_CALLBACK(connection_signing_off_cb), NULL);
 
-  purple_signal_connect(purple_accounts_get_handle(), "account-signed-off",
-                        otrng_plugin_handle,
-                        PURPLE_CALLBACK(account_signed_off_cb), NULL);
-
   otrng_utils_init();
 }
 
@@ -3212,10 +3203,6 @@ static void otrng_gtk_dialog_cleanup(void) {
   purple_signal_disconnect(purple_connections_get_handle(), "signing-off",
                            otrng_plugin_handle,
                            PURPLE_CALLBACK(connection_signing_off_cb));
-
-  purple_signal_disconnect(purple_accounts_get_handle(), "account-signed-off",
-                           otrng_plugin_handle,
-                           PURPLE_CALLBACK(account_signed_off_cb));
 
   /* If we're quitting, the imgstore will already have been destroyed
    * by purple, but we should have already called dialog_quitting(),
