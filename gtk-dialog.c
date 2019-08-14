@@ -720,7 +720,8 @@ static char *create_verify_fingerprint_label_v4(
   p = purple_find_prpl(protocol);
   proto_name = (p && p->info->name) ? p->info->name : _("Unknown");
 
-  otrng_fingerprint_hash_to_human(their_human_fprint, their_fprint->fp, sizeof(their_fprint->fp));
+  otrng_fingerprint_hash_to_human(their_human_fprint, their_fprint->fp,
+                                  sizeof(their_fprint->fp));
 
   label_text = g_strdup_printf(_("Fingerprint for you, %s (%s):\n%s\n\n"
                                  "Purported fingerprint for %s:\n%s\n"),
@@ -3075,23 +3076,34 @@ static gboolean check_incoming_instance_change(PurpleAccount *account,
   return 0;
 }
 
-static void connection_signing_off_cb(PurpleConnection *gc) {
-  GList *convs = NULL;
-  PurpleConversation *conv;
-  otrng_conversation_s *otr_conv;
-  otrng_plugin_conversation *otr_plugin_conv;
+static void connection_signing_off_cb(PurpleConnection *conn) {
+  PurpleAccount *account;
+  otrng_client_s *client = NULL;
+  list_element_s *el = NULL;
+  otrng_conversation_s *otr_conv = NULL;
+  otrng_plugin_conversation *otr_plugin_conv = NULL;
 
-  for (convs = purple_get_conversations(); convs != NULL; convs = convs->next) {
-    conv = convs->data;
-    if (conv) {
-      otr_conv = purple_conversation_to_otrng_conversation(conv);
-      otr_plugin_conv = purple_conversation_to_plugin_conversation(conv);
-      if (otr_conv && otr_plugin_conv &&
-          otrng_conversation_is_encrypted(otr_conv)) {
-        otrng_ui_disconnect_connection(otr_plugin_conv);
-        otrng_plugin_conversation_free(otr_plugin_conv);
-      }
+  account = purple_connection_get_account(conn);
+
+  if (!account) {
+    return;
+  }
+
+  client = purple_account_to_otrng_client(account);
+  if (!client) {
+    return;
+  }
+
+  for (el = client->conversations; el; el = el->next) {
+    otr_conv = el->data;
+
+    otr_plugin_conv = otrng_plugin_conversation_new(otr_conv->conn);
+    if (!otr_conv) {
+      continue;
     }
+
+    otrng_ui_disconnect_connection(otr_plugin_conv);
+    otrng_plugin_conversation_free(otr_plugin_conv);
   }
 }
 
