@@ -3097,13 +3097,21 @@ static void connection_signing_off_cb(PurpleConnection *conn) {
   for (el = client->conversations; el; el = el->next) {
     otr_conv = el->data;
 
-    otr_plugin_conv = otrng_plugin_conversation_new(otr_conv->conn);
     if (!otr_conv) {
       continue;
     }
 
-    otrng_ui_disconnect_connection(otr_plugin_conv);
-    otrng_plugin_conversation_free(otr_plugin_conv);
+    if (!otrng_conversation_is_encrypted(otr_conv)) {
+      continue;
+    }
+
+    otr_plugin_conv =
+        client_conversation_to_plugin_conversation(otr_conv->conn);
+
+    if (otr_plugin_conv) {
+      otrng_ui_disconnect_connection(otr_plugin_conv);
+      otrng_plugin_conversation_free(otr_plugin_conv);
+    }
   }
 }
 
