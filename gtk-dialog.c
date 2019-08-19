@@ -3084,7 +3084,6 @@ static void connection_signing_off_cb(PurpleConnection *conn) {
   otrng_plugin_conversation *otr_plugin_conv = NULL;
 
   account = purple_connection_get_account(conn);
-
   if (!account) {
     return;
   }
@@ -3096,7 +3095,6 @@ static void connection_signing_off_cb(PurpleConnection *conn) {
 
   for (el = client->conversations; el; el = el->next) {
     otr_conv = el->data;
-
     if (!otr_conv) {
       continue;
     }
