@@ -22,6 +22,9 @@
 
 PIDGIN_TOP=../../..
 
+SPLINT_COMMAND =  splint
+SPLINT_ARGS =  *.{c,h} -I./
+
 AM_CFLAGS=	@LIBGCRYPT_CFLAGS@ @LIBOTR_CFLAGS@ @LIBOTRNG_CFLAGS@ @EXTRA_CFLAGS@ @LIBXML_CFLAGS@
 AM_CFLAGS+=	-DUSING_GTK -DPURPLE_PLUGINS \
 		-I$(PIDGIN_TOP)/libpurple \
@@ -75,3 +78,6 @@ code-style:
 
 test: check
 	test/test
+
+splint:
+	$(SPLINT_COMMAND) $(SPLINT_ARGS)
