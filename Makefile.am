@@ -22,6 +22,15 @@
 
 PIDGIN_TOP=../../..
 
+SPLINT_COMMAND =  splint
+SPLINT_ARGS =  *.{c,h} -I./
+
+CODE_CHECK_COMMAND = clang-tidy
+CODE_CHECK_ARGS = *.c
+
+VALGRIND_COMMAND = valgrind
+VALGRIND_ARGS = --track-origins=yes --quiet --error-exitcode=2 --leak-check=full --read-var-info=yes
+
 AM_CFLAGS=	@LIBGCRYPT_CFLAGS@ @LIBOTR_CFLAGS@ @LIBOTRNG_CFLAGS@ @EXTRA_CFLAGS@ @LIBXML_CFLAGS@
 AM_CFLAGS+=	-DUSING_GTK -DPURPLE_PLUGINS \
 		-I$(PIDGIN_TOP)/libpurple \
@@ -73,5 +82,14 @@ DISTCLEANFILES=		intltool-extract intltool-merge intltool-update
 code-style:
 	clang-format -style=file -i config.h *.h *.c
 
+code-check:
+	$(CODE_CHECK_COMMAND) $(CODE_CHECK_ARGS)
+
 test: check
 	test/test
+
+memory-check:
+	$(VALGRIND_COMMAND) $(VALGRIND_ARGS)
+
+splint:
+	$(SPLINT_COMMAND) $(SPLINT_ARGS)
