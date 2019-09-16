@@ -74,7 +74,7 @@ code-style:
 	clang-format -style=file -i config.h *.h *.c
 
 code-check:
-	clang-tidy *.c
+	clang-tidy -checks='*' -header-filter="^include" -p . *.c
 
 test: check
 	test/test
