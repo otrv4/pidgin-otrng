@@ -2368,8 +2368,7 @@ static gchar *otr_about_text_credits(){
 
 	 gchar *text;
 
-	 text = g_strdup_printf("<span weight=\"bold\" "
-			 	 	 	 	"size=\"larger\">%s</span>\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s",
+	 text = g_strdup_printf("%s\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s",
 							"Team OTR:",
 							"- Ian Goldberg",
 							"- Nik Unger",
@@ -2397,20 +2396,16 @@ static gchar *otr_about_text_credits(){
 	 return text;
 }
 
-static GtkWidget * otr_about_credits(){
-
-	return get_tab_content( otr_about_text_credits() );
-
-}
-
 static GtkWidget * otr_about_info(){
 
-	GtkWidget *box;
+	GtkWidget *box, *credits;
 
 	box = gtk_hbox_new( FALSE , 0 );
+	credits = gtk_label_new( otr_about_text_credits() );
 
 	gtk_box_pack_start (GTK_BOX(box), otr_about_logo(), TRUE, TRUE, 3);
-	gtk_box_pack_start (GTK_BOX(box), otr_about_credits(), TRUE, TRUE, 3);
+	gtk_box_pack_start (GTK_BOX(box), credits, TRUE, TRUE, 3);
+
 
 	return box;
 }
