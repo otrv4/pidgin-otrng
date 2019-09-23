@@ -30,7 +30,10 @@ autoreconf -s -i
 ```
 
 (If you installed libotr.m4 somewhere that autoreconf can't find it, you can try
-putting "ACLOCAL_FLAGS= -I /path/to/share/aclocal" at the top of Makefile.am.)
+putting `ACLOCAL_FLAGS= -I /path/to/share/aclocal` at the top of Makefile.am.)
+
+(If you are using Mac OSX 10.3.x or higher, you need to install `gettext` and
+link it -`brew link --force gettext` to make the autoreconf command work)
 
 Once you have the configure script (which comes with the source distribution),
 run it with any options that may be necessary for your system.  Some examples:
