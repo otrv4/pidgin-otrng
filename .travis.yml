@@ -47,6 +47,7 @@ addons:
     - libgtk2.0-dev
     - pidgin-dev
     - libpurple-dev
+    - clang-tidy-4.0
 
 matrix: 
     include: 
@@ -62,6 +63,10 @@ matrix:
         dist: trusty
         compiler: gcc
         env: T=splint
+      - os: linux
+        dist: trusty
+        compiler: gcc
+        env: T=code-check
     allow_failures:
       - os: linux
         dist: trusty
@@ -91,3 +96,4 @@ script:
   - make -j && make test
   - mv ${TRAVIS_BUILD_DIR} ${OLD_TRAVIS_BUILD_DIR}
   - if [[ "$T" == "splint" ]]; then make splint; fi
+  - if [[ "$T" == "code-check" ]]; then make code-check; fi
