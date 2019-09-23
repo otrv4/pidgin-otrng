@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "dialogs.h": "c",
+        "notify.h": "c"
+    }
+}

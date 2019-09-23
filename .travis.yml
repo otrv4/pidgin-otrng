@@ -40,6 +40,8 @@ sudo: false
 
 addons:
   apt:
+    sources:
+    - llvm-toolchain-trusty-4.0 
     packages:
     - gettext
     - intltool
