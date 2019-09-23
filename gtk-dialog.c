@@ -2193,7 +2193,7 @@ static gchar *otr_about_text_credits(){
 
 	 gchar *text;
 
-	 text = g_strdup_printf("Thanks to the collaboration of:\n\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n\n%s\n\n%s",
+	 text = g_strdup_printf("Thanks to the collaboration of:\n\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n - %s\n\n%s",
 							"Ian Goldberg",
 							"Nik Unger",
 							"Mike Hamburg",
@@ -2215,9 +2215,8 @@ static gchar *otr_about_text_credits(){
 							"Md. Muhaimeen Ashraf",
 							"Pedro Palau",
 							"Mauro Velasco",
-							"Cristina Salcedo.",
-							"And whom who colaborate in the past with OTR.",
-							"https://otr.im/");
+							"Cristina Salcedo",
+							"And whom who colaborate in the past with OTR.");
 
 	 return text;
 }
@@ -2260,6 +2259,69 @@ static GtkWidget *get_tab_content(gchar *label) {
   return scrolled_window;
 }
 
+static GtkWidget *get_otr_authors(gchar *label , gboolean selectable){
+
+	GtkWidget *otr_authors;
+
+	otr_authors = gtk_label_new(NULL);
+	gtk_misc_set_alignment(GTK_MISC(otr_authors), 0, 0.5);
+	gtk_label_set_use_markup(GTK_LABEL(otr_authors), TRUE);
+	gtk_label_set_line_wrap(GTK_LABEL(otr_authors), TRUE);
+	gtk_label_set_markup(GTK_LABEL(otr_authors), label);
+
+	if( selectable ){
+
+		gtk_label_set_selectable(GTK_LABEL(otr_authors), TRUE);
+
+	}else{
+
+		gtk_label_set_selectable(GTK_LABEL(otr_authors), FALSE);
+
+	}
+
+	g_signal_connect(G_OBJECT(otr_authors), "size-allocate",
+		                   G_CALLBACK(set_label_wrap_size), NULL);
+
+	return otr_authors;
+}
+
+static GtkWidget *otr_authors_info(gchar *label) {
+
+	gchar *otr_url;
+	GtkWidget *box, *scrolled_window, *viewport;
+	GtkAdjustment *horizontal, *vertical;
+
+	otr_url = "https://otr.im";
+
+	//Box
+	box = gtk_vbox_new( FALSE , 0 );
+
+	gtk_box_pack_start (GTK_BOX(box), get_otr_authors( label , FALSE ) , TRUE, TRUE, 3);
+	gtk_box_pack_start (GTK_BOX(box), get_otr_authors( otr_url , TRUE ), TRUE, TRUE, 3);
+
+	//Window
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	horizontal =
+		gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+	vertical =
+	    gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+
+
+	//Viewport
+	viewport = gtk_viewport_new(horizontal, vertical);
+
+	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
+	gtk_container_set_border_width(GTK_CONTAINER(viewport), 5);
+
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+								 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
+			box);
+
+	return scrolled_window;
+}
+
+
 static GtkWidget * otr_about_logo(){
 
 	GError *error = NULL;
@@ -2286,7 +2348,6 @@ static GtkWidget * otr_about_info(gchar *label){
 
 	box = gtk_hbox_new( FALSE , 0 );
 	credits = gtk_label_new( NULL );
-	//credits = gtk_label_new( label );
 
 	gtk_label_set_markup( GTK_LABEL(credits) , label);
 
@@ -2304,12 +2365,19 @@ static void set_notebook_tab(GtkWidget *notebook, char *tab_title,
 
   label_tab = gtk_label_new(tab_title);
 
-  if( tab_index==0 ){
-	  content_tab = otr_about_info( tab_content_main );
-  }else{
-	  content_tab = get_tab_content( tab_content_main );
-  }
+  switch( tab_index ){
 
+  	  case 0:
+  		  content_tab = otr_about_info( tab_content_main );
+  		  break;
+
+  	  case 4:
+  		  content_tab = otr_authors_info( tab_content_main );
+  		  break;
+
+  	  default:
+  		content_tab = get_tab_content( tab_content_main );
+  }
 
   gtk_widget_set_visible(content_tab, TRUE);
 
@@ -2337,7 +2405,7 @@ static GtkWidget *get_notebook(gint page_num) {
 		  	  	  text_cryptographic, 2);
   set_notebook_tab(notebook, _("Conversation Status"),
                    text_conversation_status, 3);
-  set_notebook_tab(notebook, _("Team OTR"), text_credits, 4);
+  set_notebook_tab(notebook, _("Team OTRv4"), text_credits, 4);
 
   if (page_num) {
     gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), page_num);
@@ -2643,7 +2711,7 @@ static void otr_build_status_submenu(PidginWindow *win,
           GTK_STOCK_HELP,
           gtk_icon_size_from_name(PIDGIN_ICON_SIZE_TANGO_EXTRA_SMALL)));
 
-  authors = gtk_image_menu_item_new_with_mnemonic(_("_Team OTR"));
+  authors = gtk_image_menu_item_new_with_mnemonic(_("_Team OTRv4"));
   gtk_image_menu_item_set_image(
         GTK_IMAGE_MENU_ITEM(authors),
         gtk_image_new_from_stock(
