@@ -62,6 +62,11 @@ matrix:
         dist: trusty
         compiler: gcc
         env: T=splint
+    allow_failures:
+      - os: linux
+        dist: trusty
+        compiler: gcc
+        env: T=splint
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
