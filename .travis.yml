@@ -72,7 +72,7 @@ before_install:
   - rm -rf .deps/libotr-ng
   - git clone --depth=1 https://github.com/otrv4/libotr-ng.git .deps/libotr-ng
   - pushd .deps/libotr-ng && ./autogen.sh && ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib --with-libgcrypt-prefix=$PREFIX --prefix=$PREFIX && make -j && make install && popd
-  - if [[ "$T" = "splint" ]]; then sudo apt-get install splint --quiet --assume-yes; fi
+  - if [[ "$T" == "splint" ]]; then sudo apt-get install splint --quiet --assume-yes; fi
 
 script:
   - cd ${PREFIX}/pidgin-2.13.0/pidgin/plugins
@@ -85,4 +85,4 @@ script:
   - ./configure --with-libotr-inc-prefix=${PREFIX}/include --with-libotr-prefix=${PREFIX}/lib
   - make -j && make test
   - mv ${TRAVIS_BUILD_DIR} ${OLD_TRAVIS_BUILD_DIR}
-  - if [[ "$T" = "splint" ]]; then make splint; fi
+  - if [[ "$T" == "splint" ]]; then make splint; fi
