@@ -74,6 +74,10 @@ matrix:
         dist: trusty
         compiler: gcc
         env: T=splint
+      - os: linux
+        dist: trusty
+        compiler: gcc
+        env: T=code-check
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
