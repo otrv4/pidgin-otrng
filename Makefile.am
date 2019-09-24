@@ -80,7 +80,7 @@ test: check
 	test/test
 
 memory-check:
-	valgrind --track-origins=yes --quiet --error-exitcode=2 --leak-check=full --read-var-info=yes
+	valgrind --track-origins=yes --quiet --error-exitcode=2 --leak-check=full --read-var-info=yes $(top_builddir)/test/test
 
 splint:
 	splint *.{c,h} -I./
