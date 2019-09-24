@@ -69,6 +69,10 @@ matrix:
         dist: trusty
         compiler: gcc
         env: T=code-check
+      - os: linux
+        dist: trusty
+        compiler: gcc
+        env: T=valgrind
     allow_failures:
       - os: linux
         dist: trusty
@@ -78,6 +82,10 @@ matrix:
         dist: trusty
         compiler: gcc
         env: T=code-check
+      - os: linux
+        dist: trusty
+        compiler: gcc
+        env: T=valgrind
 
 before_install:
   - PREFIX=/tmp/prefix # we dont want to use sudo (and be forced to use the non-container based infrastructure)
@@ -103,3 +111,4 @@ script:
   - mv ${TRAVIS_BUILD_DIR} ${OLD_TRAVIS_BUILD_DIR}
   - if [[ "$T" == "splint" ]]; then make splint; fi
   - if [[ "$T" == "code-check" ]]; then make code-check; fi
+  - if [[ "$T" == "valgrind" ]]; then make memory-check; fi
