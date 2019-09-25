@@ -47,6 +47,10 @@ NETBSD:
 	./configure --prefix=/usr/pkg
 ```
 
+(If you are using Mac OSX, you might run into this error:
+`XML::Parser perl module is required for intltool`. To solve it, run:
+`perl -e shell -MCPAN` and then `install XML::Parser`)
+
 Once the configure script writes a Makefile, you should be able to just
 run `make`.
 
